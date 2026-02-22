@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+(() => { // redirect if required by certain url keys
+  const expandUrl = async s => {
+console.log(s);
+    const res = await fetch('https://script.google.com/macros/s/AKfycbz-zJUSD2bWzt9wE0Dqo9hRluHul1ZbdMkJ4yuAhdgNCXigyWlNIBM2StvXubGs_clRKA/exec' + s);
+	if (!res.ok) {
+      console.log('File loading error: ' + response.status);
+      return '';
+    }
+    const txt = await res.text();
+	console.log('Long URL', txt);
+    window.location.assign(txt);
+    return txt; 
+  };
+
+  const param = new URLSearchParams(location.search);
+
+  if (param.get('shorturl')) {
+	  expandUrl(location.search);
+      return;	  
+  }
+  if (param.has('shorturl')) return; // empty shorturl key
+
+  for (key of ['wlist', 'w', 'sl', 'ml', 'game', 'shadow-read', 'tts-read', 'dictate', 'ngram'])
+    if (param.has(key)) {
+      window.location.assign('/words/' + location.search);
+      return;
+    }
+  if (param.has('home')) return;
+  
+  if (localStorage.length || location.search)
+    window.location.assign('/task.html' + location.search); 
+})()
+</script>
+
+<title>Play video fragments to boost listening and speaking skills</title>
+<meta name="description" content="A free tool for language learners to practice listening and speaking.">
+<meta name="keywords" content="video, fragments, listening, pronunciation, shadow reading, voice games">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta property="og:title" content="Audiodrill" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.audiodrill.com" />
+<meta property="og:image" content="https://www.audiodrill.com/img/og-image.jpg" />
+<meta property="og:description" content="Listening and speaking practice for language learners" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+
+<style>
+::-webkit-scrollbar {-webkit-appearance: none; width: 12px}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, .1);
+  border-radius: 10px;
+  border: 1px solid #ffffff;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(200, 200, 200, .3);
+  border-radius: 10px;
+}
+
+html{
+  scroll-behavior:smooth;
+  font-family:Arial, Helvetica,sans-serif;
+  line-height: 1.5;
+}
+body {margin:0}
+h2,h3 {
+  margin: 10px 0;
+  font-weight: normal;
+}
+
+a {
+  color: inherit;  
+  text-decoration-color: #ddd
+}
+a:hover {
+/*
+  text-decoration-color: darkgray;
+  text-underline-offset: 0.15em;
+*/
+  background-color: #eee;
+  text-decoration:none;
+}
+
+a:active {background-color: #ddd}
+
+.txt-large {font-size: calc(14px + 0.5vmin)}
+.txt-bigger {font-size: 110%}
+
+.top-menu {
+  max-width: 1600px;
+  margin: auto;
+  color: gray;
+  background-color: white;
+  font-size: calc(10px + 1.2vmin);
+  font-size: 16px;
+  line-height: 1em;
+}
+.top-menu>div {padding: 12px 4vw;}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.width-auto {width: auto}
+
+.float-left {float: left}
+
+.top-pic-margins {
+  margin: 1.5em 0.7em 0 0;
+  margin: 0.4em 0.7em 0 0;
+}
+
+.boxshadow {box-shadow: 0 1px 5px rgb(0 0 0 / 16%)}
+.boxshadow2 {box-shadow: 2px 2px 6px rgb(0 0 0 / 30%)}
+
+footer {margin: auto}
+footer:after {
+  content: "";
+  display:table;
+  clear:both
+}
+footer>div {
+  float: left;
+  margin: 0 20px;
+  padding: 0 4px;
+  color: #677;
+}
+footer a {text-decoration: none}
+/*
+footer a:active {background-color: #d0d0d0}
+*/
+footer a:active {background-color: #ddd}
+
+.bg-highlight {
+  animation-name: bg-hi;
+  animation-duration: 3s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes bg-hi {
+  0%   {background-color: initial;}
+  25%  {background-color: #ffdf66;}
+  45%  {background-color: #ffdf66;}
+  100% {background-color: initial;}
+}
+
+.screen-shade {
+  position: fixed;
+  height: 60vh;
+  width: 100vw;
+  top: 0;
+  left: 0; 
+  background-color: #fff;
+/*  color: #bdc; */
+  font-size: 20px;
+  opacity: 0.92;
+  padding: 5em 0;
+  z-index: 2;
+}
+
+progress{accent-color:#888}
+
+.hidden {display: none !important;}
+
+.padding-16 {padding: 0 16px}
+.max-width-1200 {max-width: 1200px}
+
+.center {text-align:center}
+.margin-auto {margin: auto}
+.top-sticky {
+/*  position:fixed;
+  width:100%;
+*/
+  z-index:1;
+  position: sticky;
+  top:0;
+}
+
+.intro {
+  width:50%;
+  float:left;
+}
+
+.bg-transparent:hover {background-color: transparent}
+.bottom-menu {
+  border-top: 1px solid hsl(150, 30%, 95%);
+  border-bottom: 1px solid hsl(150, 25%, 95%);
+  background-color: hsl(150, 40%, 98%);
+}
+.small {font-size: 80%}
+hr {
+  border:0;
+  border-top:1px solid #ddd;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
+/*  border: 1px solid #ccc;*/
+}
+
+.card {
+  width: calc(33.33% - 24px); /* Adjust for gaps */
+  margin: 16px 12px;
+/*  background-color: #f0f0f0; 
+box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+*/
+  text-align: center;
+  font-size: 20px;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 5px;
+  height: auto;
+}
+
+.card img:hover {
+  filter: brightness(1.05);
+  box-shadow: 2px 2px 6px rgb(0 0 0 / 30%);
+}
+
+.card img:active {
+  box-shadow: 0 0 0 rgb(0 0 0 / 0);
+  transform: scale(0.96);
+  transition: box-shadow 0.3s, transform 0.5s;
+}
+
+#google_translate_el * {color:inherit}
+#google_translate_el select {
+  border-color: gainsboro;
+  border-color: #ddd;
+  border-radius: 4px;
+}
+#google_translate_el select:hover {
+  color: #455;
+  border-color:silver;
+}
+
+@media (max-width: 768px) {
+  .card {width: calc(50% - 24px)}
+  .intro {width: 64%}
+}
+
+@media (max-width: 480px) {
+  .card {width: 100%}
+  .intro {width: 86%}
+}
+</style>
+
+</head>
+<body>
+<script src="https://translate.google.com/translate_a/element.js"></script>
+
+<div id="redirecting" class="flex screen-shade center hidden">
+  <div class="center">Loading<br><progress></progress></div>
+</div>
+
+<!-- Top menu -->
+<div id="page-top"></div>
+<div class="top-sticky boxshadow">
+  <div class="top-menu flex">
+    <div><a href=#page-top>Home</a></div>
+    <div><a href=#examples onclick="scrollToExamples(); return false">Features</a></div>
+    <div><a href=#footer onclick="aboutClicked()">About</a></div>
+  </div>
+</div>
+
+<!-- == PAGE CONTENT == -->
+<div class="margin-auto max-width-1200" style="margin-top:16px">
+<!-- Intro -->
+  <div class="flex">
+    <div class="intro txt-large">
+      <img class="float-left top-pic-margins boxshadow2" src="./img/headset1.jpg" height="130">
+      <i><p style="margin-top: 0">
+<span class="txt-bigger">Audiodrill</span> started as a looper for video/audio fragments, 
+allowing users to control playback speed and the number of repetitions.
+More features followed: voice games/dialogues with computer, shadow reading, 
+looking up how words and phrases are pronounced and used in the context...
+      </p>
+      <p style="margin-bottom: 0">
+This is a free tool for language learners, and you are welcome to take part in its development. 
+Check out some examples of Audiodrill use, make your own activities and <a href="/info/?show=feedback">share your experience and suggestions</a>.
+      </p></i>
+    </div>
+  </div>
+
+  <hr style="margin: 20px 0 20px">
+  <div id="examples"></div>
+  <h2 class="center" style="margin: -10px 0 0 0; font-size: 30px;">Here's what you can do with Audiodrill</h2>
+
+<!-- Responsive Grid -->
+  <div class="container flex">
+    <div class="card">
+      <a><img></a><a>Tasks to drill listening and speaking</a>
+    </div>
+
+    <div class="card">
+      <a><img></a><a>Explore words and phrases</a>
+    </div>
+
+    <div class="card">
+      <a><img></a><a>Play voice games<br>in Chrome or Edge</a>
+    </div>
+
+    <div class="card">
+      <a><img></a><a>Shadow reading</a>
+    </div>
+
+    <div class="card">
+      <a><img></a><a>Text-to-speech reader</a>
+    </div>
+
+    <div class="card">
+      <a><img></a><a>Dictation</a>
+    </div>
+
+    <div class="card">
+      <a><img></a><a>Useful resources</a>
+    </div>
+
+  </div>
+
+</div> <!-- End page content -->
+
+<!-- Footer -->
+<div class="bottom-menu" style="margin-top: 20px">
+  <footer id="footer" class="padding-16 small max-width-1200">
+    <div>
+      <h3>Activities</h3>
+<p><a href="/?t">Tasks</a></p>
+<p><a href="/words/">Words and phrases</a></p>
+<p><a href="/words/?game=all">Voice games</a></p>
+<p><a href="/words/?shadow-read">Shadow reading</a></p>
+<p><a href="/words/?tts-read">Text-to-speech reader</a></p>
+<p><a href="/words/?dictate">Dictation</a></p>
+<p><a href="/radio">Radio</a></p>
+<p><a href="/tv">TV channels</a></p>
+<p><a href="/gapper">Gap maker</a></p>
+    </div>  
+
+    <div>
+      <h3>Info</h3>
+<p><a href="/?home">Home</a></p>
+<p><a href="/info/?show=resources">Resources</a></p>
+<p><a href="/info/?show=news">News</a></p>
+<p><a href="/info/?show=help">Help</a></p>
+    </div>
+
+    <div id="about-div">
+      <h3>About</h3>
+<p><a href="/info/?show=copyright">Open license</a></p>
+<p><a href="/info/?show=privacy-notice">Privacy notice</a></p>
+<p><a href="/demo-embed">Embed in your site</a></p>
+<p><a href="/info/?show=feedback">Contact</a></p>
+<p><a href="/info/?show=contribute">Contribute</a></p>
+    </div>
+
+    <div style="max-width: 350px;">
+      <h3>Credits</h3>
+      <p>Free photos via <a href="https://pexels.com">Pexels</a> by: 
+<a href="https://pexels.com/photo/modern-headphones-placed-near-wall-at-home-7172685/">Matheus Bertelli</a>, 
+<a href="https://pexels.com/photo/woman-wearing-black-sleeveless-dress-holding-white-headphone-at-daytime-1001850/">Tirachard Kumtanom</a>, 
+<a href="https://pexels.com/photo/black-and-white-book-business-close-up-267669/">Pixabay</a>, 
+<a href="https://pexels.com/photo/high-angle-photo-of-robot-2599244/">Alex Knight</a>,  
+<a href="https://pexels.com/photo/mother-and-baby-girl-reading-a-book-6393165/">William  Fortunato</a>, 
+<a href="https://pexels.com/photo/close-up-shot-of-a-typewriter-4604607/">Markus Winkler</a>, 
+<a href="https://pexels.com/photo/close-up-view-of-an-old-typewriter-3604571/">Suzy Hazelwood</a>, 
+<a href="https://pexels.com/photo/books-in-black-wooden-book-shelf-159711/">Pixabay</a>.
+      </p>
+
+      <p>Photo edited by <a href="https://lunapic.com/" target="_blank">LunaPic</a></p>
+      <div>Site translation</div>
+	  <div id="google_translate_el" style="line-height: normal; padding-bottom: 0.7em;"></div>
+    </div>  
+  </footer>
+</div>
+
+<div class="center small" style="padding: 0.25em">Copyright 2019-2026 Audiodrill</div>
+
+<script>
+
+const elidClassList = s => document.getElementById(s).classList;
+
+const hrefs = ['/?t', '/?w', '/?game=new', '/?shadow-read', '/?tts-read', '/?dictate', '/info/?show=resources'];
+
+const loadExamples = s => {
+  document.querySelectorAll(s)
+    .forEach((el, i) => {
+	  el.classList.add('bg-transparent'); // behind the image - otherwise empty atag will be seen on image click
+	  el.href = hrefs[i];
+	  el.firstElementChild.alt = '';
+	  el.firstElementChild.src = `./img/ex${i}.jpeg`;  
+	  el.nextElementSibling.href = hrefs[i];
+	});
+}
+
+function googleTranslateElementInit() {
+//console.log('Loading Google Translate el');
+  new google.translate.TranslateElement(
+    {pageLanguage: 'en'},
+    'google_translate_el'
+  );
+//if back navigation is clicked, the widget won't reload. To show it again, user has to reload the page.
+// moving this fn to header didn't help
+// checking presence/absence of the widget can be added later
+}
+
+const aboutClicked = async () => {
+  if (aboutClicked.on) return;
+  aboutClicked.on = 1;
+
+  const ecl = elidClassList('about-div');
+  const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+  ecl.remove('bg-highlight');
+  await sleep(100);
+  ecl.add('bg-highlight');
+  await sleep(4000);
+  ecl.remove('bg-highlight');
+  aboutClicked.on = 0;
+}
+
+window.onload = event => {
+  const param = new URLSearchParams(location.search);
+  if (param.get('shorturl')) 
+    elidClassList('redirecting').remove('hidden');
+
+  loadExamples('.card>a:first-child'); // b/c loading images in html delays displaying the footer
+
+  googleTranslateElementInit();
+};
+
+const scrollToExamples = () => {
+  const el = document.querySelector('#examples');
+  const box = el.getBoundingClientRect();
+//console.log(box.top, pageYOffset);
+  window.scroll(0, box.top + window.pageYOffset - 56);
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<div style="width:100%; display: flex; justify-content: center;"><div style="max-width: 600px; font-size: 110%"><color:slategray><h3>What's new?</h3></color>
+
+<color:slategray>12 February 2026</color>
+On the [Words and phrases page](/?w), you can click on the mic and dictate any word or phrase you want to explore.
+
+<color:slategray>2 January 2026</color>
+On the [Tasks page](/?t), <kbd>Ctrl</kbd> + click on a word to hear the full sentence. This opens playback controls that let you continue listening through the text. You can also start reading from the system menu by choosing ~Read lines~.
+
+<color:slategray>31 October 2025</color>
+On the [Tasks page](/?t), a tooltip appears when you select a word or phrase, giving options to listen, explore, translate, or save it to the task vocabulary.
+
+<color:slategray>19 June 2025</color>
+On the [Tasks page](/?t), click on a word or select text to hear it or, with <kbd>Ctrl</kbd> pressed, to look it up.
+
+<color:slategray>14 September 2024</color>
+*A tip for language learners*
+Learning a new language can sometimes be frustrating, especially when you keep making the same mistakes even though you know the rules. [Read more...](/?t=//en/read/ratt-tip.txt)
+
+<color:slategray>26 June 2024</color>
+In TTS Reader, vocabulary entries are added by clicking on words or selecting phrases in the text. Users can add vocab meanings and study in several vocab modes.
+
+<color:slategray>31 May 2024</color>
+YouTube shorts can be opened and played at different speeds - just like other types of video. Just add the video url after the <code>m</code> key, e.g. <code><https://audiodrill.com?m=https://www.youtube.com/shorts/e1BifEQQobA></code>
+
+<color:slategray>30 March 2024</color>
+Site translation with Google Translate added. This will help users learn the new words and phrases they come across.
+
+<color:slategray>8 October 2023</color>
+Choosing computer voice is now also possible for tasks. A voice can be picked from the voice list in advanced settings.
+
+<color:slategray>3 April 2023</color>
+Dictation page added. Try out <a href='/?dictate=1'>writing down computer-read texts</a>.
+
+<color:slategray>1 January 2023</color>
+Happy New Year! 🥳☃️🎄
+Making gapped texts for Audiodrill is now a piece of cake! Try it out <a href='/gapper'>here</a>.
+
+<color:slategray>11 November 2022</color>
+Text-to-speech page added. Try out reading <a href='/?tts-read=1'>this dialogue</a> in two voices.
+
+<color:slategray>9 November 2022</color>
+Playing voice games and shadow reading are now possible in Edge browser in addition to Chrome.
+
+<color:slategray>12 July 2022</color>
+Transcript fragments, e.g., from YouTube videos, can be easily turned into drilling tasks. Just click on the <b>🗋</b> icon in the task window and paste the link to the video or audio and the transcript lines with timestamps to drill. To share the new task, get the link by clicking on 🔗&#xfe0e icon.
+
+<color:slategray>12 June 2022</color>
+Irregular verbs drill was adapted for mobiles. Check it out at <a href='/irrverbs'>https://audiodrill.com/irrverbs</a>
+
+<color:slategray>2 February 2022</color>
+Voice games can now be embedded in your site. See two demos of vioice activities in <a href='demo-embed'>English</a> and <a href='demo-embed?game=1&url=//zh/game/test-game1.txt'>Chinese</a>.
+
+<color:slategray>1 January 2022</color>
+Happy New Year! 🥳🎄☃️
+Scripted dialogues with computer added. Try out <a href='?game=1&url=//en/game/pr-perfect1.txt'>this one</a> on the present perfect and past simple.
+
+<color:slategray>16 October 2021</color>
+English corpus ngrams can be viewed via embedded Google Books Ngram Viewer. Check out this ngram: <a href='?ngram=monogram,bigram,trigram'>https://audiodrill.com?ngram=monogram,bigram,trigram</a>.
+
+<color:slategray>1 October 2021</color>
+Gapped and reverse <a href='?shadow-read=1&user-leads=1&url=//en/read/scratch-scrawl-scribble.txt'>shadow reading</a> added. You can choose whether to lead in reading or follow the computer.
+
+<color:slategray>25 September 2021</color>
+Voice search implemented in <a href='?shadow-read=1'>shadow reading</a>. Jump to any chunk by reading just a part of it.
+
+<color:slategray>28 August 2021</color>
+Drill irregular English verbs at <a href="/irrverbs">https://audiodrill.com/irrverbs</a>
+
+<color:slategray>3 June 2021</color>
+<a href="?w=look-up//One of the meanings is to look for information\. You can <b>look up</b> words and phrases on this website\.,flash card//a card with some info that helps students to learn\.">"Flash cards"</a> added to words and phrases.
+
+<color:slategray>1 April 2021</color>
+<b>How to write voice games for Audiodrill?</b>
+Take part in a <a href='/game-training'>hands-on training session</a> and learn how to create Audiodrill voice games for your students.
+
+<color:slategray>18 March 2021</color>
+Voice echo for <a href='?shadow-read=1'>shadow reading with text</a> added.
+
+<color:slategray>16 March 2021</color>
+Voice recognition for <a href='?shadow-read=1'>shadow reading with text</a> added.
+
+<color:slategray>16 March 2021</color>
+Explanation of <a href='?t=/tasklist/shadowing.txt'>shadow reading with video</a> added.
+
+<color:slategray>4 March 2021</color>
+The Polish language was added to <a href='/words/'>Words & phrases</a> page.
+
+<color:slategray>28 February 2021</color>
+A <a href='https://en.wikipedia.org/wiki/List_of_English_words_with_disputed_usage' target='_blank'>list of words with disputed usage</a> and a collocations finder <a href='https://fluentwords.net/' target='_blank'>Fluentwords</a> were added to the <a href='/info/?show=resources'>list of useful resources</a>. 
+
+<color:slategray>9 December 2020</color>
+Task editing enabled. To edit a task, click on the <code>Aa</code> icon.
+
+<color:slategray>19 November 2020</color>
+A list of <a href='/?t=tasklist/live-radio.txt'>radio stations</a> was added, so you could listen to the radio at a slower playback rate and rewind it.
+
+<color:slategray>29 October 2020</color>
+A <a href='/info/?show=resources'>list of useful resources</a> was added to the menu. Share your links to helpful resources via the <a href='/info/?show=feedback'>contact form</a>.
+
+<color:slategray>22 October 2020</color>
+Use URL parameter <code>sl</code> to list English sound-alikes. E.g., words sounding like <i>tree</i>: <a href='https://audiodrill.com?sl=tree' target='_blank'>https://audiodrill.com?sl=tree</a>
+
+Use URL parameter <code>ml</code> to list English words with a related meaning. E.g., words whose meaning is associated with <i>chip</i>: <a href='https://audiodrill.com?ml=chip' target='_blank'>https://audiodrill.com?ml=chip</a>
+The above lists are provided via <a href='https://www.datamuse.com' target='_blank'>Datamuse</a> search.
+
+<color:slategray>20 October 2020</color>
+While playing a fragment, you can press the right Control key (the right ⌘ Command key on Mac keyboards) to rewind one second. 
+
+<color:slategray>17 October 2020</color>
+While playing a fragment, you can press the left Control key to temporarily slow down the playback. Releasing the key will restore the initial speed.
+
+<color:slategray>11 October 2020</color>
+<i>Cue speed factors</i> parameter was added to loop controls' advanced settings. This allows playing the same fragment several times at a different speed.
+
+</div></div>

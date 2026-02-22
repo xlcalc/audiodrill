@@ -1,0 +1,16 @@
+<x-vars></x-vars><h3>Watch live TV channels</h3>
+<small>You can listen at a slower or faster playback rate and hop a few seconds backward/forward in order to repeat or skip certain fragments. Playback settings are under the player. Keyboard shortcuts: <code>Left Ctrl</code> to slow the playback; <code>Right Ctrl</code> to hop backwards.</small>
+<hr><i>Channels in English</i>
+<cue  url=https://youtu.be/w9uJg68CV4g>Sky News (UK)</cue>, <cue url=https://youtu.be/21X5lGlDOfg>NASA TV (US)</cue>, <cue url=https://youtu.be/vOTiJkg1voo>ABC News (AU)</cue>, <cue url=https://youtu.be/pykpO5kQJ98>Euronews (EN)</cue>, <cue url=https://youtu.be/pqabxBKzZ6M>DW news (DE)</cue>, <cue url=https://youtu.be/tkDUSYHoKxE>France 24 English (FR)</cue>.
+
+<i>In other languages</i>
+de: <cue url=https://youtu.be/CQ3KsEbsYHs>Euronews</cue>
+es: <cue url=https://youtu.be/O9mOtdZ-nSk>Euronews</cue>, <cue  url=https://youtu.be/LY2XEQ_SSXA>LN+ (AR)</cue>, <cue  url=https://youtu.be/prpSI_M_rSA>ForoTV (MX)</cue> 
+fr: <cue url=https://youtu.be/l8PMl7tUDIE>France 24</cue>
+it: <cue url=https://youtu.be/pUcmpyynASM>Euronews</cue>
+jp: <cue url=https://youtu.be/coYw-eVU0Ks>JapaNews24</cue>
+ko: <cue url=https://youtu.be/6QZ_qc75ihU>YonhapnewsTV</cue>
+pl: <cue url=https://youtu.be/dzntyCTgJMQ>Telewizja Republika</cue>
+pt: <cue url=https://youtu.be/p7jbVWLaB0g>Record News (BR)</cue>
+ru: <cue url=https://youtu.be/lwYzwdBiaho>Euronews</cue>
+zh: <cue url=https://youtu.be/bEZYrBMYNNg>CCTV 4 (CN)</cue>, <cue url=https://youtu.be/E0zhe2gkXBs>EBC (TW)</cue>, <cue url=https://youtu.be/oIgbl7t0S_w>CTI (TW)</cue>, <cue url=https://youtu.be/m_dhMSvUCIc>TVBS (TW)</cue>

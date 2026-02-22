@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<h1>Checking brackets</h1>
+<input type="text" placeholder="Type in brackets, e.g., ([{}])"
+   style="width: 20em; font-size: 120%;" value="" onchange="check(this.value)"/>
+<div id="output"></div>
+
+<script>
+// see https://leetcode.com/problems/valid-parentheses/
+const getMarkedLine = (s, i) => s.slice(0, i) + '<mark>' + s[i] + '</mark>' + s.slice(i+1);
+
+function testString(s) {
+  const brackets = '(){}[]';
+  let lvls = [];
+  let i = 0;
+  for (const ch of s) {
+console.log(i, ch, lvls);
+    const j = brackets.indexOf(ch)
+    if (j & 1) { // odd means closing bracket
+	  if (lvls.pop() !== brackets[j-1])
+	    return 'Wrong closing bracket:' + getMarkedLine(s, i);
+	} else lvls.push(ch);
+    i++;
+  }
+  if (lvls.length) return "Opening and closing brackets don't match :(";
+  return "Opening and closing brackets match :)";
+}
+
+function check(s) {
+  document.getElementById('output').innerHTML = testString(s);
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<color:slategray><h1>Useful English resources</h1></color><font size=+2><div class="card-box"><!--
+
+VOCAB BY TOPICS
+
+--><div><color:slategray><b>Vocabulary by topics</b></color><font size=+1>
+<a href='https://www.oxfordlearnersdictionaries.com/topic/' target='_blank' title="Oxford Learner's Dictionaries">OALD</a>
+<a href='https://www.ldoceonline.com/browse/topics.html' target='_blank' title="Longman Dictionary of Contemporary English">LDOCE</a>
+<a href='https://www.words-to-use.com' target='_blank'>Words to Use</a>
+<a href='https://lists.wordreference.com/' target='_blank'>WordReference</a>
+</font></div><!--
+
+WORD LISTS
+
+--><div><color:slategray><b>Word lists</b></color><font size=+1>
+<a href='https://www.oxfordlearnersdictionaries.com/wordlists/' target='_blank'>Oxford lists</a>
+<a href='https://emedia.rmit.edu.au/learninglab/content/academic-word-list-tool' target='_blank'>The AWL Tool</a>
+<a href='https://en.wiktionary.org/wiki/Category:English_heteronyms' target='_blank'>Heteronyms</a>
+<a href='https://en.wiktionary.org/wiki/Appendix:English_dialect-independent_homophones' target='_blank'>Homophones</a>
+<a href='https://en.wikipedia.org/wiki/List_of_English_irregular_verbs' target='_blank'>Irregular verbs</a>
+<a href='https://en.wikipedia.org/wiki/List_of_English_words_with_disputed_usage' target='_blank'>Words with disputed usage</a>
+</font></div><!--
+
+PHRASAL VERBS
+
+--><div><color:slategray><b>Phrasal verbs</b></color><font size=+1>
+<a href='https://www.inlingua-edinburgh.co.uk/200-common-phrasal-verbs-with-meanings-and-example-sentences/' target='_blank'>Inlingua</a>
+<a href='https://www.skypeenglishclasses.com/english-phrasal-verbs/' target='_blank'>LOI English</a>
+<a href='https://www.englishclub.com/ref/Phrasal_Verbs/' target='_blank'>EnglishClub</a>
+<a href='https://www.usingenglish.com/quizzes/#Phrasal-Verbs' target='_blank'>Quizzes at UsingEnglish</a>
+</font></div><!--
+
+PHRASES, IDIOMS
+
+--><div><color:slategray>*Phrases, idioms*</color><font size=+1>
+[The Phrase Finder](https://www.phrases.org.uk)
+[The Idioms](https://www.theidioms.com)
+[Cambridge Dictionary blog<new/>](https://dictionaryblog.cambridge.org/)
+[One-Minute English](https://www.youtube.com/playlist?list=PLppBuHD_KTF_zVIscEHN7ryt7PnAA3xq8)
+[AmE expressions at VoA](https://learningenglish.voanews.com/z/3619)
+</font></div><!--
+
+WORDS IN USE
+
+--><div><color:slategray><b>Words in use</b></color><font size=+1>
+<a href='https://fraze.it' target='_blank'>FrazeIt</a> 
+<a href='http://sentencedict.com' target='_blank'>Sentencedict</a>
+<a href='https://www.brainyquote.com' target='_blank'>BrainyQuote</a>
+<a href='https://www.english-corpora.org' target='_blank'>English-Corpora</a>
+<a href='https://netspeak.org/help/' target='_blank'>Netspeak</a>
+<a href='https://fluentwords.net/en/collocations' target='_blank'>FluentWords<new/></a>
+</font></div><!--
+
+VISUAL VOCAB
+
+--><div><color:slategray><b>Visual vocabulary</b></color><font size=+1>
+<a href='https://www.languageguide.org' target='_blank'>LanguageGuide (multilingual)</a> 
+<a href='http://www.visualdictionaryonline.com' target='_blank'>Visual Dictionary</a>
+<a href='https://languagetools.biz' target='_blank'>LanguageTools</a>
+<a href='https://dictionary.cambridge.org/plus/quiz/image/' target='_blank'>Image quizzes</a>
+</font></div><!--
+
+GRAMMAR
+
+--><div><color:slategray><b>Grammar</b></color><font size=+1>
+<a href='/info/?show=grammar-cheat-sheet'>Grammar Cheat Sheet</a> 
+<a href='https://www.scribens.com' target='_blank'>Scribens Grammar Checker</a> 
+<a href='https://dictionary.cambridge.org/grammar' target='_blank'>Grammar at Cambridge Dictionary</a> 
+</font></div><!--
+
+MISC TOOLS
+
+--><div><color:slategray><b>Misc tools</b></color><font size=+1>
+<a href='https://www.deepl.com/en/write'  target='_blank'>DeepL Write</a> 
+<a href='https://quillbot.com/'  target='_blank'>QuillBot<new/></a> 
+<a href='https://www.vocabulary.com/lists/vocabgrabber' target='_blank'>Vocab grabber</a> 
+<a href='https://www.wordtune.com' target='_blank'>Wordtune</a> 
+[Interactive IPA chart<new/>](https://pronunciationstudio.com/ipa-chart-tsoe/)
+</font></div>
+</div></font>Send your feedback and useful language resources via <i>Contact/Feedback</i> in the menu.
+

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+
+
+</style>
+</head>
+<body>
+
+<p id="result-color-div">
+Three-position switch
+</p>
+
+  <div style="display: inline-block;">
+    <input id="" title="Change gap view" list="tickmarks" 
+    type="range" value="0" min="0" max="2" step="1" 
+    oninput="" style="width:44px;">
+	<datalist id="tickmarks">
+    <option value="0"></option>
+    <option value="1"></option>
+    <option value="2"></option>
+  </datalist>
+
+    <span id=""></span>
+  </div>
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; width: 80%;">
+</div>
+
+<script>
+window.onload = () => setHue(0);
+
+const elid = id => document.getElementById(id);
+
+const setHue = v => {
+  elid('hue-slider').value = v;
+  elid('result-hue').value = v;
+  setResultColor({hue: v});
+}
+
+const setSat = v => {
+  setResultColor({sat: v});
+}
+
+const setLightness = v => {
+  setResultColor({li: v});
+}
+
+function setResultColor(v) {
+  if (!this.color) {
+    this.color = {};
+	this.color.hue = 0;
+	this.color.sat = 90;
+	this.color.li = 90;	
+  }
+
+  for (par in v) this.color[par] = Number(v[par]);
+
+//  if (v.hue) this.color.hue = Number(v.hue);
+//  if (v.sat) this.color.sat = Number(v.sat);
+//  if (v.li) this.color.li = Number(v.li);
+//console.log(this.color);
+  e = elid('marked-color');
+  e.style.backgroundColor = `hsl(${this.color.hue}, ${this.color.sat}%, ${this.color.li}%)`;
+}
+
+</script>
+
+</body>
+</html>

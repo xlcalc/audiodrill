@@ -1,0 +1,31 @@
+:title:Pronunciation
+:intro:Listen to the words and read the sentence that contains it.
+:gametype:sound-alikes
+
+:say:Which sentence contains the word |bad|bed
+:write:It's my bad.|Is it my bed?
+::
+:say:Which sentence contains the word |bet|bat
+:write:This is my bet.|Is this my bat?
+::
+:say:Choose the sentence with the word |sad|said
+:write:I was sad about it.|What was said about it?
+::
+:say:Choose the sentence with the word |sat|set
+:write:They sat at the table.|Let's set the table.
+::
+:say:Choose the sentence with the word |dad|dead
+:write:Go tell them and your dad.|You tell them and you're dead.
+::
+:say:Find the sentence with the word |had|head
+:write:I had home.|Did you head home?
+::
+:say:Find the sentence with the word |man|men
+:write:Look at the man!|Look at the men!
+::
+:say:Which question contains the word |vat|vet
+:write:Can you see the vat?|Can you see the vet?
+::
+:say:Which sentence contains the word |send|sand
+:write:You have to send it.|You need to sand the surface.
+::

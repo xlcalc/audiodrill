@@ -1,0 +1,32 @@
+<x-vars doc-title="Radio stations"><x-audio>
+### Radio stations for language learners <x-p>
+<div style="line-height: 1.6em; font-size: 80%">You can listen at a slower or faster playback rate and hop a few seconds backward/forward in order to repeat or skip certain audio fragments. 
+Keyboard shortcuts: 
+ * Press left |_Ctrl_| to slow down playback.
+ * Press right |_Ctrl_| to hop backwards. 
+ * For a longer skip, hold |_Alt_| while pressing Hop buttons.
+Tip: You can read [live captions in Chrome](https://support.google.com/chrome/answer/10538231) and in [Windows 11](https://www.microsoft.com/en-us/windows/learning-center/choose-best-caption-settings). Chrome also offers live translation.
+Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream Directory</a>.</div><hr>
+</x-p>
+<i>In English</i>
+[ABC News (AU)](stream: https://live-radio01.mediahubaustralia.com/PBW/mp3/), [ABC Kids (AU)](stream: https://live-radio01.mediahubaustralia.com/XTDW/mp3/), [CKNW 980 (CA)](stream: https://live.leanstream.co/CKNWAM-MP3), [AudioBook Radio (UK)](stream: https://audiobookradio.out.airtime.pro/audiobookradio_a), [BBC World Service (UK)](stream: https://stream.live.vc.bbcmedia.co.uk/bbc_world_service), [LBC news (UK)](stream: https://media-ssl.musicradio.com/LBCNewsUK), [Bloomberg (US)](stream: https://playerservices.streamtheworld.com/api/livestream-redirect/WBBRBOS.mp3), [WPR (US)](stream: https://wpr-ice.streamguys1.com/wpr-ideas-mp3-64), [WNYC FM (US)](stream: https://fm939.wnyc.org/wnycfm). 
+
+<i>In other languages</i>
+`ar`: [MaKan](stream: https://kanliveicy.media.kan.org.il/icy/makan_mp3)
+`be`: [Racyja](stream: https://air.racyja.com/racja48)
+`cz`: [CRo 2](stream: https://rozhlas.stream/dvojka_mp3_128.mp3)
+`de`: [Deutschlandfunk](stream: https://st01.sslstream.dlf.de/dlf/01/low/opus/stream.opus), [rbb24 Inforadio](stream: https://dispatcher.rndfnk.com/rbb/inforadio/live/mp3/low)
+`es`: [RNE (ES)](stream: https://dispatcher.rndfnk.com/crtve/rne1/and/mp3/high), [Noticias MVS (MX)](stream: https://playerservices.streamtheworld.com/api/livestream-redirect/XHMVSFMAAC.aac)
+`fi`: [Radio Pooki](stream: https://stream.bauermedia.fi/radiopooki/radiopooki_128.mp3)
+`fr`: [France Info](stream: https://direct.franceinfo.fr/live/franceinfo-lofi.mp3), [France Inter](stream: https://icecast.radiofrance.fr/franceinter-lofi.mp3)
+`he`: [Jerusalem Radio](stream: https://radio.streamgates.net/stream/101fm)
+`it`: [RAI Radio 1](stream: https://icestreaming.rai.it/1.mp3), [RAI Radio 2](stream: https://icestreaming.rai.it/2.mp3)
+`ja`: [Radio Nanao](stream: https://musicbird.leanstream.co/JCB060-MP3)
+`nl`: [NPO Radio 1](stream: https://icecast.omroep.nl/radio1-bb-mp3)
+`no`: [NRK P2](stream: https://lyd.nrk.no/nrk_radio_p2_mp3_h)
+`pl`: [TOK FM](stream: https://radiostream.pl/tuba10-2.mp3), [Kraków](stream: https://stream4.nadaje.com:9679/radiokrakow-s2)
+`pt`: [TSF (PT)](stream: https://directo.tsf.pt/tsfdirecto.mp3), [CBN (BR)](stream: https://radio901.webnimbus.cloud/radioalpha/icecast.audio)
+`ru`: [Svoboda](stream: https://stream.radiojar.com/hcrb063nn3quv)
+`se`: [Sveriges Radio](stream: https://http-live.sr.se/p1-mp3-64)
+`uk`: [RUI](stream: https://radio.ukr.radio/rui-aacplus-l)
+`zh`: [Sichuan iRadio (CN)](stream: https://lhttp.qingting.fm/live/1110/64k.mp3)

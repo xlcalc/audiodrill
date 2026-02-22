@@ -1,0 +1,66 @@
+:title:Conditionals
+
+:say: Make a sentence about an imaginary situation in the present or future:
+:write:If / I / be / you, / I / ask / for more.
+:accept:If I were you, I would ask for more.|If I was you, I would ask for more.|If I were you, I'd ask for more.|If I was you, I'd ask for more.
+:show:If I were/was you, I would ask for more.
+:error:if i will|if i would => Do we say "If I will" or "If I would" in conditionals?
+:error:i will ask => I will ask? Do we use 'will' for hypothetical situations?
+::
+:say: Make a sentence about a real situation in the future:
+:write:If / you / prepare / a draft letter, / I / check / it.
+:accept:If you prepare a draft letter, I will check it.| If you prepare a draft letter, I'll check it.
+:show:If you prepare a draft letter, I'll check it.
+:error:if you will|if you would => Do we say "If you will" or "If you would" in conditionals?
+::
+:say: Make a sentence about a hypothetical situation in the past:
+:write:If / she / not / say / that, / I / never / guess.
+:accept:If she had not said that, I would have never guessed.|If she hadn't said that, I would have never guessed.
+:show:If she hadn't said that, I would have never guessed.
+:error:if he will|if he would => Do we say "If he will" or "If he would" in conditionals?
+:error:i would never guess |i'd never guess => Can we say about the past, "I would never guess"?
+:error:i would never guessed => "Would" is a modal verb. Can we say "I would never guessed"?
+:error:if she did not |if she didn't => Can we say "If she did not" about hypothetical situations in the past?
+::
+:say: Make a sentence about a realistic situation in the future:
+:write:If / you / not start / to live your dream, / someone  / hire / you to live theirs.
+:accept:If you don't start to live your dream, someone will hire you to live theirs.|If you do not start to live your dream, someone will hire you to live theirs.
+:show:If you don't start to live your dream, someone will hire you to live theirs.
+:error:if you will|if you would => Do we say "If you will" or "If you would" in conditionals?
+::
+:say: Make a sentence about an imaginary situation in the present:
+:write:You / be / right / if / you / not so wrong.
+:accept:You would be right if you weren't so wrong.|You'd be right if you weren't so wrong.|You would be right if you wasn't so wrong.|You'd be right if you wasn't so wrong.
+:show:You would be right if you weren't so wrong.
+:error:if you will|if you would => Do we say "If you will" or "If you would" in conditionals?
+::
+:say: Make a sentence about an imaginary situation in the past:
+:write:I / come / if / you / ask / me.
+:accept:I would have come if you had asked me.|I would have come if you'd asked me.
+:show:I would have come if you had asked me.
+:error:if you will|if you would => Do we say "If you will" or "If you would" in conditionals?
+:error:I would come=> Can we say "I would come" about the past?
+::
+:say: Make a sentence about an imaginary situation in the future:
+:write:What / you / do / if / you / win / the lottery?
+:accept:What would you do if you won the lottery?
+:error:if you will|if you would => Do we say "If you will" or "If you would" in conditionals?
+:error: win => Can we say "win" about an imaginary situation?
+::
+:say: Make a sentence about a realistic situation in the future:
+:write:What / they / say / if / she / ask / them?
+:accept:What will they say if she asks them?
+:error:if she will|if she would => Do we say "If she will" or "If she would" in conditionals?
+:error: asked => Can we say "asked" about a realistic situation in the future?
+:error: she ask => Can we say "she ask"?
+::
+:say: Make a sentence about a hypothetical situation in the past:
+:write:If / you / see / that, / what / you / do?
+:accept:If you had seen that what would you have done?|If you'd seen that what would you have done?
+:show:If you had seen that, what would you have done?
+:error:if you will|if you would => Do we say "If you will" or "If you would" in conditionals?
+:error: saw => Can we say "saw" about a hypothetical situation in the past?
+:error: see => Can we say "see" about a hypothetical situation in the past?
+:error: what will you do => Can we say "what will you do" about a hypothetical situation in the past?
+:error: what would you do => Can we say "what would you do" about a hypothetical situation in the past?
+::

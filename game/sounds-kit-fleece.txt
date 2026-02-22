@@ -1,0 +1,24 @@
+:title:Pronunciation
+:gametype:sound-alikes
+:say:Which sentence contains this word?|cheap|chip
+:write:They sell potatoes cheap.|Look at this electronic chip.
+::
+:say:Which sentence contains this word?|bit|beat
+:write:She bit him.|She beat him.
+::
+:say:Which sentence contains this word?|slip|sleep
+:write:Can I slip out?|Can I sleep out?
+::
+:say:Which sentence contains this word?|fill|feel
+:write:I fill the gaps.|I feel the gaps.
+::
+:say:Which sentence contains this word?|ship|sheep
+:write:Look at the ship.|I can see the sheep.
+::
+:say:Find the sentence with the word |rich|reach
+:write:She wasn't too rich.|You should keep it out of children's reach.
+::
+:say:Find the sentence with the word |lives|leaves
+:write:She lives next door.|She leaves next week.
+::
+

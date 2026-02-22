@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+/* === New version test  === */
+.container {
+  position: relative;
+  width: 250px;
+  line-height: 2em;
+}
+
+.tran, .tran-cover {
+  display:inline;
+  position: absolute;
+  z-index: 1;
+  top:0.8em;
+  left: 0;
+/*  background-color: #9ac;*/
+}
+.tran {
+  z-index:0;
+  top:0.8em;
+}
+
+.orig {
+  display:inline;
+  position: relative;
+  width: 250px;
+/*  background-color: #eee; */
+  margin: 0 auto;
+  z-index: 2;
+}
+.tr-line, .tr-line-cover {
+  opacity:0;
+/*  font-size:100%;*/
+}
+
+.tr-line, .tr-line-cover, .or-line {
+  display: inline;
+}
+
+.tr-line {
+  color: gray;
+}
+
+.tr-line-cover:hover{
+/*    color: red;
+  opacity:0.8;
+font-size:80%; */
+}
+
+.or-line:hover{
+/*  color: orange; */
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="orig">
+    <div class="or-line">This is a sample of a line to test what original will look like.</div>
+    <div class="or-line">This is another sample of a line to test what original will look like.</div>
+  </div>
+  <div class="tran">
+    <div class="tr-line">This is a sample of a line to test what original will look like.</div>
+    <div class="tr-line">This is another sample of a line to test what original will look like.</div>
+  </div>
+  <div class="tran-cover">
+	<div class="tr-line-cover">This is a sample of a line to test what original will look like.</div>
+	<div class="tr-line-cover">This is another sample of a line to test what original will look like.</div>
+  </div>
+</div>
+<!--
+<div id="output" style="width:200px; border: 0px solid silver; line-height:2em">
+<div class="original">
+This is a sample of a line to test what translation will look like.
+</div>
+
+<div class="original">
+Sentence 2: another sample of a line to test what translation will look like.
+</div>
+<span class="original span-text">Sentence spanned: check hover between </span>
+<span class="original span-text">lines to test what translation will look like.</span>
+</div>
+
+<div id="transl-output" style="width:200px; border: 0px solid silver; line-height:2em">
+<div class="transl">
+This is a sample of a line to test what translation will look like.
+</div>
+<div class="transl">
+Sentence 2: another sample of a line to test what translation will look like.
+</div>
+<div class="transl">
+Sentence 3: a sample for the spanned line to test.
+</div>
+<div class="transl">
+Sentence 4: testing what translation will look like.
+</div>
+</div>
+-->
+
+<script>
+
+const elid = id => document.getElementById(id);
+const qsel = (s) => document.querySelectorAll(s);
+
+const orig = qsel('.or-line');
+const tran = qsel('.tr-line');
+const tranCover = qsel('.tr-line-cover');
+const tranArr = ['Translation 0: bla-bla-bla ', 'Translation 1: bla bla lalala '];
+
+const showTransl = (i) => {
+//console.log('Show translation', i);
+  const el = tran[i];
+  el.textContent = tranArr[i];
+  el.style.opacity = '0.85';
+  el.style.fontSize = '80%';
+}
+
+const hideTransl = (i) => {
+//console.log('Hide translation', i);
+  const el = tran[i];
+  el.textContent = tranCover[i].textContent;
+  el.style.opacity = '0';
+  el.style.fontSize = '100%';
+}
+
+function setMouseEvents(el, i) {
+//    console.log(i, el);
+	el.onmouseenter = () => showTransl(i);
+	el.onmouseleave = () => hideTransl(i);
+};
+
+orig.forEach(setMouseEvents);
+tranCover.forEach(setMouseEvents);
+
+// real translation can be shown using JS at positions of respective tr-lines
+// or transl div can be placed under transl-cover, with the same dummy lines, but on hover
+// these dummy can be replaced with real translations
+
+</script>
+
+</body>
+
+</html>

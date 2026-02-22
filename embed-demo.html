@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.btn {
+  background-color: #fed;
+  width: fit-content;
+  padding: 0.1em 0.3em;
+  margin: 0.2em;
+  border-radius: 20%;
+  cursor: pointer;
+}
+.frame-code {
+  background-color: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<h2>HTML iframes demo</h2>
+
+<b>Embed Quizlet with this code</b>
+<br><br>
+&lt;iframe&ensp;
+<code id="frame1-code" class="frame-code" contenteditable="true">src="https://quizlet.com/656214466/flashcards/embed?x=1jj1" height="500" width="80%" style="border:0"</code>
+&gt;&lt;/iframe&gt;
+<div onclick="updateFrame(1)" class="btn">Submit</div>
+<div id="frame1">
+<iframe src="https://quizlet.com/656214466/flashcards/embed?x=1jj1" height="500" width="80%" style="border:0"></iframe>
+</div>
+
+<br>
+<br>
+
+<b>Embed Audiodrill with this code </b>
+<i>(it works only in Chrome on the computer)</i>
+<br><br>
+&lt;iframe&ensp;
+<code id="frame2-code" class="frame-code" contenteditable="true">
+src="https://audiodrill.com/embed?game=1&url=//en/game/vocab-nwiai6.txt" allow="microphone *"
+  width="600" height="350" frameborder="0"
+</code>
+&gt;&lt;/iframe&gt;
+<div onclick="updateFrame(2)" class="btn">Submit</div>
+<div id="frame2">
+<iframe src="https://audiodrill.com/embed?game=1&url=//en/game/vocab-nwiai6.txt" allow="microphone *"
+  width="600" height="350" frameborder="0">
+</iframe>
+<br>
+<b>Leave <a href="https://audiodrill.com/info/?show=feedback">feedback</a></b>
+<br><br>
+<script>
+const updateFrame = frame => {
+  const source = document.getElementById("frame" + frame + "-code");
+  const target = document.getElementById("frame" + frame);
+  target.innerHTML = `<iframe ${source.textContent}></iframe>`;
+}
+</script>
+
+</body>
+
+</html>

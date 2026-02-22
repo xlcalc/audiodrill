@@ -1,0 +1,8 @@
+
+### Privacy Notice
+last updated 04 May 2024
+
+
+Audiodrill does not use cookies or collect your information. However, it utilizes third party software which may use cookies. See information on third party software in the [copyright notice](/info/?show=copyright).
+Audiodrill stores some user preferences, e.g., playback rate and font size, locally in your browser. To prevent keeping your preferences in local storage, use private browsing (aka incognito mode).
+

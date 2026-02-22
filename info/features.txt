@@ -1,0 +1,22 @@
+<h3 style="margin-bottom: 0.1em;">Audiodrill: what can it be used for?</h3><code>Alpha version, works in Google Chrome, Microsoft Edge, and Safari browsers</code>
+
+TL;DR: You can loop video/audio fragments, record your voice and compare it with the original, control playback speed, find out how words and phrases are pronounced and used in context, play voice games and more... See also <a href="/">here</a>.
+
+<font size=+1><i>Repetitio est mater studiorum. </i></font>Repetition is the mother of learning. 
+If you believe in this maxim, use Audiodrill to teach or learn languages. Learners can benefit from listening to video/audio fragments at a <strong>chosen playback speed</strong> and repeating after the speaker. Listening and speaking can be looped. 
+
+No need to seek the start of the fragment every time you wish to replay - just set the number of repetitions. You can <strong>compare your pronunciation</strong> with that in the video by recording and replaying your speech right in the loop - just tick the <i>Record/replay speech</i> checkbox under the video. 
+
+<strong>Interactive tasks</strong> make user's life easier. They offer the following functionality:
+&nbsp; • looping preset fragments of one or several videos
+&nbsp; • cloze and multiple choice quizzes
+&nbsp; • links to other task lists
+
+In <b>words & phrases</b> activity, students can input a batch of words/phrases to look them up and hear how they are pronounced in a real context. 
+<a href="/words/">This drill</a> uses synthesized speech as well as <a href="https://youglish.com">Youglish</a> and <a href="https://playphrase.me">PlayPhrase.me</a> services to play the requested lines. 
+
+Students can also play several <strong>voice games</strong> if they use Google Chrome browser. 
+<a href="/words/?game=all">These games</a> include drilling numbers, colors, irregular verbs, etc.
+<a href="https://youtu.be/sdeT1KOcPGM">This video</a> demonstrates how to play numbers.
+
+Finally, <b>shadow reading</b> is also possible: students listen to the text read by the computer and repeat it sentence after sentence. 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+(() => { // redirect if starts with /m/
+//console.log('pathname: ', location.pathname);
+const match = location.pathname.match(/^\/([mt])\/(.+)/);
+if (match) {
+  const [, type, value] = match;
+  window.location.assign(`/task.html?${type}=${value}${location.search}`);
+}
+
+/*
+  if (location.pathname.startsWith('/m/')) {
+    window.location.assign('/task.html?m=' + location.pathname.slice(3) + location.search);
+    return;
+  }
+*/	
+})()
+</script>
+
+<meta charset="UTF-8">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" type="text/css" href="../parts/shared.css">
+
+<style>
+.center {
+  text-align: center;
+}
+.big-font { font-size:150% }
+</style>
+</head>
+<body>
+<div class="center big-font">
+<h1>
+Hmmm, 4-oh-4...
+</h1>
+<div class="big-font">
+The page wasn't found 
+¯\_(ツ)_/¯
+</div>
+<br>
+<a href="/">Audiodrill home</a>
+</div>
+</body>
+</html>

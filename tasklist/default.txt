@@ -1,0 +1,49 @@
+<x-vars video-size=-1 task-title="Audiodrill overview">
+<img src="/img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
+### 1. What this tool is for
+Build your listening and speaking skills in foreign languages. Practice pronunciation, listening comprehension and vocabulary, using real-life videos, audio and texts.
+
+
+### 2. Try these sample activities
+
+ * tasks based on the series [<i>The Flatmates</i>](/?t=//en/a2/flatmates/bbc-flatmates-index.txt), [~English at Work~](/?t=//en/a2/eaw/eaw-index.txt), [~VoA Learning English~](/?t=//en/voa.txt)
+ * [common irregular English verbs](/irrverbs)
+ * [mini-test on articles](/?t=//en/grammar/articles1.txt)
+ * [pronunciation tips and tongue twisters](/?t=//en/pronun/pronun-index.txt)
+ * [tasks for Mandarin Chinese learners](/?t=//zh/zh-index.txt)
+
+
+### 3. Make learning interactive
+
+ * 🎧 Click a word to hear it, or |_Ctrl_| (|_Command_| on Mac) + click a word to hear the entire sentence.
+ * 🔍 Select a text to hear it, look it up, translate and add to vocabulary.
+ * 🔁 Loop audio/video fragments at custom speed: 
+ <input type="url" placeholder="Enter URL here" class="inherit" onchange="getVideoFromURLInput(this)"><input type="submit" class="plain-button font-80pc rounded darker-bg-onhover" value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)"> or <label><a title="Open a local audio or video file">open a local file</a><input type="file" id="open-media2" onchange="uploadTaskOrVideoFile(this)" accept="video/{star}, audio/{star}" style="position: fixed; top: -100em"></label>/drag-and-drop.
+ * ⚙️ Adjust playback and TTS speed in the <span class="task-tip" tip ref='topMenuBtn' x-shift=-44 y-shift=12>settings</span>.
+ * 📚 Dictate or type in [words and phrases](/words) to look up and hear them in context.
+ * 📺 Watch [live TV channels](/tasklist/live-tv.txt) or listen to [the radio](/tasklist/live-radio.txt) at slower speed.
+ * 🗣️ Play [voice games](/?game=new) (Chrome/Edge desktop).
+ * 📖 Practice [shadow reading](?t=/tasklist/shadowing.txt).
+
+
+### 4. Create your own tasks
+
+✍️ From your own text:
+Got a text to study? Paste it below (or click <span class="inline no-tts a" onclick="qsel('textarea').value='\#\#\# A sample task\n\*Fill the gaps with the verbs in the past simple tense\*\nThey \[\[looked\]\] (\~look\~) very happy.\nHe \[\[stopped => stop__\]\] at a cafe.\n\n\*Choose the correct preposition\*\nWe met \[\[at|in|\*\*on\]\] Tuesday.\n\n\*Click on the speaker icons and write the words you hear\*\n<\)\) \[\[debt\]\], <\)\) \[\[yacht\]\], <\)\) \[\[gnome\]\]\n'"}>here</span> to get an example), then hit *Go!* and start exploring it.
+<div class="flex-wrap no-tts" style="align-items: flex-end"><textarea id="story" class="inherit" style="margin-right: 0.4em; flex: 1 1 75%; min-width: 250px; max-width:700px; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea><button style="height:fit-content; margin-top: 0.4em; padding: 0.5em 1.2em; flex: 0 0 auto" onclick="loadElementWithText(qsel('textarea').value, 'transcriptText')">Go!</button></div>
+
+<color:silver>▶</color> From a YouTube video:
+ * Click the <tip '' ref='new-task' y-shift=14>🗋 icon</tip> and paste the url of a YouTube video. 
+ * Copy/paste lines with timestamps from the video transcript. 
+ * Edit if needed.
+ * Click the <tip '' ref='copy-link' y-shift=16>link icon</tip> to generate a shareable task link.
+
+✏️ Edit current task:
+Click the <tip '' ref='edit-task' y-shift=12><code style='border-right:1px solid; background-color: white'>Aa</code> icon</tip> on the header of this window to modify this task. 
+
+
+### 5. Try more challenges
+
+ * Discover [more activities and voice games](/tasks). 
+ * Want to make your own voice game? Check out [this document](https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8/edit#gid=1748845435). 
+ * Have feedback or suggestions? Leave them [here](/info/?show=feedback).

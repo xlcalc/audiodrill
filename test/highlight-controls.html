@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+
+[type=range] {
+  margin: 0;
+  padding: 0;
+  width: 10em;
+  height: 1em;
+  background: transparent;
+  background-image: linear-gradient(to right, 
+  hsl(0,55%,50%), hsl(30,55%,50%), 
+  hsl(60,55%,50%), hsl(90,55%,50%), 
+  hsl(120,55%,50%), hsl(150,55%,50%), 
+  hsl(180,55%,50%), hsl(210,55%,50%), 
+  hsl(240,55%,50%), hsl(270,55%,50%), 
+  hsl(300,55%,50%), hsl(330,55%,50%), 
+  hsl(360,55%,50%));
+  font: 1em/1 arial, sans-serif;
+}
+[type=range], [type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+[type=range]::-webkit-slider-runnable-track {
+  box-sizing: border-box;
+  border: none;
+  width: 5em;
+  height: 0.05em;
+  background: #ccc;
+}
+[type=range]::-moz-range-track {
+  box-sizing: border-box;
+  border: none;
+  width: 5em;
+  height: 0.05em;
+  background: #ccc;
+}
+[type=range]::-ms-track {
+  box-sizing: border-box;
+  border: none;
+  width: 5em;
+  height: 0.05em;
+  background: #ccc;
+}
+[type=range]::-webkit-slider-thumb {
+  margin-top: -0.4em;
+  box-sizing: border-box;
+  border: none;
+  width: 0.4em;
+  height: 0.8em;
+  border-radius: 2px;
+  background: #eee;
+}
+[type=range]::-moz-range-thumb {
+  box-sizing: border-box;
+  border: none;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  background: #f90;
+}
+[type=range]::-ms-thumb {
+  margin-top: 0;
+  box-sizing: border-box;
+  border: none;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  background: #f90;
+}
+[type=range]::-ms-tooltip {
+  display: none;
+}
+
+#result-color-div {
+  width: 80%;
+  font-size: 120%;
+}
+
+#marked-color {border-radius:4px}
+
+.small-padding {padding: 0 0.1em}
+.input-number {
+width: 2.8em; 
+height: 1em;
+border: 1px solid silver;
+border-radius: 4px;
+}
+
+</style>
+</head>
+<body>
+
+<p id="result-color-div">
+Set the color of the <span id="marked-color">marked text</span>, using the controls below
+</p>
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; width: 80%;">
+<span style="display: flex; align-items: center;"> 
+Hue&thinsp; <input id="hue-slider"
+  type="range" value="0" min="0" max="359" step="1" oninput=setHue(this.value)>
+  &thinsp;<input type="number" id="result-hue" class="small-padding input-number"  
+   min="0" max="360" value="0" oninput=setHue(this.value)>, 
+</span> &ensp;
+<span> 
+saturation&thinsp;<input type="number" id="result-sat" class="input-number"  
+   min="0" max="100" value="90" oninput=setSat(this.value)>%,
+</span> &ensp;
+<span> 
+lightness&thinsp;<input type="number" id="result-lightness" class="input-number" 
+   min="0" max="100" value="90" oninput=setLightness(this.value)>%
+</span> 
+</div>
+
+<script>
+window.onload = () => setHue(0);
+
+const elid = id => document.getElementById(id);
+
+const setHue = v => {
+  elid('hue-slider').value = v;
+  elid('result-hue').value = v;
+  setResultColor({hue: v});
+}
+
+const setSat = v => {
+  setResultColor({sat: v});
+}
+
+const setLightness = v => {
+  setResultColor({li: v});
+}
+
+function setResultColor(v) {
+  if (!this.color) {
+    this.color = {};
+	this.color.hue = 0;
+	this.color.sat = 90;
+	this.color.li = 90;	
+  }
+
+  for (par in v) this.color[par] = Number(v[par]);
+
+//  if (v.hue) this.color.hue = Number(v.hue);
+//  if (v.sat) this.color.sat = Number(v.sat);
+//  if (v.li) this.color.li = Number(v.li);
+//console.log(this.color);
+  e = elid('marked-color');
+  e.style.backgroundColor = `hsl(${this.color.hue}, ${this.color.sat}%, ${this.color.li}%)`;
+}
+
+</script>
+
+</body>
+</html>

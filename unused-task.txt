@@ -1,0 +1,432 @@
+
+/*
+//transcriptText.onclick = async (e) => {
+const handleTaskSelectionChange = async (e) => {
+//transcriptText.onmouseup = async (e) => { // on text selection, onclick isn't triggered in Safari
+//console.log('Target', e.target);
+//console.log('Target className', e.target.className);
+  await sleep(5); //b/c it takes time to change selection or for ondblclick event to fire after onclick and set tstore.doubleClicked
+
+  const sel = window.getSelection();
+//console.log('Sel', sel);
+//console.log('Selected text "', sel + '"');
+
+  const isTagBlacklisted = el => {
+    const blacklistedTags = ['BUTTON', 'INPUT', 'A'];
+    const blacklistedIds = ['vocab-entries'];
+    while (el) {
+//      if (blacklistedTags.includes(el.tagName) || blacklistedIds.includes(el.id)) return true;
+      if (blacklistedTags.includes(el.tagName)) return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+  
+  if (!sel || !sel.focusNode
+    || isTagBlacklisted(e.target)
+    || e.target.className.includes('dropdown')
+  ) return;
+  
+  const speakDictOrTTS = async chunk => {
+    let dictOK = false;
+    if (!/\s/.test(chunk))
+      dictOK = await tryDictAudio(chunk, tts.spVoice.lang, speedCtrl.calcSpeed());
+
+	if (!dictOK) speak(chunk, 'IGNORE_IF_BUSY');
+  }
+
+  const isOKtoSpeak = () => tstore.ttsClickSwitch.isOn && !tts.isBusy() && !players.looperInUse;
+
+  const actOnChunk = (s, cmd) => {
+    if (!s || s.length > 120) return;
+	if (e.ctrlKey || e.metaKey) window.open('https://google.com/search?q=define+' + s);
+	else {
+	  if (isOKtoSpeak()) {
+        if (audioRecAllowed2()) emulateTTSClick(s);
+        else speakDictOrTTS(s);
+	  }
+	  if (cmd === 'SELECTED_TEXT') showChunkTooltip(s);
+//console.log('selected?', cmd);
+	}
+  }
+
+  const selText= sel + '';
+//console.log('selText:', selText); 
+//console.log('tstore.doubleClicked', tstore.doubleClicked);
+
+  if (selText) { // selected text is a priority
+    if (tstore.doubleClicked) showChunkTooltip(selText);
+    else actOnChunk(selText, 'SELECTED_TEXT'); // happens before doubleClicked is triggererd
+    return;
+  }
+
+  const txt = sel.focusNode.data;
+  const offset = sel.focusOffset;
+//console.log('Click!', txt, offset, '"' + txt[offset] + '"');
+  
+  sel.removeAllRanges();
+  
+//  const chr = txt.charCodeAt(offset);
+  if (/[\s,:;.!?]/.test(txt[offset])) return;
+
+  if (!txt || (offset > 1 && offset >= txt.length)) return; // offset isn't accurate with 1-letter texts inside <b> tags
+
+  const chunk = getChunkAtOffset(txt, offset);
+  actOnChunk(chunk);
+
+
+//  const ch = txt[offset];
+//console.log('Chunk', chunk, ', char', ch);
+  if (chunk) {
+    if (!/\s/.test(chunk) || chunk.length < txt.length) {
+//      if (getLangCode() !== 'en' || !await tryDictAudio(chunk)) speakout(chunk);
+      if (!await tryDictAudio(chunk, tts.spVoice.lang, speedCtrl.calcSpeed())) speakout(chunk);
+	}
+	else if (isChineseChar(ch)) speakout(ch); // hmm, why is it needed?
+  }
+}
+*/
+
+/*
+function getChunkAtOffset(text, offset, separator = /[\s.,，·]/) {
+  const chunks = text.split(separator);
+  let index = 0;
+
+  for (const chunk of chunks) {
+    const chunkStart = index;
+    const chunkEnd = index + chunk.length;
+
+    if (offset >= chunkStart && offset <= chunkEnd) return chunk;
+
+    index = chunkEnd + 1;  // Move past the separator
+  }
+
+  return null;
+}
+*/
+
+/*
+const handleVocabInput = () => {
+  const entry = transcriptText.lastSelectionText;
+  const meaning = translationInput.value.trim();
+  if (meaning) {
+    console.log('📚 Add to vocab:', {
+      word: entry,
+      meaning: meaning
+    });
+	gstore.vocab.addEntry(players.currentTask, entry, meaning);
+    hideEl(vocabInput);
+  }
+}
+
+// Save to vocab (replace this with real logic)
+saveVocabBtn.addEventListener('click', () => { handleVocabInput(); });
+
+translationInput.onkeydown = (e) => {
+  if (e.key === 'Enter') handleVocabInput(); 
+}
+
+translationInput.oninput = (e) => {
+  saveVocabBtn.disabled = translationInput.value.trim() === '';
+}
+
+// Cancel vocab input
+cancelVocabBtn.addEventListener('click', () => {
+  hideEl(vocabInput);
+});
+
+const vocabBackdrop = elid('vocabBackdrop');
+
+vocabBackdrop.addEventListener('click', () => {
+  hideEl(vocabInput);
+});
+*/
+
+// ========            
+/*
+
+async function getAudioFromWiktionary(word) {
+// this fn works OK, but so far isn't really needed
+    const url = `https://en.wiktionary.org/w/api.php?action=parse&page=${word}&format=json&prop=text&origin=*`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.parse && data.parse.text['*']) {
+            const html = data.parse.text['*'];
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // Find the audio element
+            const audioElement = doc.querySelector('audio');
+            if (audioElement) {
+                const source = audioElement.querySelector('source');
+                if (source) {
+                    return source.src; // Return the audio file link
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching audio link:', error);
+    }
+    return null; // Return null if no audio link is found
+}
+
+//======  From tts. js  ========
+
+const listLangVoicesOld = () => {
+  const filterLangVoices = voice => {
+//    const langCode = voice.lang.substr(0, 2); // doesn't work for 'fil' (Filipino) lang
+    const langCode = voice.lang.split(/_|-/)[0];
+    if (langCode === currentLang) return voice;
+  }
+
+  let currentLang = tts.langSelector.value;
+  // Most lang codes have 2 chars as per ISO 639-1, like 'en'. 
+  // But some lang codes are as per ISO 639-2, like 'fil' for Filipino. 
+  // Hope, no lang code is longer than 3 letters.
+  if (tts.langSelector.value.length > 3) currentLang = getLangCode(); // Get full lang name for words and phrases page. 
+  if (currentLang) loadVoiceList(tts.getVoices()
+	   .filter(filterLangVoices) // filter by lang
+     // now sort by lang and name
+       .sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name)));
+  else loadVoiceList(tts.getVoices()); // no currentLang results in no filtering
+}
+
+const getLangSeparator = async () => {
+// made redundand 2024-01-27
+  const getSeparator = lang => lang.includes('-') ? '-' : '_';
+
+  //  const voice = (tts.spVoice && tts.spVoice.lang) ? tts.spVoice : tts.getVoices()[0];
+  if (tts.spVoice && tts.spVoice.lang) {
+console.log('getLangSeparator from tts.spVoice');
+    return getSeparator(tts.spVoice.lang);
+  }
+  const voice = tts.getVoices()[0];
+  await sleep(500);
+  return getSeparator(voice.lang);
+// what if lang doesn't have '-' or '_' in it?
+}
+//const getCorrectLang = lang => lang? lang.replace(/_|-/, getLangSeparator()) : '';
+
+//============
+const parseXmlByTag = (txt, tag) => {
+  const parser = new DOMParser();
+  return parser.parseFromString(txt, 'text/xml') .getElementsByTagName(tag);
+}
+const fetchYTSubsLanguages = YTId => {
+  const url = "https://www.youtube.com/api/timedtext?type=list&v=" + YTId;
+  fetch(url).then(res => res.text()) .then(text => {
+    try {
+      const subList = parseXmlByTag(text, "track");
+      if (!subList) return;
+      if (subList.length == 1) {
+        const subTrack = subList[0],
+          trackName = subTrack.getAttribute("name"),
+          langCode = subTrack.getAttribute("lang_code");
+        populateTranscriptWithYTSubs(trackName, langCode, YTId);
+        return;
+      }
+
+      let htmlText = !subList.length ? '' // subs do not load since November 2021
+//        ? '<p> Subtitles are not available for this video </p>' 
+        : '<p> Choose subtitles</p>';
+      let i = 1;
+      for (sub of subList) {
+        const langTranslated = sub.getAttribute("lang_translated"),
+          langOriginal = sub.getAttribute("lang_original"),
+          langName = (langTranslated === langOriginal) 
+            ? langOriginal 
+            : langTranslated + ' ' + langOriginal,
+          lang = sub.getAttribute("lang_code"),
+          name = sub.getAttribute("name");
+
+        htmlText += `<p class="cue" id="c${i}" lang="${lang}" name="${name}" //tabindex=1
+onclick = "populateTranscriptWithYTSubs('${name}', '${lang}', '${YTId}')">${langName}` + '</p>';
+        i++;
+      }
+      transcriptText.innerHTML = htmlText;
+    } catch(ex) { alert('ex when trying to populate transcript = ' + ex); }
+  }) 
+  .catch(err => { console.log('Failed to get subtitles: ', err); });
+}
+
+function populateTranscriptWithYTSubs(name, lang, YTId) {
+  const url = "https://www.youtube.com/api/timedtext?name=" + name + "&lang=" + lang + "&v=" + YTId
+  fetch(url).then(res => res.text()) .then(text => {
+      try {
+        const cues = parseXmlByTag(text, "text");
+        let subs = '';
+        for (cue of cues) {
+          const startTime = cue.getAttribute("start");
+          const stopTime  = parseFloat(startTime) + parseFloat(cue.getAttribute("dur"));
+
+         subs += '<pcue start=' + startTime + ' end=' + stopTime.toFixed(2)
+               +'>' + cue.textContent + '</p>';
+        }
+        subs = subs.replace(/&#39;/g, "'"); //to simplify further manual processing of copied subs 
+        loadElementWithText(subs, 'transcriptText');
+      } catch(ex) { alert('ex when trying to populate transcript = ' + ex); }
+    }).catch((err) => {
+        console.log('Failed to get subtitles: ', err);
+    });
+}
+*/
+
+/*
+const loadYTVideoByIDOld = id => {
+console.log('LoadYTbyID: players.ytAPI',players.ytAPI);
+
+  players.ytPendingId = id;
+  if (players.ytAPI === 'YT_PLAYER_READY') cueYTVideo(); 
+  else hidePlayerBox();   // ... and onPlayerReady() will call cueYTVideo() a bit later. Added 2023-08-04.
+
+  if (!players.ytAPI) loadYTAPI(); 
+  if (players.ytAPI === 'DESTROYED') onYouTubeIframeAPIReady(); 
+
+}
+
+const cueYTVideo = () => {
+// Added 2023-08-04
+  if (!players.ytPendingId) return;
+// console.log('Call YT player.cueVideoById');
+  player.cueVideoById(players.ytPendingId);
+
+  players.ytPendingId = '';
+  players.mediaState = 'loaded';
+}
+*/
+
+/*
+//function handleWindowResize() { taskBoxHeightAdjust(); }
+function setAudioPlayerStyle() {
+//  htmlPlayer.style.width = '280px'; //'90%';
+  htmlPlayer.style.maxWidth = '280px'; //'90%';
+//  htmlPlayer.style.maxWidth = '400px';
+  htmlPlayer.style.height = '36px';
+  htmlPlayer.style.borderRadius = '2em !important';
+}
+
+function taskBoxHeightAdjust() {}
+
+function taskBoxHeightAdjustOld() { // may be obsolete
+  if (players.type === 'htmlPlayer') {
+    elid("taskBox").style.height = (htmlPlayer.clientHeight-8) + 'px'; //adjust height of task box
+    transcriptText.style.height = (htmlPlayer.clientHeight-27) + 'px'; //adjust height of task box
+  }
+}
+*/
+
+/*
+const testFetchSubs = async () => {
+//  fetch(url) .then(res => res.json()) .then(text => {console.log(res)})
+  const url = 'https://www.youtube.com/youtubei/v1/get_transcript?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8';
+  message = {
+    method: "POST",
+    headers: { "Content-type": "application/json" },
+    body: {"context":{"client":{"clientName":"WEB","clientVersion":"2.9999099"}},"params":"CgtXRUNRV2ZickRSQQ=="},
+  };
+  
+  const response = await fetch(url, message);
+
+  if (!response.ok) {
+    throw new Error('Fetching error: ' + response.status);
+    return '';
+  }
+
+  const res = await response.json();
+  return res;
+}
+*/
+
+/*
+const charNotNumber = c => (!c || c < '0' || c > '9');
+const notNumber = s => (charNotNumber(s[0]) || 
+  (charNotNumber(s[1]) && charNotNumber(s[2])));
+
+*/
+
+/*
+const cueTag = txt => txt ? '<span class=cue onclick=replayFragment(this) time="' + txt 
+//  + '" title="' + txt +'"><span class="rnd grayish btn-darker2 small-playbtn-padding">&#9655;</span></span>&thinsp;' : '';
+  + '" title="' + txt +'"><span class="grayish small-playbtn-padding play-triangle"></span></span>&thinsp;' : '';
+
+const cueTag2 = txt => txt ? // not used yet
+'</a><a class=cue onclick=replayFragment(this) time="' + txt 
+  + '" title="' + txt +'">' : '';
+*/
+
+/*
+const markVocabEntry = (s, entry, i, cmd) => {
+  let vocab = gstore.vocab.getVocab(s) || '';
+  const arr = entry.split('=');
+  entry = arr[0].trim();
+  //const searchValue = new RegExp('\\b' + entry + '\\b', "ig"); 
+  // \\b's could be added for exact word match, but this doesn't work in Hebrew!!!
+  const searchValue = new RegExp(entry + '(\\W|$)', "ig"); // word ends in non-word char or end of string
+
+  const replaceVocabEntry = (s, res) => {
+// If one vocab entry is A, and another is AB, marking A in the whole text creates a problem.
+// How can this be handled?
+
+// we should check if s ends in \W, e.g., space or punctuation mark
+//    const check = s.replace(/\W/, ''); // does not work with specific chars outside basic Latin table
+    const check = removePunctuation2(s.split('=')[0]).trim(); 
+    const origSearch = new RegExp(check, "ig");
+	res = res.replace(origSearch, check); // replace vocab entry with the original, e.g., capitalized
+	
+// if s ends in \W, check is shorter than s. Then this last character is added to res.
+	if (check.length < s.length) res += s.slice(-1); 
+	return res;
+  }
+ 
+  let marked = '==' + entry + '=='; 
+  let addedMeaning = '';
+  
+  let meaning = arr[1] || '';
+  if (meaning) {
+	meaning = meaning.trim();
+    if (cmd === 1 && meaning) {
+      marked = `=={{${meaning}|${entry}}}==`; // added as a tip
+//      addedMeaning = ' {{' + meaning + '|◦}}'; // added as a tip
+    }
+    if (cmd > 1 && meaning) addedMeaning = '&thinsp;(<span class="font-85pc">' + meaning + '</span>)'; // added in brackets
+  }
+  
+  if (cmd === 3) {
+	const direct = (['he', 'ar'].includes(tts.langCode))? 'rtl' : 'ltr';
+    marked = `==<span class="transp-grad-${direct} not-transp-on-hover">` + entry + '</span>=='; // later to be change to include RTL langs
+    vocab = vocab.replace(searchValue, s => replaceVocabEntry(s, marked));
+  }
+
+  if (cmd === 4) {
+	const acro = entry.split(' ') 
+	  .map(w => w.length > 1? w[0] + '___' : w)
+	  .join(' ');
+
+    marked = `<<${entry} => ${acro}>>`; // gets a problem later if the original _in the text_ is capitalized b/c vocab entry is in lower case
+    vocab = vocab.replace(searchValue, s => replaceVocabEntry(s, marked));
+  }
+
+  if (cmd) marked += addedMeaning; 
+  
+  if (!s.includes(marked)) {
+    const bodyText = gstore.vocab.getBeforeVocab(s);
+
+//    s = bodyText.replace(searchValue, s => replaceVocabEntry(s, marked)) + vocab;
+    s = bodyText
+	  .replaceAll('{vocab-entry-' + i +'}', marked)
+//	  .replaceAll('{vocab-entry-' + i +'}', bodyEntriesArr[i])
+//	  .replaceAll(bodyEntriesArr[i], s => replaceVocabEntry(s, marked)) 
+	  //wrong logic due to ascending-descending order of vocab replacements
+	  
+	  + vocab;
+// If the vocab entry is part of a web link, this link is damaged!
+// links can be protected like in renderTA() fn
+  }
+
+  s = s.replaceAll('====', '=='); // temp fix for safety
+  return s;
+}
+*/

@@ -1,0 +1,40 @@
+<x-vars video-size=0 show-settings>
+### Try out speech shadowing
+
+Speech shadowing, or shadow reading, allows you to develop listening and pronunciation skills. For more information about this technique, please visit <https://en.wikipedia.org/wiki/Speech_shadowing>
+
+Audiodrill offers two ways to practice shadow reading: with video and with computer-read text. Here we focus on shadowing videos, while practicing with text is explained on the <a href="/words/?shadow-read=1">Shadow reading</a> page.
+
+<b>Loop controls</b>
+First, familiarize yourself with loop controls. When Audiodrill loads a video, these controls are located under it. You can set <tip '' ref='master-pbr-box'>master playback rate</tip>, <tip '' ref='max-cues-box' x-shift=-20 y-shift=25 cmd='SHOW_ADV_CTRL'>number of video cues</tip>, <tip '' ref='rep-num-box' x-shift=-20 y-shift=25 cmd='SHOW_ADV_CTRL'>number of loops per cue</tip>, and <tip '' ref='speed-set-box' y-shift=25 x-shift=25 cmd='SHOW_ADV_CTRL'>cue speed factors (in advanced settings)</tip>. To hear your speech, tick <tip '' ref='rec-switch'>Record/replay speech checkbox</tip>. Use <tip '' ref='playstop-button' x-shift=30 y-shift=-20 cmd='SHOW_ADV_CTRL'>Play/Stop button</tip> to terminate the shadowing cycle.
+
+<b>Load a task or subtitled video</b>
+You can practice with available Audiodrill tasks or with any subtitled videos of your choice. Choose a task from <a href='?t=/tasklist/default.txt'>this list</a> or use a link as described below. To load a subtitled video, enter its URL in <tip '' ref='media-url-input-box' y-shift=20 cmd='SHOW_ADV_CTRL'>the box under loop controls</tip> or use a link as described below. When the video is loaded, you will see its subtitles in the interactive task list. If subtitles are available in several languages, choose the language of the speech. 
+
+<b>Start shadowing</b>
+Click on one of the task cues or subtitles. Audiodrill will play the video cue and wait for you to shadow. Audiodrill will play the cue again according to the number of loops per cue. Then, if more than one video cue is set, it will move on to the next one. 
+
+<b>Stop and resume shadowing</b>
+Having run the number of video cues set in loop controls, Audiodrill will stop. To terminate the cycle at any moment, press Esc or click Stop button. Click on a task cue or subtitle again to resume the practice.
+
+<b>Link examples</b>
+A. Shadowing with a task 
+<https://audiodrill.com?t=//en/a2/flatmates/bbc-flatmates-007.txt&c=5&speed=0.7,1>
+
+This link uses the following URL parameters
+t=[task URL] (here it's based on episode 7 of 'The Flatmates' series at BBC Learning English);
+c=[number of cues] (here it's 5); 
+speed=[comma-separated relative speed factors] (0.7,1 here, which means that each cue is looped twice, first at 0.7x, then at normal speed).
+
+B. Shadowing with a subtitled video
+<https://audiodrill.com?m=https://youtu.be/FfhZFRvmaVY&c=7&speed=0.7,1,1.2&noauto>
+
+This link has the following URL parameters
+m=[video URL];
+c=[number of cues] (7); 
+speed=[comma-separated relative speed factors] (0.7,1,1.2 means that each cue is looped three times: at 0.7x, 1x, and 1.2x);
+noauto (disable the prompt to loop).
+
+<font size=+1>Now that you know the basics, give it a try. 
+Happy speech shadowing! 😀</font>
+Please leave your comments and feedback [here](/info/?show=feedback).

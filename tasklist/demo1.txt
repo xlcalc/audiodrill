@@ -1,0 +1,13 @@
+<h3>This is a demo task list</h3>
+
+1. Click on the task below and repeat after the speaker.
+<cue start=5080 end=5084 url="https://youtu.be/tojcV8Hg7ng"><i>- And I wonder how it works...</i></cue>
+
+2. Tasks are written into a text file, which can be loaded into Audiodrill.
+<cue start=1072.4 end=1075 url="https://youtu.be/PrqFywGNN6o"><i>- What are the ...? What can I ...?</i></cue>
+
+3. You have tried looping fragments of several videos to practise listening and pronunciation. You can also have cloze and multichoice quizzes based on the fragment that has just played:
+What are the <<pieces>>? What can I <<<**do with them|doing them>>>?
+<cue start=507.7 end=510 url="https://youtu.be/rH0AlC2TbR8"><i>- This is cool, this is awesome.</i></cue>
+
+4. When you are done with this task list, you can go back to the <task url='/tasklist/default.txt'>initial one</task>.

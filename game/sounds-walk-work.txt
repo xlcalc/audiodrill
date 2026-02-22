@@ -1,0 +1,31 @@
+:title:Pronunciation
+:intro:Listen to the words and read the sentence that contains it.
+:gametype:sound-alikes
+1.
+:say:Which question contains the word |walking|working
+:write:Do you enjoy walking in the park?|Do you enjoy working in the park?
+::
+2.
+:say:Which sentence contains the word |warm|worm
+:write:It's so nice and warm in here.|This computer worm is dangerous.
+::
+3.
+:say:Read the sentence with the word |bored|bird
+:write:Soon we got bored.|Soon we got a bird.
+::
+4.
+:say:Which sentence contains the word |born|burn
+:write:These children were born in France.|Don't burn your bridges.
+::
+5.
+:say:Which sentence contains the word |Paul|pearl
+:write:it was Paul McCartney's song.|It was a real pearl.
+::
+6.
+:say:Which sentence contains the word |short|shirt
+:write:The sleeves were too short.|I put on a shirt and a tie.
+::
+7.
+:say:Read the sentence with the word |torn|turn
+:write:His shirt was torn in many places.|Could you please turn the mic on?
+::

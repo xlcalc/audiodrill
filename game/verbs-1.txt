@@ -1,0 +1,158 @@
+:title:Irregular Verbs
+:keylist: beat, bite, break, buy, cost, dig, hang, know, make, ring, run, sell, spend, wear, win, write
+
+:say: Put the verb "dig" in the right tense:
+:write:She (dig) a deep pit yesterday.
+:accept:She dug a deep pit yesterday.
+:error: dig=> Remember. dig. dug. dug.
+::
+:say: Put the verb "dig" in the right tense:
+:write:The tunnel was (dig) last year.
+:accept:The tunnel was dug last year.
+:error: dig=> Remember. dig. dug. dug.
+::
+:say: Put the verb "bite" in the right tense:
+:write:The dog (bite) him on the hand.
+:accept:The dog bit him on the hand.
+:error: biting | bite=> Remember. bite. bit. bitten.
+::
+:say: Put the verb "bite" in the right tense:
+:write:How to stop getting (bite) by mosquitoes?
+:accept:How to stop getting bitten by mosquitoes?|How to stop getting bitten by mosquitos?
+:show:How to stop getting bitten by mosquito(e)s?
+:error: bit | bite| biting => Remember. bite. bit. bitten.
+::
+:say: Put the verb "beat" in the right tense:
+:write:He was (beat) with sticks.
+:accept:He was beaten with sticks.
+:error: beat | beated| bit| beating => Remember. beat. beat. beaten.
+::
+:say: Put the verb "beat" in the right tense:
+:write:I (beat) three eggs and made an omelet.
+:accept:I beat three eggs and made an omelet.|I beat three eggs and made an omelette.|I beat 3 eggs and made an omelet.|I beat 3 eggs and made an omelette.
+:show:I beat three eggs and made an omelet/omelette.
+:error: beated | bit| beating => Remember. beat. beat. beaten.
+::
+:say: Put the verbs "hang" and "ring" in the right tense:
+:write:She (hang) up on me but I (ring) back immediately.
+:accept:She hung up on me but I rang back immediately.|She hung up on me but I ran back immediately.
+:show:She hung up on me but I rang back immediately.
+:error: hang => Remember. hang. hung. hung.
+:error: hanged => Remember. hang. hung. hung. We say "hanged". only when we talk about killing someone.
+:error: ring| rung=> In this meaning, the verb's forms are. ring. rang. rung.
+::
+:say: Put the verb "ring" in the right tense:
+:write:I've already (ring) twice to cancel the appointment.
+:accept:I've already rung twice to cancel the appointment.|I have already rung twice to cancel the appointment.
+:error: ring| rang=> In this meaning, the verb's forms are. ring. rang. rung.
+::
+:say: Put the verb "hang" in the right tense:
+:write:I could see the place on the wall where the picture (hang).
+:accept:I could see the place on the wall where the picture had hung.
+:error: hang => Remember. hang. hung. hung.
+:error: hanged => Remember. hang. hung. hung. We say "hanged". only when we talk about killing someone.
+:error: picture hung=> The picture hung before but now it's gone. So it is a past tense but not the simple past.
+::
+:say: Put the verbs "buy" and "cost" in the right tense:
+:write:I (buy) this necklace yesterday and it (cost) almost $800.
+:accept:I bought this necklace yesterday and it cost almost $800.
+:error: bind | buy=> Remember. buy. bought. bought.
+:error: costed => Remember. cost. cost. cost. We say "costed". only when we estimate the price.
+::
+:say: Put the verb "buy" in the right tense:
+:write:Have you ever (buy) shoes online?
+:accept:Have you ever bought shoes online?
+:error: bind | buy=> Remember. buy. bought. bought.
+::
+:say: Put the verb "cost" in the right tense:
+:write:This delay might have already (cost) hundreds of thousands of dollars.
+:accept:This delay might have already cost hundreds of thousands of dollars.
+:error: costed => Remember. cost. cost. cost. We say "costed". only when we estimate the price.
+::
+:say: Put the verb "win" in the simple past tense:
+:write:France (win) the 2018 FIFA World Cup.
+:accept:France won the 2018 FIFA World Cup.
+:error: wins | wind=> Remember. win. won. won.
+::
+:say: Put the verb "win" in the right tense:
+:write:How many times has she (win) this tournament?
+:accept:How many times has she won this tournament?
+:error: wins | wind=> Remember. win. won. won.
+::
+:say:Put the verb "wear" in the simple past tense:
+:write:The girl (wear) patent leather shoes.
+:accept:The girl wore patent leather shoes.
+:error: wears => Remember. wear. wore. worn.
+::
+:say:Put the verb "wear" in the right tense:
+:write:Have you (wear) this shirt before?
+:accept:Have you worn this shirt before?
+:error: wear=> Remember. wear. wore. worn.
+::
+:say:Put the verb "break" in the past tense:
+:write:Do you remember how they (break) their promise?
+:accept:Do you remember how they broke their promise?
+:error: break | broken => Remember. break. broke. broken.
+::
+:say:Put the verbs "know" and "break" in the right tense:
+:write:You (know) that her heart was (break), didn't you?
+:accept:You knew that her heart was broken, didn't you?
+:error: break | broke => Remember. break. broke. broken.
+:error: knowed | known => Remember. know. knew. known.
+::
+:say:Put the verb "know" in the right tense:
+:write:I've (know) him since childhood.
+:accept:I've known him since childhood.
+:error: knowed | knew => Remember. know. knew. known.
+::
+:say:Put the verb "write" in the simple past tense:
+:write:In Scotland she (write) her first book.
+:accept:In Scotland she wrote her first book.
+:error: write=> Remember. write. wrote. written.
+::
+:say:Put the verb "write" in the right tense:
+:write:What was (write) in this letter?
+:accept:What was written in this letter?
+:error: write| wrote=> Remember. write. wrote. written.
+::
+:say:Put the verb "sell" in the simple past tense:
+:write:I (sell) my car very quickly.
+:accept:I sold my car very quickly.
+:error: sell=> Remember. sell. sold. sold.
+::
+:say:Put the verb "sell" in the right tense:
+:write:The car (sell) last week.
+:accept:The car was sold last week.
+:error: sell=> Remember. sell. sold. sold.
+::
+:say:Put the verb "make" in the simple past tense:
+:write:This ventilator (make) in China.
+:accept:This ventilator was made in China.
+:error: make=> Remember. make. made. made.
+::
+:say:Put the verb "make" in the simple past tense:
+:write:I think I (make) a mistake.
+:accept:I think I made a mistake.
+:error: make=> Remember. make. made. made.
+::
+:say:Put the verb "run" in the right tense:
+:write:Have you ever (run) a marathon?
+:accept:Have you ever run a marathon?
+:error: ran=> Remember. run. ran. run.
+::
+:say:Put the verb "run" in the right tense:
+:write:Unfortunately we (run) out of time during the last meeting.
+:accept:Unfortunately we ran out of time during the last meeting.
+:error: run=> Remember. run. ran. run.
+::
+:say:Put the verb "spend" in the right tense:
+:write:Last year we (spend) our holiday in the country.
+:accept:Last year we spent our holiday in the country.|LOST year we spent our holiday in the country.
+:show:Last year we spent our holiday in the country.
+:error: spend=> Remember. spend. spent. spent.
+::
+:say:Put the verb "spend" in the right tense:
+:write:Since November last year, lots of money (spend) on this project.
+:accept:Since November last year, lots of money has been spent on this project.
+:error: spend=> Remember. spend. spent. spent.
+::

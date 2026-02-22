@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="parts/shared.css">
+
+<style>
+body {overflow: hidden}
+.ta-box {
+/*border: 1px dotted gray;
+width: 99vw;
+*/
+height: 99vh;
+position: relative;
+text-align: center;
+}
+
+.ta {
+/*width: 100%;
+height: 100%;
+*/
+font-size: 4vw;
+text-align: left;
+}
+
+.mic {
+display: none;
+position:absolute;
+left: 0.3em;
+bottom: 0.7em;
+font-size: 7vw; 
+font-weight: bold;
+height: 1em;
+width: 1em;
+line-height:1em;
+cursor:default;
+opacity: 0.4;
+border-radius: 50%;
+padding: 0.1em;
+color: #99aabb;
+}
+
+.mic:hover {
+background-color: gainsboro;
+color: slategray;
+font-weight: 750;
+text-decoration: none;
+}
+
+.mic-on {
+background-color: lightcoral;
+color: white;
+}
+
+.mic-on:hover {
+background-color: red;
+color: white;
+}
+
+#mic-head{
+  position:relative;
+  top:10%;
+  width:26%; height:55%;
+  margin: 0 auto;
+  border-radius:7px;
+  background-color:#99aabb;
+}
+#mic-stand-all{
+  position:relative;
+  bottom:-2%;
+  height:60%;
+  width:60%;
+  margin: 0 auto;
+  overflow:hidden;
+border: 0px solid blue;
+}
+#mic-stand-top{
+  position:relative;
+  border-radius:0 0 50% 50%;
+  height:70%;
+  width:80%;
+  bottom: 45%;
+  margin: 0 auto;
+  border: 2px #99aabb solid;
+}
+#mic-stand-bottom {
+  position:relative;
+  height:10%;
+  width:0%;
+  bottom: 45%;
+  margin: 0 auto;
+  border: 1px #99aabb solid;
+}
+
+#game-feedback {
+/*  margin-left: 5em;*/
+position: absolute;
+bottom: 0.5em;
+right: 0.5em;
+width: 75%;
+}
+
+#game-react {
+padding-top: 2.2em;
+text-align: center;
+}
+
+.game-task {
+max-height: 53vh; 
+overflow: auto; 
+margin-bottom: 0.5em;
+box-shadow: -6px 6px 0.8em rgb(0 0 0 / 10%);
+scroll-behavior: smooth;
+  padding: 0 0.2em 0.3em 0.2em;
+  font-size: 4vw;
+}
+
+.game-face {
+  float:right;
+  padding-bottom: 0.25em;
+  cursor: default;
+  font-size: 10vw;
+}
+
+.game-react {
+line-height:1.2em; font-size: 3vw;
+}
+
+x-p {
+  background-color: #ffc;
+}
+
+#playground-div{
+position: absolute;
+bottom: -0.3em;
+margin-left: 0.8em;
+width:90%;
+border: 1px  red;
+line-height: 6vh;
+background-color: transparent;
+}
+
+</style>
+</head>
+<body>
+<div class="overlay"></div>
+
+<script src="parts/audiodrill-task.js"></script>
+<script src="parts/grammar-game.js"></script>
+
+<div id="infopage"></div>
+
+<div id="ta-box" class="ta-box">
+<div id="ta" class="ta"></div>
+<div id="playground-div"></div>
+
+<div id="mic" class="mic" title="Dictate words or phrases in Chrome or Edge" 
+    onclick="toggleMic()">
+  <div id="mic-head"></div>
+  <div id="mic-stand-all">
+      <div id="mic-stand-top"></div>
+      <div id="mic-stand-bottom"></div>
+  </div>
+</div>
+
+</div>
+<div id="ta-bottom"></div>
+<script src="parts/tts.js"></script>
+<script src="parts/stt.js"></script>
+
+<script>
+gstore.webPageName = 'EMBED'; // used in audiodrill.js
+
+const taBottom= elid('ta-bottom');
+
+const sttCallback = (cmd) => {
+  if (cmd === 'STT_NOT_SUPPORTED') displayMessage('The browser does not support speech recognition. Try Edge or Chrome.', 3500);
+}
+
+document.addEventListener('DOMContentLoaded', event => {
+  mic.isOff = true;
+  loadSTT();
+  analyzeURL();
+  setEmbedVoice();
+})
+
+const handleSttResult = (transcript, newNote = true) => {
+  if (mic.isOff) return;
+  if   (!recognition.allowed || !sttAllowed()) return; 
+//console.log ('Handling STT with recognition allowed = ',recognition.allowed);
+  if (gameIsPromped() && transcript !== "let's play the game") { askAgain(); return; }
+  playGrammar(transcript);
+}
+
+function analyzeURL() {
+  const urlKeys = new URLSearchParams(location.search);
+//  ttsGame.langCode = getLangName(urlKeys.get("lang")) || 'en'; 
+//  ttsGame.langCode = urlKeys.get("lang") || 'en'; 
+  tts.langCode = urlKeys.get("lang") || 'en'; 
+
+  const game = urlKeys.get("game");
+  if (game) {
+    handleGameURL(game, adjustUrl(urlKeys.get("url")));
+    return;
+  }
+
+  if (urlKeys.get("debug")) debugEmbed();
+}
+
+const handleGameURL = (game, url) => {
+  if (game.includes('url:')) {
+    ttsGame.url = game.substring(game.search('url:') + 4);
+    ttsGame.loadFrom = 'url-address';
+    offerGame('ONE');
+    return;
+  }
+
+  if (game) {
+    if (url) {
+      ttsGame.url = url;
+      ttsGame.loadFrom = 'url-address';
+    } else {
+      ttsGame.text = game.replace(/ /g, "+");
+      ttsGame.loadFrom = 'url-parameter';
+    }
+    offerGame('ONE');
+//console.log('Game tasks', ttsGame.text);
+    return;
+  }
+}
+
+const displayInfo = () => null;
+const showRef = () => null;
+
+const gameStarterMic = cmd => {
+  color = (cmd === 'ON')? '#fa8' : 'transparent';
+  const e = elid('game-starter');
+// test for pageheader might be needed
+  if (e) e.style.backgroundColor = color;
+}
+
+const afterMicTurnedOn = () => {
+  gameStarterMic('ON');
+  startSTT(); // after speech has been recognized, handleSttResult fn is called
+}
+
+const afterMicTurnedOff = () => {
+	gameStarterMic('OFF');
+}
+
+/*
+ttsSpeakLang uses tts.spVoice, set in setEmbedVoice() in this file
+*/
+
+const setEmbedVoice = async () => {
+  tts.spVoice = null;
+
+  let voices = tts.getVoices();
+  await sleep(100); // getVoices doesn't load immediately
+//elid('debug-box').innerHTML += voices.length + ' voices loaded<br>';
+  voices = tts.getVoices();
+//elid('debug-box').innerHTML += voices.length + ' voices loaded<br>';
+console.log('getVoices = ', voices);
+  tts.spVoice = voices.find(matchVoiceLang);
+console.log('Voice name is', tts.spVoice);
+  if (!tts.spVoice) {
+    const s = 'The ' + getLangNameOrCode() + 
+       ' text-to-speech language is not found. Please add it to the operating system and try again.';
+    addGameFeedback(s);
+  }
+//  recognition.lang = (tts.spVoice)? tts.spVoice.lang : 'en-UK';
+  setSTTLang(tts.spVoice);
+}
+
+function matchVoiceLang(voice) {
+  if (getUrlKey('debug')) elid('debug-box').innerHTML += voice.lang + '<br>';
+
+//  const langId = ttsGame.langCode + '-'; //hyphenated code
+  const langId = tts.langCode + '-'; //hyphenated code
+//  const langIdUnder = ttsGame.langCode + '_'; //underscored code
+//  if (voice.lang.includes(langId) || voice.lang.includes(langIdUnder)) {
+  if (voice.lang.replace('_', '-').includes(langId)) return true;
+}
+
+function debugMatchVoiceLang(voice) {
+  const e = elid('debug-box');
+  e.innerHTML += voice.lang + '<br>';
+//  const langId = ttsGame.langCode + '-'; //hyphenated code
+//  const langIdUnder = ttsGame.langCode + '_'; //underscored code
+  const langIdUnder = tts.langCode + '_'; //underscored code
+  e.innerHTML += 'test ' + langIdUnder + '<br>';
+//  if (voice.lang.includes(langId) || voice.lang.includes(langIdUnder)) {
+  if (voice.lang.includes(langIdUnder)) {
+    e.innerHTML += 'Match!';
+    return true;
+  }
+}
+
+
+const debugFn2 = () => {
+  if (!tts.spVoice) ttsSpeakLang('not defined', 'en_US');
+  if (tts.spVoice.lang.includes('-')) ttsSpeakLang('hyphen', 'en_US');
+  if (tts.spVoice.lang.includes('_')) ttsSpeakLang('underline', 'en_US');
+  if (!tts.spVoice.lang.includes('-') && !tts.spVoice.lang.includes('_')) ttsSpeakLang('neither', 'en_US');
+}
+
+const debugFn3 = async() => {
+  sleep(100);
+  const voices = tts.getVoices();
+  elid('debug-box').innerHTML = (!tts.spVoice)? 'spVoice not defined<br>' :  tts.spVoice.lang;
+  for (v of voices) elid('debug-box').innerHTML += v.lang + '<br>';
+}
+
+const debugFn = async() => {
+  elid('debug-box').innerHTML += 'running...';
+  tts.spVoice = null;
+  await setEmbedVoice();
+//  await sleep(100); // getVoices doesn't load immediately
+//  let voices = tts.getVoices();
+// 	console.log('getVoices = ', voices);
+//  tts.spVoice = voices.find(matchVoiceLang);
+  elid('debug-box').innerHTML += tts.spVoice.lang;
+console.log('Voice name is', tts.spVoice);
+//  debugFn5();
+}
+
+const debugFn5 = async() => {
+  if (!tts.spVoice) ttsSpeakLang('No voice', 'en_GB');
+  else if (!tts.spVoice.lang) ttsSpeakLang('No language', 'en_GB');
+    else ttsSpeakLang(tts.spVoice.lang, 'en_GB');
+
+  elid('debug-box').innerHTML += tts.spVoice.lang + '<br>Lang separator' + getLangSeparator();
+}
+
+//const handleKeyEvent = e => null; //dummy fn to ignore keystrokes
+
+const sayFinalThanks = () => {
+  ttsSpeakLang('Thank you!', 'en-US');
+//  displayInfo('Thank you. Will appreciate your <a href="/info/?show=feedback">feedback</a>. 😊', 200);
+}
+
+
+const debugEmbed = () => {
+  const txt = `<div id='debug-box' style="font-size: 5vw">
+<div onclick="ttsSpeakLang('This is a test', 'en-US')">Click to speak en-US</div>
+<br><br>
+<div onclick="ttsSpeakLang('This is another test', 'en_US')">Click to speak en_US</div>
+<br><br>
+<div onclick="debugFn()">debug fn</div>
+</div>
+`;
+  setElHTML('ta', txt);
+//  debugFn();
+}
+
+
+/*
+Issues:
+
+
+    === Future Plans ===
+- add debug key
+- add a gear ⚙️ for settings, e.g., TTS speed. See https://www.compart.com/en/unicode/U+2699
+*/
+</script>
+
+</body>
+</html>
+

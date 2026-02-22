@@ -1,0 +1,19 @@
+<x-vars video-size=-1 task-title>
+<h2 style="text-align: center; margin-bottom: 0.5em">Drill listening and speaking</h2>
+<img src="./img/ex0.jpeg" width=30% class=float-left style="margin-right: 20px"><h3>Check out these activities</h3>
+&bull; tasks based on the series [<i>The Flatmates</i>](/?t=//en/a2/flatmates/bbc-flatmates-index.txt), [~English at Work~](/?t=//en/a2/eaw/eaw-index.txt), [~VoA Learning English~](/?t=//en/voa.txt)
+&bull; [common irregular English verbs](/irrverbs)
+&bull; [W/TH tongue twisters](/?t=/tasklist/pronun/tongue-twisters-w-th.txt)
+&bull; a [mini-test on articles](/?t=/tasklist/grammar/articles1.txt)
+&bull; a few [pronunciation tips](/?t=/tasklist/pronun/pronun-index.txt)
+&bull; [several tasks for Mandarin Chinese learners](/?t=//zh/zh-index.txt). 
+
+<h3>Here are some other features</h3>
+&bull;  Loop audio/video fragments at your favourite speed: <input type="url" placeholder="Enter URL here" onchange="getVideoFromURLInput(this)"><input type="submit" class="plain-button font-80pc" value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
+or <label><a title="Open a local audio or video file">open it from a local file</a>.<input type="file" id="open-media2" onchange="uploadVideoFile(this)" accept="video/{star}, audio/{star}" style="position: fixed; top: -100em"></label>
+&bull;  Watch a few <task url=/tasklist/live-tv.txt>live TV channels</task> or listen to <task url=/tasklist/live-radio.txt>the radio</task> at a slower speed.
+&bull;  Play [voice games](/?game=new) in Chrome or Edge browser on computer.
+&bull;  Practice [shadow reading](?t=/tasklist/shadowing.txt).
+&bull;  *Make your own tasks*. For example, click on the <tip '' ref='edit-task' y-shift=12><code style='border-right:1px solid; background-color: white'>Aa</code> icon</tip> on the header of this window to edit this task. Or make a new task by clicking on <tip '' ref='new-task' y-shift=14>🗋 icon</tip> and paste the url of a YouTube video. Then copy/paste a few lines with time codes from the video transcript. When you are done with editing, click on the <tip '' ref='copy-link' y-shift=16>link icon</tip> to copy the link to the clipboard.
+
+*Discover [more tasks and voice games](/tasks)*. If you wish to make your own voice game or interactive task, check out [this document](https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8/edit#gid=1748845435). Please leave your comments and feedback [here](/info/?show=feedback).

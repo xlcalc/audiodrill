@@ -1,0 +1,3 @@
+<div style="height:90vh;"><iframe style="border:0; height:90%" src="https://docs.google.com/document/d/e/2PACX-1vRV5GinD7cI55PEdxwu83CFaQLK1j6g-3bsPjXZ881kIY_U0SBZqw0TJU6A3AszA02a2ccr9lKMI2F2/pub?embedded=true"></iframe>
+
+Send your feedback and useful language resources via <i>Contact/Feedback</i> in the menu.</div>

@@ -1,0 +1,4751 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Play video fragments to boost listening and pronunciation skills</title>
+<meta name="description" content="A free tool for language learners who can drill listening and pronunciation by repeatedly watching video fragments.">
+<meta name="keywords" content="video, fragments, listening, pronunciation">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="Audiodrill" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.audiodrill.com" />
+<meta property="og:image" content="https://www.audiodrill.com/img/og-image.jpg" />
+<meta property="og:description" content="Listening and speaking practice for language learners" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+
+<script>
+
+(function () {
+  const urlKeys = new URLSearchParams(location.search);
+
+  const night = +(urlKeys.get('nightmode') || localStorage.getItem('nightMode'));
+//console.log('Night mode', night);
+  localStorage.setItem(('nightMode'), night);
+  if (night) {
+//  set :root to night-mode
+    document.documentElement.classList.add('night-mode');
+  }
+})();
+
+</script>
+
+<style type='text/css'>
+.vlink:hover {
+  text-decoration: underline;
+  color: darkblue;
+  cursor: pointer;
+}
+
+.vlink {
+  margin: 0 0 -1em 0;
+  padding-bottom: -1em;
+}
+.cloze {
+  line-height: 1.1em;
+  border: 1px gainsboro dotted;
+  border-bottom-color: darkslategray;
+  outline: none;
+  color: #269;
+  color: var(--a-color);
+}
+
+.cloze:focus {
+  border-bottom: 2px #469 solid;
+  border-bottom: 2px var(--a-color) solid;
+/*
+  border-bottom: 2px #66a solid;
+  color:#08a;
+  color:#777;
+  color:#448;
+*/
+}
+
+.dropdown {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  z-index: 1; 
+  font: inherit;
+  line-height: 1.2em;
+  outline: none;
+  background-color: transparent;
+  border: 1px gainsboro solid;
+}
+
+.dropdown:focus {border-bottom: 2px #469 solid;}
+
+.dropdown-label {
+  position: relative;
+  background-color: white;
+}
+
+.dropdown-label::after {
+  content: "▼";
+  color: lightgray;
+  font-size: 60%;
+  padding-right: 0.1em;
+  text-align: right;
+  position: absolute;
+  right: 0;
+  top: -0.2em;
+}
+
+.view-cloze-answers-no-transition, .view-cloze-answers {
+  color: #dfe;
+  background-color: #dfe;
+}
+
+.view-cloze-answers {
+  transition: 1.5s;
+}
+.view-cloze-answers:hover {
+  background-color: transparent;
+  color: #095;
+  transition: 0s;
+}
+
+input {
+  display: inline-block;
+/*  white-space: norap; 
+  width: 100%; */
+  font-family: inherit;
+  font-size: 100%;
+/*  outline:none;*/
+  color: inherit;
+  background-color: inherit;
+  border: 1px solid var(--color-ddd-555);
+  border-radius: 3px;
+}
+
+input[type=url] {
+  padding: 0 .1em;
+  margin: 0;
+  background-color: inherit;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+/*  outline: none;*/
+}
+
+/*input:focus {outline: auto}*/
+
+input[type=url]:focus {
+  border: 1px solid #bcc;
+  background-color: #fff;
+}
+
+
+.info {
+  background-color: lightgray;            
+}
+
+.error {
+  background-color: red;
+  color: white;
+}
+
+.main-page {margin: 0 0.5em;}
+
+.row {  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.left-column {
+/*  flex: 40%;*/
+  margin-right: 0.5em;
+  position: relative;
+/*  
+  resize: horizontal;
+  overflow: hidden;
+*/
+}
+
+.right-column {
+/*  flex: 40%;*/
+  flex: 1 1;
+  margin-left: 0.5em;
+  color: var(--color-text);
+  max-width: 900px; /* is it really needed? */
+}
+
+#player-with-settings {
+  position: sticky;
+  top: 6px;
+  max-width: 75vw;
+  max-width: 90vw;
+}
+
+/*.task-box {display:flex}*/
+
+.task-box, #wordlist-box {
+/*
+  padding: 3px 0; 
+*/
+  margin-top: 0.4em;
+  margin-bottom: 0;
+  border: 0; 
+  border-radius: 6px;
+}
+
+#wordlist-box {
+  margin-top: 0.65em;
+  position: relative;
+}
+
+.box-header {
+/*
+  padding-left: 0.2em; padding-bottom: 0.2em; 
+  text-align: center;
+*/
+  padding: 0.2em;
+  display:block;
+  color: #777;
+}
+
+.task-header {
+z-index: 2;
+position: sticky;
+top: 0;
+height: 1.2em;
+margin-bottom: -0.45em;
+background-color: white;
+border-bottom: 1px gainsboro solid; 
+/*  box-shadow: 0 0 4px #ccc; */
+}
+
+.task-body, #wordlist {
+  min-height: 40px;
+/*  max-height: 70vh; */
+  padding: 0 0.5em;
+  margin: 0;
+  background-color: #fdfcfb; 
+  background-color: hsl(150, 40%, 99%); 
+  overflow-y:auto; 
+  line-height: 1.5em;
+  clear: left;
+  font-size: calc(16px + 0.5vmin);
+/*  unicode-bidi:plaintext;*/
+}
+
+.task-body::selection {
+/*
+  color: #ddd;
+  background-color: #ddd;
+*/
+}
+
+.cue {
+  border-left: 3px solid transparent;
+  margin:0;
+  cursor: pointer;
+}
+.cue:focus {
+/*  outline: none; */
+}
+
+.play-pause {
+  padding: 0 0.11em;
+  border-left: 0.2em solid;
+  border-right: 0.2em solid;
+  height: 56%;
+  display: inline-block;
+/*  vertical-align: middle; */
+/*  margin-bottom: 17%;*/
+}
+
+.cue-active {
+  border-left: 3px solid lightgreen;
+}
+/*
+.cue:hover {
+  background-color: floralwhite;
+}
+*/
+.yt-video, #html-video {
+  position: relative;
+  width: 100%;
+  margin-top: 0.4em;
+  overflow:hidden;
+}
+
+#playerManualControls {
+  line-height: 1.8em;
+  margin-top: 0.7em;
+/*  padding: 0.7em 0.4em 0.4em 0.4em; */
+  border: 1px solid gainsboro;
+  position: relative;
+}
+
+#playerManualControlsTag {
+  position: absolute;
+  top: -0.4em;
+  left: 0;
+  line-height:1.2em;
+  color: silver;
+  color: var(--dark-gray3);
+  background-color:white;
+}
+
+#playerManualControlsTag:hover {
+  color:inherit;
+  background-color: #eee;
+}
+
+#manual-controls-box {
+  margin-top: 0.7em;
+  padding: 0 0.4em 0.4em 0.4em;
+  max-height: 40vh;
+  overflow-y: auto;
+/*  border:1px solid blue;*/
+  cursor: default;
+}
+
+.rec-circle1 {
+  height: 21px;
+  width: 21px;
+  background-color: LightSalmon;
+  border-radius: 100px;
+  border: 1px solid #bbb;
+  transform: scale(0.8);
+  display: inline-block;
+}
+.rec-circle2 {
+  height: 17px;
+  width: 17px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  margin-top: 2px;
+}
+
+#media-url-input {
+  border: 1px gainsboro solid;
+  width: 80%;
+  max-width: 360px;
+}
+
+/*
+.fg--search {
+  background: white;
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+}
+
+.fg--search input {
+  width: 100%;
+  padding: 2px 10px 2px 10px;
+  display: block;
+  padding-right: 0;
+}
+
+.fg--search button {
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 11px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px 5px;
+  margin-right: -14px;
+}
+*/
+.shift-btn {
+  width:1.5em;
+  height:1em;
+/*  margin-bottom:0.18em;*/
+  line-height:0.8em;
+  line-height: 0;
+/*  padding:0;*/
+  font-size:100%;
+  border: 1px #ccc solid;
+  border-radius: 5px;
+/*  outline:none;*/
+}
+
+.loop-btn {
+  height: 2em;
+  width: 4em;
+  border: 1px solid #9999;
+  border-radius: 1em;
+}
+
+#loop-advanced-box {
+  position:relative; 
+  font-size:90%;
+  line-height: 1.2em;
+}
+
+/*
+#loop-advanced-box div {
+  background: inherit;
+}
+*/
+#loop-advanced-title {
+  display:inline-block;
+  cursor: pointer;
+  margin: 0.4em 0.4em 0.2em 0;
+}
+
+/* .task-chevron {
+  font-size: 60%;
+  margin-left: 1em;
+}
+*/
+
+#player-box {position: relative;}
+
+#player-box:hover #video-resize{display: flex}
+
+#video-resize {
+display: none;
+position:absolute;
+top: 100px;
+left: 20px;
+background-color: #777;
+background-color: transparent;
+width: 80px;
+height: 22px;
+z-index: 10;
+}
+
+.video-size {
+  margin: 3px;
+  backdrop-filter: brightness(0.85);
+  border: #eee solid 2px;
+  box-shadow: 0 0 1px #333;
+  box-shadow: 0 0 3px #888;
+  border-radius: 2px;
+}
+.video-size:hover {border-color: #fff}
+.video-size:hover:before {
+  position: relative;
+  top: -30px;
+  color: #eee;
+  background-color: rgba(32,32,32,0.8);
+  border-radius: 4px;
+  padding: 5px;
+}
+.video-smaller:hover:before {content: 'Smaller\00A0size'}
+.video-bigger:hover:before {content: 'Bigger\00A0size'}
+
+.video-size-disabled, .video-size-disabled:hover {
+  border-color: #bbb;
+  backdrop-filter: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0.2em 0;
+/*  unicode-bidi: plaintext;*/
+}
+
+.screen-shade {
+  position: fixed;
+/*  height: 100vh; */
+  width: 100vw;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  background-color: var(--btn-lighgray);
+  color: #bdc;
+  font-size: 40px;
+  opacity: 0.92;
+  text-align: center;
+  padding: 5em 0;
+  z-index: 3;
+/*  display: none;  testing measure */
+}
+
+
+[contentEditable=true]:empty:before{
+  content:attr(data-text);
+  font-style:italic;
+}
+
+::placeholder {font-style: italic}
+
+#settings-box div {background: inherit}
+
+.time-mark-btn {
+/*  width:1.5em;
+  height:1.5em;
+  outline:none;
+  line-height:0.8em;
+*/
+  margin-bottom:0.18em;
+  padding:0;
+  font-size:100%;
+  border: 1px dotted gray;
+  border-radius: 50%;
+}
+
+.on-top-knob {
+position: absolute;
+top: -1.5em;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+color:#aaa;
+font-size: 6px;
+padding: 0;
+}
+
+/*
+.yt-video0 {
+  width: 400px;
+  height: 226px;
+}
+
+.yt-video1 {
+  width: 640px;
+  height: 360px;
+}
+
+.yt-video2 {
+  width: 800px;
+  height: 450px;
+}
+*/
+
+#player {
+  width: 100%;
+  border-width: 0;
+}
+
+.share-fragm > svg {
+  stroke: #999;
+  fill: transparent;
+}
+.share-fragm > svg:hover {
+  stroke: hsl(180, 40%, 70%);
+  fill:hsl(180, 70%, 94%);
+}
+
+.share-fragm > svg:active {
+  stroke: hsl(180, 20%, 70%);
+  fill:hsl(180, 30%, 90%);
+}
+
+.height12 {height:12px !important;}
+
+.new-task-icon {margin: 0 -1px;}
+.new-task-icon > svg {
+  fill: transparent;
+  stroke-width: 7;
+  stroke: currentColor;
+}
+
+.share-icon > svg {
+  fill: transparent;
+  stroke-width: 1.4;
+}
+
+.episode-nav, .x-audio-box {
+  z-index: 2; 
+/*
+  border: 1px #bbb solid; 
+  border-top: none; 
+*/
+  position: sticky; 
+  bottom:0; 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); 
+/*  filter: brightness(120%);*/
+  background: rgba(255,255,255,0.82);
+  box-shadow: 0 -2px 4px #ccc;
+  box-shadow: 0 -0.5px 4px #ddd;
+  border-radius: 10px / 90px;
+  text-align: center;
+}
+
+.x-audio-box.night-mode {
+/*  box-shadow: 0 -.5px 4px #777;*/
+  box-shadow: 0 0 12px #450;
+}
+
+.epi-nav-bar {
+  padding: 0.3em;
+  line-height: 1.3em;
+  color: #777;
+  font-size: larger;
+}
+
+.x-audio-box {
+  bottom: 1px;
+  margin: 8px auto -8px;
+  padding: .3em .8em;
+/*
+  padding: 0 1em;
+  width: 80vw;
+  width: 90%;
+  min-height: 64px;
+*/
+  max-width: 496px;
+  text-align: left;
+  background: linear-gradient(to bottom, #f5f5f5 0%, #fafafa 30%, #ffffff 45%, #ffffff 50%, #f5f5f5 65%, #e0e0e0 100%);
+}
+
+.height-36 {height: 36px !important}
+
+.x-audio-player {
+  margin-top: 0.4em !important;
+  max-width: 280px;
+/*
+  height: 36px !important;
+  border-radius: 2em; 
+*/
+}
+
+.player-box-loading {
+  height: 42px;
+  width: 95%;
+  display: flex;
+  margin-top: 4px;
+  align-items: center;
+}
+
+.top-controls {
+  text-align: left;
+  font-size: 120% !important; 
+  position: absolute;
+  position: fixed;
+/*  top:15%;
+  top:30%;
+*/
+  bottom: 12%;
+  left:50%;
+  transform: translateX(-50%);
+  line-height: 1.5em;
+/*  width: max-content !important;*/
+  width: 420px;
+  line-height: 2em;
+/*  height: fit-content; */
+  padding: 0.5em;
+  border: 1px solid #eee;
+  z-index: 100; /* bad for tooltips */
+  z-index: 5;
+  cursor: default;
+}
+
+.m-wrap {display: flex}
+
+@media screen and (max-width: 700px) {
+  .m-wrap {flex-wrap: wrap}
+/*  .menu-button {right:-0.1em !important} */
+  .main-page {margin: 0}
+  .row { flex-direction: column; }
+
+  .left-column { 
+   /* flex:auto !important;
+    position: sticky;
+    top: 0; */
+	margin: 0;
+	width: 100%;
+    z-index: 3;
+    z-index: 4; /* changed 2025-05-25 b/c of tips visible on video */
+/*    background: rgba(255,255,255,1); */
+  }
+
+  #player-with-settings {
+	margin: auto;
+	padding-top: 45vw;
+  }
+
+  #player-box-bgr {
+    position: fixed;
+    margin: auto;
+    width: 100%;
+	top: 0;
+	left: 0;
+	border: 0px solid blue;
+/*	background-color: white;*/
+	z-index:1;
+  }
+  
+  #player-box, #settings-box {
+    margin: auto;
+    width: 80vw;
+    width: 90%;
+  }
+  
+  #player-box:hover #video-resize{
+    display: none !important;
+  }
+
+
+  .yt-video, #html-video {
+    margin-top: 0;
+    height: 45vw; /* about 16:9 ratio when width=80vw */
+  }
+  
+  .right-column {margin: 0}
+/*  .task-header {position: relative}*/
+
+  .epi-nav-bar {font-size: x-large}
+}
+
+/*
+.pop-center {
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);  
+}
+*/
+
+.chunk-tooltip-menu {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  gap: 1px;
+  outline: none;
+  z-index: 3;
+}
+.chunk-tooltip-menu button, .chunk-action-buttons button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 3px;
+  color: #777;
+}
+.chunk-tooltip-menu button:hover, .chunk-action-buttons button:hover{ background-color: #eee }
+
+#vocabBackdrop {
+  position: absolute;
+  inset: 0;
+  background: transparent; /* or rgba(0, 0, 0, 0.4) for a dim effect */
+}
+
+#vocabInput {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+#vocabForm {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px 12px 0 0;
+    width: 100%;
+    max-width: 500px;
+	z-index: 1;
+}
+
+
+#vocabForm input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+	box-sizing: border-box;
+}
+
+#vocabButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#vocabButtons button {
+  padding: 8px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#saveVocabBtn {
+  background-color: hsl(150, 70%, 37%);
+  color: white;
+}
+
+#saveVocabBtn:hover {
+  background-color: hsl(150, 70%, 32%);
+}
+
+#saveVocabBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+#cancelVocabBtn {
+  background-color: #dddddd;
+  color: #333;
+}
+
+#cancelVocabBtn:hover {
+  background-color: #ccc;
+}
+
+@media (min-width: 768px) {
+  .task-box, #wordlist-box { border: 1px hsl(150, 20%, 92%) solid; }
+
+    #vocabInput {
+      align-items: center;
+      justify-content: center;
+    }
+
+    #vocabForm {
+      border-radius: 8px;
+      max-width: 400px;
+    }
+}
+
+@media (max-width: 400px) {
+  #vocabButtons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #vocabButtons button {
+    width: 100%;
+  }
+  .top-controls {width: 320px}
+}
+
+.vocab-section {
+  position:relative;
+  background: #f9f9f9;
+  margin: 0 -0.25em;
+  border-radius: 5px;
+}
+
+.vocab-content {
+  padding: 0 0.1em;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  max-height: 450px;
+  transition: max-height 0.2s ease;
+  overflow-y: auto;
+}
+
+.vocab-content.collapsed {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+.vocab-top {
+  border-bottom: 2px solid #ddd;
+}
+
+.vocab-bottom {
+  margin-top: 24px;
+/*  border-top: 2px solid #ddd;*/
+}
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="parts/shared.css">
+
+</head>
+
+<body data-themeable>
+<div class="dropzone full-cover flex-center hidden">Drop zone</div>
+
+<div id="screen-cover" data-themeable class="screen-shade flex-center">Loading
+  <div class="spinner"></div>
+</div>
+
+<!--
+<div id="mic" class="flex hidden" title="Start dictating (Chrome or Edge only)">
+</div>
+-->
+
+<div id="chunk-tooltip-menu" class="chunk-tooltip-menu" style="top: -100px" tabindex="0" role="tooltip" aria-label="Tooltip with buttons">
+  <button id="speak-btn" tip="Click to hear, or<br>|_Ctrl_| + click to hear the whole sentence"></button>
+  <button id="search-btn" tip="Look up with Google">🔎&#xFE0E;</button>
+  <button id="translate-btn" tip-class="tooltip-link" tip="Translate"></button>
+  <button id="add-to-vocab-btn" tip="Explore and add to vocabulary">📖&#xFE0E;</button>
+</div>
+
+<!-- Vocab Input UI -->
+<!-- not used as of Aug 2025 -->
+<div id="vocabInput" class="hidden">
+  <div id="vocabBackdrop"></div>
+  <div id="vocabForm">
+    <div><strong>Add to Vocabulary</strong></div>
+    <div id="selectedChunkDisplay" class="inline semibold italic light-green-bgr"></div>
+    <div id="chunk-action-buttons" class="inline chunk-action-buttons">
+      <button id="speak-btn2" title="Speak"></button>
+      <button id="search-btn2" title="Look up with Google">🔎&#xFE0E;</button>
+      <button id="translate-btn2" title="Google Translate"></button>
+	</div>
+    <input id="translationInput" placeholder="Enter meaning or translation" />
+    <div id="vocabButtons">
+      <button id="saveVocabBtn">Save</button>
+      <button id="cancelVocabBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="main-page">
+
+<div id="top-menu"></div>
+
+<div id="top-controls" data-themeable class="top-controls box-shadow rounded hidden" style="backdrop-filter: blur(10px);background: rgba(255, 255, 255, 0.82);">
+<div id="top-controls-label" class="flex font-75pc" style="margin: -0.5em 0;"></div>
+<span class="close-x01 action-icon" onclick="hideElid('top-controls')">&times;</span>
+<div id="top-settings"></div>
+</div>
+
+<div id="page-header" class="hidden">
+  <h3 class="no-margin">Audiodrill: play video or audio fragments</h3>
+</div> <!-- page-header div -->
+
+<div id="page-row" class="row">
+<div id="left-column" class="left-column">
+
+<div id="player-with-settings">
+<div id="player-title" class="gray2 font-90pc semibold all-small-caps padding-05em"></div>
+
+<div id="player-box-loading" class="hidden player-box-loading"><b>Loading</b>
+  <div class="spinner"></div>
+</div>
+
+<div id="player-box-bgr">
+<div id="player-box" class="hidden">
+
+<div id="video-resize" 
+  tip="resize">
+</div>
+
+<div id="yt-video" class="inherit hidden yt-video rounded">
+  <div id="yt-player">
+  <!-- YT <iframe> and video player will replace this <div>. -->
+  </div>
+</div>
+
+<video id="html-video" class="inherit hidden rounded"></video>
+</div> <!-- player-box -->
+</div> <!-- player-box-bgr -->
+
+<script src="parts/audiodrill-task.js"></script>
+<script src="parts/bottom-bar.js"></script>
+<script async src="parts/tts.js"></script>
+<script async src="parts/stt.js"></script>
+<script src="parts/vocab.js"></script>
+<script async src="parts/word-ref.js"></script>
+<script src="https://translate.google.com/translate_a/element.js"></script>
+
+<script type="module">
+/*
+  import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
+//        const client = await Client.connect("abidlabs/en2fr");
+  const client = await Client.connect("UNESCO/nllb");
+  gstore.Connect = client;
+*/
+</script>
+
+<script>
+//const webPageName = 'TASKS'; // used in audiodrill.js
+gstore.webPageName = 'TASKS'; // used in audiodrill.js
+
+var StartFrom;
+var StopAt;
+var player; // YouTube player object
+
+const ytPlayer = elid('yt-video');
+const htmlPlayer = elid('html-video');
+const playerBoxLoading = elid('player-box-loading');
+const playerBox = elid('player-box');
+const videoResize = elid('video-resize');
+
+const tstore = {};
+ontouchstart = (e) => tstore.touchScreen = 1;
+
+tstore.chunkTooltip = elid('chunk-tooltip-menu');
+tstore.speakBtn = elid('speak-btn');
+//tstore.speakBtn2 = elid('speak-btn2');
+tstore.translateBtn = elid('translate-btn');
+//tstore.translateBtn2 = elid('translate-btn2');
+tstore.searchBtn = elid('search-btn');
+tstore.addToVocabBtn = elid('add-to-vocab-btn');
+
+players.flag = -1;
+players.minWidth = 240;
+//players.maxWidth = 850;
+players.maxWidth = 1080;
+playerBox.onmousemove = () => { videoResizerReset(); };
+playerBox.onmouseleave = () => { showVideoResizer(0); };
+videoResize.onmouseenter = () => { players.mouseOverVideoResize = true; };
+videoResize.onmouseleave = () => { players.mouseOverVideoResize = false; };
+htmlPlayer.onmouseenter = () => { htmlPlayer.controls = true; };
+htmlPlayer.onpause = () => { players.flag = 0; };
+htmlPlayer.onplay = () => { players.flag = 1; };
+
+htmlPlayer.onmouseleave = () => {
+  if (players.mediaType === 'video') htmlPlayer.controls = false;
+};
+
+htmlPlayer.onerror = err => {
+  const msg = htmlPlayer.error.code === 4 ? "The provided link is not a valid media source" : htmlPlayer.error.message;
+  displayAlarmMessage(msg, 5000);
+
+  players.mediaState = 'error';
+  players.flag = -1;
+  // should showPlayerBox() be called here?
+  hideElid('player-box-loading', 'screen-cover');
+};
+
+/*   === CLOZE: gaps and DDLs ===    */
+
+const prepareCloze = () => {
+  transcriptText.querySelectorAll('.cloze') .forEach(gap => {
+    gap.value = (gap.alt.split(/=>|\\--/)[1] || '').trim();
+    adjustGapWidth(gap);
+  })
+}
+
+const makeTestForm = txt => { //updated 2021-07-23 handle '|' symbol
+  const replaceAffixes = txt => {
+    const ddprefix = /<<<|\[\[/g, 
+      ddsuffix = />>>|\]\]/g, 
+      ddprefixNew = '<label class="dropdown-label"><select class="dropdown padding-03em" onclick="checkDropDownList(this)" onchange="checkDropDownList(this)" onmousedown="onclickDropDownList(this)" onfocus="checkDropDownList(this)">',
+      ddsuffixNew = '</select></label>',
+
+      clprefix = /<</g,
+      clsuffix = />>/g,
+      clprefixNew = '<input class="cloze" type="text" alt="',
+      clsuffixNew = '" onkeypress="checkGapForEnter(this,event)" onblur="checkClozeInput(this)" onfocus="onGapFocus(this)" />';
+
+    return txt
+      .replace(clprefix, clprefixNew) .replace(clsuffix, clsuffixNew)
+      .replace(/\[\[(.*?)\]\]/g, (_, content) => { // since 2025-09-07: [[...]] can work for gaps too
+        const dd = content.includes('**'); // distinguish between gaps and dd (dropdown lists)
+        const prefix = dd ? ddprefixNew : clprefixNew;
+        const suffix = dd ? ddsuffixNew : clsuffixNew;
+        return prefix + content + suffix;
+      })
+	  .replace(ddprefix, ddprefixNew) .replace(ddsuffix, ddsuffixNew) // obsolete b/c of the combined check above
+  }
+
+  const addOptions = txt =>  // for dropdown list
+    '<option hidden disabled selected></option>'
+    + txt.split('|') .map(s => `<option value="${s}">${s.replace('**','')}<\/option>`) .join('');
+  
+
+  const el = document.createElement('div');
+  el.innerHTML = replaceAffixes(txt);  
+  const dropLists = el.getElementsByTagName('select');
+  for (const dropList of dropLists) dropList.innerHTML = addOptions(dropList.innerHTML);
+  return el.innerHTML;
+}
+
+const checkDropDownList = el => {
+//console.log('Element value',el.value);
+  setElClass(el, 'no-border', el.value);
+  if (!el.value) return; // e.g. no selection after click-click 
+  
+  resetChoiceColor(el);
+  const mark = el.value.startsWith('**') ? 'green' : 'red';
+  el.classList.add(mark);
+
+  el.userInput = el.value;
+
+  adjustDdlWidth(el);
+}
+
+const adjustDdlWidth = el => {
+  const addWidth = (el.value.startsWith('**')) ? 7 : 20;
+  el.style.width = getTextWidth(el) + addWidth + 'px';
+}
+
+const onclickDropDownList = el => {
+  el.selectedIndex = -1;
+  resetChoiceColor(el);
+}
+
+const resetChoiceColor = el => { el.classList.remove('red', 'green', 'view-cloze-answers', 'view-cloze-answers-no-transition'); }
+
+const onGapFocus = el => {
+  el.value = el.value.replace(/_/g,'');
+  resetChoiceColor(el);
+  tstore.currentGap = el;
+  enableVoiceInput(el);
+}
+
+const getTextWidth = (el, s = '') => {
+// re-use canvas object for better performance
+  const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement('canvas'));
+  const context = canvas.getContext('2d');
+  context.font = window.getComputedStyle(el, null) .getPropertyValue('font');
+  const txt = s || el.value;
+//console.log('getTextWidth for', txt);
+  const metrics = context.measureText(txt);
+  return metrics.width// + 4;
+}
+
+const adjustGapWidth = (gap, s = '') => {
+  const txt = s || gap.value || '_____'; // the latter is for an empty field
+//console.log('Adjust gap width for', txt);
+  const newWidth = getTextWidth(gap, txt);
+  const oldWidth = parseFloat(gap.style.width);
+  if (!s || newWidth > oldWidth) gap.style.width = newWidth + 'px';
+  // else don't shrink while typing
+}
+
+const strMatch = (s1, s2) => (normalizeStr(s1) === normalizeStr(s2));
+
+const checkGapMatch = gap => {
+  if (strMatch(gap.value, gap.alt)) { // pure gap without \\ part
+    gap.value = gap.alt;
+    return true;
+  }
+
+  const gapValue = gap.value.trim();
+  if (gapValue) gap.value = gapValue; //trim only if gap value is not empty
+
+  let match = false;
+// what about using forward slash in answers?
+//  const refs = gap.alt.split('\\');
+  const refs = gap.alt.split(/=>|\\--/)[0].trim().split(/\\|\//);
+  for (const reference of refs) {
+/*
+    if (!reference.startsWith('--')  // prompt starts with --
+    && strMatch(gap.value, reference)) { 
+*/
+    if (strMatch(gap.value, reference)) { 
+      match = true;
+      gap.value = reference.trim();
+      break;
+    }
+  }
+  return match;
+}
+
+const restoreGapValue = gap => {
+// due to removed underscores, restore gap.value if no real change happened
+  if (!gap.value) return 'EMPTY_GAP';
+  let ref = gap.alt.split(/=>|\\--/)[1]; // initial gap text, if any
+  if (ref) ref = ref.trim();
+  if (ref && strMatch(gap.value, ref)) {
+    gap.value = ref;
+	return 'RESTORED_GAP';
+  }
+  return ''; // gap.value not restored b/c user changed it
+}
+
+const checkClozeInput = gap => {
+//console.log('Active el', document.activeElement);
+  disableVoiceInput();
+  const gapRestored = restoreGapValue(gap);
+  if (!gapRestored) {
+    const mark = checkGapMatch(gap) ? 'green' : 'red';
+    gap.classList.add(mark);
+    gap.userInput = gap.value;
+  } else gap.userInput = '';
+  adjustGapWidth(gap);
+}
+
+const toggleGaps = el => {
+  const sw = el;
+  if (!tstore.touchScreen && sw.checked) displayMessage('Hover the mouse to see the answer', 2000);
+  viewTestAnswers(sw.checked);
+}
+
+const viewTestAnswers = cmd => {
+  const setRightColors = async (el) => {
+    el.classList.remove('red');
+	if (tstore.touchScreen) el.classList.add('green'); // on touch screens
+    else {
+	  el.classList.remove('green'); // hide answers even if correct
+	  await blinkElClass(el, 'view-cloze-answers-no-transition', 1, 100);
+//	  el.classList.add('view-cloze-answers-no-transition');
+//	  await sleep(100); // without a short delay, first transition will be visible
+	  el.classList.add('view-cloze-answers');
+//	  el.classList.remove('view-cloze-answers-no-transition');	  
+	}
+  }
+
+// walk through cloze tests
+  const gaps = transcriptText.getElementsByClassName('cloze');
+  for (const gap of gaps) {
+    const v = gap.alt.split(/=>|\\--/);
+    if (cmd) {
+      gap.value = v[0].trim();
+	  setRightColors(gap);
+    } else {
+      resetChoiceColor(gap);
+      if (gap.userInput) {
+        gap.value = gap.userInput;
+        checkClozeInput(gap);
+      } else {
+        gap.value = (v[1] || '').trim();
+      }
+    }
+  adjustGapWidth(gap);
+  }
+
+  const getCorrectOption = ddList => {
+    for (const opt of ddList.options) if (opt.value.startsWith('**')) return opt.value;
+    return '';
+  }
+
+// walk through dropdown lists
+  const ddLists = transcriptText.getElementsByClassName('dropdown');
+  for (const ddl of ddLists) {
+    if (cmd) {
+      ddl.value = getCorrectOption(ddl);
+      setRightColors(ddl);
+	  adjustDdlWidth(ddl);
+    } 
+	else {
+	  resetChoiceColor(ddl);
+	  if (ddl.userInput) {
+        ddl.value = ddl.userInput;
+        checkDropDownList(ddl);
+      } else ddl.value = '';
+	}
+  }
+}
+
+/*   === END OF CLOZE ===   */
+
+
+function setPlayer(isHtml) {
+  showOrHideEl(htmlPlayer, isHtml);
+  showOrHideEl(ytPlayer, !isHtml);
+
+  const pbrControl = elid('setpbr');
+  if (isHtml) pbrControl.min = 0.1;
+  else {
+    pbrControl.min = 0.25;
+    pbrControl.value = Math.max(pbrControl.value, pbrControl.min);
+  }
+  
+  pbrControl.max = 2;
+  pbrControl.step = 0.05;
+  setPBR();
+  setRepNum();
+}
+
+const loadYTVideoByID = async id => {
+  if (players.ytAPI !== 'YT_PLAYER_READY') {
+console.log('LoadYTbyID: players.ytAPI',players.ytAPI);
+    hidePlayerBox();
+    if (!players.ytAPI) loadYTAPI(); 
+    if (players.ytAPI === 'DESTROYED') onYouTubeIframeAPIReady(); 
+    await new Promise(resolve => players.resolveYTPlayerReady = resolve);
+  }
+
+// Loading YT files locally doesn't work since changes in YT API 2025-07-09 (error 153)
+//
+// These tries to fix don't help:
+//  elid('yt-player').setAttribute('referrerpolicy', 'origin');
+//  elid('yt-player').src = 'https://www.youtube.com/embed/?enablejsapi=1&widgetid=1&origin=https%3A%2F%2F%audiodrill.com&forigin=https%3A%2F%2F%audiodrill.com&aoriginsup=1&vf=1';
+//  elid('yt-player').setAttribute('origin', 'https://www.youtube.com');
+//  elid('yt-player').setAttribute('forigin', 'https://www.youtube.com');
+  
+  player.cueVideoById(id);
+  players.mediaState = 'loaded'; // a bit too early?
+}
+
+function extractYouTubeTimestamp(url) {
+  const regex = /[?&](?:t|start)=([0-9hms]+)/;
+  const match = url.match(regex);
+  if (!match) return null;
+
+  const timeStr = match[1];
+
+  // If the timestamp is a string with plain number (e.g. t=90), return it as seconds, converted to number
+  if (/^\d+$/.test(timeStr)) return +timeStr;
+
+  // Parse h/m/s formats (e.g. 1h2m3s)
+  const timeRegex = /(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/;
+  const parts = timeStr.match(timeRegex);
+  if (!parts) return 0;
+
+  const hours = parseInt(parts[1] || "0", 10);
+  const minutes = parseInt(parts[2] || "0", 10);
+  const seconds = parseInt(parts[3] || "0", 10);
+
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+async function getVideoByURL(url, task) {
+  if (!url) return; // checking moved up 2024-07-21
+  url = url.trim();
+  if (url === players.currentVideoUrl && !players.mediaInTask) return;
+  players.currentVideoUrl = url;
+
+  displayOverlay('');
+//  if (players.videoWidth === -1) setVideoSize(1);
+  if (isElHidden(elid('left-column'))) setVideoSize(300);
+  
+  if (players.flag > 0) {
+    playerStop();
+// a non-zero task means the new video was ordered NOT from the current loop
+  }
+  players.mediaState = 'loading';
+  players.flag = 0;
+
+/*  
+hidePlayerBox(); 
+// for YT videos, this can later blur the cover frame on showPlayerBox()
+// So, hidePlayerBox() is called in loadYTVideoByID() only if YT player is not ready
+*/
+
+//console.log('getVideoByURL', url, task)
+
+// Is it YouTube video?
+  const YTId = getYouTubeId(url);
+  players.isHtml = !YTId;
+  setPlayer(players.isHtml);
+
+  if (YTId) {// YouTube player
+
+// YT subs can't be loaded the old way after Nov 2021
+//    if (task === 'LOAD_SUBS') fetchYTSubsLanguages(YTId);
+    if (task === 'LOAD_SUBS') fetchYTSubs(YTId);
+
+//    if (players.videoID !== YTId) { // if video isn't the same, load it
+    players.videoID = '';
+
+    loadYTVideoByID(YTId); // experiment 2023-08-04: don't await
+    players.videoID = YTId;
+
+	players.mediaType = 'video';
+	showEl(videoResize);
+  }
+  else { //html player
+    hidePlayerBox();
+//	if (players.mediaInTask && xAudioBox.childElementCount) showEl(xAudioBox); 
+
+    try {
+	  htmlPlayer.src = url.startsWith('blob:')? url : getNewURL(url); // video url may be based on task url
+      htmlPlayer.load();
+	}
+	catch(e) { // it doesn't seem to catch errors for some reason
+console.log('ERROR loading html video', e);
+	  return
+	}
+
+    htmlPlayer.oncanplay = () => {
+      players.mediaState = 'loaded';
+      htmlPlayer.playbackRate = getPlayerPBR(); //restore PBR since it may be reset to default 1.0 after loading an audio
+//    if (players.mediaType === 'video' || /\.(mp4|webm)$/i.test(url)) { //what about other extensions?
+      const isAudio = !htmlPlayer.videoWidth;
+	  htmlPlayer.controls = isAudio;
+	  players.mediaType = isAudio? 'audio' : 'video';
+	  setElClass(htmlPlayer, 'height-36', isAudio);
+	  setElClass(videoResize, 'hidden', isAudio);
+      showPlayerBox();
+	}
+  }
+
+  if (players.mediaInTask && xAudioBox.childElementCount) {
+    showEl(xAudioBox);
+	adjustMediaInTask();
+  }
+//  if (players.mediaInTask) adjustMediaInTask();
+  
+  // wait for the video to be ready
+console.log('Loading the media file...'); 
+  await new Promise(resolve => players.resolveVideoReady = resolve);
+console.log(players.mediaType + ' loaded in getVideoByURL()'); 
+}
+
+const hidePlayerBox = () => {
+  hideEl(playerBox);
+//  showSpinner('player-box-loading');
+  showEl(playerBoxLoading);
+}
+
+const showPlayerBox = () => {
+//  setElHTML('player-box-loading', '');
+  hideEl(playerBoxLoading);
+  showEl(playerBox);
+  players.resolveVideoReady();
+}
+
+ //  load video file from input field
+function getVideoFromURLInput(el) {
+  getVideoByURL(el.value, 'LOAD_SUBS');
+}
+
+// === YT player code ===
+// This fn loads the IFrame Player API code asynchronously.
+function loadYTAPI() {
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  players.ytAPI = 'LOADING_API';
+console.log('loadYTAPI: players.ytAPI', players.ytAPI);
+}
+
+// This function creates an <iframe> (and YouTube player) after the API code has downloaded.
+async function onYouTubeIframeAPIReady(iframeEl = 'yt-player') {
+  players.ytAPI = 'API_READY';
+console.log('onYouTubeIframeAPIReady: players.ytAPI', players.ytAPI);
+
+  player = new YT.Player(iframeEl, {
+//    referrerpolicy: 'no-referrer-when-downgrade', // tried 2026-01-28 to load YT videos locally, but it didn't help
+//    enablejsapi: 1, // added 2023-08-04, but is it needed?
+//    origin: location.origin, // added 2023-06-23, but is it needed?
+//    origin: 'https://www.youtube.com', // added 2023-08-04, but is it needed?
+//    host: 'https://www.youtube.com',  // added 2023-08-04, but is it needed?
+// see playerVars explained at https://developers.google.com/youtube/player_parameters
+//    playerVars: {
+//            'iv_load_policy': 3
+//          },
+
+    events: {
+      'onError': onPlayerError,
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+  await sleep(1000);
+}
+
+function onPlayerError(e) {
+  players.flag = -1;
+  const error101 = 'Playing this video in embedded players is not allowed';
+  const errors = {
+    2: 'Invalid parameter value',
+    5: 'HTML5 player error',
+    100: 'Video not found',
+    101: error101,
+    150: error101,
+    153: 'No HTTP Referer header or API Client identification',
+  };
+console.log('YT player error ', e.data, errors[e.data]);
+  displayAlarmMessage(errors[e.data]);
+  players.mediaState = 'error';
+}
+
+function onPlayerReady(e) {
+  setPBR();
+  players.ytAPI = 'YT_PLAYER_READY';
+console.log('onPlayerReady: players.ytAPI', players.ytAPI);
+  players.resolveYTPlayerReady(); // added 2023-08-06
+}
+
+async function onPlayerStateChange(e) {
+  const states = ['unstarted', 'ended', 'playing', 'paused', 'buffering', '', 'cued'];
+  player.state = e.data;
+console.log('player.state changed to ', player.state, ':', states[player.state+1]);
+  if (players.autoPlay === 1 && player.state === 5) {
+    players.autoPlay = 2;
+  }
+  if ([0, 2, 5].includes(player.state)) { players.flag = 0; }
+  if (player.state === 1) { players.flag = 1; }
+  if (player.state === 5) showPlayerBox(); // added 2023-08-04 
+}
+
+// == end of YT player code
+
+// To show subs, a fn turning sub change mode on and off may be called when playing starts/stops
+// it can be called by onPlayerStateChange and htmlPlayer.onplay/onpause
+
+const snooze = async ms => {
+  const start = new Date().getTime();
+  while ((new Date().getTime() - start ) < ms && !players.loopStopRequested) {
+    await sleep(100);
+  }
+//console.log('Done');
+}
+
+const playerPause = () => {
+  if (players.isHtml) { htmlPlayer.pause(); }
+  else if (player) player.pauseVideo();
+}
+
+const playerStop = () => {
+  playerPause();
+  clearInterval(gstore.myTimeInterval); // clearing doesn't always stop setInterval executing playerCheckPlay()
+  players.jsPlay = false;
+}
+
+const getPlayerCurTime = () => players.isHtml? 
+    htmlPlayer.currentTime : player.getCurrentTime();
+
+const playerCheckPlay = () => {
+  let curPos = getPlayerCurTime();
+  const needToStop = players.loopStopRequested || (StopAt && StopAt >= StartFrom && curPos >= StopAt);
+
+  if (needToStop) {
+    playerStop();
+	players.pausedAt = ''; // clear by default
+	if (players.savePause) {
+	  players.savePause = false;
+	  if (!StopAt || curPos + 0.1 < StopAt) players.pausedAt = curPos;
+//console.log('Paused at', players.pausedAt);
+	}
+  }
+  else if (players.checkInterval > 25 && StopAt && StopAt >= StartFrom && curPos > (StopAt - 0.13)) {
+// run playerCheckPlay() more often
+//console.log('*** Shorten check interval at', curPos);
+    clearInterval(gstore.myTimeInterval); 
+    players.checkInterval = 25;
+    gstore.myTimeInterval = setInterval(playerCheckPlay, players.checkInterval);
+  }
+}
+
+const testPlay = async () => {
+  while (players.jsPlay && (players.flag > 0 || recorderBusy())){ // wait till the previous playing/recording is done
+console.log ('testPlay waiting for flags to be cleared'); 
+    await sleep(100);
+  }
+
+  players.flag = 1;
+  players.jsPlay = true;
+  players.checkInterval = 100;
+console.log('trying to play from ', StartFrom, ' to ', StopAt);
+  if (players.isHtml) { htmlPlay(); }
+  else { await ytPlay(); }
+
+  gstore.myTimeInterval = setInterval(playerCheckPlay, players.checkInterval);
+}
+
+const ytPlay = async () => {
+  if (players.stream) { player.playVideo(); return; }
+
+//  if (player.state === 5) { //5 = video cued
+  if ([0, 1, 5].includes(player.state)) { // added 2023-08-06
+console.log('Called player.seekTo', StartFrom);
+    player.seekTo(StartFrom); //playing will start automatically
+
+  } else {// video not cued, e.g., when playing again after a pause
+    player.seekTo(StartFrom);
+	await sleep(200); // added 2023-08-06
+	player.playVideo(); // added 2023-08-06
+/*
+    if (player.state < 1) await sleep(1000); //without this YT pause player may be stuck
+    await sleep(100);
+    if (player.state) player.playVideo(); // no need to call playVideo if player.state === 0
+    let i = 0;
+    while (player.state !== 1) {    
+      console.log('waiting for video to start playing');
+      await sleep(100);
+      i++;
+      if (i > 5) { i = 0; player.playVideo(); } // try to force YT play
+      if (players.loopStopRequested) break;
+    } //wait till it starts to play
+*/
+  }
+}
+
+const htmlPlay = async () => {
+  if (players.stream) {htmlPlayer.play();} //stream, e.g., radio or live tv
+  else {
+    htmlPlayer.currentTime = StartFrom;
+    htmlPlayer.onseeked = () => htmlPlayer.play();
+  }
+}
+
+const mutedPlay = async () => {
+  if (players.isHtml) { htmlPlayer.muted = true; }
+  else { player.mute(); }
+  await testPlay();
+}
+
+const unmutedPlay = async () => {
+  if (players.isHtml) { htmlPlayer.muted = false;}
+  else { player.unMute(); }
+  await testPlay();
+}
+
+const getNextSibling = (elem, selector) => {
+  let sibling = elem.nextElementSibling;
+  if (!selector) return sibling;
+
+  while (sibling) {
+    if (sibling.matches(selector)) return sibling;
+    sibling = sibling.nextElementSibling;
+  }
+}
+
+const replayFragment = async (firstCue, isTTS = false) => {
+  await sleep (300);
+/*
+  if (doubleClicked()) { // avoid playing lines if they are double clicked.
+// this is not real double click but change of selection leading to false positives
+console.log('return from replayFragment'); 
+    return; 
+  }
+*/
+
+  players.savePause = false;
+// Wait for the previous loop to stop
+  while (players.looperInUse) {
+    players.loopStopRequested = true;
+console.log('** Loop Stop Requested!')
+    if (players.currentCue === firstCue) {
+console.log('** Stop: currentCue === firstCue')
+      players.savePause = true;
+      return;
+    }
+    await sleep (500);
+  }
+  players.loopStopRequested = false;
+  setPlayStopBtn('Stop');
+  if (players.currentCue !== firstCue) players.pausedAt = '';
+
+  let clip = firstCue;
+  players.maxCues = parseInt(elid("max-cues").value);
+  for (let i = 0; i < players.maxCues; i++) {    
+    if (clip) {
+	  players.currentCue = clip;
+	  players.isCueTTS = isTTS;
+      if (isTTS) {
+        await replayTTSCore(clip);
+        clip = getNextSibling(clip, '.tts-speak-task');
+      } else {
+        await replayFragmentCore(clip);
+        clip = getNextSibling(clip, '.cue');
+      }
+    }
+  }
+  players.loopStopRequested = false;
+  if (!players.stream) setPlayStopBtn();
+}
+
+const secondsToHms = sec => {
+  const dt = new Date(sec * 1000).toISOString();
+  return ((sec < 3600) ? dt.substr(14, 7) : dt.substr(11, 10))
+    .replace(/^0/,'').replace(/.0$/,'');
+}
+
+const hmsToSeconds = str => {
+  if (!str) return null;
+  let p = str.replaceAll(',', '.') .split(':'),
+      s = 0, m = 1;
+
+  while (p.length) {
+    s += m * parseFloat(p.pop());
+    m *= 60;
+  }
+  return s;
+}
+
+const fetchStartStop = cue => {
+  players.stream = false;
+  const elStart = elid('ReplayFrom'), elEnd = elid('ReplayTo');
+  if (cue !== playStopBtn) {
+    elStart.value = '';
+    elEnd.value = '';
+  }
+  let times = ['', ''], timeAttr = cue.getAttribute('time');
+  if (timeAttr) times = timeAttr.split(/,|-/);
+
+  let start = times[0] || cue.getAttribute('start') || elStart.value || '';
+  let end = times[1] || cue.getAttribute('end') || elEnd.value || '';
+
+  elStart.value = start; // add to settings
+  elEnd.value = end;
+  StartFrom = players.pausedAt || hmsToSeconds(start);
+  StopAt = hmsToSeconds(end);
+  
+  if (isNaN(StartFrom) || StartFrom === null) players.stream = true;
+console.log('StartFrom', StartFrom, ' StopAt', StopAt);
+}
+
+players.fragmLength = () => StopAt - StartFrom;
+const loopingNeeded = () => (elid('longLoopCheckbox').checked || 
+       (players.fragmLength() < elid('thresholdForLooping').value)) && StopAt && StopAt >= StartFrom;
+
+
+// *** Central looping function ***
+const replayFragmentCore = async (cue) => {
+  fetchStartStop(cue);
+
+  if (cue !== playStopBtn) {
+    if (players.stream) tstore.playerTitle.displayMsg(cue.textContent);
+	
+    await getVideoByURL(cue.getAttribute("url")); // since 2023-08-04, this fn doesn't wait till the video is loaded
+// a new way to wait till it's loaded is needed	
+
+    if (players.mediaState !== 'loaded' || players.flag === -1) {
+      displayAlarmMessage('Nothing to play!'); 
+      return;
+    }
+  }
+
+  if (players.stream) {
+console.log('Stream or play full ' + players.mediaType);
+    unmutedPlay();
+    return;
+  }
+
+  players.looperInUse = true;
+
+  setRepNum();
+  markCuePlaying(cue, 1)
+//  const cueOldStyle = cue.style;
+//  cue.style.borderLeft = "3px solid lightgreen";
+
+  setAdvancedSpeed(cue.getAttribute("speed"));
+
+  const replaysTotal = speedCtrl.getAdvanced().length; 
+
+  let replayCounter = 0;
+  while (replayCounter < replaysTotal && !players.loopStopRequested) {
+
+// ===  The Great Loop starts here :)  ===
+
+    if (replayCounter) { //  clear pausedAT
+	  players.pausedAt = '';
+	  players.savePause = false;
+	  StartFrom = hmsToSeconds(elid('ReplayFrom').value);
+	}
+
+    replayCounter++;
+
+    if (loopingNeeded() && !players.stream) {
+      displayOverlay('Playing ' + replayCounter + ' of ' + replaysTotal);
+    }
+
+    await playCue(speedCtrl.calcSpeed(replayCounter - 1));
+
+// no looping?
+    if (players.loopStopRequested || !loopingNeeded()) break;
+
+// video fragment has played, time for a pause :)
+    const fragmentLength = players.fragmLength() * 1000/getPlayerPBR(); //used in replayFragment() to calculate a pause between fragment replays
+    const pauseMsec = fragmentLength * players.pauseFactor;
+
+    switch (players.pauseType) {
+      case 'pause':
+        displayOverlay('Repeat what you heard', pauseMsec, 'progress');
+        await snooze (pauseMsec);
+        break;
+
+      case 'pause+record':
+        await handleRecording (pauseMsec +500); // add time for user's reaction
+        while (recorderBusy() && !players.loopStopRequested){ await sleep(100); }
+        if (players.loopStopRequested) playerStop();
+
+        await snooze(1500); // don't play next loop immediately, make a short pause :)
+        break;
+
+      case 'playmute':
+        await snooze(800); // don't play mute immediately, make a short pause :)
+        displayOverlay('Repeat what you heard', fragmentLength, 'progress');
+        await mutedPlay();
+        while (players.flag > 0 && !players.loopStopRequested){ await sleep(100); }
+        if (players.loopStopRequested) playerStop();
+
+        await snooze(1500); // don't play next loop immediately, make a short pause :)
+        break;
+
+      case 'playmute+record':
+        displayOverlay('...');
+        await snooze(500); // don't play mute immediately, make a short pause :)
+        await mutedPlay();
+        await handleRecording(fragmentLength + 300);
+        while (recorderBusy() && !players.loopStopRequested){ await sleep(100); }
+        if (players.loopStopRequested) playerStop();
+        await snooze(1200); // don't play next loop immediately, make a short pause :)
+        break;
+    }
+    displayOverlay('');
+  } // ===  The Great Loop ends here :)  ===
+ 
+// reset or restore things after looping
+console.log('End of the loop');
+
+  setAdvancedSpeed(elid('speed-set').value); 
+  displayOverlay('');
+  markCuePlaying(cue, 0);
+//  cue.style = cueOldStyle;
+  setPlayerSpeed(speedCtrl.getPBR()); 
+  players.looperInUse = false;
+}
+
+const ttsCueClick = async cue => {
+  if (players.ttsLoop) await replayFragment(cue, true)
+  else speakLangText(cue);
+}
+
+const playDictTTSCue = async (cue, speed) => {
+  let dictOK = false;
+  const chunk = cue.getAttribute('say');
+  if (chunk && !/\s/.test(chunk))
+      dictOK = await tryDictAudio(chunk, tts.spVoice.lang, speed);
+
+  if (!dictOK) await playTTSCue(cue, speed);
+}
+  
+const playTTSCue = async (cue, speed) => {
+  speakLangText(cue, speed);
+  while (tts.speaking || tts.pending) {
+    await snooze(100);
+    if (players.loopStopRequested) tts.cancel();
+  }
+}
+
+// *** TTS Central looping function ***
+const replayTTSCore = async (cue) => {
+  players.looperInUse = true;
+
+  setRepNum();
+  markCuePlaying(cue, 1);
+
+  setAdvancedSpeed(cue.getAttribute('speed'));
+
+  const replaysTotal = + cue.getAttribute('x-reps') || speedCtrl.getAdvanced().length; 
+console.log('Replays: ', replaysTotal);
+
+  let replayCounter = 0;
+  while (replayCounter < replaysTotal && !players.loopStopRequested) {
+
+// ===  The Great TTS Loop starts here :)  ===
+
+    replayCounter++;
+
+    displayOverlay('Playing ' + replayCounter + ' of ' + replaysTotal);
+
+    stopWatch.start();
+//    await playCue(speedCtrl.calcSpeed(replayCounter - 1));
+//    await playTTSCue(cue, speedCtrl.calcSpeed(replayCounter - 1));
+    await playDictTTSCue(cue, speedCtrl.calcSpeed(replayCounter - 1));
+
+// stop looping?
+    if (players.loopStopRequested) break;
+
+// video fragment has played, time for a pause :)
+
+    const fragmentLength = stopWatch.stop(); //used in replayFragment() to calculate a pause between fragment replays
+    let pauseMsec = fragmentLength * players.pauseFactor;
+//console.log('Fragment length', fragmentLength, ', pause', pauseMsec);
+    if (pauseMsec < 1500) pauseMsec = 1500; // pause/recording time shouldn't be too short 
+
+    switch (players.pauseType) {
+      case 'pause':
+        displayOverlay('Repeat what you heard', pauseMsec, 'progress');
+        await snooze (pauseMsec);
+        break;
+
+      case 'pause+record':
+//        await snooze(400); // don't record immediately, make a short pause :)
+        await handleRecording(pauseMsec +500, cue); // add time for user's reaction
+        while (recorderBusy() && !players.loopStopRequested){ await sleep(100); }
+        if (players.loopStopRequested) playerStop();
+        if (replayCounter < replaysTotal && !players.loopStopRequested) 
+		  await snooze(2000); // don't play next loop immediately, make a short pause :)
+        break;
+    }
+    displayOverlay('');
+  } // ===  The Great Loop ends here :)  ===
+ 
+// reset or restore things after looping
+console.log('End of the loop');
+
+  displayOverlay('');
+  markCuePlaying(cue, 0);
+//  cue.style = cueOldStyle;
+  setAdvancedSpeed(elid('speed-set').value); 
+  players.looperInUse = false;
+}
+
+const cueButtonClick = cue => {
+  cue.classList.remove('play-triangle');
+  cue.firstChild.classList.remove('play-pause');
+  cue.classList.add('play-pause-transit');
+  replayFragment(cue);
+}
+
+const markCuePlaying = (cue, cmd) => {
+  let btnClass = '';
+  if (cue.classList.contains('cue-button')) btnClass = 'play-triangle';
+  if (cue.id === 'playstop-button') btnClass = 'play-triangle-solid';
+  
+  if (btnClass) {
+    if (cmd) {
+	  cue.classList.remove(btnClass, 'play-pause-transit');
+	  cue.firstChild.classList.add('play-pause');
+	}
+    else {
+	  cue.firstChild.classList.remove('play-pause', 'play-pause-transit');
+	  cue.classList.add(btnClass);
+	}
+  }
+  else { // btnClass empty
+    setElClass(cue, 'cue-active', cmd);
+//    if (cmd) cue.classList.add('cue-active')
+//    else cue.classList.remove('cue-active');
+  }
+}
+
+function setPause() {
+  players.pauseFactor = parseFloat(elid('setpause').value);
+  const pauseInfo = (players.pauseFactor > 0) 
+    ? players.pauseFactor + 'x of the cue length' 
+    : '0 (no pause)';
+  setElHTML('current-pause', pauseInfo);
+}
+
+// *** RECORDING ***
+
+const handleRecording = async (recLength, cue) => {
+  if (recStopRequested()) return;
+
+  const playerIsMuted = (player && !players.isHtml) ? player.isMuted() : htmlPlayer.muted;
+  const playingClip = (players.flag === 1 && !playerIsMuted);
+  while (playingClip || recorderBusy()) { // wait for the previous playing/recording is done
+console.log ('handleRecording waiting for flags to be cleared'); 
+      await sleep(100);
+  }
+
+  if (recStopRequested()) return;
+
+  await audioRecorder.cmd('REC_START');
+
+  displayOverlay('Recording...', recLength, 'progress');
+  await snooze(recLength);
+  await audioRecorder.cmd('REC_STOP');
+
+  if (recStopRequested()) return;
+  
+  let postRecActions = players.postRecActions;
+  if (cue && cue.getAttribute('x-post-rec')) 
+    postRecActions = cue.getAttribute('x-post-rec').split(',');
+  if (!postRecActions?.length) postRecActions = ['u'];
+
+  for (const [i, action] of postRecActions.entries()) {
+    const rate = parseFloat(action) || 1;
+    const pbr = speedCtrl.calcRecSpeed(rate);
+    if (action.includes('u')) await playRecording(recLength, pbr);
+// b/c recording length already depends on the original cue length/pbr, recording playback can be done at normal speed
+// e.g., at low pbr original cue is slow, so recording is also longer than normal
+//    if (action.includes('u')) await playRecording(recLength); 
+
+    if (recStopRequested()) return;
+
+    if (action.includes('o')) {
+      displayOverlay('Compare with the original...', recLength);
+      if (players.isCueTTS) await playDictTTSCue(cue, pbr);
+      else await playCue(pbr);
+      if (i < postRecActions.length -1) await snooze(800); // not needed after the final action
+    }
+
+    if (recStopRequested()) return;
+  }
+}
+
+const recStopRequested = () => {
+  if (players.loopStopRequested) displayOverlay('');
+  return players.loopStopRequested; 
+}
+
+const playRecording = async (recLength, pbr = 1) => {
+//  const rlength = recLength / pbr;
+  displayOverlay('Playing your recording...');
+
+  audioRecorder.setSpeed(pbr, pbr);
+  audioRecorder.cmd('REC_PLAY');
+  
+// don't rely on rlength if pbr is changed while playing
+//  await snooze(rlength);
+// use polling recorderBusy() in a while loop instead
+  do {
+    await sleep(100); 
+  } while (recorderBusy() && !players.loopStopRequested)
+
+  if (players.loopStopRequested) audioRecorder.cmd('REC_PAUSE');
+  displayOverlay('');
+}
+
+const recorderBusy = () => ['started', 'playing'].includes(audioRecorder.getState());
+
+const playCue = async (pbr = 1) => {
+  setPlayerSpeed(pbr);
+  await unmutedPlay(); 
+console.log('Unmuted play: players.flag ',players.flag);
+  while (players.flag === 1){
+    if (player && player.state === 1) console.log('Waiting for playing to be finished');
+    else console.log('Waiting for playing to start');
+    await sleep(100);
+  }
+}
+
+// *** End of playing and recording ***
+
+const analyzeURLParams = async () => {
+  if (location.href.startsWith('file')) loadingDone();
+  const urlKeys = new URLSearchParams(location.search);
+  gstore.calledFromWords = urlKeys.get('from-words') !== null;
+
+  setVideoSize(urlKeys.get('video-size') || localStorage.getItem('videoWidth') || 1);
+//  ltrSize.set(urlKeys.get('font-size'));
+  const lang = urlKeys.get('lang') || localStorage.getItem('langCode') || 'en';
+  setLanguage(lang, true);
+  storeLangCode(lang);
+
+  loadWordList(urlKeys.get('v'));
+
+  let taskText = urlKeys.get('l'); // "l" means load encoded task from url
+  if (taskText) {
+//    gstore.vocabMode = 4; // later could be read from urlKeys.get...
+    taskText = taskText.replace(/ /g, '+');
+    loadElementWithText(taskText, 'transcriptText');
+  }
+
+//  players.ttsLoop = urlKeys.get('ttsloop') || 0;
+  setRecSwitch(urlKeys.get('record') || 0);
+
+  elid('setpause').value = urlKeys.get('pause') || '1.5';
+  setPause();
+
+  elid('max-cues').value = urlKeys.get('c') || 1;
+  elid('ReplayFrom').value = urlKeys.get('s') || '';
+  elid('ReplayTo').value = urlKeys.get('e') || '';
+
+  elid('rep-num').value = urlKeys.get('r') || 2; 
+  adjustSpeeds(urlKeys.get('speed'));
+
+  const mediaFile = urlKeys.get('m');
+  if (mediaFile) {
+    players.autoPlay = urlHasKey('noauto')? 0 : 1; // maybe it should be 0 by default?
+
+//    getVideoByURL(mediaFile, 'LOAD_SUBS'); 
+    await getVideoByURL(mediaFile, 'LOAD_SUBS'); 
+    loadingDone();
+
+// added 2025-07-22, tested for YouTube only
+    if (!players.isHtml) {
+      const timeStamp = extractYouTubeTimestamp(location.search) || '';
+	  if (timeStamp) {
+        elid('ReplayFrom').value = timeStamp;
+	    StartFrom = timeStamp;
+	  }
+	  if (StartFrom) player.seekTo(StartFrom);
+	}
+  }
+
+  if (!taskText && !mediaFile && !loadTaskFromURLParam(urlKeys)) { 
+    loadHtmlTaskByURL('/tasklist/default.txt', false); 
+  }
+}
+
+const loadTaskFromURLParam = urlKeys => {
+  const r = urlKeys.get('tasklist') || urlKeys.get('t');
+  if (r) loadHtmlTaskByURL(r);
+  return r;
+}
+
+const loadHtmlTaskByURL = async (url, newDir = true) => {
+  gstore.taskUrl = getNewURL(url, 1);
+  const id = 'transcriptText';
+  showSpinner(id);
+  elid(id).url = url;
+  
+  if (newDir) {
+    episodeBar.hide();
+    await fetchDirInfo();
+  }
+// allow url without .txt ending via altUrl  
+  const altUrl = gstore.taskUrl.endsWith('.txt') ? '' : gstore.taskUrl + '.txt';
+  loadElementFromURL(id, gstore.taskUrl, altUrl);
+}
+
+/*
+const wrCallback = (cmd) => {
+// callbacks from word-ref.js - so far not really needed
+  if (cmd === 'YOUGLISH_LINK_NEEDED') return true;
+}
+*/
+
+const gCallback = cmd => {
+// callbacks from audiodrill-task.js
+  if (cmd === 'SHOW_SETTINGS') showTopSettings();
+  if (cmd === 'TTS_READ_LINES') tstore.ttsOverlay.init();
+  if (cmd === 'TTS_STARTED') tstore.ttsOverlay.showPlaying(1);
+//  if (cmd === 'TTS_ENDED') tstore.ttsOverlay.showPlaying(0);
+  if (cmd === 'TTS_ENDED') tstore.ttsOverlay.ttsEnded();
+  
+  if (cmd === 'DIR_INFO_LOADED' && isEpiNavPossible()) {
+    episodeBar.show();
+	setDocTitle();
+  }
+  
+//console.log('gCallback:', cmd);
+//... && status === task loaded) showEpisodeBar() // this isn't implemented yet. Is it needed?
+}
+
+const episodeBar = function() {
+  const id = 'episode-nav';
+  const show = () => {
+    const html = getEpisodeNavigation(gstore.dirInfo, gstore.taskUrl);
+    if (html) {
+      showElid(id);
+	  setElHTML(id, highlightText(html));
+    }
+  }
+  return {
+    hide: () => { hideElid(id) },
+	show: show
+  }
+}();
+
+function uploadTaskOrVideoFile(e) {
+  const file = this.files? this.files[0] : e.files[0]; // e gets the file if loaded thru default task
+  uploadFile(file);
+}
+
+function checkGapForEnter(el, event) {
+  tstore.gapSelection = window.getSelection();
+  const txt = el.value + event.key; // b/c el.value is still old on keypress
+  adjustGapWidth(el, txt);
+//console.log(event);
+//console.log(txt);
+
+  if (event.key === 'Enter') { 
+    el.blur(); // onblur calls checkClozeInput fn
+  }
+}
+
+async function handleRecMuteCheckbox() {
+//  if (audioRecAllowed2()) 
+//    if (! await testMic()) return;
+
+  const playMute = elid('mute-checkbox').checked;
+  const pauseBox = elid('pause-box');
+  showOrHideEl(pauseBox, !playMute);
+
+  players.pauseType = playMute ? 'playmute' : 'pause';
+  if (audioRecAllowed2()) { players.pauseType += '+record'; }
+}
+
+function copyWords() {
+//  copyToClipboard(wordList.list, 'Word list copied to clipboard');
+  copyToClipboard(wordList.textContent, 'Word list copied to clipboard');
+}
+
+const linkToTask = () => {
+  copyToClipboard('https://audiodrill.com?l=' + encode64(players.currentTask), linkCopiedMsg);
+}
+
+</script>
+<div id="settings-box">
+<div id="settings-sign" data-themeable 
+class="inblock btn-lighgray padding-03em rounded smaller-font" 
+style="margin-top: 0.45em; margin-left: 0.05em; line-height:1.14em" onclick="showSettings()">
+  <span class="settings-icon"></span>
+  <span>Settings</span>
+<div id="loop-chevron-old-tbd" class="small-font chevron chevron-down" onclick="showSettings()"></div>
+</div>
+
+<div id="playerManualControls" data-themeable class="rounded">
+<span class="action-icon close-x01" onclick="hideSettings()">&times;</span>
+
+<div id="playerManualControlsTag" data-themeable 
+class="btn-lighgray padding-03em rounded smaller-font" onclick="hideSettings()">
+  <span class="settings-icon"></span>
+  <span>Settings</span>
+<div id="loop-chevron-old-tbd2" class="small-font chevron chevronUp" onclick="hideSettings()"></div>
+</div>
+
+<div id="manual-controls-box">
+<div id="basic-controls">
+<div id="rec-switch-box">
+</div>
+<div id="master-pbr-box" style="display: flex; flex-wrap: wrap;">
+</div>
+<div id="lang-voice-box">
+<span id="lang-ctrl" style="margin-right: 1em"></span>
+<div id="tts-select" class="inblock" style="margin-right: .5em"></div>
+</div>
+<div id="tts-click-switch-box" class="inblock" style="margin-right: 1em">
+</div>
+<div id="use-dic-switch-box" class="inblock">
+</div>
+<div id="transl-lang-box">
+</div>
+</div>
+<div id="loop-advanced-box">
+<div id="loop-advanced-title" onclick="clickChevron(this.nextElementSibling)">
+  <i>Advanced settings</i>
+</div>
+<div id="loop-chevron" class="small-font chevron chevron-down" onclick="clickChevron(this)"></div>
+<div id="loop-advanced" class="hidden table" style="line-height: 1.8em;">
+
+<div>
+<h4>Looping</h4>
+<x-br-l></x-br-l>
+<label>From 
+<div style="display:inline-flex; position:relative;justify-content: center;">
+  <input type="text" id="ReplayFrom" placeholder="h:m:s"
+       style="width: 4em;"  title="Set fragment start time" value="" /> 
+  <button class="on-top-knob btn" onclick="copyTime(this.previousElementSibling)">| | | | | | |</button>
+</div>
+</label>
+
+<label>to 
+<div style="display:inline-flex; position:relative;justify-content: center;">
+  <input type="text" id="ReplayTo" placeholder="h:m:s"
+       style="width: 4em;"  title="Set fragment stop time" value="" /> 
+  <button class="on-top-knob btn" onclick="copyTime(this.previousElementSibling)">| | | | | | |</button>
+</div>
+</label>
+
+&thinsp;
+<button id="playstop-button" class="loop-btn btn play-triangle-solid gray inline-flex align-top" onclick="handlePlayStopBtn()" 
+  title="Play the fragment 
+defined by start and stop time"><span class="inline-flex align-top"></span>
+</button>
+
+&thinsp;
+<div title="Copy start and stop time" class="btn-inside inline-flex align-top" 
+  style="filter: invert(0.36) brightness(1.6); background-color: transparent;"
+  onclick="copyStartStop()" tabindex="0">
+  <span style="position: relative;">📄</span><span style="position: absolute; top: .2em; left: .4em">📄</span>
+</div>
+
+&thinsp;
+<div id="share-fragment" class="share-fragm inline-flex align-top" title="Share the fragment">
+</div>
+
+<x-br-l></x-br-l>
+<div id="advanced-speed-box"></div>
+<x-br-l></x-br-l>
+Loop
+<div id="max-cues-box" class="inblock"><label><input type="number" id="max-cues" style="width: 2em; height: 0.9em;"  
+   title="Number of fragments to play" min="1" value="1" /> cue(s) 
+</label></div>
+<div id="rep-num-box" class="inblock"><label><input type="number" id="rep-num" style="width: 2em; height: 0.9em;"  
+       title="Number of replays" min="1" value="2" oninput="adjustRepNum(this)" /> time(s).
+</label></div>
+
+<x-br-l></x-br-l>
+
+Hop 
+<label><input type="number" id="time-shift" style="width: 2.5em; height: 0.9em;"  
+       title="Set time (sec) to shift" value="1" step="0.1" /> sec 
+</label>
+<button id="hop-back" data-themeable class="shift-btn btn gray2 chevron-left" onclick="playerTimeShift(-1)" 
+title="Hop backward (Right Ctrl)
+Alt+click for longer hop">
+</button>
+or
+<button id="hop-forward" data-themeable class="shift-btn btn gray2 chevron-right" onclick="playerTimeShift(1)" 
+title="Hop forward
+Alt+click for longer hop">
+</button>
+
+&emsp;
+<button class="time-mark-btn btn" onclick="markTime()" title="Copy current time">
+  <div>🕑</div>
+</button>
+</div>
+
+<div>
+<h4>Misc.</h4>
+<label>
+  Post-recording actions
+<span tip="Comma-separated actions to be performed after recording user's speech:
+<x-br></x-br>
+O = play the original cue;<br>
+U = play user's recording.
+<x-br></x-br>
+An optional speed factor may precede an action. 
+E.g., 0.7O means that the original cue will be played at 0.7 speed.">
+<div class="info-point">&#8505;</div>
+</span>
+     <input type="text" id="post-rec-set" placeholder="E.g., U,O,U",
+            value="U,O,U" 
+            style="width: 9em;"  oninput="setPostRecActions(this.value)"/> 
+</label>
+<br>
+Play muted fragment instead of pausing (and ignore pause factor)
+<label class="switch show-focus" title="Enable muted playback 
+instead of pausing">
+  <input type="checkbox" id="mute-checkbox">
+  <div class="slider round"></div>
+</label>
+<br>
+
+<div id="pause-box" style="cursor:default;" 
+title="Duration of a pause between cue loops">
+Pause factor&nbsp; <input id="setpause" type="range" value="1.5" min="0" max="4" step="0.1" 
+  oninput="setPause()" style="width:4em; vertical-align: middle">
+  <span id="current-pause">1.5x of the cue length</span>
+</div>
+
+<span>Loop fragments longer than 
+<input type="number" id="thresholdForLooping" 
+  style="width: 3em; height: 0.9em;"  
+  title="Set fragment length limit for looping" value="20" /> sec.
+</span>
+<label class="switch show-focus" title="Loop long fragments">
+  <input type="checkbox" id="longLoopCheckbox" style="width:auto">
+  <div class="slider round"></div>
+</label>
+
+<x-br-l></x-br-l>
+<div id="set-fsize"></div>
+
+<x-br-l></x-br-l>
+<label>
+<i>No task list?</i>&ensp;You can loop audio/video fragments manually. 
+Just load the audio or video from the Internet...<br>
+<div id="media-url-input-box" " class="fg--search">
+  <input type="url" id="media-url-input" 
+    placeholder="Enter URL here" 
+    onchange="getVideoFromURLInput(this)">
+  <input type="submit" class="plain-button font-80pc rounded darker-bg-onhover" 
+value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
+
+</div>
+</label>
+
+... or from
+<label>
+  <a title="Open a local audio or video file">a local file</a>.
+  <input type="file" id="open-media" accept="video/*, audio/*" 
+   style="position: fixed; top: -100em" />
+</label>
+</div>
+
+</div> <!-- end of loop-advanced -->
+</div> <!-- end of loop-advanced-box -->
+</div> <!-- end of manual-controls-box -->
+</div> <!-- end of playerManualControls -->
+</div> <!-- end of settings-box -->
+<x-br-l></x-br-l>
+
+</div> <!-- end of player-with-settings-box -->
+</div> <!--   End of left-column   -->
+
+<div class="right-column" id="rightColumn">
+
+  <div id="task-header" data-themeable class="task-header box-header flex">
+
+  <div id="task-icons" class="flex">
+    <label>
+      <img class="action-icon" src='folder.svg' title="Open task">
+      <input type="file" id="open-task" name="files[]" multiple style="position: fixed; top: -100em" />
+    </label>
+
+	<div class="action-icon new-task-icon height12" 
+      id="new-task" title="New task">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="12">
+        <polygon points="22,10 22,90 78,90 78,30 58,10" />
+        <polyline points="78,30 58,30, 58,10" />
+      </svg>
+   </div>
+
+   <div style="padding-right:0.6em; margin-top: 0.1em;" class="action-icon font-80pc" 
+      id="edit-task" title="Edit task" onclick="displayInfopage('EDIT_TASK')">
+     <span style="border-right:1px solid;">Aa</span>
+   </div>
+
+    <div id="download-task" class="action-icon height12 font-75pc"><div 
+	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">↓</div></div>
+	
+    <div id="copy-link" class="action-icon share-icon height12" title="Share task">
+	</div>
+
+   <span id="task-header-opt" class="float-left half-padding"></span>
+  </div> <!--   End of task icons   -->
+
+
+  <div class="inblock padding-03em" style="max-width: 90%">
+    <span id="task-title">Audiodrill task </span>
+  </div> <!--   End of task title + episode prev/next   -->
+  
+  </div> <!--   End of task-header   -->
+
+  <div id="taskBox" data-themeable class="task-box">
+    <div id="transcriptText" data-themeable class="task-body rounded"></div>
+  </div> <!--   End of taskBox   -->
+
+<!-- wordlist-box no longer needed? -->
+  <div id="wordlist-box" class="hidden">
+    <div class="box-header">&emsp;Word list to explore
+      <span class="action-icon float-left" id="drill-wordlist" title="Explore with Audiodrill words and phrases">➪</span>
+      <img class="action-icon float-left" id="copy-words" src='copy.svg' title="Copy to clipboard">
+      <span class="action-icon close-x01" id="clear-wordlist" title="Clear the list">&times;</span>
+    </div>
+    <div id="wordlist" class="rounded" style="outline: none"></div>
+	<div class="flex-center"><button class="btn-darker" onclick=openTTSRead()>Go to TTS Reader</button></div>
+  </div> <!--   End of wordlist-box   -->
+
+  <!-- Sticky episode navigation and x-audio-box bars -->
+  <div id="episode-nav" data-themeable class="hidden episode-nav inherit"></div>
+  <div id="x-audio-box" data-themeable class="hidden x-audio-box">
+    <span class="action-icon close-x01 gray" style="margin-right:0.15em" onclick="closeXaudio()">&times;</span>
+  </div>
+</div> <!--   End of right-column   -->
+</div> <!--   End of row   -->
+</div> <!--  End of main-page  -->
+
+<!--  Footer   -->
+<div id="bottom-bar"></div>
+<script>
+
+const xAudioBox = elid('x-audio-box');
+tstore.playerTitle = elid('player-title');
+tstore.playerTitle.displayMsg = s => tstore.playerTitle.innerHTML = highlightText(s);
+
+const playStopBtn = elid('playstop-button');
+const transcriptText = elid('transcriptText');
+const wordList = elid('wordlist');
+wordList.list = []; // may not be needed since 07 Dec 2022, when wordList.textContent was added
+wordList.contentEditable = 'true';
+
+const addChunkToWordList = txt => {
+  return; // 2025-08-09 disabled b/c of new vocab mode
+//  if (!txt || wordList.list.includes(txt)) return;
+  const s = txt.trim();
+  if (!s || wordList.textContent.includes(s)) return;
+  showElid('wordlist-box');
+//  wordList.list.push(txt);
+  if (wordList.textContent) wordList.textContent += ', ' + s;
+  else wordList.textContent = s;
+//console.log('wordList.textContent', wordList.textContent);
+}
+
+const addToWordList = () => {
+  const sel = window.getSelection() + '';
+  if (!sel.length) return;
+  if (sel.length == 1 && sel.match(/\s/)) return;
+  addChunkToWordList(sel);
+}
+
+const loadWordList = txt => {
+  if (!txt) return;
+  const list = txt.split(/[,\|]/);
+  for (const chunk of list) addChunkToWordList(chunk);
+}
+
+//const parseWordList = eID => {
+const parseWordList = () => {
+//  if (!wordList.list) return;
+  if (!wordList.textContent) return;
+  
+//  let htxt = elid(eID).innerHTML,
+  let htxt = transcriptText.innerHTML;
+  const newValue = s => "<b>" + s + "</b>"; 
+
+  wordList.list = wordList.textContent.replace(/, /g, ',').split(','); //added 7 Dec 2022
+  for (const entry of wordList.list) {
+// What if a wordlist entry matches part of another word? 
+// Maybe replacing whole words is needed?
+    const searchValue = new RegExp(entry, "ig");
+    htxt = htxt.replace(searchValue, newValue);
+  }
+//  setElHTML(eID, htxt);
+  transcriptText.innerHTML = htxt;
+}
+
+/* Wordlist is deprecated since h2 2025
+
+//transcriptText.ondblclick = () => addToWordList();
+transcriptText.onmouseup = () => addToWordList();
+transcriptText.touchend = () => addToWordList();
+*/
+
+document.ondblclick = () => {
+  tstore.doubleClicked = true;
+//console.log('DBL CLICK');
+}
+
+document.onclick = () => {
+  tstore.doubleClicked = false;
+//console.log('SINGLE CLICK');
+}
+
+elid('drill-wordlist').onclick = () => {
+//  window.open("/words/?w=" + wordList.list.join(','));
+  window.open('/words/?w=' + wordList.textContent + getLangForUrl());
+}
+
+const getLangForUrl = () => players.ttsLang ? '&lang=' + players.ttsLang.slice(0,2) : '';
+
+elid('clear-wordlist').onclick = () => {
+  hideElid('wordlist-box');
+  wordList.list = [];
+  wordList.textContent = '';
+//  wordList.innerHTML = '<i>The list is empty. Select words or phrases in the task list to add them here.</i>';
+}
+
+const loadVoiceList = voicesArr => {
+  setVoiceList({voices: voicesArr, selectVoice: false, speakerN: ''});
+}
+
+class ToggleSwitch {
+  constructor(data) {
+        this.elementID = data.id;
+        this.label = data.label || '';
+        this.tip = data.tip || '';
+        this.storeKey = data.storeKey || '';
+        this.isOn = +localStorage.getItem(this.storeKey) || data.isOn || 0;
+        this.callback = data.callback;
+
+        // Initialize the UI
+//        this.updateUI();
+
+        // Bind event listener
+//        this.element.addEventListener('click', () => this.toggle());
+  }
+
+  load() {
+    if (elid(this.elementID)) return; // element already loaded
+	
+    const html = `<span tip="${this.tip}">${this.label}`
+	+ ' <button class="plain-button switch-btn show-focus"><div id="'
+	+ this.elementID
+	+ '" class="slider round"></div></button></span>';
+
+    setElHTML(this.elementID + '-box', html);
+	setTimeout(() => { // Now it's safe to manipulate this element
+      this.set(+(localStorage.getItem(this.storeKey) || this.isOn)); // + converts string to integer
+      elid(this.elementID).parentElement.onclick = this.toggle.bind(this);
+    }, 0);
+  }
+
+  set(v) {
+    this.isOn = +v; // boolean => integer
+	localStorage.setItem(this.storeKey, this.isOn);
+//console.log('this.callback', this.callback);
+//console.log('typeof this.callback', typeof this.callback);
+	if (typeof this.callback === 'function') this.callback(this.isOn);
+
+//	apply to UI 
+	const el = elid(this.elementID);
+	if (!el) return null;
+	setElClass(el, 'switch-on', v);
+//    const ctrlClasses = el.classList;
+//    if (v) ctrlClasses.add('switch-on')
+//    else ctrlClasses.remove('switch-on')
+  }
+	
+	toggle() { this.set(!this.isOn); }
+
+	inspect() {return this}
+
+}
+
+tstore.ttsClickSwitchCallback = function(isOn) {
+//console.log('tstore.ttsClickSwitch.callback switch state', isOn);
+  if (!isOn) tstore.dicSwitch.set(0);
+}
+
+tstore.ttsClickSwitch = new ToggleSwitch({id: 'tts-click-switch', 
+  label: 'TTS on selection/click', 
+  tip: `Enable text-to-speech for the clicked word or selected text.<br>
+Tip: |_Ctrl_| + click to hear the full sentence.`, 
+  storeKey: 'TTSOnClick',
+  isOn: 1,
+  callback: tstore.ttsClickSwitchCallback
+  });
+
+tstore.dicSwitch = new ToggleSwitch({id: 'use-dic-switch', 
+  label: 'Dictionary audio on click', 
+  tip: 'Play dictionary audio for the clicked word (English only)', 
+  storeKey: 'useDictionaryAudio'
+  });
+
+tstore.nightModeSwitch = new ToggleSwitch({id: 'night-mode-switch', 
+  label: 'Night mode',
+  tip: 'Toggle: |_Shift_|+|_F11_|',
+  storeKey: 'nightMode',
+  callback: setNightMode
+  });
+
+window.onload = () => {
+  if (localStorage.getItem('showSettings')) showSettings();
+  else hideSettings();
+  
+  tstore.ttsClickSwitch.load();
+  tstore.dicSwitch.load();
+  tstore.translLangCtrl.load();
+  loadCommonItems();
+
+  gstore.defaultDocTitle = 'Play video fragments to boost listening and pronunciation skills';
+  setDocTitle(gstore.defaultDocTitle);  
+
+  setPause();
+
+  initVideoResizer();
+  
+  gstore.tips.initAll(); // experimental, added 2025-10-11
+
+  adjustPostRecActions('0.7U, 0.7O, U, O');
+  
+  analyzeURLParams();
+  
+  tstore.speakBtn.innerHTML = gstore.speakerIcon;
+  tstore.translateBtn.innerHTML = gstore.translateIcon;
+
+  elid('hop-forward').innerHTML = gstore.chevronIcon;
+  elid('hop-back').innerHTML = gstore.chevronIcon;
+  elid('copy-link').innerHTML = uiblox.shareIcon('2 2 20 22', 12);
+  elid('share-fragment').innerHTML = uiblox.shareIcon('0 0 24 24', 24);
+  
+//  mic.init();
+  if (!loadSTT('NO_AUDIO_RECORDER')) // it can work with audioRecorder as well, but so far recording is not needed 
+    console.warn('STT not supported'); 
+
+  setNightMode('default');
+}
+
+const prepareSettings = () => {
+  const leftCol = qsel('.left-column');
+  if (isElHidden(leftCol)) prepareTopSettings('ADD_MORE');
+  else {
+    restoreLeftColSettings();
+    prepareTopSettings();
+  }
+}
+
+const moveControlsTo = el => {
+  el.prepend(
+    elid('basic-controls')
+/*
+    elid('rec-switch-box'), 
+    elid('master-pbr-box'), 
+	elid('lang-voice-box'), 
+	elid('tts-click-switch-box'),
+	elid('use-dic-switch-box')
+*/
+  );
+}
+
+const restoreLeftColSettings = () => {
+// bring some settings back from the top settings
+  moveControlsTo(elid('manual-controls-box'))
+}
+
+const prepareTopSettings = (cmd = '') => {
+  const el = elid('top-settings');
+  const elWasPrepared = el.innerText;
+
+  if (cmd === 'ADD_MORE') {
+    moveControlsTo(el);
+	tstore.settingsMovedToTop = true;
+  } else tstore.settingsMovedToTop = false;
+  
+  if (!elWasPrepared) {
+    const html = getVocabCtrl() 
+	  + '<div id="font-size-box">' + getFsizeHtml('-set') + '</div>'
+	  + '<div id="night-mode-switch-box"></div>';
+    elAddHTML(el, html);
+  }
+
+  setPBR();
+  showVocabMode();
+  setFontSize();
+  tstore.nightModeSwitch.load();
+  gstore.tips.initAll();
+}
+
+const showTopSettings = async (par = '') => {
+  tstore.topControlsMayBeHidden = false;
+  prepareSettings();
+  showElid('top-controls');
+  setElHTML('top-controls-label', gstore.settingsIcon + '&thinsp;Settings');
+//  if (par) highlightEl(elid(par), 10000);
+
+  const topSettingsEls = [
+    'rec-switch-box',
+    'master-pbr-box',
+    'lang-voice-box',
+    'tts-click-switch-box',
+    'use-dic-switch-box',
+    'transl-lang-box',
+    'vocab-settings-box',
+    'font-size-box',
+    'night-mode-switch-box'
+  ];
+
+  topSettingsEls.forEach(id => {
+    if (!par.length || par.includes(id)) showElid(id); //par can be a string or array
+	else hideElid(id);
+  });
+
+  if (par === 'vocab-settings-box' 
+    || (!par.length && gstore.vocabArr?.length)) showElid('vocab-settings-box');
+  else hideElid('vocab-settings-box');
+  
+  await sleep(800);
+  tstore.topControlsMayBeHidden = true;
+
+// should top-controls position be adjusted depending on cmd (i.e., what controls are shown)?
+}
+
+
+const handleKeyEvent = e => {
+//console.log('Key',e.key);
+
+  if (e.key === 'Escape') {
+    hitStopButton();
+	hideElid('top-controls');
+	tstore.hideChunkTooltip();
+	hideEl(vocabInput);
+	hideEl(qsel('.dropzone')); // trying to fix the rare bug of showing dropzone while selecting text
+  }
+
+  if (e.target === elid('vocab-meaning-input') && e.key === 'Enter') {
+//console.log('Enter key');
+      gstore.vocab.addMeaning(e.target);
+  }
+
+  if (e.key === 'F11' && e.shiftKey) tstore.nightModeSwitch.toggle();
+  if (e.key === ',' && e.ctrlKey) showTopSettings();
+  if (e.key === '.' && e.ctrlKey) changeVocabMode(1);
+
+  if (elid('tts-sentence-reader') && e.shiftKey) {
+    if (e.key === 'ArrowLeft') tstore.ttsOverlay.playNext(-1);
+    if (e.key === 'ArrowRight') tstore.ttsOverlay.playNext(1);
+  }
+  
+  if (['ControlRight', 'MetaRight'].includes(e.code) && players.flag) simulateClick(elid('hop-back'));
+//    playerTimeShift(-1); 
+
+  if (e.code === 'KeyE' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+//    toggleElid('task-header');
+    const el = elid('task-header');
+	if (isElHidden(el)) {
+	  showEl(el);
+	  elid('edit-task').click();
+	} else hideEl(el);
+  }
+}
+
+const imitateBtnClick = el => {
+  blinkElClass(el, 'btn-click', 1, 200);
+//  el.classList.add('btn-click');
+//  await sleep(200);
+//  el.classList.remove('btn-click');
+}
+
+const simulateClick = el => {
+  if (el) {
+    el.click();
+    imitateBtnClick(el);
+  }
+}
+
+const playerTimeShift = t => {
+//  const shiftFactor = gstore.shiftKeyDown ? 7 : 1;
+  const shiftFactor = (gstore.altKey) ? 7 : 1;
+  const time = shiftFactor * (t * parseFloat(elid('time-shift').value) || t);
+  if (players.isHtml) htmlPlayer.currentTime += time;
+  else if (player) player.seekTo(player.getCurrentTime() + time);
+}
+
+const handlePlayStopBtn = () => {
+//console.log('Click to stop = ', players.loopStopRequested);
+  if (!playStopBtn.classList.contains('play-triangle-solid')) hitStopButton();
+  else replayFragment(playStopBtn);
+}
+
+const hitStopButton = () => {
+  players.loopStopRequested = true; 
+  setPlayStopBtn();
+  
+  if (players.stream) playerStop(); // force stop streaming
+
+  tts.cancel(); 
+
+  imitateBtnClick(playStopBtn);
+  
+  if (tstore.ttsOverlay.readMode) tstore.ttsOverlay.setReadMode(0); // experimental 2025-12-31, the logic may change
+  
+  displayOverlay(''); //needed to Esc autoplay of a loaded mediafile
+}
+
+const setPlayStopBtn = cmd => { markCuePlaying(playStopBtn, cmd) }
+
+const setPlayerSpeed = v => { 
+  if (player) player.setPlaybackRate(v);
+  htmlPlayer.playbackRate = v;
+}
+
+const isScreenNarrow = () => (window.innerWidth <= 700);
+
+const setLeftColWidth = lw => { // could be used to resize the video
+  const leftCol = qsel('.left-column');
+//  const rightCol = qsel('.right-column');
+
+  ytPlayer.style.width = lw + 'px';
+  ytPlayer.style.height = (lw * 9 / 16) + 'px';
+// Setting width and height in style has the highest priority and may be bad 
+// if the window is resized to narrow. Styling via classes would work better.
+
+  const wmax = (lw >= players.maxWidth);
+  ytPlayer.style.marginTop = wmax ? '0' : '';
+  qsel('.main-page').style.margin = wmax ? '0' : '';
+  elid('page-row').style.backgroundColor = wmax ? 'black' : '';
+  elid('topMenuBtn').style.backgroundColor = wmax ? 'black' : '';
+  
+  if (players.mediaInTask) return;
+
+//  showEl(leftCol);
+//  leftCol.style.flex = '0 0 ' + lw + 'px'; 
+//  leftCol.style.width = width[size] + 'px'; // was needed to resize html video 
+
+  elid('player-with-settings').style.width = lw + 'px'; // needed to resize html video 
+  
+//  const rw = qsel('.row').offsetWidth - lw - 40;
+//console.log('Right col width', rw);
+//  rightCol.style.flex = rw + "px";
+}
+
+const adjustMediaInTask = () => {
+  if (!players.mediaInTask) return;
+
+  if (players.mediaType === 'video') {
+    const width = 360;
+    ytPlayer.style.width = width + 'px';
+    ytPlayer.style.height = (width * 9 / 16) + 'px';
+    xAudioBox.style.width = 'fit-content';
+
+	showVideoResizer(0);
+  }  
+}
+
+const setVideoSize = cmd => {
+  if (players.mediaInTask) {
+    adjustMediaInTask();
+    return;
+  }
+  
+  const widths = [400, 640, 800];
+  
+  const vctrl = function(n) {
+    const ctrls = document.querySelectorAll('.video-size');
+    const classes = ['video-smaller', 'video-bigger'];
+	return {
+	  enable: (n) => {
+        ctrls[n].classList.add(classes[n]);
+        ctrls[n].classList.remove('video-size-disabled');
+	  },
+	  disable: (n) => {
+        ctrls[n].classList.remove(classes[n]);
+        ctrls[n].classList.add('video-size-disabled');	
+	  }
+	}
+  }();
+  
+  const setVideoSizeCtrls = width => {
+    if (width > players.minWidth) vctrl.enable(0);
+    else vctrl.disable(0);
+	
+    if (width < players.maxWidth) vctrl.enable(1);
+	else vctrl.disable(1);
+  }
+
+  let width = parseInt(cmd);
+
+  const leftCol = qsel('.left-column');
+//console.log('### Left column width', width);
+  if (width === -1 || ['hide', 'hidden', 'off', 'none'].includes(cmd)) hideEl(leftCol);
+  else showEl(leftCol);
+  
+  if ([0, 1, 2].includes(width)) width = widths[width]; // legacy values
+
+  const cmdString = cmd + '';
+  if (cmdString.endsWith('%'))
+    width = Math.round(width / 100 * window.innerWidth);
+
+  if (width < players.minWidth || cmd === 'min') width = players.minWidth;
+
+  players.videoWidth = width;
+  localStorage.setItem('videoWidth', width);
+  setVideoSizeCtrls(width);
+  if (!isScreenNarrow()) setLeftColWidth(width);
+}
+
+const initVideoResizer = () => {
+  let divs = ''; 
+//  widths = [18, 28, 40], heights = [25, 45, 60];
+  const widths = [25, 40], heights = [45, 70], // in %
+    classes = ['smaller', 'bigger'];
+	
+  for (let i = 0; i < 2; i++) {
+    const height = heights[i], width = widths[i], fnclass = classes[i];
+    divs += `<div onclick = changeVideoSize(${i}) class = "ptr video-size video-${fnclass}"
+style="width: ${width}%; height:${height}%;
+"></div>`;
+  }
+  videoResize.innerHTML = divs;
+}
+
+const changeVideoSize = cmd => {
+  let width = players.videoWidth;
+  if (cmd) {
+    width = Math.min(width + 150, players.maxWidth);
+	if (width + 50 > players.maxWidth) width = players.maxWidth; // snap to max
+  }
+  else {
+    width = Math.max(width - 150, players.minWidth);
+	if (width - 50 < players.minWidth) width = players.minWidth; // snap to min
+  }
+  setVideoSize(width);
+}
+
+const videoResizerReset = () => {
+  showVideoResizer(1);
+  if (players.resizeTimeout) clearTimeout(players.resizeTimeout);
+  if (!players.mouseOverVideoResize && players.isHtml)
+    players.resizeTimeout = setTimeout(()=>{ showVideoResizer(0) }, 2000);
+}
+
+const showVideoResizer = async show => {
+  videoResize.style.display = show? 'flex' : 'none';
+}
+
+const setPostRecActions = txt => {
+  players.postRecActions = txt.split(',').map(s => normalizeStr(s));
+}
+
+const adjustPostRecActions = v => {
+  if (v) {
+    elid('post-rec-set').value = v;
+    setPostRecActions(v);
+  }
+}
+
+// ** YT style transcripts **
+
+const handleYTstyleInput = txt => {
+// direct copying from YT transcript may require pasting 
+// into textarea because of YT's complex div structure
+
+// or use of textContent or innerText, but at what point?
+
+// redundant nodes <div> and <span> may be removed here,
+// or in getDivInput, their innerHTML extracted.
+
+// OR send innerText to analyze: it's much simpler
+
+// the logic can be different for url via input field and 
+// just plain text. No need for ref in that case, 
+// just txt.replace(url, makeHref(url))
+
+  let tr = txt;
+  let ref = '';
+  
+  const getMediaUrl = id => {
+    let s = '';
+    const el = elid(id);
+    if (el) {
+      s = el.value.trim();
+      el.remove();
+    }
+    return s;
+  }
+
+  let url = getMediaUrl('media-url-input2');
+  if (url) ref = '\nSource: ' + makeHref(url);
+  else {
+    const match = txt.match(/(((https?:\/\/)|(www\.))[^\s]+)/g);
+    url = match ? match[0] : '';
+    if (url) tr = tr.replace(url, makeHref(url));
+  }
+
+  const marker = url ? 'video/audio:' : '';
+  const oldPrompt = 'Paste YouTube transcript lines below'; 
+  const newPrompt = '<b>Practice the following lines</b>'; 
+  tr = tr.replace(/\n{2,}/g, '\n')
+    .replace(oldPrompt, newPrompt);
+  if (!url) tr = tr.trim('\n');
+  const task = marker + url + ref + tr;
+  loadElementWithText(task, 'transcriptText'); 
+}
+
+const processYTtranscript = txt =>{
+// maybe processTimeStamps fn should be called first?
+  const marker = 'video/audio:';
+// x-vars Logic is going to change 7 Nov 2024. 
+// <x-vars> tag will no longer be part of transcriptText element.
+//  const marker2 = '<x-vars ';
+//  if (!txt.includes(marker) && !txt.includes(marker2)) return txt;
+  if (!txt.includes(marker) && !tstore.xvarsBox) return txt;
+
+  const lines = txt.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.includes(marker)) {
+//      lines[i] = handleMediaTag(line); // has to be adapted with new <x-vars> logic
+      lines[i] = '';
+      tstore.startmedia = handleMediaTag(line); // adapted with new <x-vars> logic
+    } 
+  }
+  return processTimeStamps(lines.join('\n'));
+}
+
+const processTimeStamps = txt => {
+// there's a problem with this fn processing timestamps in cues: check on voa115 task
+  if (/\<cue |\]\(play: |onclick=cueButtonClick/.test(txt)) return txt; // no need to do anything
+
+  const stamps = [];
+  const extractStamp = s => {
+    stamps.push(getStampArray(s)); 
+    return '{{TIME_STAMP}}';
+  }
+
+//  const getStampArray = s => s.replace(/[\[\]\s]/g, '').split(/,|-/);
+  const getStampArray = s => s
+    .replace(/[\[\]\s]/g, '')
+    .replace(/,\d*\:/g, s=>'-' + s.slice(1)) //comma between start and end replaced by -
+    .replace(/--\>/g, '-') //--> between start and end replaced by -
+    .replace(/,/g, '.') // decimal separator '.'
+    .split(/-/);
+  
+  const restoreStamps = s => {
+    for (let i=0; i < stamps.length; i++) {
+      let startStop = stamps[i];
+      if (!startStop[1] && i < (stamps.length - 1))
+        startStop[1] = stamps[i+1][0];
+	  
+	  const timeStamp = startStop.join('-');
+	  const title = (startStop[1] && (startStop[0] !== startStop[1]))? timeStamp : 'Play/pause';
+      s = s.replace('{{TIME_STAMP}}', cueTagBtn({time: timeStamp, title: title}));
+    }
+//console.log(s)
+    return s;
+  }
+  
+//  const getStampNumber = s => s.replace(/\r?\n?/g, '') + '. ';
+  const getStampNumber = s => s.replace(/\n/g, '') + '. ';
+  
+
+//    let res = txt.replace(/\[?(\d{1,2}:)?\d{1,2}:\d{1,2}([\.,]\d+)?\]?\s*(-->|-|,)?\s*(\[?(\d{1,2}:)?\d{1,2}:\d{1,2}([\.,]\d+)?\]?)?\s*/g, 
+//    let res = txt.replace(/\n\d+\r?\n/g, s => getStampNumber(s))
+    let res = txt.replace(/\n\d+\n/g, s => getStampNumber(s))
+//      .replace(/(\n\d+\r?\n)?\[?(\d{1,2}:)?\d{1,2}:\d{1,2}([\.,]\d+)?\]?\s*(-->|-|,)?\s*(\[?(\d{1,2}:)?\d{1,2}:\d{1,2}([\.,]\d+)?\]?)?\s*/g, 
+      .replace(/(\n\d+\n)?\[?(\d{1,2}:)?\d{1,2}:\d{1,2}([\.,]\d+)?\]?\s*(-->|-|,)?\s*(\[?(\d{1,2}:)?\d{1,2}:\d{1,2}([\.,]\d+)?\]?)?\s*/g, 
+	    s => extractStamp(s))
+	  .replace(/\d\\:\d/g, s => s[0] + s[2] + s[3]) // time as part of the text: 08\:30
+
+		; //because of gaps using <<>>, <a> tag may be problematic
+//console.log(res);
+  res = restoreStamps(res);
+//console.log('\nRestored', res);
+  return res;
+}
+
+
+//const handleMediaTagOld = txt => {
+//  const prefix = '<x-vars startmedia="',
+//    suffix = '"></x-vars>';
+//  return txt.replace(/video\/audio:\s*/, prefix) + suffix;
+//}
+
+
+const handleMediaTag = s => {
+  return s.replace(/video\/audio:/, '').trim();
+}
+
+const makeHref = ref => '<a target="_blank" rel="noopener" href="' 
+  + ref + '">' + ref + '</a>';
+
+
+// the span inside the button is needed just for pause btn via play-pause style
+// b/c Unicode pause emoji has only blue background
+//const cueTagBtn = txt => txt ? '<button class="cue cue-button small-padding grayish play-triangle" onclick=replayFragment(this) time="' + txt 
+/*
+const cueTagBtnOld = (time, title='') => time?
+  '<button class="cue cue-button small-padding grayish play-triangle" onclick=cueButtonClick(this) time="' 
+  + time + '" title="' + title +'"><span></span></button>'
+  : '';
+*/
+  
+const cueTagBtn = (par) => {
+  if (!par.time) return ''; // check why quit?
+  const time = ` time="${par.time}"`;
+  const title = par.title ? ` title="${par.title}"` : '';
+  const url = par.url ? ` url="${par.url}"` : '';
+  return '<button class="cue cue-button small-padding grayish play-triangle" onclick=cueButtonClick(this)' 
+  + time + title + url + '><span></span></button>'
+//  return '<button class="cue cue-button small-padding grayish play-triangle" onclick=cueButtonClick(this) time="' 
+//  + par.time + '" title="' + par.title +'" url="' + par.url +'"><span></span></button>'
+}
+
+// Timestamping
+const markTime = () => {
+  const time = getPlayerCurTime().toFixed(1);
+console.log(time);
+  copyToClipboard(time + '\n', time + ' copied to clipboard', 600);
+  if (!copyToInfopage(time + '\n')) {
+//    displayMessage('Open a new task');
+  }
+}
+
+const copyStartStop = () => {
+  const v = id => elid(id).value.trim();
+  const s = v("ReplayFrom") + '-' + v("ReplayTo") + ' ';
+  copyToClipboard(s);
+  copyToInfopage(s);
+}
+
+const copyToInfopage = txt => {
+  if (isInfopageEditable()) {
+    elid('infopage-content').innerHTML += txt;
+    return 1;
+  } else return 0;
+}
+
+const copyTime = el => {
+    el.value = secondsToHms(getPlayerCurTime().toFixed(1));
+}
+
+const changeEpisode = (key, url) => {
+  if (!url) return;
+  loadHtmlTaskByURL(url, 0); // check for a new dir may be added in the future?
+
+  if (isIndexFile(url)) episodeBar.hide();
+  else episodeBar.show();
+  const href = location.origin + key + url;
+  history.pushState({'pushed': href}, "", href); 
+// the state is not currently used, but it should not be null, 
+// so that popstate event could happen on browsing history
+}
+
+//const movePlayer = eID => {
+const movePlayer = () => {
+//  const e = elid(eID);
+  const e = transcriptText;
+  const xaudio = e.getElementsByTagName('x-audio')[0];
+//  const xvideo = e.getElementsByTagName('x-video')[0] || null; // so far no real benefit on wide screens
+  const xvideo = isScreenNarrow() ? e.getElementsByTagName('x-video')[0] : null;
+// if x-video tag is ignored on wide screen, there may be empty lines in the task
+// should it be checked somewhere at parseTaskText fn?
+  const controls = elid('settings-box');
+//  hideEl(playerTitle);
+
+  if (xvideo) {
+    if (player) {
+      player.destroy();
+      players.ytAPI = 'DESTROYED';
+console.log('movePlayer: players.ytAPI', players.ytAPI);
+    }
+    xvideo.append(playerBox, controls); // should it be restored if another task is loaded?
+  }
+  if (xaudio) prepXAudio();
+  else showEl(videoResize);
+
+  players.mediaInTask = xaudio || xvideo;
+  showOrHideEl(elid('left-column'), !players.mediaInTask);
+}
+
+const closeXaudio = () => {
+  playerStop();
+  hideEl(xAudioBox);
+  xAudioBox.isReady = false;
+}
+
+const prepXAudio = () => {
+//  showEl(playerTitle);
+  hideEl(videoResize);
+  if (xAudioBox.isReady) return; // in order not to create additional audioCtrls divs
+
+  playerBox.style.display = 'inline-block';	
+  playerBox.style.width = '100%';
+//  playerTitle.style.width = '100%';
+//  playerBox.style.margin = '0 1em 0.3em 1em';
+//  playerBoxLoading.style.margin = '0 1em 0.3em 1em';
+//  playerTitle.style.margin = '0.3em 1em';
+//  xAudioBox.append(playerBoxLoading, playerBox); // should it be restored if another task is loaded?
+  xAudioBox.append(tstore.playerTitle, playerBoxLoading, playerBox); // should it be restored if another task is loaded?
+
+  const audioCtrls = document.createElement('div');
+  audioCtrls.id = 'audio-ctrls';
+//  audioCtrls.className = 'flex-center inblock';
+  audioCtrls.style.verticalAlign = '0.7em';
+  audioCtrls.style.display = 'inline-block';
+  playerBox.append(audioCtrls); // should it be restored if another task is loaded?
+  
+  const labels = '<div id="ctrl-hops" class="inblock margin-03em"><div class="center gray small-font" style="padding-bottom:0.4em">HOP</div></div>'
+    + '<div id="ctrl-speed" class="inblock"><div class="gray small-font" style="padding-left:3em">SPEED</div></div>';
+
+  elAddHTML(audioCtrls, labels);
+
+  ['hop-back', 'hop-forward'].forEach(id => {
+    elid(id).style.margin = '0 0.2em';
+//	audioCtrls.append(elid(id));
+	elid('ctrl-hops').append(elid(id));
+	});
+	
+  runTaskCmd(elid('ctrl-speed'), 'SHOW_PBR');
+
+//  setAudioPlayerStyle();
+  htmlPlayer.classList.remove('rounded');
+  htmlPlayer.classList.add('x-audio-player');
+  xAudioBox.isReady = true;
+}
+
+const analyzeXvars = () => {
+// analyse x-vars and url keys - partly duplicates analyzeURL
+
+  const e = tstore.xvarsBox;
+  if (!e) return;
+
+  const vars = e.getElementsByTagName('x-vars')[0]; 
+  const getV = s => vars ? vars.getAttribute(s) : '';
+
+  gstore.xVarsMark = getV('mark');
+  gstore.xVarsMarkHue = getV('mark-hue');
+  
+//  if (vars && getV('task-title') === null) hideElid('task-header', 'topMenuBtn');
+//  if (!getV('task-title') && ['0', 'off', 'hide'].includes(getV('task-icons'))) hideElid('task-header');
+  if (vars && !getV('task-title')) hideElid('task-header');
+  else showElid('task-header');
+  
+  if (['0', 'off', 'hide'].includes(getV('task-icons'))) hideElid('task-icons');
+  else showElid('task-icons');
+  if (getV('task-title')) setElHTML('task-title', highlightText(getV('task-title')));
+  else setElHTML('task-title', 'Audiodrill task');
+//  else showElid('task-header', 'topMenuBtn');
+
+  setVideoSize(getUrlKey('video-size') || getV('video-size') || localStorage.getItem('videoWidth') || 1);
+
+  elid('rep-num').value = getUrlKey('r') || getV('r') || elid('rep-num').value;
+  adjustRepNum();
+
+  const speeds = getUrlKey('speed') || getV('speed') || localStorage.getItem('speedFactors') || '1, 0.7';
+  adjustSpeeds(speeds);
+
+  adjustPostRecActions(getV('post-rec'));
+
+  players.ttsLoop = getUrlKey('ttsloop') || getV('ttsloop') || 0;
+
+  if (!tts.manuallyPickedVoice) { // changed 2025-07-20
+    players.ttsLang = getUrlKey('lang') || getV('lang') || gstore.langTag || localStorage.getItem('langCode') || 'en-GB';
+  }
+  
+  if (players.ttsLang === '0') players.ttsLang = '';
+
+  if (players.ttsLang && !tts.manuallyPickedVoice) { // changed 2025-07-20
+    const lang = players.ttsLang .split(/_|-/)[0];
+    storeLangCode(lang);
+    setTextDirection(lang);
+    setLanguage(lang, true);
+    const ttsVoice = getVoice(players.ttsLang);
+	if (ttsVoice) {
+	  tts.spVoice = ttsVoice;
+	  setVoiceInVoiceCtrl(ttsVoice.name);
+	}
+  }
+
+  if (getV('show-settings') !== null) showSettings();
+  if (getV('hide-settings') !== null) hideSettings();
+//console.log('show-settings', getV('show-settings'));
+
+  if (getV('style')) transcriptText.style = getV('style');
+  
+  if (getV('max-width')) elid('rightColumn').style.maxWidth = getV('max-width'); // other settings might be tweaked too
+  else elid('rightColumn').style.maxWidth = '';
+  
+  const ps = getV('parent-style');
+  if (ps) {
+    const arr = ['no-overflow', 'no-padding'];
+    for (const s of arr) {
+	  setElClass(transcriptText, s, ps.includes(s));
+    }
+  }
+
+  const ytId = getV('yt-id');
+  if (ytId) getVideoByURL('https://youtu.be/' + ytId, 'NEW_TASK');
+//  else getVideoByURL(getV('startmedia'), 'NEW_TASK')
+  else {
+    const media = tstore.startmedia || getV('audio') || getV('video') || getV('startmedia');
+    getVideoByURL(media, 'NEW_TASK')
+  }
+
+  setDocTitle(getV('doc-title')); // browser tab title
+//console.log('Player title:', highlightText(getV('player-title')));
+  tstore.playerTitle.displayMsg(getV('player-title'));
+  
+//  setTaskTitle(getV('task-title')); // so far kept to allow prev/next episode btns in the title
+  
+  return 1;
+}
+
+const setVoiceInVoiceCtrl = async (voiceName, n='') => {
+// so far just one selector on this page, so n is not needed?
+  const el = elid('voice-select' + n); 
+  if (el) {
+	await sleep(700); // not the best to delay setting voice, but it works
+//    setVoiceByName(voiceName, n); // turned off 2025-08-03
+    el.value = voiceName;
+    el.title = voiceName;
+console.log('Set voice to', voiceName);
+  }
+}
+
+const setTaskTitle = s => {
+  if (s) setElHTML('task-title', highlightText(s));
+  showOrHideEl(elid('task-icons'), !s);
+}
+
+const showSettings = () => {
+  hideElid('settings-sign');
+  showElid('playerManualControls');
+  localStorage.setItem('showSettings', 1);
+}
+const hideSettings = () => {
+  hideElid('playerManualControls');
+  showElid('settings-sign');
+  localStorage.removeItem('showSettings');
+}
+
+const getActivityKey = () => '/?t=';
+
+function handleLangSelect() {
+  const lang = getLangCode();
+  storeLangCode(lang);
+  tts.langSelector.title = tts.getFullLangName(lang);
+  tts.manuallyPickedVoice = 'LANG_PICKED';
+  listLangVoices();
+  setSpecialKeys();
+}
+
+const shareFragment = () => {
+  const media = players.currentVideoUrl;
+  if (!media) {
+    displayAlarmMessage('No video/audio to share');
+    return;
+  }
+  const start = elid('ReplayFrom').value;
+  const end = elid('ReplayTo').value;
+  const speed = elid('speed-set').value.replace(/\s*/g, '');
+  const url = `https://audiodrill.com?m=${media}&s=${start}&e=${end}&speed=${speed}`;
+  copyToClipboard(url, linkCopiedMsg);
+}
+
+
+tstore.translation = { // experimental: 2026-02-14
+  marker: ':transl:',
+  
+  extract(txt) {
+    const pattern = new RegExp(
+      this.marker + '([\\s\\S]*?)(?=' + gstore.vocab.prefix + '|$)'
+    );
+
+    return txt.replace(pattern, (_, captured) => {
+      this.text = captured.trim();
+
+// language of translation may be added after the marker, just like for :lang: marker	  
+	  const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
+	  this.sentences = [...segmenter.segment(this.text)] .map(entry => entry.segment.trim()); // trim() removes \s including \n
+
+      return '';
+    }).trim();
+  },
+}
+
+
+const taskTextHandler = txt => {
+  txt = tstore.translation.extract(txt);
+
+  const getKeyFromText = (s, key) => s.split(key)[1] .split(/\n/)[0] .trim();
+
+//  gstore.langTag = detectLang(txt);
+  gstore.langTag = detectLang(gstore.vocab.getBeforeVocab(txt));
+  if (txt.includes(':lang:')) gstore.langTag = getKeyFromText(txt, ':lang:');
+  
+  if (gstore.langTag) {
+	storeLangCode(gstore.langTag);
+	setTextDirection(gstore.langTag);
+  }
+  
+  txt += '\n'; // might help fix issues with Hebrew
+  if (typeof gstore.vocabMode === 'undefined') gstore.vocabMode = gstore.calledFromWords? 4 : 1;
+  const editableVocabDiv = gstore.vocabMode === 4? false : true;
+  txt = gstore.vocab.render(txt, {addDiv: editableVocabDiv, prefix: '<))[*', suffix: '*]', examplePrefix: '<))~', exampleSuffix: '~'});
+  if (gstore.calledFromWords) txt = gstore.vocab.renderTag(txt, 'TTS Reader');
+  else txt = gstore.vocab.renderTag(txt, 'EMPTY_VOCAB_HEADER');
+  
+  return  handlePairedLines(txt)
+    .replace(/:lang:.*\n?/g, '')
+	.replace(/<x-vars[^>]*>/, s=> extractXvars(s))
+	; // so far just a few jobs to handle
+}
+
+const handleTransl = () => {
+  addTranslationBtn();
+//  addTranslation(qsel('.original-text'), qsel('.translated-text'));
+}
+
+// addTranslation is experimental fn
+/*
+const addTranslation = (source, transl) => {
+  if (!source || !transl) return;
+  
+  const getSegmentedText = el => {
+    const lang = getContextLang(el);
+console.log('Language of the element', lang);
+    const segmenter = new Intl.Segmenter(lang, { granularity: 'sentence' });
+	return [...segmenter.segment(el.innerText)] .map(entry => entry.segment);
+  }
+  
+  tstore.sourceTextArr = getSegmentedText(source);
+  tstore.translTextArr = getSegmentedText(transl);
+// compare the lengths of two arrays
+  if (tstore.sourceTextArr.length !== tstore.translTextArr.length) {
+console.log('!! Original and translation length mismatch');
+    return;
+  }
+  
+  const getDivHtml = (name, lines) => {
+    let html = '<div class="' + name + '">';
+    for (line of lines) html += '<div class="' + name + '-line">' + line + '</div>';
+    return html + '</div>';
+  }
+  
+  const origDiv = getDivHtml('source', tstore.sourceTextArr);
+
+  elAddHTML(transcriptText, origDiv, 'afterbegin');
+}
+*/
+
+const addTranslationBtn = () => {
+  const el = qsel('x-translate');
+  if (el) {
+    el.innerHTML = offerTranslationHtml(transcriptText.innerText); // should players.currentTask be used instead?
+  }
+}
+
+const extractXvars = s => {
+  if (s) {
+    tstore.xvarsBox = document.createElement('div');
+    tstore.xvarsBox.innerHTML = s;
+  }
+  return '';
+}
+
+const addXvars = s => {
+  if (!s) return;
+  if (!tstore.xvarsBox) extractXvars('<x-vars ' + s + '>');
+  else {
+    const html = tstore.xvarsBox.innerHTML;
+	tstore.xvarsBox.innerHTML = html.split('>')[0] + ' ' + s + '>';	
+  }
+}
+
+const setTextDirection = (lang = 'en') => {
+  wordList.style.direction = transcriptText.style.direction = (['he', 'ar'].includes(lang))? 'rtl' : 'ltr'; // could be done via added/removed class 
+}
+
+const handlePairedLines = txt => {
+  const process = s => {
+    if (!s) return '';
+	lines = s.split('\n');
+//console.log('Lines: ', lines); 
+    let k = 0;
+	let res = '';
+	let prevLine = '';
+    for (const line of lines) {
+//console.log('RES', res);
+	  if (!line) {
+		if (k === 1) res += '<))' + prevLine; // lonely previous line
+		k = 0;
+		res += '\n';
+	  }
+	  else {
+		k++;
+		if (k > 2) k = 1;
+		if (k === 2) res += '<)){{' + highlightText(prevLine + '\n') + '|' + highlightText(line) + '}}';
+	  }
+	  prevLine = line; 
+	}
+    return res;
+  }
+  const before = txt.split('{x-paired-lines}')[0];
+  let after = txt.split('{/x-paired-lines}')[1];
+  if (!after) after = '';
+  const paired = txt
+    .split('{/x-paired-lines}')[0] 
+	.split('{x-paired-lines}')[1];
+//console.log('handlePairedLines: ', paired); 
+  return before + process(paired) + after;
+}
+
+const vocabCallback = (cmd, param) => {
+  if (cmd === 'VOCAB_MODE_BTN') showTopSettings('vocab-settings-box');
+
+/*
+  if (cmd === 'VOCAB_EDITED') {
+    const s = gstore.vocab.getBeforeVocab(players.currentTask)
+	  + gstore.vocab.prefix
+	  + param;
+	players.currentTask = s;
+	refreshTask();
+//console.log(s);
+//console.log(param)
+  }
+*/
+  if (cmd === 'VOCAB_ENTRY_ADDED') {
+    players.currentTask = param;
+	refreshTask();
+  }
+}
+
+const refreshTask = () => {
+  loadElementWithText(players.currentTask, 'transcriptText');
+}
+
+const processTaskEl = () => {
+  transcriptText.querySelectorAll('.tooltip').forEach( e => {e.remove();});
+  afterTaskLoaded();
+  parseCmdTag('transcriptText');
+  loadingDone(); 
+}
+
+const afterTaskLoaded = () => {
+  players.looperInUse = false;
+  players.loopStopRequested = true; // maybe it should be set even earlier?
+  
+  parseWordList();
+  movePlayer();
+
+  if (qsel('x-vocab') && elid('vocab-section')) qsel('x-vocab').appendChild(elid('vocab-section'));
+
+  tstore.contextLang = getContextLang(transcriptText);
+  setLanguage(getContextLang(transcriptText), true);
+
+  const o = analyzeXvars(); // o is assigned just to wait for analyzeXvars to finish. Does it wait?
+  const tag = elid('startmedia'); // legacy tag to load video for this task
+  if (tag) getVideoByURL(tag.getAttribute('url'), 'NEW_TASK');
+  parseTTSTag(transcriptText); // run before prepareCloze
+  handleTransl();
+  prepareSettings();
+  emulateCueClick();
+
+  tstore.sentences.init(transcriptText);
+  handleVocab();
+  prepareCloze(); // run after parseTTSTag and tstore.sentences.init
+  
+//  tstore.taskSentences = getTaskSentences(transcriptText);
+}
+
+const emulateCueClick = () => {
+  const url = getUrlKey('stream');
+  if (url) {
+    const s = `[class="cue"][url="${url}"]`;
+    const cue = qsel(s);
+	if (cue) replayFragment(cue);
+	else getVideoByURL(url); // this way, no info on the stream name is passed
+  }
+}
+
+const callTTSRead = (s = players.currentTask) => {
+// What to do with <x-vars>? Should :lang: tag be added?
+  if (players.ttsLang && !s.includes(':lang:')) s = `:lang: ${players.ttsLang}\n` +  s;
+//console.log('Encode', s);
+  location.assign('/?tts-read&read-enc=' + encode64(s)
+  // + getLangForUrl()); //so far on this page, lang is determined from x-vars and url, not from :lang: label
+  ); 
+}
+
+const openTTSRead = () => {
+//console.log('Vocab', '\n:vocab:\n' + wordList.textContent.replace(/,\s?/g, '\n'));
+  const vocabLabel = (players.currentTask.includes(':vocab:'))? '\n' : '\n:vocab:\n';
+  const txt = players.currentTask + vocabLabel + wordList.textContent.replace(/,\s?/g, '\n');
+  callTTSRead(txt);
+}
+
+onpopstate = event => {
+//console.log('Popstate', event.state);
+  history.go(); // load current page from browser history
+/*  
+  if (!event.state) return;
+  const url = event.state.pushed;
+  if (!url) return;
+  window.location = url;
+*/
+};
+
+const getContextLang = (el) => {
+  const getDivLang = el => {
+    while (el) {
+      if (el.lang) return el.lang;
+      el = el.parentElement;
+    }
+    return '';
+  }
+  return getDivLang(el) || tts.langCode || 'en';
+}
+
+const handleTextInteraction = (s, cmd, el) => {
+//console.log('handleTextInteraction', s);
+  if (!s || tstore.isIgnoredByTTSOnClick(el)) return;
+
+  const speakDictOrTTS = async chunk => {
+    let dictOK = false;
+    if (!/\s/.test(chunk))
+      dictOK = await tryDictAudio(chunk, tts.spVoice.lang, speedCtrl.calcSpeed());
+
+//	if (!dictOK) speak(chunk, 'IGNORE_IF_BUSY');
+	if (!dictOK) ttsSpeakLang(chunk, tstore.contextLang, 'IGNORE_IF_BUSY');
+  }
+
+  const isOKtoSpeak = () => tstore.ttsClickSwitch.isOn && !tts.isBusy() && !players.looperInUse;
+
+  tstore.contextLang = getContextLang(el);
+  if (s.length > 170) {
+    s = s.slice(0, 170);
+    if (s.includes(' ')) // not for Chinese or similar languages without spaces
+	  s= s.split(' ') .slice(0, -1) .join(' '); // remove the last word, as it may be 'broken' by slicing above
+  }
+
+  if (isOKtoSpeak()) {
+    tstore.TTSsource = 'chunk';
+    if (audioRecAllowed2()) emulateTTSClick(s); 
+    else speakDictOrTTS(s);
+  }
+
+//  if (cmd === 'SELECTED_TEXT') tstore.showChunkTooltip(s); // tooltip is shown in handleSelection()
+
+//console.log('selected?', cmd)
+}
+
+transcriptText.selectionTimeout = null;
+transcriptText.selectionInProgress = false;
+transcriptText.justHandledSelection = false;
+transcriptText.lastSelectionText = '';
+
+// Final selection logic
+function handleSelection() {
+  const selection = window.getSelection();
+  if (!selection.rangeCount) return;
+
+  const range = selection.getRangeAt(0);
+  const node = range.commonAncestorContainer;
+
+//  if (!transcriptText.contains(node) || tstore.doubleClicked) return;
+  if (!transcriptText.contains(node)) return;
+
+  const text = selection.toString().trim();
+
+//  if (text.length > 0 && text !== transcriptText.lastSelectionText) {
+  if (text.length) {
+    transcriptText.lastSelectionText = text;
+    transcriptText.justHandledSelection = true; // set flag to suppress click handling
+//console.log('📌 Text selection:', text);
+// Show selection tooltip here
+	const el = node.nodeType === Node.TEXT_NODE
+    ? node.parentElement
+    : node;
+
+// speaking commented out b/c it may be awkward when copy/pasting
+//	handleTextInteraction(text, 'SELECTED_TEXT', el); 
+    tstore.showChunkTooltip(text);
+
+    // Reset after a short delay to allow click suppression
+    setTimeout(() => transcriptText.justHandledSelection = false, 100);
+
+//    const lang = getContextLang(el);
+  }
+}
+
+// Debounced selectionchange handler
+document.addEventListener('selectionchange', () => {
+  const selection = window.getSelection();
+  const text = selection.toString().trim();
+  const activeEl = document.activeElement;
+
+  if (!text.length // ignore caret moves or clicks without selection
+    || (activeEl && activeEl.tagName === 'INPUT') // ignore input selection
+  ) return; 
+
+  transcriptText.selectionInProgress = true;
+  
+  clearTimeout(transcriptText.selectionTimeout);
+  transcriptText.selectionTimeout = setTimeout(() => {
+    transcriptText.selectionInProgress = false;
+    handleSelection();
+  }, 800);
+});
+
+// Handle word click (if no selection)
+transcriptText.onclick = async (e) => {
+  await sleep(200); // for double click
+  const sel = window.getSelection();
+  gstore.clickedNode = sel.anchorNode;
+
+  const text = sel.toString().trim();
+
+// Skip click if 
+  if (tstore.isIgnoredByTTSOnClick(e.target)
+    || text.length //there's current selection  
+    || transcriptText.selectionInProgress // selection may still be in progress (drag or double-click)
+    || transcriptText.justHandledSelection 
+	|| !sel.rangeCount
+  ) return;
+
+  if (sel.anchorNode.nodeType === 3) gstore.clickedNode = sel.anchorNode.parentElement;
+
+// Safe to assume this was a true click on a word
+  const range = document.caretRangeFromPoint
+    ? document.caretRangeFromPoint(e.clientX, e.clientY)
+    : null;
+
+  if (range) {
+    const lang = getContextLang(e);
+	gstore.clickedWord = getClickedTextFragment(lang, 'word');
+	const s = gstore.clickedWord;
+
+    if (s) {
+//console.log('🔹 clicked:', s);
+	  if (e.ctrlKey || e.metaKey) tstore.ttsOverlay.init(gstore.clickedNode);
+      else handleTextInteraction(s, 'CLICK', e.target);  
+    }
+  }
+};
+
+tstore.isIgnoredByTTSOnClick = el => {
+  const blacklistedTags = ['BUTTON', 'INPUT', 'A', 'LABEL'];
+  const blacklistedClasses = ['vocab-header', 'no-tts'];
+  while (el) {
+    if (blacklistedTags.includes(el.tagName) 
+    || blacklistedClasses.some(cls => el.classList.contains(cls))
+    || el.contentEditable === 'true'
+  ) return true;
+    el = el.parentElement;
+  }
+  return false;
+}
+
+const readTTSChunks = (cmd) => { tstore.ttsOverlay.init(cmd) } // used by {x-tts-read}
+
+tstore.ttsOverlay = {
+  init(cmd) {
+    if (!tstore.ttsClickSwitch.isOn || !tstore.taskSentences) return;
+
+// rescanning with wrapTaskSentences() can't be run here b/c it'll add more spans over already existing ones
+
+	this.unmarkAll();
+	this.setReadMode(1);
+ 
+    this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
+	if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
+	this.play();
+	this.showCtrls();
+  },
+
+  showCtrls() {
+    const playBtn = '<button id="tts-play-pause-btn" class="font-100pc rnd show-focus grayish no-bgcolor gray-bg-onhover" title="Play/pause"' 
+      + 'style="width:32px; height:32px; border: 1px solid var(--color-ddd-555)">'
+//	  + '<div id="tts-play-btn" class="semibold hidden"  style="margin: 2.5px 0 0 2.5px;">&#x25B7;</div>'
+//      + '<div id="tts-play-btn" class="small-padding grayish play-triangle- hidden" style="line-height:1.3em">&#x25B6;</div>'
+      + '<div id="tts-play-btn" class="hidden" style="line-height: 28px; padding-left: 2.6px;">&#x25B6;</div>'
+	  + '<div id="tts-pause-btn" style="margin-top: -3px; transform: scaleX(.8);">&#10074;&#10074;</div>'
+	  + '</button>';
+
+    const commonBtn = 'flex margin-03em padding-all-01em rounded show-focus no-border grayish no-bgcolor gray-bg-onhover';
+    
+    const getPrevNextBtn = (par) => `<button id="${par.id}" class="${commonBtn}"
+      onclick = "tstore.ttsOverlay.playNext(${par.step})"  title="${par.title}">`
+    + uiblox.chevronIcon(par.dir)  
+    + '</button>';
+
+    const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + ←)', dir: 'left'});
+    const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + →)', dir: 'right'});
+  
+    const translateBtn = `<button id="tts-translate-btn" title="Translate" 
+      class="${commonBtn} inblock font-85pc" tip-class="tooltip-link"
+  	  onclick = "tstore.ttsOverlay.translate(this)">`
+	  + gstore.translateIcon
+	  + '</button>';
+	  
+    const settingsBtn = tstore.settingsMovedToTop ? `<button id="play-tts-settings" 
+      title="Speed, voice and translation settings" 
+      class="${commonBtn} font-95pc"
+     	onclick = "showTopSettings(['master-pbr-box', 'lang-voice-box', 'transl-lang-box'])">`
+      + gstore.settingsIcon
+      + '</button>'
+      : '';
+
+    const btnDiv = '<div class="inblock v-align-middle"><div class="flex-center">'
+    + prevBtn + playBtn + nextBtn + translateBtn + settingsBtn
+    + '</div></div>';
+
+//    const prompt = '<div class="inblock font-85pc gray2">Read lines</div>';
+    const prompt = '<select id="playMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">'
+	  + '<option value="sentence">Play a line</option><option value="all">Play all</option></select>';
+//    const prompt = '<div class="inblock">' + playmodes + '</div>';
+//    const prompt = playmodes;
+
+    displayOverlay({msg: '<div id="tts-sentence-reader">' + prompt + btnDiv + '</div>', style: 'width:auto; padding: 4px 1.5em;'});
+    elid('tts-play-pause-btn').focus();
+	this.setPlaymode();
+  },
+  
+  setPlaymode() {
+	this.playMode ??= 'sentence';
+//console.log('playMode', this.playMode);	
+    const el = elid('playMode');
+	el.value = this.playMode;
+	el.onchange = () => {this.playMode = el.value};
+  },
+  
+  unmarkAll() {
+    tstore.nodes.forEach(el => el.classList.remove('marked'));
+  },
+
+  markSentence(i, cmd) {
+	const el = tstore.nodes[i];
+//	const el = qsel(`[data-sentence-index="${i}"]`); // alternative approach
+
+	setElClass(el, 'marked', cmd);
+  },
+  
+  getInitChunkNum(node) {
+//console.log('clickedNode', node);
+    let el = node.closest('[data-sentence-index]') || node.nextElementSibling.closest('[data-sentence-index]');
+	let index = + el.dataset.sentenceIndex;
+//console.log('Line index', index);
+    return index;
+  },
+
+  pause() { 
+    tts.cancel();  
+	this.showPlaying(0);
+  },
+
+  play() {
+    this.setClickedPlayBtn(1);
+
+    tts.cancel();
+	const line = tstore.taskSentences[this.currentNum]; 
+// !! Using tstore.taskSentences can lead to discrepancy with span data-sentence-index in complex htmls?
+
+    tstore.TTSsource = 'sentence';
+    ttsSpeakLang(line, '', 'DONT_WAIT'); //no need to specify the language 
+
+    this.markSentence(this.currentNum, 1);
+  },
+  
+  ttsEnded() {
+//console.log('!!tstore.TTSsource', tstore.TTSsource);  
+    if (!this.readMode) return;
+    if (this.playMode === 'all' 
+	  && tstore.TTSsource === 'sentence' 
+	  && this.tryNextSentence() !== -1
+	  ) this.play();
+	else this.showPlaying(0);
+  },
+
+  playNext(v) { 
+    if (this.tryNextSentence(v) !== -1) this.play(); 
+  },
+  
+  tryNextSentence(v = 1) {
+    if (!v || !tstore.taskSentences || this.currentNum === -1) return -1;
+    let i = this.currentNum + v;
+    while (i >= 0 && i < tstore.nodes.length) {
+      const el = tstore.nodes[i];
+      if (!el.closest('.hidden') && el.textContent) {
+        this.markSentence(this.currentNum, 0);
+        this.currentNum = i;
+        return i;
+      }
+      i += v;
+    }
+    return -1;
+  },
+
+  setClickedPlayBtn(cmd) {
+    setElClass(elid('tts-play-btn'), 'font-75pc', cmd);
+  },
+  
+  showPlaying(cmd) {
+    const btnEl = elid('tts-play-pause-btn');
+//console.log('ttsOverlay btnEl', !!btnEl);
+	if (!btnEl) return;
+	showOrHideEl(elid('tts-pause-btn'), cmd);
+	showOrHideEl(elid('tts-play-btn'), !cmd);
+	if (cmd) {
+      this.updatePevNextBts();
+	  this.setClickedPlayBtn(0);
+	  btnEl.onclick = () => { this.pause(); }
+	} else {
+	  btnEl.onclick = () => { this.play(); }
+	}
+  },
+
+  setBtn(id, cmd) {
+    const el = elid(id);
+	if (cmd) {
+	  el.classList.add('gray-bg-onhover', 'grayish');
+//	  el.classList.remove('gray');
+      el.style.color = '';
+	  el.removeAttribute("disabled");
+	}
+	else {
+	  el.classList.remove('gray-bg-onhover', 'grayish');
+//	  el.classList.add('gray');
+      el.style.color = 'var(--color-ccc-444)';
+	  el.setAttribute("disabled", "");
+	  elid('tts-play-pause-btn').focus();
+	}
+  },
+
+  updatePevNextBts() {
+    if (!tstore.taskSentences) return '';
+
+    const prevBtnState = this.currentNum > 0;
+    this.setBtn('play-prev-sentence', prevBtnState);
+	
+    const nextBtnState = this.currentNum < tstore.taskSentences.length -1;
+	this.setBtn('play-next-sentence', nextBtnState);
+  },
+  
+  setReadMode(cmd) {
+	this.readMode = !!cmd;
+    if (!cmd) this.unmarkAll(); 
+  },
+
+  translate(btn) {
+    btn.setAttribute('onmouseleave', "leaveTipParent(this)");
+    btn.setAttribute('onblur', "leaveTipParent(this)");
+    tstore.transl(tstore.taskSentences[this.currentNum], {el: btn});
+  },
+}
+
+function getClickedTextFragment(lang, granularity) {
+  const selection = window.getSelection();
+//  if (!selection.rangeCount) return; // checked in the calling fn
+  const range = selection.getRangeAt(0);
+  let clickedOffset = range.startOffset;
+//  const container = range.startContainer;
+  const node = range.commonAncestorContainer; // typically, it's a text node
+  gstore.debugClickedNode = node;
+//console.log('Node clicked', node);
+
+  
+//  const isInsideTranscript = (node) => node === transcriptText || transcriptText.contains(node);
+  const checkedNode = node => node && transcriptText.contains(node) ? node : null;
+  const isBoundaryNode = node => node && /^(H|BR|P)/.test(node.tagName) ? node : null;
+// maybe need to add more boundaries like button? or div? We'll see...
+
+  let parentText = node.textContent;
+  
+  if (node !== transcriptText 
+    && !isBoundaryNode(node) 
+	&& !isBoundaryNode(node.parentElement)
+	&& !isBoundaryNode(node.parentElement.parentElement) // perhaps, instead of if (), while(true) should be used for walking up parent elements
+	) {
+// extend the text b/c it can contain markup elements
+    let currentNode = node;
+	let nextNode;
+    while (true) { // extend text right
+      nextNode = checkedNode(currentNode.nextSibling);
+	  if (isBoundaryNode(nextNode)) break;
+
+	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.nextSibling);
+	  if (isBoundaryNode(nextNode)) break;
+
+	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.parentElement.nextSibling);
+	  if (!nextNode || isBoundaryNode(nextNode)) break;
+
+// What if the node is inside vocab entries?	
+/*
+	  if (currentNode.nextSibling) currentNode = currentNode.nextSibling;
+	  else {
+	    if (currentNode.parentElement.nextSibling) currentNode = currentNode.parentElement.nextSibling;
+	    else currentNode = currentNode.parentElement.parentElement.nextSibling;
+	  }
+	  
+      if (!nextNode) break;
+*/
+      if (nextNode.textContent) {
+	    parentText += nextNode.textContent;
+	  }
+//	  else if (nextNode.nodeName === 'BR') {
+//	    if (!/[.!?。？！]\s*$/.test(parentText)) parentText += '. ';
+//	  }
+	  else break;
+      currentNode = nextNode;  
+    } // end while extending text right
+
+//    let lastNodeName;
+	currentNode = node;
+    while (true) { // extend text left
+      nextNode = checkedNode(currentNode.previousSibling);
+	  if (isBoundaryNode(nextNode)) break;
+	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.previousSibling);
+	  if (isBoundaryNode(nextNode)) break;
+	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.parentElement.previousSibling);
+	  if (!nextNode || isBoundaryNode(nextNode)) break;
+
+/*
+	if (currentNode.previousSibling) currentNode = currentNode.previousSibling;
+	  else {
+	    if (currentNode.parentElement.previousSibling) currentNode = currentNode.parentElement.previousSibling;
+	    else currentNode = currentNode.parentElement.parentElement.previousSibling;
+	  }
+	  
+      if (!nextNode) break;
+*/
+      if (nextNode.textContent) {
+		let chunk = nextNode.textContent;
+//	    if (lastNodeName === 'BR' && !/[.!?。？！]\s*$/.test(chunk)) chunk += '. ';
+        if (!chunk.trim()) chunk = ' '; // collapse spaces and \n into one space
+	    parentText = chunk + parentText;
+		clickedOffset += chunk.length; // edge cases should be tested
+// this logic has to be further tested: now it adds punctuation closure at the start of the task
+	  }
+//	  else if (nextNode.nodeName === 'BR') lastNodeName = 'BR';
+	  else break;
+      currentNode = nextNode;  
+    } // end while
+  }
+
+
+  // Create a text segmenter
+  const segmenter = new Intl.Segmenter(lang, { granularity: granularity });
+  const segments = [...segmenter.segment(parentText.trim())];
+
+//  tstore.segments = segments;
+/*
+  // Find the result containing the offset
+  const res = segments.find(seg => 
+    seg.index <= clickedOffset && clickedOffset < seg.index + seg.segment.length
+  );
+*/
+  const currentIndex = segments.findIndex(seg =>
+    seg.index <= clickedOffset && clickedOffset < seg.index + seg.segment.length
+  );
+//  tstore.firstSegmentIndex = currentIndex;
+
+  const currentSentence = segments[currentIndex]?.segment;
+//  const nextSentence = segments[currentIndex + 1]?.segment;
+// could be used if user wants to listen to next sentence(s)
+
+//  gstore.currentSentence = currentSentence?.trim();
+
+//Bug: after <)) the order is broken
+  return currentSentence?.trim();
+}
+
+async function tryDictAudio(word, lang = 'en-US', pbr = 1) {
+  if (!tstore.dicSwitch.isOn) return null;
+  const formattedWord = word.toLowerCase().replace(/[^a-z]/g, ''); // Sanitize
+  if (!formattedWord || !lang || !lang.startsWith('en')) return null;
+  const variant = lang === 'en-US' ? 'us' : 'gb';
+  const baseUrl = 'https://audio.oxforddictionaries.com/en/mp3/';
+  const url = `${baseUrl}${formattedWord}_${variant}_1.mp3`;
+
+// Using fetch to check audio file existence may fail due to CORS policy
+  const audio = new Audio(url);
+  audio.playbackRate = pbr;
+  return audio.play()
+    .then(() => new Promise((resolve) => {
+      audio.addEventListener('ended', () => resolve(url));
+      audio.addEventListener('error', () => resolve(false));
+    }))
+    .catch(() => false);
+/*
+  return audio.play()
+    .then(() => url) // returns when audio starts playing
+    .catch(() => false);
+*/
+}
+
+const emulateTTSClick = txt => {
+// to handle TTS + dictionary audio + recording on click
+// adding dictionary audio would require changes to playTTSCue 
+  players.isCueTTS = true;
+  players.loopStopRequested = false;
+  const cue = document.createElement('button');
+  cue.setAttribute('say', txt);
+  cue.setAttribute('lang', tstore.contextLang);
+  cue.setAttribute('x-reps', '1');
+  cue.setAttribute('x-post-rec', '0.7u, 0.7o')
+// console.log(cue);
+  replayTTSCore(cue);
+}
+
+tstore.showChunkTooltip = async (text) => {
+console.log('showChunkTooltip', text);	
+  tstore.chunkTooltip.mayBeHidden = false;
+  const selection = window.getSelection();
+  const range = selection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+
+  // Position chunkTooltip
+  let y = window.scrollY + rect.top - tstore.chunkTooltip.offsetHeight - 2;
+  if (y < 0) y = window.scrollY + rect.bottom + 2;
+  tstore.chunkTooltip.style.top = y + 'px';
+
+  let minX = window.scrollX + transcriptText.getBoundingClientRect().left + 2;
+  let maxX = window.scrollX + transcriptText.getBoundingClientRect().right - tstore.chunkTooltip.offsetWidth - 2;
+  let x = window.scrollX + rect.left + rect.width / 2 - tstore.chunkTooltip.offsetWidth / 2;
+  if (x < minX) x = minX;
+  if (x > maxX) x = maxX;
+  tstore.chunkTooltip.style.left = x + 'px';
+  
+  tstore.chunkTooltip.focus();
+  
+  // Bind actions
+//  tstore.speakBtn.onclick = () => { speak(text) } 
+  tstore.speakBtn.onclick = () => {
+//    const s = (gstore.ctrlKey || gstore.metaKey) && gstore.clickedSentence ? gstore.clickedSentence : text;
+//    ttsSpeakLang(s, tstore.contextLang, 'DONT_WAIT');
+    ttsSpeakLang(text, tstore.contextLang, 'DONT_WAIT');
+  } 
+  
+  tstore.translateBtn.onclick = () => {
+//should it be similar to onmouseenter instead?
+    window.open(`https://translate.google.com/?sl=auto&tl=en&text=${encodeURIComponent(text)}&op=translate`, '_blank');
+  }
+  
+  tstore.translateBtn.onmouseenter = function() {
+//    showTip(this);
+//console.log('tstore.translateBtn.onmouseenter', this);
+    this.hovered = 1;
+    tstore.transl(text);
+//console.log('Hover mouse', text);	
+  }
+  
+  tstore.searchBtn.onclick = () => {
+    window.open(`https://www.google.com/search?q=definition+${encodeURIComponent(text)}`, '_blank');
+  }
+
+  await sleep(800);
+  tstore.chunkTooltip.mayBeHidden = true;
+}
+
+tstore.hideChunkTooltip = () => { tstore.chunkTooltip.style.top = '-100px'; }
+
+// === Vocab UI ===
+/*
+const vocabInput = elid('vocabInput'); // not used since Aug 2025
+const vocabForm = elid('vocabForm');
+const translationInput = elid('translationInput');
+const selectedChunkDisplay = elid('selectedChunkDisplay');
+const saveVocabBtn = elid('saveVocabBtn');
+const cancelVocabBtn = elid('cancelVocabBtn');
+*/
+
+// Show vocab input UI (mobile-friendly)
+tstore.addToVocabBtn.addEventListener('click', () => {
+  hideAllTips();
+  const entry = transcriptText.lastSelectionText;
+  getWordRef(entry);
+});
+
+gstore.vocab.addMeaning = async (el) => {
+//console.log('vocab entry:', gstore.currentQuery);
+//console.log('el, meaning:', el, el.value);
+//  gstore.vocab.updateMeaning(gstore.currentQuery, el.value);
+  const entry = transcriptText.lastSelectionText.trim();
+  const meaning = el.value.trim();
+  if (meaning) {
+console.log('📚 Add to vocab:', {
+      word: entry,
+      meaning: meaning
+    });
+//    tstore.taskSentences = getTaskSentences(transcriptText); // why do it again here?
+    gstore.vocab.sentenceExample = tstore.taskSentences.filter(s => s.includes(entry))[0].trim() || '';
+//console.log('Example sentence:', gstore.vocab.sentenceExample);
+	
+	gstore.vocab.addEntry(players.currentTask, entry, meaning);
+	
+    displayInfopage('hide');
+  }
+}
+
+tstore.editVocabToggle = () => {
+  const el = qsel('.vocab-content');
+  if (el.contentEditable === 'true') tstore.editVocabOff(el);
+  else tstore.editVocabOn(el);
+}
+
+tstore.editVocabOn = (el) => {
+  const editBtn = elid('vocab-edit-btn');
+  editBtn.title = 'Finish editing';
+  editBtn.classList.add('green');
+
+  el.focus();
+  el.innerText = gstore.vocab.getVocabEntries(players.currentTask)
+	  .trim('\n')
+	  .replace(/\n /g, '\n\u00A0'); // b/c browsers will trim the leading space
+  el.contentEditable = 'true';
+  el.style.backgroundColor = 'hsl(150, 30%, 95%)';
+  
+  // Put caret at the end (or start) of the content
+  const selection = window.getSelection();
+  const range = document.createRange();
+
+  range.selectNodeContents(el);
+  range.collapse(true); // true = start, false = end
+
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+tstore.editVocabOff = (el) => {
+  players.currentTask = gstore.vocab.getBeforeVocab(players.currentTask);
+  const vocabText = el.innerText.replace(/\u00A0/g, ' ') // replace &nbsp; with normal space
+    .trim();
+  if (vocabText) 
+    players.currentTask += gstore.vocab.prefix + '\n' +  vocabText;
+//console.log('End of editing: currentTask', players.currentTask);
+  refreshTask();
+}
+
+const handleVocab = () => {
+  if (!gstore.vocab.exists) return;
+  const vocabSection = elid('vocab-section');
+  const isAbove = vocabSection.parentElement.tagName === 'X-VOCAB';
+  vocabSection.classList.add(isAbove ? 'vocab-top' : 'vocab-bottom');
+  
+  elAddHTML(vocabSection, uiblox.vocabHeader, 'afterbegin');
+  
+  const vocabTitle = qsel('.vocab-title');
+  vocabTitle.innerHTML = 'Vocabulary<button id="vocab-title-chevron" class="chevron-btn small-font inherit">'
+   + gstore.chevronIcon + '</button>';
+   
+  vocabTitle.onclick = () => {
+    toggleEl(elid('vocab-title-chevron'), 'chevron-down');
+	toggleEl(qsel('.vocab-content'), 'collapsed');
+	toggleEl(elid('vocab-edit-btn'));
+  }
+  
+// tbc: Edit vocab button may be replaced by a slider?
+  elid('vocab-edit-btn').title = 'Edit vocabulary';
+  elid('vocab-edit-btn').onclick = tstore.editVocabToggle;
+  
+  elid('vocab-download-btn').title = 'Download task';
+  elid('vocab-download-btn').onclick = tstore.downloadTask;
+  
+  const modeBtn = elid('vocab-mode-btn');
+//  modeBtn.innerHTML = highlightText(uiblox.vocabModeBtnLabel);
+  modeBtn.title = uiblox.vocabModeBtnLabel2;
+  modeBtn.addEventListener('click', () => {
+    showTopSettings('vocab-settings-box');
+  });
+}
+
+tstore.downloadTask = () => {
+  const origUrl = squeezedUrl(gstore.keptUrl);
+  const text = `original-url=${origUrl}\n` + players.currentTask;
+  const blob = new Blob([text], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+
+  const d = new Date();
+  const date = d.toISOString().split('T')[0];
+//  const time = isoDate.split('T')[1] .replaceAll(':', '_') .slice(0,8); //this is UTC time
+  const hms = [d.getHours(), d.getMinutes(), d.getSeconds()];
+  const time = hms.map(v => String(v)
+    .padStart(2, '0'))
+	.join('_');
+  link.download = `audiodrill task ${date}__${time}.txt`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+}
+
+// === end of Vocab UI ===
+
+tstore.translLangCtrl = {
+  load() {
+//    const langList = ['de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'pt', 'ru', 'zh'];
+    const langList = {de: 'German', en: 'English', es: 'Spanish', 
+	  fr: 'French', it: 'Italian', nl: 'Dutch', pl: 'Polish', 
+	  pt: 'Portuguese', ru: 'Russian', zh: 'Chinese'
+	  };
+    let ddl = '';
+    for (const lang in langList)
+      ddl += `<option value="${lang}" title="${langList[lang]}">` + lang + '</option>';
+
+    const html = '<span tip = "Choose the target language for translation">Translate to </span>'
+    + '<select id="tr-language-select" class="drop-down darker-hover" name="language" onchange="handleTrLangSelect()">'
+    + ddl
+    + '</select>';
+
+    setElHTML('transl-lang-box', html);
+    
+	const el = elid('tr-language-select');
+    el.value = localStorage.getItem('translLangCode') || 'ru';
+	el.title = langList[el.value];
+	
+    el.onchange = function() {
+//	  tstore.translLangCtrl.lang = el.value;
+//console.log('Transl lang selected', el.value);
+	  localStorage.setItem('translLangCode', el.value); 
+	};
+  }
+}
+
+tstore.transl = async (s, par) => {
+  const translateBtn = par?.el || tstore.translateBtn;
+  
+  const setBtnTip = s => {
+    const el = translateBtn;
+    el.setAttribute('tip', s);
+    el.setAttribute('tip-style', par?.style || 'max-width:400px');
+//    el.hovered = 1;
+//console.log('Tip el', el.child)
+    if (el.child) {
+//	  if (s.includes('<a ')) el.child.className = 'tooltip-link';
+	  el.child.innerHTML = s;
+    }
+  }
+
+  const getTranslLinks = s => '<small>' + getTranslationLinks(s) +'</small>';
+
+// console.log('tstore.transl fn:', s);
+  if (tstore.busyTranslating) return;
+  let tip = getTranslLinks(s); 
+  setBtnTip(tip);
+  showTip(translateBtn);
+  s = s.trim();
+//  let tip = '<div class="spinner" style="width: 10px; height: 10px; margin: 0 0 .2em;"></div> click to use Google Translate';
+
+  const targetLang = localStorage.getItem('translLangCode') || 'ru';
+  
+  let res = gstore.vocab.getMeaning(s);
+  if (!res) {
+    if  (!gstore.translations[s]) gstore.translations[s] = {};
+    if  (gstore.translations[s][targetLang]) { // translation already exists. Language check can be added later
+      res = gstore.translations[s][targetLang];
+    } 
+    else if (!tstore.translError) { // the case when quota is reset, should be considered
+      try { 
+        tip = '<div class="spinner" style="width: 10px; height: 10px; margin: 0 0 .2em;"></div>' + getTranslLinks(s);
+        setBtnTip(tip);
+//        res = await gstore.getTranslation(s);
+        const sourceLang = tstore.contextLang || getLangCode();
+		if (sourceLang === targetLang) {
+		  tip = '<div class="alarm-bgr">Same source and target language!</div>';
+		  setBtnTip(tip);
+		  return '';
+		}
+		tstore.busyTranslating = true;
+        res = await gstore.fetchTranslation(s, sourceLang, targetLang);
+      }
+	  catch(e) {
+	    tstore.busyTranslating = false;
+	    tstore.translError = e.message;
+console.log('Translation error:', e.message);
+	    res = ''; 
+      }
+      gstore.translations[s][targetLang] = res;
+    }
+  }
+
+//console.log('Translation result:', res);
+  tip = getTranslLinks(s); 
+  if (res) tip = res + '<hr style="margin-bottom:0">' + tip;
+  setBtnTip(tip);
+
+  tstore.busyTranslating = false;
+  return res;
+}
+
+const getWordRef = (query) => {
+  if (!query) return;
+  displayInfopage('<div id="ref-box" style="font-size:100%"></div>', {width:'80%', maxWidth:'600px'});
+  handleReference(query, getLangCode());
+}
+
+// Hide elements on outside click
+document.addEventListener('click', e => {
+  if (!tstore.chunkTooltip.contains(e.target) 
+    && tstore.chunkTooltip.mayBeHidden
+	&& !tstore.doubleClicked) tstore.hideChunkTooltip();
+	
+  if (!elid('top-controls').contains(e.target) && tstore.topControlsMayBeHidden) hideElid('top-controls');
+});
+
+elid('share-fragment').onclick = shareFragment;
+elid('open-task').onchange = uploadTaskOrVideoFile;
+elid('open-media').onchange = uploadTaskOrVideoFile;
+elid('new-task').onclick = () => displayInfopage('EDIT_YT_STYLE');
+elid('download-task').onclick = tstore.downloadTask;
+elid('copy-link').onclick = linkToTask;
+elid('copy-words').onclick = copyWords;
+elid('mute-checkbox').onchange = handleRecMuteCheckbox;
+
+handleDraggingNew(qsel('body'), qsel('.dropzone'));
+
+function setNightMode(cmd) {
+  if (cmd === 'default') cmd = + localStorage.getItem('nightMode'); // + converts string to number
+  
+//  const elArray = [...elids('hop-back', 'hop-forward'), ];
+//  setElementsClass(elArray, 'night-mode', cmd);
+
+  setElClass(document.documentElement, 'night-mode', cmd);
+  const addElements = Array.from(document.querySelectorAll('[data-themeable]'));
+  setElementsClass(addElements, 'night-mode', cmd);
+}
+
+// experimental 2026-01-02
+//   ***  Handle TTS sentences  ***
+tstore.sentences = {
+  init(el) {
+//return
+    el.innerHTML = this.wrap(el);
+	tstore.nodes = document.querySelectorAll('[data-sentence-index]');
+//    tstore.taskSentences = [...tstore.nodes].map(el => el.textContent.trim());
+    tstore.taskSentences = [...tstore.nodes]
+	  .map(el => this.getTextWithAlts(el)
+	  .replace(/\(.*?\)/g, '') //remove comments in brackets
+	  );
+  },
+
+  wrap(el) {
+    const arr = this.getSentences(el);
+	this.arr = arr; // for debugging
+//console.log(arr);
+//return arr;
+    return arr
+      .join('')
+//      .replaceAll('<x-dummy>\n', '')
+      .replaceAll('\uE000', '?')
+	  .replaceAll('<x-dot>', '.')
+      .replaceAll('\n', '<br>')
+
+// In getSentences(), the tags below are added to buffer in a specific order, 
+// but here all extracted in one go. This can result in errors for nested tags.
+// If such errors occur, they should be extracted in reverse order.
+// Or maybe the buffer structure could be revised, e.g., into array: buffer[{tag: value}, {tag: value}, ...] ???
+      .replace(/<x-(label|button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
+	  .replace('<x-vocab-header>', this.buffer.vocabHeader)
+	  ;
+  },
+  
+  getSentences(el) {
+    const toBuffer = (key, s) => {
+	  this.buffer[key] ??= [];
+	  this.buffer[key].push(s);
+	  return `<x-dummy>\n<x-${key}><x-dummy>\n`;
+	}
+	
+    let index = 0;
+  
+    const getWrappedLine = s => {
+	  s = s.replaceAll('<x-dummy>\n', '');
+//console.log('Line', index, ':', s ,'$end');
+      if (getTextFromHTML(s).trim()) {
+// Put the trailing spaces outside <span>
+//	    s = s.replace(/^(\s*)(.*?)(\s*)$/, '$1' + `<span data-sentence-index="${index}">` + '$2</span>$3');
+	    s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence-index="${index}">` + '$2</span>$3');
+//console.log(s);
+	    index++;
+	  }
+	  return s;
+    }
+
+    this.buffer = {};
+	this.buffer.vocabHeader = qsel('.vocab-header')?.innerHTML || '<x-empty>';
+
+    this.source = el.innerHTML
+	.replace(this.buffer.vocabHeader, '<x-vocab-header>')
+    .replaceAll('<x-br></x-br>', '<div style="display: block; height: .4em;"></div>')
+    .replaceAll('<x-br-l></x-br-l>', '<div style="display: block; height: .7em;"></div>')
+    .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
+	.replaceAll('<br>', '\n')
+	.replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
+	.replace(/([\s>])(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
+	.replace(/<label.*<\/label>/g, s => toBuffer('label', s))
+	.replace(/<button.*<\/button>/g, s => toBuffer('button', s))
+	.replace(/<style.*<\/style>/g, s => toBuffer('style', s))
+	.replace(/<div[^>]*>/g, s => toBuffer('div', s))
+	.replace(/(<\/?)(h[1-6]|div)([^>]*>)/g, '<x-dummy>\n$1$2$3<x-dummy>\n')
+	;
+// should bittons be treated differently? Now sentences inside buttons will be read
+// What with <img> tags?
+//return this.source;	
+
+    const lang = getContextLang(el);
+//console.log('Language of the element:', lang);
+
+    const segmenter = new Intl.Segmenter(lang, { granularity: 'sentence' });
+    return [...segmenter.segment(this.source)]
+      .map((entry) => getWrappedLine(entry.segment))
+//	  .filter(s => s) //leave non-empty lines
+  },
+  
+  getTextWithAlts(el) {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('.cloze').forEach(input => {
+      const text = document.createTextNode(input.getAttribute('alt') || '');
+      input.replaceWith(text);
+    });
+
+  return clone.textContent;
+  },
+}
+
+const getTextFromHTML = s => { // transforms html to text
+  const div = document.createElement('div');
+  div.innerHTML = s;
+  return div.innerText;
+}
+
+//   ***  End handling TTS sentences  ***
+//--------------------------------------
+
+// ***   Experimental 2026-01-10: STT  ***
+
+const handleSttResult = (txt) => {
+  if   (!sttAllowed()) return; 
+console.log ('** Transcript: ', txt);
+  if (txt) {
+    mic.isOff = true;
+
+//    txt = renderStr(txt); // for Edge browser
+    txt = txt.replace(/\s*[.?!]\s*$/, ''); // for Edge browser
+    tstore.currentGap.value = txt;
+	adjustGapWidth(tstore.currentGap, txt);
+	tstore.currentGap.blur() // onblur calls checkClozeInput fn
+	if (checkGapMatch(tstore.currentGap)) ttsSpeakLang(txt);
+  }
+}
+
+tstore.STT = {
+  switchID: 'stt-switch',
+  switchIsOn: true,
+  
+  toggle(el) {
+//console.log('STT switch is', el.checked);
+    this.switchIsOn = el.checked;
+	this.set(this.switchIsOn); // to set the tooltip
+    mic.isOff = !el.checked;
+    if (mic.isOff) disableVoiceInput();
+  },
+
+  init() {
+    const msg = '<div id="gap-tools-box">' + uiblox.specKeys.boxHtml
+	  + '<div id="stt-switch-box"><span class="padding-01em" style="cursor:default">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></div></div>';
+    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray); left:auto; right:0; transform: translateX(-10px);';
+    displayOverlay({msg: parseXswitch(msg), style: msgStyle, noCloseBtn: true});
+
+	uiblox.specKeys.set('onmousedown');
+	this.set(this.switchIsOn);
+  },
+  
+  set(v) {
+    if (!elid(this.switchID)) return;
+    elid(this.switchID).checked = v;
+	const el = elid('stt-switch-box');
+	const state = v? 'ON' : 'OFF';
+	el.title = 'Voice input is ' + state;
+	setElClass(el, 'gray', !v);
+	setElClass(el, 'gray2', v);
+  },
+}
+
+const enableVoiceInput = async (el) => {
+//Switch state tstore.STT.switchIsOn is persistent, so that it's restored after displayOverlay is closed and opened again
+ 
+  
+//console.log('✔️ Enable Voice Input: STT allowed?', sttAllowed());
+  if (!recognition.supported) return;
+
+  let micPermission = await getNavigatorMicPermission();
+
+  if (micPermission === 'denied') {
+	  displayMessage('For voice input, allow microphone access in your browser');
+	  return;
+  } else if (!tstore.sttOffered) {
+      tstore.sttOffered = true;
+	  await displayMessage('You can use voice input', 1000);
+  }
+  tstore.STT.init();
+
+  if (!tstore.STT.switchIsOn) return;
+  if (! await testMic()) return;
+  
+  micPermission = await getNavigatorMicPermission();
+  if (micPermission !== 'denied' && tstore.STT.switchIsOn) {
+    mic.isOff = false;
+	startSTT();
+  }
+}
+
+const disableVoiceInput = () => {
+  if (!recognition.supported) return;
+
+//console.log('❌ Disable Voice Input: STT allowed?', sttAllowed());
+//  abortSTT();
+//  mic.turnOff();
+  mic.isOff = true;
+  recognition.stop();
+}
+
+const sttCallback = (cmd) => {
+  if (cmd === 'STT_NOT_SUPPORTED') displayAlarmMessage('The browser does not support speech recognition. Try Edge or Chrome.', 3500);
+}
+
+const onSpecKeyClick = (event, el) => {
+//const onSpecKeyClick = (el) => {
+//console.log('Event:', event);
+  event.preventDefault();
+  const input = tstore.currentGap;
+console.log(input.selectionStart, input.selectionEnd);
+  if (!input) return;
+
+  input.setRangeText(
+    el.textContent,
+    input.selectionStart,
+    input.selectionEnd,
+    "end"
+  );
+  adjustGapWidth(input);
+}
+
+const shiftCapsCallback = upper => {
+    uiblox.specKeys.set('onmousedown', upper);
+}
+
+const setSpecialKeys = () => shiftCapsCallback(gstore.upperCase);
+
+// ***   End STT  ***
+// --------------------------
+
+const fetchYTSubs = async id => {
+// as of 2 Feb 2026, https://youtubetranscripts.app/api/transcript does not give reliable results
+return;
+  const res = await fetch(
+    'https://serfxlcalc.netlify.app/.netlify/functions/proxy',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: 'https://youtubetranscripts.app/api/transcript',
+        body: { videoId: id }
+      }),
+    });
+	
+  if (!res.ok) {
+console.warn('Fetch proxy failed: ' + res.status);
+    return '';
+  }
+
+  const data = await res.json();
+console.log(data, data.body);
+}
+
+// ***  Beep  ***
+/* This fn may be needed later
+
+const ctx = new AudioContext();
+
+const playBeep = ({
+  frequency = 880,
+  duration = .4,
+  attack = .1,
+  release = .1,
+  volume = .2,
+  type = 'sine'
+} = {}) => {
+  const osc = ctx.createOscillator();
+  osc.type = type;
+  osc.frequency.value = frequency;
+
+  const gain = ctx.createGain();
+  osc.connect(gain); 
+  gain.connect(ctx.destination);
+
+  const now = ctx.currentTime;
+
+  // Envelope
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.exponentialRampToValueAtTime(volume, now + attack);
+  gain.gain.setValueAtTime(volume, now + duration - release);
+  gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+  
+  osc.start(now);
+  osc.stop(now + duration);
+}
+*/
+// ***   End Beep  ***
+// --------------------------
+
+// ** test structures  **
+const testfn = function() {
+  let a = 0;
+  return {
+    add: v => a += v,
+    ini: () => a = 0
+  }
+}();
+
+const stopWatch = {
+  tstart: 0, r: 0,
+  start(){ this.tstart = Date.now(); return this.tstart; },
+
+  stop(){
+    this.r = Date.now() - this.tstart;
+    return this.r;
+  },
+
+  get: () => stopWatch.r,
+
+  get2() {return this.tstart}
+}
+
+</script>
+</body>
+</html>
+
+
+<!-- == FUTURE PLANS ==
+- wordlist is no longer in use since h2 2025. Should it be repurposed or removed?
+
+- For cloze gaps in de, cs, pl, show special characters, like in dictation. Use getTypeKeys(), updateTypeKeys, etc.
+
+- make text invisible/white it out, e.g., on mouse hover or click/selection, so that the user could 
+say it out loud without visual support, just from their memory
+- b/c of <x-audio> and <x-video>, playerBox and settings may need to be created from 
+an html constant in the left column or transcriptText, e.g., in movePlayer fn.
+- add {x-voice-ctrl} or {x-tts-ctrl} to tasks, similar to {x-speed-ctrl}?
+- add live captioning? see https://github.com/MidCamp/live-captioning
+- add an option to show acronyms in gaps. {x-view-gaps} could have 3 positions
+- remember and suggest history: n last vocab entries/urls/activities? User turns it on/off in settings.
+
+for mobile, right column could pop up at the bottom and be closed via x button?
+
+- implement showing tips for 3-4 sec on touchscreen via touchstart or onpointerdown
+
+- resize video via resize:both - see https://web.dev/resize-observer/
+- create a word/phrase list in the tasklist. Now it's done via a link to word list
++- add play-with-a-pause button capability in task scripts. 
+It will set start, stop in the settings and emulate pressing Play button.
++ drag and drop task file - see w3schools or https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
++- Translate site with Google. See more at https://stackoverflow.com/questions/34763527/convert-onclick-event-to-page-load-event
++- set position: fixed for video and settings for wide screens?
+
+
+TBD:
+- use just one the audio recorder - from words/index? It lacks set/getflag fn. Now testMic() is shared.
+- There are two types of vocab now: in wordList and in transcriptText. How to deal with them in the future?
+- hide left column if the task has no yt-ID, startmedia, url key or link to video? What about settings in this case?
+- use two individual playing flags for YT and html player? (playing two videos in parallel?)
+- use unicode-bidi: plaintext for transcriptText? Then, direction rtl may need to change in parseTTSTag fn. 
+unicode-bidi replaced with direction rtl or ltr 2024-06-10.
+
+Issues:
+- When Russian interface is default, TTS will play Russian if English or another language wasn't set and stored in localStorage
+- so default English in the Settings doesn't take effect by default until it's selected manually
+- if playing directly in YT player, clicking on cue will skip the first replay 
+and go right away to "repeat after the speaker".
+
+- Subtitles do not load starting from November 2021. 
+see https://stackoverflow.com/questions/69946755/extracting-subtitles-from-youtube-videos-no-longer-works
+https://stackoverflow.com/questions/69937867/google-video-no-longer-able-to-retrieve-captions
+https://stackoverflow.com/questions/23665343/get-closed-caption-cc-for-youtube-video
+
+Useful resources:
+https://vanillajstoolkit.com
+https://gomakethings.com
+-->

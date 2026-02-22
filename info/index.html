@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="../icon.png">
+<link rel="stylesheet" type="text/css" href="../parts/shared.css">
+
+<style>
+.flex-container {
+  display: flex;
+  align-items: stretch;
+}
+
+.flex-container > div {
+  width: 20px;
+}
+
+.card-box {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card-box > div {
+  width: 250px;
+  height: 250px;
+  margin: 0 30px 30px 0;
+  padding: 0.5em;
+  line-height: 1.3em;
+  overflow-y: auto;
+  background-color: #fffff8;
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.10), 0 8px 16px 0 rgba(0, 0, 0, 0.05);
+}
+
+new {
+  display: inline-block; /* to avoid underlining on hover  */
+  vertical-align: super;
+  font-size: smaller;
+  font-stretch: semi-condensed;
+  color: #d66;
+}
+new::after {
+  content: "new";
+}
+
+.iframe-box {
+  text-align: center; 
+/*  width: 80%;*/ 
+  height: 550px; 
+  margin: auto;
+}
+</style>
+</head>
+<body>
+<div id="top-menu"></div>
+<div class="flex-container">
+  <div style="flex-grow: 1"></div>
+  <div id="main-container" style="flex-grow: 70; max-width:728px; font-size: 110%"></div>
+  <div style="flex-grow: 1"></div>
+</div>
+
+<div id="bottom-bar"></div>
+<script src="https://translate.google.com/translate_a/element.js"></script>
+<script src="../parts/audiodrill-task.js"></script>
+<script src="../parts/bottom-bar.js"></script>
+
+<script>
+const analyzeURL = () => {
+  const urlKeys = new URLSearchParams(location.search);
+  show = (urlKeys.get("show"));
+//console.log('show = ', show);
+  if (show === 'feedback') {
+    const iframeText = '<div class="iframe-box"><iframe src="https://docs.google.com/forms/d/e/1FAIpQLScqLTNJZzdJLDXFntqDa5QoTnliZ-l6YjFC21Sii-eUQCc3xw/viewform?embedded=true" '
+      + ' width="640" height="750" frameborder="0" marginheight="0" marginwidth="0">Loading…'
+      + '</iframe></div>';
+
+    setElHTML('main-container', iframeText);
+  } 
+  else if (show === 'help') displayInfopage('help');
+  else if (show === 'contribute') displayInfopage('contribute');
+  else {
+    const fname = show || '';
+    if (fname) {
+      const url = location.pathname + fname + '.txt';
+      loadElementFromURL('main-container', url);
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', event => {
+//  setElHTML('top-menu', topMenuHtml);
+//  setElHTML('bottom-bar', bottomBarHtml);
+  setBottomBar();
+  setTopMenu();
+
+  analyzeURL();
+  hideOnClickOutside();
+  googleTranslateElementInit();
+})
+
+</script>
+</body>
+</html>

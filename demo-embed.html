@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.btn {
+  background-color: #fed;
+  width: fit-content;
+  padding: 0.2em 0.5em;
+  margin: auto;
+  border-radius: 10px;
+  border: 1px solid #dba;
+  cursor: pointer;
+}
+.btn:hover {
+  background-color: #fff6df;
+}
+.edit-code {
+  background-color: #f0f0f0;
+}
+.bold-text {
+  font-weight:600;
+  margin: 0.3em 0;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="parts/shared.css">
+
+</head>
+<body>
+<script src="parts/audiodrill-task.js"></script>
+<script src="parts/bottom-bar.js"></script>
+
+<div style="margin-left: 1em;">
+<div style="font-size:140%; margin: 0.4em 0;">Demo: embed Audiodrill voice games in your site</div>
+<div>Play with the editable code below and click the button to embed it and see the result. <br> 
+You can enter the url of any other Audiodrill game or your own one. <br>
+For example, replace <code>pr-perfect1.txt</code> with <code>say-tell1.txt</code>.<br>
+<i>Please note that voice recognition works only in Chrome on the computer.</i></div>
+<br>
+<div class="bold-text">The iframe code example:</div>
+
+<div style="max-width:590px; padding: 0.2em; border:1px dotted gray;">
+&lt;div style="<code id="div-code" class="edit-code" 
+  contenteditable="true"title="You can edit this code"></code>"&gt;
+<br>
+&lt;iframe&ensp;
+<code id="frame-code" class="edit-code" contenteditable="true" title="You can edit this code"></code>&gt;&lt;/iframe&gt;
+<br>
+&lt;/div&gt;
+
+<div onclick="updateFrame()" class="btn">Embed and see the result</div>
+</div>
+<br>
+
+<div id="show-result" style="display:none">
+<div class="bold-text">The resulting iframe:</div>
+
+<div id="frame-div" style="width:600px; height:350px">
+<iframe></iframe>
+</div>
+<br>
+<a onclick="showScript()">Check out the script</a> for this activity and then <a href="/new-game">try and make yours!</a>
+<br><br>
+<b>Please share your <a href="https://audiodrill.com/info/?show=feedback">feedback</a>.
+It will help us to further develop this free tool.</b>
+<br><br>
+</div> 
+</div>
+<!--  Footer   -->
+<div id="bottomBar"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', event => {
+  analyzeURL();
+  setElHTML('bottomBar', bottomBar);
+})
+
+const frameDiv = elid("frame-div");
+
+function analyzeURL() {
+  const urlKeys = new URLSearchParams(location.search),
+    game = urlKeys.get("game") || "1"; 
+  let url = urlKeys.get("url") || "//en/game/pr-perfect1.txt"; 
+  if (game.length > 10) url = ""; // game content is in the game key
+
+  initIframe(game, url);
+}
+
+const initIframe = (game, url) => {
+  const divStyle = "width:600px; height:350px;";
+  elid("div-code").textContent = divStyle;
+  frameDiv.style = divStyle;
+
+  const iframeParam = `
+src="https://audiodrill.com/embed?game=${game}&url=${url}" allow="microphone *"
+style="border:1px dotted gray"`;
+  elid("frame-code").textContent = iframeParam;
+}
+
+const updateFrame = () => {
+  elid("show-result").style.display = "block";
+  frameDiv.style = elid("div-code").textContent;
+  const param = elid("frame-code").textContent;
+  frameDiv.innerHTML = "<iframe " + param + "></iframe>";
+}
+
+const showScript = () => {
+  const urlKeys = new URLSearchParams(frameDiv.firstChild.src);
+  const url = urlKeys.get("url");
+  window.open(adjustUrl(url), "_blank");
+}
+
+</script>
+
+</body>
+
+</html>

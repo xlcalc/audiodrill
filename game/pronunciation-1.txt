@@ -1,0 +1,68 @@
+:title:Pronunciation
+:gametype:sound-alikes
+:say:Which sentence contains this word?|couch|coach
+:write:That couch is comfortable.|The coach arrives tomorrow.
+::
+:say:Which sentence contains this word?|breathe|breath
+:write:Please breathe deeply.|Hold your breath.
+::
+:say:Which sentence contains this word?|cheap|chip
+:write:They sell potatoes cheap.|Look at this electronic chip.
+::
+:say:Which sentence contains this word?|bit|beat
+:write:The dog bit him.|She beat him.
+::
+:say:Which sentence contains this word?|slip|sleep
+:write:I can slip.|Can I sleep?
+::
+:say:Which sentence contains this word?|fill|feel
+:write:I fill the gaps.|I feel the gaps.
+::
+:say:Which sentence contains this word?|ship|sheep
+:write:Look at the ship.|I can see the sheep.
+::
+:say:Which sentence contains this word?|work|walk
+:write:Let's work together.|Let's walk together.
+::
+:say:Which sentence contains the word |bad|bed
+:write:It's my bad.|Is it my bed?
+::
+:say:Which sentence contains the word |bet|bat
+:write:This is my bet.|Is this my bat?
+::
+:say:Find the sentence containing the word |short|shot
+:write:This video is short.|This clip was shot in London.
+::
+:say:Which sentence contains the word |hate|height
+:write:I hate to bother you but this is an urgent matter.|The height of the skyscraper is amazing.
+::
+:say:Read the sentence with the word |called|cold
+:write:What is it called?|Why is it so cold?
+::
+:say:Choose the sentence with the word |sad|said
+:write:I was sad about it.|What was said about it?
+::
+:say:Read the sentence with the word |want|won't
+:write:I want to go there.|They won't go there.
+::
+:say:Choose the sentence with the word |dad|dead
+:write:Go tell them and your dad.|You tell them and you're dead.
+::
+:say:Find the sentence with the word |had|head
+:write:I had home.|Did you head home?
+::
+:say:Find the sentence with the word |salt|sold
+:write:It's salt.|Is it sold?
+::
+:say:Read the sentence with the word |drown|drawn
+:write:Global warming will drown many coastal cities.|This case has drawn attention across the globe.
+::
+:say:Choose the sentence with the word |drawn|drone
+:write:Her face looks drawn and exhausted.|I could hear the steady drone of the engine.
+::
+:say:Choose the sentence with the word |cost|coast
+:write:I worried about the cost.|Let's spend this holiday by the coast.
+::
+:say:Find the sentence with the word |rich|reach
+:write:She wasn't very rich.|You should keep it out of children's reach.
+::

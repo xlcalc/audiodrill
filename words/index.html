@@ -1,0 +1,2601 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="A free tool for language learners to boost listening and speaking skills.">
+<meta name="keywords" content="chunks, listening, speaking, pronunciation">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon.png">
+<meta property="og:title" content="Audiodrill" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.audiodrill.com" />
+<meta property="og:image" content="https://www.audiodrill.com/img/og-image.jpg" />
+<meta property="og:description" content="Listening and speaking practice for language learners" />
+
+<style>
+
+.show-on-mobile {display:none !important}
+
+#page-header {
+/*  font-weight: bold; */
+  line-height: normal; 
+  font-size: 150%; 
+  text-align: center; 
+  margin: 0.2em 2em;
+}
+
+.flex-container {
+  display: flex;
+  align-items: stretch;
+/*  posiition: relative;*/
+}
+
+.flex-container > div {
+  width: 20px;
+/*  text-align: center; */
+  font-size: 30px;
+}
+
+.row {  
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+/*  margin: 0.1em 0.7em; */
+  flex-grow: 1;
+  border: 0px gray solid; 
+}
+.row > div {
+/*  width: 450px;*/
+max-width: 97vw;
+  margin: 0 5px;
+border: 1px blue ;
+}
+
+.play-controls {
+  text-align: left;
+  font-size: 120% !important; 
+  margin-bottom: 1em; 
+  margin-left: 0.8em; 
+  margin: 0.5em;
+  margin: 0;
+  line-height: 1.5em;
+  width: max-content !important;
+  position: absolute;
+  right: 0;
+/*  float: left;
+  top:15%;
+  left:50%;
+  transform: translateX(-50%);
+  min-width: 420px;
+*/
+  height: fit-content;
+  padding: 0.5em;
+  z-index: 2;
+}
+
+input {
+  font-size: initial;
+}
+
+#left-column {
+  position: relative; 
+  /*margin-left: 0.5em;*/
+  margin-left: 0;
+  flex-grow:55;
+  /*width: 55%;*/
+/*  width: 550px;
+  min-width: 550px;*/
+border: 0px solid red;
+}
+
+#left-column-2 {
+/*  float: right;*/
+  border: 1px blue; 
+  position:relative;
+/*  min-width: 500px;*/
+width:100%;
+width: calc(100% - 60px);
+border: 0px solid green;
+}
+
+#right-column {
+  line-height: 1.1em;
+  flex-grow:45;
+/*  width:400px;
+  border: 1px solid blue;
+*/
+  border-top:1px #e3e3e3 solid;
+}
+
+#howto-info-box, #ref-info-box, #notes-info-box {
+/*  flex-grow: 1;
+  width:400px;
+  right: 0px;
+  right: -436px;
+
+  background-color: white;
+  position: absolute;
+  top: 0;
+  right: -40vw;
+  z-index:1;
+  flex-grow:45;
+  width: 40vw;
+  border: 1px solid gray;
+*/
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+/*#ref-info-box {z-index:2}*/
+
+#ref-box, #widget-header, #chem-image, #howto-info-box {
+  padding: 0 1em 0 0.3em;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 55%; 
+  line-height: 1.2em; 
+  text-align: left; 
+  margin-top: 1px;
+}
+
+#ref-box {margin-top: 0}
+
+/*
+#ref-box a, #widget-header a {
+  text-decoration: underline;
+  text-decoration-color: #ddd;
+}
+*/
+#widget-header { margin-bottom: 0.1em;}
+
+#ref-box a:hover, #widget-header a:hover {
+  background-color: #eee;
+  text-decoration:none;
+}
+
+
+#chem-image {
+  padding-bottom: 1em;
+}
+
+#widget-1 {
+  font-size: 80%; padding-left: 0.3em;
+  text-align: left;
+  width: 16em;
+  max-width: 95%;
+}
+
+.btn-box {
+  width:32px; height:32px;
+}
+
+.borders-vert {
+height:45%;
+width:7%;
+border-right: 4px solid #bbb;
+border-left: 4px solid #bbb;
+}
+
+.mic-box {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.mic-box > div {
+/*  height: 100%; /*the logic of mic-box div may need to be reworked: is it really needed with SVG mic? */
+  border-radius: 50%; /* needed when .mic-on is added */
+}
+
+.mic-on {
+  background-color: lightcoral;
+  color: white !important;
+}
+
+.edit-on {
+  color: #095 !important;
+}
+
+.mic-on:hover {
+  background-color: red !important;
+  color: white !important;
+}
+
+.ext-link > a {
+  font-size: initial;
+  margin-left: 0.3em;
+  padding: 0.2em 0.3em 0 0.3em;
+  border-radius: 50%;
+  color: silver;
+  transform: rotate(-45deg);
+}
+
+.ta-bgr {
+  position: relative;
+  background-color: #fbfaf9; 
+  background-color: #fbfefb; 
+  background-color: hsl(150, 40%, 99%);
+/*  text-align: center; */
+}
+
+.ta {
+/*  text-align: left;
+  font-size: calc(20px + 1.5vmin);
+  font-size: 80%;
+  font-size: 18pt;
+*/
+  line-height: 1.3em;
+  overflow: auto;
+  padding: 0 0.1em;
+  color: #777;
+  background-color: transparent; 
+  border: 1px solid #e3e3e3;
+  outline: none;
+  unicode-bidi: plaintext;
+}
+
+.ta-bgr, .ta, .notes-box {
+  height: 85vh;
+  border-radius: 6px;
+}
+
+.notes-box {
+  padding: 0 0.7em 0 0.25em;
+  line-height: 1.3em;
+  overflow: auto;
+  background-color: hsl(150, 40%, 99%);
+}
+
+.ta hr {border-top: 1px solid #e3e3e3}
+
+.ta:focus {border: 1px solid silver}
+
+.ta-buttons {
+  /*position: absolute;*/
+/*  top:0;
+  left: min(-5.5vw, -54px);
+  left: min(-5.3vw, -54px);
+  width: max(4.5vw, 45px); 
+  width: max(4.5vw, 54px);
+  height: 100%;
+*/
+  width: 54px;
+  text-align: center;
+  margin: 0 4px;
+  z-index: 1; /* so that arrow tips are not clipped */
+border: 0px solid blue;
+}
+
+.ta-buttons > div {
+  display: block;
+/*  height: max(4.5vw, 55px); */
+  width: 54px; 
+  height: 54px; 
+  cursor:default;
+  opacity: 0.4;
+  margin: auto; 
+  margin-top: max(2vw, 30px);
+  font-size: max(2vw, 40px);
+  color: #99aabb;
+  border-radius: 50%;
+border: 0px solid blue;
+}
+
+.edit-cancel, .edit-save { 
+  padding: 5px !important;
+  width: 1.2em !important; 
+  height: 1.2em !important;
+  font-size: 95% !important;
+  font-weight: bold;
+}
+
+.edit-btn {width:auto !important;}
+
+.edit-save {color: #095 !important}
+
+.edit-cancel { 
+  margin-top: 6px !important;
+  color: #e11a !important;
+}
+
+.file-load, .edit-btn {
+  line-height: max(4.5vw, 45px);
+  padding: 0 5px;
+}
+
+.ta-buttons > *:hover, .mic-box:hover,
+.ext-link > a:hover {
+  background-color: gainsboro;
+  color: slategray;
+  text-decoration: none;
+}
+
+.share-icon svg {fill: transparent}
+.share-icon svg:hover {stroke:slategray}
+
+.ta-line {
+  color: #469;
+  color: #444444;
+  width: fit-content;
+/*  margin-right: 0.2em;*/
+  cursor:pointer;
+}
+
+/*.ta-line:hover {*/
+.underline-onhover:hover {
+  text-decoration: underline #9bd;
+  text-underline-offset: 0.2em;
+  color: #247;
+}
+
+#playground-div{
+  position: absolute;
+  bottom:0;
+  margin-left: 0.8em;
+  width:90%;
+  line-height: 6vh;
+  background-color: transparent;
+border: 1px red;
+}
+
+.obj-colored {
+display: inline-block;
+position: relative;
+bottom:0;
+width:18%;
+height:6vh;
+margin-left: 0.1em;
+margin-right: 0.05em;
+font-size: 80%;
+text-shadow: white 1px 1px 3px;
+border-radius: 5px;
+border: 1px solid silver;
+}
+
+.obj-caption {
+font-size: 50%;
+margin-top: 0.5em;
+color: gray;
+text-shadow: none;
+border: 1px green;
+}
+
+.border-red {border:0px solid red}
+.border-gray {border:0px solid gray}
+.border-blue {border:0px solid blue}
+.border-black {border:0px solid black}
+.border-green {border:0px solid green}
+
+.game-task {
+ max-height: 50%;
+ overflow: auto;
+ margin-bottom: 0.5em;
+ box-shadow: -6px 6px 0.8em rgb(0 0 0 / 10%);
+ scroll-behavior: smooth;
+ padding: 0 0.2em 0.3em 0.2em
+}
+
+.game-face {
+ float:left;
+ font-size:200%;
+ padding-top: 0.3em;
+ padding-right: 0.2em; 
+ cursor: default;
+}
+
+.game-react {
+ line-height:1.2em;
+ font-size: 90%;
+}
+
+x-p { background-color: #ffc; }
+
+.hover-speaker {
+  display:inline-block;
+  width:1em;
+  letter-spacing: -1px;
+  line-height: normal;
+  vertical-align: bottom;
+  vertical-align: text-top;
+  text-align: center;
+  border-radius: 50%;
+border:0px solid green;
+}
+
+.sp-line {unicode-bidi: normal}
+
+/* A different approach may be needed for .sp-line:hover*/
+.sp-line:hover .hover-speaker span{
+  font-size: 0;
+}
+
+.sp-line:hover .hover-speaker {vertical-align:-0.1em}
+
+.sp-line:hover .hover-speaker span:after{
+  content: '\1F509\fe0e ';
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='gray' viewBox='1 1 14 14' %3E%3Cpath d='M9 4a.5.5 0 0 0-.812-.39L5.825 5.5H3.5A.5.5 0 0 0 3 6v4a.5.5 0 0 0 .5.5h2.325l2.363 1.89A.5.5 0 0 0 9 12V4zm3.025 4a4.486 4.486 0 0 1-1.318 3.182L10 10.475A3.489 3.489 0 0 0 11.025 8 3.49 3.49 0 0 0 10 5.525l.707-.707A4.486 4.486 0 0 1 12.025 8z' /%3E%3C/svg%3E");
+
+  /*  font-size: initial;
+  font-size: 11pt;
+  vertical-align: top !important; */
+}
+
+.hover-speaker:hover {
+  background-color: #eee;
+}
+
+.text-container { /* not used */
+  position: relative;
+  border: 1px solid green;
+}
+
+.editing, .highlighting {
+  /* Both elements need the same text and space styling so they are directly on top of each other */
+  display: inline-block;
+  overflow: hidden;
+  margin: 0;
+  padding: 3px;
+  left: 1.5rem;
+  right: 1.5rem;
+  min-height: 20px;
+  outline: none;
+  unicode-bidi: plaintext;
+}
+
+.editing, .highlighting, .highlighting * {
+  /* Also add text styles to highlighting tokens */
+/*  font-size: 80%;*/
+  line-height: 1.4em; 
+}
+
+.editing {
+/*  z-index: 1; */
+position: absolute;
+  color: transparent;
+  background: transparent;
+  caret-color: gray;
+/*  white-space: pre-wrap; */
+  border: 1px solid silver;
+}
+
+.highlighting {
+  position: absolute;
+  top: 0;
+/*  left: 1.72rem;*/
+  z-index: 0;
+  pointer-events: none;
+  /* width should be just slightly bigger than .editing to avoid breaking lines too early*/
+/*  width: calc(85% + 0.1px); */
+  color: #555;
+/*  white-space: pre-wrap; */
+/*  border: 1px solid red; */
+}
+
+.mark-read {
+  background-color: #ddFBdd;
+}
+.epi-nav-bar {
+  padding-top: 0.4em;
+/*  filter: brightness(120%);*/
+  border-top: 1px solid silver;
+  font-size: smaller;
+}
+
+.notes-box[contenteditable]:empty:not(:focus):before{
+  content:attr(placeholder);
+  color:grey;
+  font-style:italic;
+  cursor: text;
+}
+
+.notes-box[contenteditable]:empty:focus:before{content:''}
+
+
+@media screen and (max-width: 700px) {
+  .hide-on-mobile {display:none !important}
+  .show-on-mobile {display:block !important}
+
+  #top-mobile-box{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+	background-color: white;
+/*    box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2);*/
+	border-bottom: 1px solid #ddd;
+	z-index: 3;
+  }
+  
+  #page-header {
+/*  font-weight: bold; */
+    font-size: 90%;
+	margin-top: 44px;
+  }
+  
+  
+  .flex-container {display:block;}
+  
+  #left-column, #right-column {
+    margin: 0;
+	width: 100%;
+  }
+  
+  #left-column-2 {width: 100%;}
+  
+  .ta-bgr, .ta {
+    height: 80vh;
+  }
+
+  
+  .ta-buttons {
+/*    left: -40px;*/
+/*	width: 40px;*/
+    position: fixed;
+    top: 0;
+    left: -0.5em;
+    width: 100%;
+    height: 40px;
+/*    border: 1px dotted gray;*/
+    display: flex;
+    /* align-content: center; */
+    /* flex-wrap: wrap-reverse; */
+    /* align-items: center; */
+    /* margin-top: -1em; */
+    /* z-index: 10; */
+    /*background-color: white;*/
+    /*display: grid;*/
+    /*grid-auto-flow: column dense;*/
+	z-index: 4;
+  }
+  
+  .ta-buttons svg {width:32px}
+  
+  .ta-buttons > div {
+    font-size:32px;
+	height: 40px;
+	width: 40px;
+	margin-top: 0;
+	color: #778899;
+  }
+  
+  #link > div {margin-top: 4px}
+  
+  .edit-btn {
+    line-height: 1.2em;
+    width: 40px !important;
+    padding: 0;
+  }
+  
+  .edit-save {margin-top: -2px !important;}
+  .edit-cancel {
+    display: block !important;
+    margin-top: -4px !important;
+  }
+  
+  input, .play-controls {
+    font-size: inherit !important;
+/*    font-size: 75% !important;*/
+  }
+
+  #ref-info-box, notes-info-box {
+/*  top: -80vh;
+    position: absolute;
+    top: 0;
+	left: 0;
+	background-color: white;
+	z-index: 1;
+*/
+	width: 97vw;
+	width: auto;
+	margin:0;
+  }
+  
+  #widget-1 {
+    width: 92vw;
+  }
+  
+  .play-controls {
+    max-width: 92vw !important;
+    position: fixed;
+	top: 44px;
+	margin: auto;
+  }
+  .notes-box {
+    height: fit-content
+  }
+
+}
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="../parts/shared.css">
+
+</head>
+<body>
+
+<script>
+// this script should load before audiodrill-task.js
+//const webPageName = 'WORDS';
+
+var widget;
+const setPlayerSpeed = v => { if (widget) widget.setSpeed(v); }
+</script>
+
+<script src="../parts/audiodrill-task.js"></script>
+<script src="../parts/grammar-game.js"></script>
+<script src="../parts/howto-info.js"></script>
+<script src="../parts/read-game.js"></script>
+<script src="../parts/var-grammar-game.js"></script>
+<script src="../parts/vocab.js"></script>
+<script defer src="../parts/color-game.js"></script>
+<script defer src="../parts/math-game.js"></script>
+<script src="https://translate.google.com/translate_a/element.js"></script>
+
+<div class="dropzone full-cover flex-center hidden">Drop zone</div>
+
+<div id="hidden-storage" class="hidden"></div>
+<div id="top-mobile-box"></div>
+<div id="top-menu"></div>
+<div id="page-header"></div>
+<div class="flex-container">
+<!-- <div style="flex-grow: 1;"></div> 
+-->
+
+<!--  Central Row 
+<div class="row rel">
+-->
+
+<div id="play-controls" class="play-controls box-shadow rounded hidden" style="backdrop-filter: blur(10px);background: rgba(255, 255, 255, 0.82);">
+<div style="margin-top: -0.5em;"><small><b>Settings</b></small></div>
+<span class="close-x0 action-icon" style="width:0.7em" onclick="hideSettings()">&times;</span>
+<div class="vdiv">
+<!--
+<span id="lang-ctrl"></span>
+<span id="tts-select" style="margin-left:1em"></span>
+-->
+<div id="lang-ctrl" class="inblock"></div>
+<div id="tts-select" class="inblock" style="margin-right: .5em"></div>
+
+</div>
+
+<div id="master-pbr-box" class="vdiv"></div>
+
+<div id='split-div' class="hidden vdiv">
+<label>
+Read
+ <input id="split-by" 
+  type="range" value="0" min="0" max="3" step="1" list="split-tickmarks"
+  oninput="clickSplitBy(this)" style="width:80px; vertical-align: middle">
+  <datalist id="split-tickmarks">
+    <option value="0"></option>
+    <option value="1"></option>
+    <option value="2"></option>
+    <option value="3"></option>
+  </datalist>
+  <span id="split-by-res">by chunks</span>
+</label>
+</div>
+
+<div id="vocab-settings-box" class="hidden vdiv">
+</div>
+
+<!-- Advanced settings header -->
+<span style="cursor: pointer;" onclick="clickChevron(this.nextElementSibling)">
+<i>Advanced settings</i>
+</span>
+<div class="half-padding small-font chevron chevron-down" onclick="clickChevron(this)"></div>
+<div class="hidden" style="padding-left: 0.4em; background-color: #f9f9f9;">
+
+<!-- Advanced controls -->
+
+<div class="vdiv">
+<label id="tts-select2" class="hidden vdiv"></label>
+</div>
+
+<div id="rec-checkbox-div" style="display:none;" class="vdiv">
+  <div id="rec-switch-box"></div>
+</div>
+
+<div id='rep-num-div' class="vdiv">
+Replay <label>
+  <input type="number" id="rep-num" style="width: 2em;"  title="Number of replays" value="2" onchange="adjustRepNum(this)" /> 
+times</label>
+</div>
+
+<div id="advanced-speed-box" class="vdiv"></div>
+
+<div id="lookup-div" class="vdiv">
+<label>
+    <input type="checkbox" id="pubchem">
+    <span>Look up in PubChem</span>
+</label>
+</div>
+
+<div id="set-fsize">
+</div>
+
+</div> <!-- end of advanced controls -->
+</div> <!-- end of play-controls -->
+<div id="left-column" class="flex">
+
+    <div class="ta-buttons">
+
+      <div id="mic" class="flex" title="Start dictating (Chrome or Edge only)">
+      </div>
+
+      <div id="link" class="share-icon flex" 
+	    title="Click to copy the link
+Ctrl + click to download as text" onclick="linkCopy()">
+	  </div>
+<!--
+      <div id="file-load" class="file-load" title="Open from disk" onclick="grammarFileOpen()">📂&#xfe0e;</div>
+-->
+      <div id="edit-btn" class="edit-btn" title="Edit" onclick="taEdit('ON')">
+	    <div id="inside-edit-btn" class="inblock v-align-middle" style="margin-top:-3px">a</div><div class="inblock" style="margin-left:-3px; transform: scale(.6, 0.9)">|</div>
+	  </div>
+      <div id="edit-save" class="edit-save hidden flex" 
+	    title="Save changes & stop editing" onclick="taEdit('OFF')">
+	    ✓
+	  </div>
+
+      <div id="edit-cancel" class="edit-cancel hidden flex" 
+	    title="Cancel changes & stop editing" onclick="taEdit('CANCEL')">
+	    ✕
+	  </div>
+	  
+	  <div class="flex settings-icon show-on-mobile" title="Settings" onclick="showSettings()">
+	  </div>
+
+  </div> <!-- end of TA buttons -->
+
+
+  <div id="left-column-2">
+
+  <div id="ta-bgr" class="ta-bgr">
+
+    <div id="ta" class="ta"></div>
+    <div id="playground-div"></div>
+	
+  </div>
+
+<input type="file" id="grammar-file-open" name="files[]" 
+multiple style="position: fixed; top: -100em" />
+
+<div id="ta-bottom"></div>
+
+</div> <!-- end of left column 2 -->
+
+</div> <!-- end of left column -->
+
+
+<div id="right-column" class="rel">
+
+<div id="ref-info-box" class="hidden rel">
+  <div class="close-x01 z-index1 rnd dark-hover font-times" onclick="closeRefs()" title="Close reference">&times;</div>
+  <div id="ref-box" class=""></div>
+  <div id="chem-image" title="View in PubChem" class="hidden"></div>
+  <div id="widget-header"></div>
+  <div id="widget-box" style="border:0px blue solid;">
+    <div id="widget-1" style="border:0px blue solid;"></div>
+  </div>
+</div>
+
+<div id="notes-info-box" class="rel hidden">
+  <div class="close-x01 z-index1 rnd dark-hover font-times" onclick="closeNotes()" title="Close notes">&times;</div>
+  <div id="notes-box" class="notes-box" contenteditable placeholder="Add notes/translation here"></div>
+</div>
+
+<div id="howto-info-box" class="rel"></div>
+</div> <!-- end of right column -->
+
+<!--
+</div> <!-- end of central row -->
+
+<!--
+<div style="flex-grow: 1"></div>
+-->
+</div> <!-- end of flex container -->
+<!-- <div onclick="debugVoices()">debug Voices</div> -->
+<!--  Footer   -->
+
+<div id="bottom-bar"></div>
+
+<script src="../parts/word-ref.js"></script>
+<script src="../parts/tts.js"></script>
+<script src="../parts/stt.js"></script>
+<script src="../parts/bottom-bar.js"></script>
+
+<script>
+
+const loadErrorText = "\n<span style='font-size:200%'>⚠️\nThe file can't be loaded.\nPlease check its address and internet connection.";
+
+const initialWordList = `Click on 
+one of the lines 
+of this text
+and see what happens.
+You can edit the text
+or copy and paste 
+a new one.
+
+You can select 
+and try out
+some other languages
+listed below.
+حظا سعيدا
+加油
+Hodně štěstí
+Veel succes
+Good luck
+Bonne chance
+Viel Glück
+Καλή τύχη
+בהצלחה
+ऑल द बेस्ट
+Buona fortuna
+幸運を
+화이팅
+موفق باشی
+Powodzenia
+Boa sorte
+Удачи
+Buena suerte
+Lycka till
+โชคดี
+İyi şanslar
+Щасти
+Chúc may mắn
+`;
+
+const langNames = ['Arabic','Chinese','Czech','Dutch','English','French',
+    'German','Greek','Hebrew','Hindi','Italian','Japanese','Korean','Persian',
+    'Polish','Portuguese','Russian','Spanish','Swedish','Thai','Turkish','Ukrainian','Vietnamese'],
+  langCodes = ['ar','zh','cs','nl','en','fr','de','el','he','hi',
+    'it','ja','ko','fa','pl','pt','ru','es','sv','th','tr','uk','vi'];
+
+
+const pubchem = elid('pubchem'),
+ chemImage = elid('chem-image'),
+// autoStartVideo = elid('auto-video'),
+// autoStartVideo = {},
+
+ editBtn = elid('edit-btn'),
+ ta = elid('ta'),
+ isEditMode = () => (ta.contentEditable === 'true'),
+ playgroundDiv= elid('playground-div'),
+ taBottom= elid('ta-bottom'),
+ 
+ pageHeader = elid('page-header'),
+// pageHeaders = {words: 'Look up words and phrases. See how different people pronounce them in context.',
+// pageHeaders = {words: 'Click on words and phrases to look them up and hear them in context',
+ pageHeaders = {words: 'Click or dictate a word or phrase to look it up and hear it in context',
+                game: 'Play voice games in Chrome or Edge browser',
+                shadowRead: 'Practice shadow reading in Chrome or Edge browser',
+                ttsRead: 'Listen to text chunks read by the computer and repeat',
+				dictate: 'Listen to text chunks read by the computer and write them down'
+ };
+
+ docTitles = {words: 'Words and phrases',
+                game: 'Voice games',
+                shadowRead: 'Shadow reading',
+                ttsRead: 'Text-to-speech reader',
+				dictate: 'Dictation'
+ };
+
+const isPageHeader = (...keys) => 
+  keys.some(key => pageHeaders[key] === pageHeader.textContent);
+
+/*
+const isPageHeader = (...keys) => {
+  for (const key of keys)
+    if (pageHeader.textContent === pageHeaders[key]) return true;
+  return false;
+}
+*/
+
+const getPageHeader = () => Object.keys(pageHeaders) .find(key => pageHeaders[key] === pageHeader.textContent);
+
+const setPageHeader = key => {
+  pageHeader.textContent = pageHeaders[key];
+  setDocTitle(docTitles[key]);
+}
+
+const activityKeys = {words: '/?w',
+          game: '/?game=new',
+          shadowRead: '/?shadow-read',
+          ttsRead: '/?tts-read',
+          dictate: '/?dictate'
+};
+
+const getActivityKey = () => activityKeys[getPageHeader()] + '&url=';
+
+/*
+function matchingVoiceName(voice) {
+  const name = voice.name;
+  switch (getLangCode()) {
+    case "en":
+//  return ["Google US English", "Microsoft Jessa Online"].any(preferredVoice =>
+//    voice.name.startsWith(preferredVoice)
+//  );
+//      if (name.includes ('Daniel') || name.includes ('UK English Male')) return true;
+      if (name.includes ('UK English Male')) return true;
+    break;
+
+    default:
+  }
+}
+*/
+
+function matchingVoiceLang(voice) {
+  const langId = tts.langCode || (getLangCode() + '-'); //hyphenated code
+//  const langIdUnder = getLangCode() + '_'; //underscored code
+//  if (voice.lang.includes(langId) || voice.lang.includes(langIdUnder)) {
+  if (voice.lang .toLowerCase().replace('_', '-') .includes(langId.toLowerCase())) return true;
+}
+
+const chooseVoice = (n = '') => {
+  const spVoice = 'spVoice' + n;
+  tts[spVoice] = null;
+  const voices = tts.getVoices();
+// first, pick up fave voices by voice.name
+//  tts[spVoice] = voices.find(matchingVoiceName);
+//console.log('After match voice name it is', tts[spVoice]);
+// if not found by voice.name, pick up by voice.lang
+//  if (typeof tts[spVoice] === 'undefined') { tts[spVoice] = voices.find(matchingVoiceLang); }
+//  if (!defined(tts[spVoice])) { tts[spVoice] = voices.find(matchingVoiceLang); }
+  if (!tts[spVoice]) { tts[spVoice] = voices.find(matchingVoiceLang); }
+  if (tts[spVoice]) {
+    const voiceName = tts[spVoice].name;
+    const voiceSelector = elid('voice-select' + n);
+    voiceSelector.value = voiceName;
+    voiceSelector.title = voiceName;
+  }
+// this spaghetti logic could be streamlined later
+  setVoice(getUrlKey("voice" + n) || n, n);
+
+  if (!n) setSTTLang(tts[spVoice]);
+}
+
+// embed.html uses own versions of 
+// gameStarterMicOn() and afterMicTurnedOn()
+const gameStarterMic = cmd => {
+  color = (cmd === 'ON')? '#fa8' : 'transparent';
+  const e = elid('game-starter');
+// test for pageheader might be needed
+  if (e) e.style.backgroundColor = color;
+}
+
+const afterMicTurnedOff = () => {
+// some conditions may be needed
+    ta.focus();
+	gameStarterMic('OFF');
+	audioRecorder.cmd('TURN_OFF_RECORDER');
+}
+
+const afterMicTurnedOn = () => {
+  gameStarterMic('ON');
+  gstore.autoStartVideo = 0;
+
+//  if (isPageHeader('game')) // added 2024-10-07
+  if (isPageHeader('game', 'words', 'ttsRead')) // added 2026-02-07
+    playIsOn = true; 
+  
+  if (isPageHeader('shadowRead'))
+    audioRecorder.cmd('CREATE_RECORDER'); // in advance, as it may take a second or more
+
+  if (playIsOn) {
+      startSTT(); // after speech has been recognized, handleSttResult fn is called
+      ta.focus();
+  } else { // Shadow reading starts without STT
+      playName = 'shadow-read'; // strange logic. Maybe test isPageHeader('shadowRead') instead?
+      playReadText("let's read together");    
+  }
+}
+
+// === TRANSLATION, NOTES ===
+
+const closeNotes = () => {
+  gstore.belowRefs = [];
+  hideElid('notes-info-box');
+  showElid('howto-info-box');
+  gstore.lastAction = 'HOWTO_BOX_SHOWN';
+  if (isPageHeader('ttsRead')) addTranslationToHowto();
+}
+
+const showNotes = () => {
+  gstore.belowRefs = ['NOTES_INFO'];
+  hideElid('howto-info-box', 'play-controls');
+  showElid('notes-info-box');
+  gstore.lastAction = 'NOTES_BOX_SHOWN';
+}
+// === END OF TRANSLATION, NOTES ===
+
+// === VOCABULARY ===
+const vocabCallback = (cmd, param) => {
+  if (cmd === 'VOCAB_MODE_BTN') showSettings('vocab-settings-box');
+  if (cmd === 'GOTO_BTN') callTasks();
+  if (cmd === 'VOCAB_ENTRY_ADDED') {
+    ta.text = param;
+	refreshTA();
+  }
+}
+
+const callTasks = () => {
+  location.assign('/?from-words&video-size=-1&l=' + encode64(ta.text) + getLangForUrl());
+}
+
+gstore.vocab.addMeaning = el => {
+//console.log('vocab entry:', gstore.currentQuery);
+//console.log('el, meaning:', el, el.value);
+  gstore.vocab.updateMeaning(gstore.currentQuery, el.value);
+  
+  blinkElClass(el, 'light-blue-bgr', 1, 300);
+//  el.classList.add('light-blue-bgr');
+//  await sleep(300);
+//  el.classList.remove('light-blue-bgr');
+}
+
+gstore.vocab.updateMeaning = (entry, meaning) => {
+  entry = entry.trim();
+  meaning = meaning.trim();
+  gstore.vocabArr = gstore.vocabArr
+    .map(s => s.split('=')[0] === entry ? entry + '=' + meaning : s)
+    .filter(s => s.trim()); // remove empty entries
+//  const updatedVocab = gstore.vocab.init(gstore.vocabArr.join('\n'));
+  const vocab = gstore.vocab.getVocab(ta.text);
+  const updatedVocab = gstore.vocab.build();
+  ta.text = ta.text.replace(vocab, updatedVocab);
+  refreshTA();
+}
+
+const refreshTask = () => { refreshTA() }
+
+// === END OF VOCAB ===
+
+const showRef = (query, quiet, context) => {
+  if (!query) return;
+  ttsGame.interruptTTSRead = 1;
+  gstore.lastAction = 'SHOW_REF';
+  showElid('ref-info-box');
+  hideElid('howto-info-box', 'notes-info-box', 'play-controls');
+  if (window.innerWidth <= 700) hideElid('left-column-2');
+  query = query.split('=')[0]; // for vocab explanations A=B
+//console.log('showRef context:', context, query === context);
+  if (isPageHeader('ttsRead')) 
+    query = gstore.vocab.addQuery(ta.text, query, context);
+
+  const queryNoPunct = removePunctuation(query);
+  handleReference(queryNoPunct, getLangCode(), context); // context is for translation
+//  if (!quiet && !playIsOn && !gstore.autoStartVideo) speak(query);
+  if (!quiet && !gstore.autoStartVideo) speak(query);
+  gstore.currFetchVideo = [queryNoPunct, langListCtrl().value];
+  fetchCurVideo();
+}
+
+const fetchCurVideo = () => youglish.fetchVideo(gstore.currFetchVideo);
+
+const handleSttResult = (transcript) => {
+  const voiceCmds = ["let's play the game", "let's play sound alike words",
+      "let's play irregular verbs", "let's play conditionals", "let's play numbers",
+      "let's play colors", "let's play colours", "let's read together"];
+  const gameNames = ['other-ttsgames', 'sound-alikes', 'verbs', 'conditionals',
+      'numbers', 'colors', 'colors', 'shadow-read', 'drill-sentence'];
+
+  if (mic.isOff) return;
+  if (isEditMode() && !voiceCmds.includes(transcript) 
+      && isPageHeader('words', 'shadowRead', 'ttsRead', 'dictate')) {
+    document.execCommand('insertText', false, transcript + ' '); 
+	return;
+  }
+
+//  if   (!recognition.allowed || !sttAllowed()) return; 
+  if   (!sttAllowed()) return; 
+//console.log ('Handling STT with recognition allowed = ',recognition.allowed);
+console.log ('** Transcript: ', transcript);
+//  transcript = renderStr(transcript); // needed for Edge browser
+  transcript = transcript.replace(/[.]/, ''); // needed for Edge browser
+  if (askedMeaning(transcript)) return;
+
+  if (transcript === "let's focus on the pronunciation") { 
+      playIsOn = true; oldPlayName = playName; playName = 'drill-sentence';
+  }
+  let match = voiceCmds.indexOf(transcript);
+  if (match !== -1) { 
+      playIsOn = true;
+      playName = gameNames[match];
+      displayInfopage('hide');
+      if (playName !== 'colors') clearPlaygroundDiv();
+  } else {
+	  if (isPageHeader('words')) { 
+        ta.text += transcript + '\n';
+		refreshTA();
+		ta.scrollTo(0, ta.scrollHeight);
+        showRef(transcript);
+		return;
+	  }// added 2026-02-08
+     else if (isPageHeader('game') &&  !playIsOn && gameIsPromped()) { askAgain(); return }
+  }
+
+  if (playIsOn) {
+      gstore.autoStartVideo = 0;
+      setPageHeader((playName === 'shadow-read') ? "shadowRead" : "game");
+  } 
+
+  if (/numbers|colors/.test(playName)) hideEl(editBtn);
+  else showEl(editBtn);
+/*
+    match = gameNames.indexOf(playName);
+    const fnNames = ["playGrammar", "playGrammar", "playGrammar", "playGrammar", 
+      "playNumbers", "playColors", "playReadText", "drillSentence"];
+    if (match !== -1) window[fnNames[match]](transcript); //won't work with const arrow functions!
+*/
+
+  if (/conditionals|verbs|sound-alikes|other-ttsgames/.test(playName)) {playGrammar(transcript); return;}
+  if (playName == 'drill-sentence') {drillSentence(transcript); return;}
+  if (playName == 'numbers') {playNumbers(transcript); return;}
+  if (playName == 'colors') {playColors(transcript); return;}
+  if (playName == 'shadow-read') {playReadText(transcript); return;}
+
+  if (!isEditMode()) showRef(transcript);
+}
+
+const askedMeaning = str => {
+  let phrase = str.toLowerCase().trim(),
+    result = null;
+  const start = 'what does', 
+    stop = 'mean';
+
+  if (phrase.startsWith(start) && phrase.endsWith(stop)) {
+    const head = start.length;
+    const tail = phrase.length - stop.length;
+    result = phrase.slice(head, tail).trim();
+    fetchDefinition(result);
+  }
+  return result;
+}
+
+const fetchDefinition = query => {
+  const url = `https://api.datamuse.com/words?sp=${query}&md=d`;
+  fetch(url).then(resp => resp.json()) .then(json => {
+      try { handleDefinitions (query, json); } 
+      catch (ex) { console.log('ex = ' + ex); }
+    })
+    .catch(err => {
+        console.log('Failed to get response, error ', err);
+    });
+}
+
+const handleDefinitions = (query, res) => {
+  let speakPhrase = "Explore the meaning of " + query;
+  if (res && res.length) {
+    const def = firstDefinition(res[0]);
+    if (def) { speakPhrase = query + " means, for example, " + def; }
+  }
+  gstore.autoStartVideo = 0;
+  speak(speakPhrase);
+  showRef(query, true);
+}
+
+const firstDefinition = e => {
+  if (!e.defs) return;
+  const def = e.defs[0].split("\t");
+  return def[1];
+}
+
+const clearPlaygroundDiv = () => setElHTML('playground-div', ''); 
+
+const handleQuery = el => {
+/*
+  const inComment = (s, n) => {
+console.log('Click on', n, ':', s[n]);
+    if (!s || n < 1 || n >= s.length -1) return 0;
+    const before = s.slice(0, n);
+    const after = s.slice(n+1);
+	if (before.includes('(') && after.includes(')')) return 1;
+    return 0;
+  }
+*/  
+  const sel = window.getSelection();
+  const txt = sel.focusNode.data;
+console.log('Clicked on:', txt);
+// if several chars are selected, selection starts at anchorOffset / baseOffset 
+// and ends before focusOffset. Selection length is the difference between
+// these two offsets.
+  const offset = sel.focusOffset;
+//  if (inComment(txt, offset)) return;
+  const splitter =  /[\s.!?,;:"\\\/\(\)]/;
+  const words = txt.split(splitter);
+  const n = txt.slice(0, offset).split(splitter).length; 
+
+  let elChunk = txt;
+  if (el) elChunk = el.getAttribute("say") || txt;
+  let query = (isPageHeader("words") && !hasFlashCards(ta.text)) ? elChunk : words[n-1];
+
+// special case: gaps and bold text
+  const parent = sel.getRangeAt(0).commonAncestorContainer.parentNode;
+  const gapped = parent.getAttribute('x-gapped');
+  if (gapped) query = gapped;
+  if (parent.nodeName === 'B') query = parent.innerText;
+//  if (sel.anchorNode.parentElement.parentElement.parentElement.parentElement.tagName === 'X-QUERIES')
+//    elChunk = 'X-QUERIES'; // vocabulary section
+
+// added 2024-06-24 to handle text selection rather than click
+  const selText = sel  + ''; // converts Selection obj to text
+  if (selText.length > 1) query = selText // more than 1 letter selected, i.e. selected on purpose
+
+  showRef(query.trim(), false, elChunk);
+}
+
+const isTTSHotkeysAllowed = () => isPageHeader('ttsRead') && 
+  ['PREP_TTS_READ', 'READ_TTS_CHUNK', 'HOWTO_BOX_SHOWN'].includes(gstore.lastAction);
+
+//const handleKeyEvent = e => { // sometimes causes fn not declared error if audiodrill call loads too early
+function handleKeyEvent(e) { // used function declaration b/c, unlike arrow fn, it is hoisted
+//console.log('e.key', e.key);
+//console.log('e.ctrlKey', e.ctrlKey);
+
+  if (e.key === 'Escape') {
+    ttsGame.escPressed = 1;
+    tts.cancel();
+// tts.resume() works OK with Edge but not with Chrome
+  }
+
+//  if (e.key === ',' && e.ctrlKey) changeVocabMode(-1);
+  if (e.key === ',' && e.ctrlKey) showTopSettings();
+  if (e.key === '.' && e.ctrlKey) changeVocabMode(1);
+  
+//  Hot keys for tts reading
+  if ('rR'.includes(e.key) && !e.ctrlKey && isTTSHotkeysAllowed()) repeatTTSChunk();
+  if ('pP'.includes(e.key) && !e.ctrlKey && isTTSHotkeysAllowed()) clickPlay();
+
+  if (!widget || !widget.totalTracks) return;
+  switch (e.key) {
+    case 'Escape':
+      players.pause();
+      break;
+
+    case 'Enter':
+      if (e.altKey || (document.activeElement !== ta && document.activeElement !== elid('vocab-meaning-input'))) {
+        if (!widget.manuallyClosed) {
+		  widget.manuallyPaused = false;
+          widget.play(); 
+		}
+      }
+      break;
+
+    case 'R': case 'r': 
+      if (e.altKey) { widget.manuallyPaused = false; widget.replay(); }
+      break;
+
+    case 'N': case 'n': 
+      if (e.altKey) { resetPlayerSpeed(); widget.next(); }
+      break;
+
+    case 'P': case 'p': 
+      if (e.altKey) { resetPlayerSpeed(); widget.previous(); }
+      break;
+
+    case 'Backspace': // rewind
+      if (e.altKey) players.rewind();
+      break;
+
+    case 'Control': case 'Meta': // rewind
+      if (e.code === 'ControlRight' || e.code === 'MetaRight') players.rewind();
+      break;
+
+    default:
+  }
+}
+
+players.pause = () => {
+  if (widget) {
+    widget.pause();
+	widget.manuallyPaused = true;
+  }
+}
+
+players.stop = () => {
+  if (widget) {
+    players.pause();
+    widget.manuallyClosed = true;
+  }
+}
+
+players.rewind = () => {
+  if (!widget.manuallyClosed && gstore.autoStartVideo) {
+    widget.manuallyPaused = false; 
+    widget.move(-1); 
+  }
+}
+
+/*
+const hideWidget = () => { // 2024-06-25: with ref-info-box logic, is hideWidget really needed? 
+  widget.pause();
+  widget.close();
+  setElHTML('widget-header', '');
+  setElHTML('widget-1', '');
+}
+*/
+
+players.reportError = err => {
+  const addMsg = (err.code === 2)? '' : ` <div class="inline-flex acolor btn-lighgray" 
+	  onclick="youglish.reload()" title="Reload YouGlish widget">Try again later` + '</div>.';
+
+  elid("widget-header").innerHTML = (err.msg || 'YouGlish is not available.') + addMsg;
+}
+
+const clickYGChevron = el => {
+  clickChevron(el);
+  if (!isElHidden(gstore.widgetBox)) { // prepare to hide widgetBox
+    gstore.autoStartVideo = 0;
+    players.pause();
+  }
+  else gstore.autoStartVideo = 1;
+
+  localStorage.setItem('autoStartVideo', gstore.autoStartVideo);
+  toggleEl(gstore.widgetBox);
+}
+
+const getYGChevronHtml = () => {
+  let s = 'small-font padding-03em chevron';
+  if (!gstore.autoStartVideo) s += ' chevron-down';
+  return '<div title="Show/hide video" class="' + s + '" onclick="clickYGChevron(this)"></div>';
+}
+
+players.setWidgetBox = () => {
+  showOrHideEl(gstore.widgetBox, gstore.autoStartVideo);
+}
+
+// === LINKS ===
+
+const getLangForUrl = () => (getLangCode() === 'en') ? '' : '&lang=' + getLangCode(); 
+
+//function linkToWords(){
+function wordsLink(){
+//  const caller = trigger.toElement.id;
+  const text = ta.text 
+    .replace(/-/g, '{hyphen}')
+//    .replace(/\n/g, ',') // replace new lines with commas
+    .replace(/\n/g, '|') // replace new lines with |
+    .replace(/\s/g, '-')  // replace spaces with hyphens
+	.replace(/\|*$/,'') // remove trailing |
+	;
+//    .replace(/[<>&]/g,''); //sanitize
+  let url = 'https://audiodrill.com?w=' + text + getLangForUrl();
+  copyToClipboard(url, 'Link copied to clipboard');
+}
+
+const directLinkToGame = () => {
+  displayInfopage('hide');
+//  copyToClipboard('https://audiodrill.com?game=' + encode64(ttsGame.text), linkCopiedMsg);
+  copyToClipboard('https://audiodrill.com?game=' + encode64(ta.innerText), linkCopiedMsg);
+}
+
+const embedLinkToGame = () => {
+//  copyToClipboard('https://audiodrill.com?game=' + encode64(ttsGame.text), linkCopiedMsg);
+  const txt = '<div style="width:600px; height:350px;">' +
+    '<iframe  src="https://audiodrill.com/embed?game=' + 
+    encode64(ta.innerText) +
+    '" allow="microphone *" style="border:1px dotted gray"></iframe></div>';
+
+  displayInfopage('hide');
+  copyToClipboard(txt, linkCopiedMsg);
+}
+
+//function linkToGame() {
+function gameLink() {
+  taEdit('ON');
+  const links = '<b>Choose the link</b>' +
+    '<br>- <a onclick="directLinkToGame()">Direct link</a>' +
+    '<br>- <a onclick="embedLinkToGame()">&lt;/&gt; embed</a>';
+  const winStyle = {width: "32vw", height: "20vh", nearEl: "link"};
+  displayInfopage(links, winStyle);
+}
+
+const linkWithKey = key => {
+  let url = `https://audiodrill.com?${key}&read-enc=` + encode64(ta.text) + getLangForUrl();
+  if (gstore.notes.innerText) url += '&notes-enc=' + encode64(gstore.notes.innerText); // should innerHTML be allowed instead?
+  if (key === 'tts-read' && ta.splitBy && ta.splitBy !== 'chunks') url += '&split=' + ta.splitBy;
+  copyToClipboard(url, linkCopiedMsg);
+}
+
+function shadowReadLink() { linkWithKey('shadow-read') }
+function ttsReadLink() { linkWithKey('tts-read') }
+function dictateLink() { linkWithKey('dictate') }
+
+const linkCopy = () => {
+  if (isEditMode()) {
+    displayMessage('Finish editing before you share');
+    return;
+  }
+  
+  if (gstore.ctrlKey) downloadText();
+  else window[getPageHeader() + 'Link']();
+  
+//  const funcs = { shadowRead: 'linkToShadowing', ttsRead: 'linkToTTSReader',
+//    dictate: 'linkToDictate', game: 'linkToGame', words: 'linkToWords' };
+//  window[funcs[getPageHeader()]]();
+}
+
+const getDateTimeString = () => new Date().toJSON().slice(0,19).replace(/:/g,'_').replace('T','__');
+
+const downloadText = () => {
+  const notes = gstore.notes.innerText? ':notes:' + gstore.notes.innerText : '';
+  const file = new Blob([ta.text + notes], { type: 'text/plain' });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(file);
+//  const date = new Date();
+//  const dateTime = date.toISOString() .replace('T', '__'). replaceAll(':', '_'). split('.')[0];
+//  link.download = 'audiodrill-task_' + dateTime + '.txt';
+  link.download = 'audiodrill-task_' + getDateTimeString() + '.txt';
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+// === END OF LINKS ===
+
+const setLangIndicator = lang => {
+  const el = elid('lang-indicator');
+  if (!el) return;
+
+  el.textContent = lang.toUpperCase();
+
+  lang = getLangName(lang);
+  el.title = `Speech language: ${lang} \rClick to open settings (Ctrl + ,)`; 
+  el.setAttribute(
+  'aria-label',
+  `Open settings. Current speech language: ${lang}.`
+  );
+}
+
+function handleLangSelect() {
+  const lang = getLangCode();
+  if (ta.flip) storeLangCode(lang, '2');
+  else storeLangCode(lang);
+  
+  setLangIndicator(lang);
+
+  listLangVoices();
+  afterLangChange();
+  if (playIsOn) return;
+  if (gstore.currentQuery) showRef(gstore.currentQuery);
+}
+
+const setLanguages = () => { // may be not needed?
+  const urlKey = ta.flip ? 'lang2' : 'lang';
+//  const lang = ta.flip ? ttsGame.langCode2 : ttsGame.langCode;
+  const lang = ta.flip ? tts.langCode2 : tts.langCode;
+  setLanguage(lang || getUrlKey(urlKey));
+  if (!tts.spVoice || tts.langCode !== tts.langCodeOld) {
+// added 2025-03-19: if the language didn't change, no need to call chooseVoice b/c it resets the voices
+    tts.langCodeOld = tts.langCode;
+//	tts.langCode2Old = tts.langCode2;
+    chooseVoice() // added 2024-08-17
+  }
+  afterLangChange();
+}
+
+const afterLangChange = () => {
+  if (isPageHeader('dictate')) {
+    prepTTSReadBtns('TTS_DICTATE');
+	afterEditTTS();
+  }
+}
+
+function analyzeURL() {
+  const urlKeys = new URLSearchParams(location.search);
+  const lang = urlKeys.get('lang') || localStorage.getItem('langCode') || 'en';
+  setLanguage(lang);
+  storeLangCode(lang);
+  
+  adjustSpeeds(urlKeys.get('speed'));
+//  clickSplitBy(urlKeys.get('split') || localStorage.getItem('ttsSplitBy') || 'chunks');
+  clickSplitBy(urlKeys.get('split') || localStorage.getItem('ttsSplitBy'));
+  setFontSize(urlKeys.get('font-size'));
+
+  pubchem.checked = (urlHasKey('pubchem'));
+
+  gstore.autoStartVideo = (pubchem.checked || urlHasKey('noauto') 
+	  || localStorage.getItem('autoStartVideo') == 0) ? 0 : 1;
+
+  const game = urlKeys.get('game');
+  if (game) {
+    handleGameURL(game, adjustUrl(urlKeys.get('url')));
+    return;
+  }
+
+  if (urlHasKey('shadow-read')) {
+    playReadText('prep_shadow_reading');
+    return;
+  }
+
+  if (urlHasKey('tts-read')) {
+    playReadText('prep_tts_reader');
+    return;
+  }
+
+  if (urlHasKey('dictate')) {
+    playReadText('prep_tts_dictate');
+    return;
+  }
+
+  offerWords(urlKeys);
+}
+
+const offerWords = async urlKeys => {
+  showHeaderAndHowTo('words');
+  
+  if (exploreWords('sl|ml', urlKeys)) return;
+  
+  const url = getUrlKey('url');
+  if (url) {
+    fetchReading(url);
+	return;
+  }
+  
+  const list = urlKeys.get('wlist') || urlKeys.get('w') || urlKeys.get('ngram') || initialWordList;
+  loadElementWithText(list, 'ta', 'NO_DECODE'); 
+
+  if (urlKeys.get('ngram')) showNgram(list);
+}
+
+const displayInfo = (txt, fsize = 100) => {
+  const msg = `<div style='font-size: ${fsize}%; margin-top: 0; line-height:1.3em'> 
+    ${txt}` + '</div>';
+
+  showElid('howto-info-box');
+  setElHTML('howto-info-box', msg);
+}
+
+const closeRefs = () => {
+//  hideWidget();
+  players.stop();
+  hideElid('ref-info-box');
+  hideEl(chemImage); // why separately?
+  showElid('left-column-2');
+//  clearPubChemImage();
+//  showHeaderAndHowTo(getPageHeader());
+  if (gstore.belowRefs && gstore.belowRefs.pop() === 'NOTES_INFO') showNotes();
+  else closeNotes(); // i.e. show Howto info
+}
+
+const showHeaderAndHowTo = cmd => {
+  setPageHeader(cmd);
+  let msg = getHowToHtml(cmd) 
+	+ getNotesHtml()
+    + getEpisodeNavigation(gstore.dirInfo, ttsGame.url);
+  
+  msg = highlightText(msg);
+  msg = parseTextFile(msg, 'TAGS_ONLY');
+  displayInfo(msg, 130);
+  setLangIndicator(getLangCode());
+}
+
+const changeEpisode = (key, url) => {
+  if (!url) return;
+// Faster ways to change episodes (like for tasks) may be implemented in the future
+//  loadHtmlTaskByURL(url);
+//  const href = location.origin + getActivityKey() + url;
+//  history.pushState({}, "", href);
+  location.assign(key + url);
+}
+
+const handleGameURL = (game, url) => {
+  setPageHeader('game');
+  adjustGameControls();
+  gstore.autoStartVideo = 0; 
+//  hideWidget();
+
+  if (game == 'new') {
+    playGrammar('a_new_game');
+    return;
+  }
+
+  if (game == 'all') {
+    playGrammar('offer_all_games');
+    return;
+  }
+
+  if (game.includes('url:')) {
+    ttsGame.url = game.substring(game.search('url:') + 4);
+    ttsGame.loadFrom = 'url-address';
+    playGrammar('offer_a_game');
+    return;
+  }
+
+  if (game) {
+    if (url) {
+      ttsGame.url = url;
+      ttsGame.loadFrom = 'url-address';
+    } else {
+      ttsGame.text = game.replace(/ /g, "+");
+      ttsGame.loadFrom = 'url-parameter';
+    }
+    playGrammar('offer_a_game');
+    return;
+  }
+}
+
+const loadVoiceList = voicesArr => {
+  setVoiceList({voices: voicesArr, selectVoice: true, speakerN: ''});
+  setVoiceList({voices: voicesArr, selectVoice: true, speakerN: '2'});
+}
+
+const setVoice = (n, v='') => {
+  const voices = elid('voice-select' + v);
+  if (!voices.length || !n || n < 1 || n > voices.length) return;
+  const voice = voices.item(n-1);
+  voices.value = voice.value;
+  handleVoiceSelect(voice, v, 'INITIALIZE');
+}
+
+//document.addEventListener('DOMContentLoaded', event => {
+window.onload = () => {
+  gstore.webPageName = 'WORDS';
+
+  handleDraggingNew(qsel('body'), qsel('.dropzone'));
+
+  gstore.notes = elid('notes-box');
+  gstore.widgetBox = elid('widget-box');
+  
+  gstore.langNames = langNames;
+  gstore.langCodes = langCodes;
+  
+  loadCommonItems();
+
+//  addVoicesCtrl(''); // loaded via loadCommonItems()
+  addVoicesCtrl(2);
+
+  mic.init();
+  loadSTT();
+
+  setRepNum();
+//  setReplayNumber(localStorage.getItem('loops') || 2);
+
+  elid('grammar-file-open').onchange = uploadGameScript;
+
+//  ttsGame.embed = false;
+  analyzeURL();
+//  initTips(); // turned off 2025-10-12
+  setTaFocusHandlers();
+  setVocabMode();
+  elid('link').innerHTML = uiblox.shareIcon('0 0 24 20', 48);
+  if (!isPageHeader('ttsRead')) hideElid('top-menu-read-lines');
+}
+
+const sayFinalThanks = () => {
+  speak('Thank you!');
+  if (isPageHeader('shadowRead')) closeNotes();
+  displayInfo('Thank you. Will appreciate your <a href="/info/?show=feedback">feedback</a>. 😊', 200);
+}
+
+const taEdit = async cmd => {
+  gstore.lastAction = 'TA_EDIT';
+  switch (cmd) {
+    case 'TOGGLE':
+      ta.contentEditable = isEditMode() ? 'false': 'true';
+    break;
+
+    case 'ON':
+      if (isEditMode()) return;
+      ta.contentEditable = 'true';
+    break;
+
+    case 'OFF': case 'CANCEL':
+      if (!isEditMode()) return;
+      ta.contentEditable = 'false';
+    break;
+
+    default: return;
+  }
+
+  if (isEditMode()) {
+    if (isPageHeader('words', 'game'))
+      hideFlashBtns();
+    hideElid('edit-btn');
+    showElid('edit-save', 'edit-cancel');
+//    editBtn.classList.add('edit-on');
+//    editBtn.title = 'Save changes & stop editing';
+//    displayMessage('When done editing, click Edit again');
+    ta.focus();
+    if (!ta.text) ta.text='';
+
+    if (isPageHeader('words', 'shadowRead', 'ttsRead', 'dictate')) {
+//      ta.innerText = ta.text.replace(/\n\n\n/g, '\n\r\n');
+      ta.innerText = ta.text.replace(/\n\n\n/g, '\n\n');
+    } else editGameScript();
+
+    if (isPageHeader('ttsRead', 'dictate')) beforeEditTTS();
+  } 
+  else { // not editable
+	hideElid('edit-save', 'edit-cancel');
+	showElid('edit-btn');
+//    editBtn.classList.remove('edit-on');
+//    editBtn.title = "Edit";
+
+
+    if (isPageHeader('words', 'shadowRead', 'ttsRead', 'dictate')) {
+      if (cmd !== 'CANCEL') {
+	    ta.text = ta.innerText; // what if cmd === 'CANCEL'??
+		addTranslationToHowto(); // update the links to translate the text
+      }
+      await refreshTA();
+    } else loadGrammarGame(); 
+  }
+}
+
+const hasFlashCards = txt => txt .replace(/:\/\/|url=\/\//g, '') .includes('//');
+
+const clickSplitBy = e => {
+  const choices = ['chunks', 'sentences', 'para', 'read-all'],
+    msgs = ['by chunks', 'by sentences', 'by paragraphs', 'to the end of the text'];
+  const oldSplitBy = ta.splitBy;
+//  let res = 0;
+  let res = choices.indexOf(String(e));
+  if (res < 0) res = (e? Number(e.value) : 0) || 0; // || 0 in case e.value is falsy
+/*  
+  if (e && typeof e === 'object') // b/c null is also an object
+    res = Number(e.value) || 0;
+  else { // e should be a string
+    res = choices.indexOf(String(e));
+    if (res < 0) res = 0;
+  }
+*/
+  elid('split-by').value = res; // needed if e is a string or bad object
+  
+  ta.splitBy = choices[res];
+  localStorage.setItem('ttsSplitBy', ta.splitBy);
+  setElHTML('split-by-res', msgs[res]);
+
+  if (typeof ta.text !== 'string') return; // initializing call of this fn
+
+  if (oldSplitBy === 'chunks' || ta.splitBy === 'chunks')
+    refreshTA();
+}
+
+const refreshTA = async() => {
+  let e = elid('flash-card-switch');
+  const bothSides = e ? e.checked : false;
+  e = elid('acro-switch');
+  const acro = e ? e.checked : false;
+//  ta.text = markVocabAll(ta.text);
+//  await renderTA(markVocabAll(ta.text), ta.flip, bothSides, acro);
+  await renderTA(ta.text, ta.flip, bothSides, acro);
+  if (isPageHeader('ttsRead', 'dictate')) afterEditTTS();
+  if (isPageHeader('shadowRead') && !mic.isOff) playReadText("let's read together");   
+}
+
+const flipFlashCards = () => {
+  ta.flip = !ta.flip;
+  setLanguages();
+  refreshTA();
+}
+
+const toggleFlashView = () => {
+  const e = elid('flash-card-switch');
+  e.checked = !e.checked;
+  refreshTA();
+}
+
+const toggleAcro = () => {
+  const e = elid('acro-switch');
+  e.checked = !e.checked;
+  refreshTA();
+}
+
+const stopPropagation = (event) => {
+//  console.log('Click on', event.target.innerHTML);
+  event.stopPropagation();
+}
+
+const renderTA = async (txt, flip = false, bothSides = false, acro = false) => {
+// Unresolved issues:
+// opening quote (") in direct speech breaks the logic for tts attribute
+// quick fix: use (') instead
+  if (!txt) return;
+  
+  const flashcards = hasFlashCards(txt);
+  if (!isPageHeader('ttsRead', 'dictate')) {
+    if (flashcards) showFlashBtns();
+    else hideFlashBtns();
+  }
+
+  const handleTitle = s => {
+    const arr =  s.split('//');
+    const face = '*' + arr[0].replace(/:title:\s*?/, '').trim() + '*'
+    const back = arr[1] ? '// *' + arr[1].trim() + '*' : '';
+    return face + back;
+  }
+
+  const adjustedLength = s => s//.replace(/\]\(.*?\)/g, s => '') // markup signature - already gone in highlightText fn
+    .replace(/^.{0,14}:\s/, s => '') // remove speakers
+	.replace(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '') //remove html tags
+    .replace(/[\.\?\!'",:-\[\]]/g, '')// remove punctuation.
+    .replace(/{{comment}}/g, '')// remove comments, as they are not pronounced
+	.length;
+
+  const linksArr = [];
+  const restoreLinks = txt => {
+    for (const s of linksArr) {
+	  const atag = s.replace(/>/, ' onclick="stopPropagation(event)">');
+      txt = txt.replace(/{{atag}}/, atag);
+//console.log(s)
+    }
+    return txt;
+  }
+
+  const extractLinks = txt => {
+// needed b/c '//' in 'https://' is treated as a flashcard!
+// punctuation in links can crash the logic  
+    const extractAtag = s => {
+      linksArr.push(s); 
+      return '{{atag}}';
+    }
+//    return txt.replace(/\[.*?\]\(https?:.*?\)?\)/g, s => extractLink(s));
+    return txt
+	  .replace(/<<a/g, '{{NOT_ATAG}}')
+	  .replace(/<a\s+.*?>/g, s => extractAtag(s))
+	  .replace(/{{NOT_ATAG}}/g, '<<a')
+	  ;
+  }
+
+  const commentsArr = [];
+  const restoreComments = txt => {
+    for (const s of commentsArr) { 
+      txt = txt.replace('{{comment}}', '<span onclick=stopPropagation(event)>' + s + '</span>');
+//console.log(s)
+    }
+    return txt;
+  }
+  
+  const extractComments = txt => {
+//    const keepRoundBrackets = s => s.replace(/\(/, '{{open-bracket}}').slice(0, -1) + '{{close-bracket}}';
+    const keepRoundBrackets = s => s
+	  .replace(/\(/g, '{{open-bracket}}')
+	  .replace(/\)/g, '{{close-bracket}}');
+	
+    const extractComment = s => {
+//	  if (s.includes('](')) return s; // markup signature 
+      let comment = s.slice(2, -2)
+        .replace(/{{open-bracket}}/g, '(')  //restore markup
+		.replace(/{{close-bracket}}/g, ')');
+	  comment = highlightText(comment);
+      commentsArr.push(comment); 
+//console.log('Comments', commentsArr);
+      return '{{comment}}';
+    }
+
+//    return txt
+//console.log('[[(...}]] comments', txt);
+    txt = txt
+	   // try to handle 1 or 2-level nested comments (...(...)...)
+//	   .replace(/\([^()]*\([^()]*\)[^()]*\)/g, s => '(' + keepRoundBrackets(s.slice(1, -1)) + ')') // not so good
+	   .replace(/\((?:[^()]|\((?:[^()]|\([^()]*\))*?\))*\)/g, s => '(' + keepRoundBrackets(s.slice(1, -1)) + ')') // this is better, works for 1 and 2-level brackets 
+    txt = txt
+	   .replace(/\[.*?\]\(.*?\)/g, s => keepRoundBrackets(s)) // protect markup
+	   .replace(/\(/g, '[[(') 
+	   .replace(/\)/g, ')]]') // turn round brackets into comments
+
+	   .replace(/\[\[.*?\]\]/g, s => extractComment(s)) 
+	   .replace(/{{open-bracket}}/g, '(')  //restore markup
+	   .replace(/{{close-bracket}}/g, ')')
+	   ;
+    return txt;
+  }
+
+//  const getPara = txt => txt .replace(/\n/g, '\n|') .split('|');
+  const getChunks = txt => {
+   let punctuation = /\r\n/g; // needed for flashcards, has no effect really, b/c \r\n is replaced with \n
+// colon : excluded from punctuation to allow dialogues
+   if (!flashcards) punctuation = isPageHeader('dictate') ? /(?<!\\)[\.\!\?]['"’]?[\s]|[。！？]/g 
+     : /(?<!\\)[\.\!\?;,]['"’]?[\s]|[。，！？]/g;
+
+   const rawChunks = txt
+    .replace(/\r\n/g, '\n') // \r\n in fetched files causes problems
+    .replace(/\\\/|\\-/g, s => '|' + s +'|') // non-clickable \/, \-
+    .replace(/\n/g, '\n|')
+    .replace(/<hr>/g, '<hr>|') // or should <hr> be a separate chunk?
+//    .replace(/(?<!\\)[\.\!\?:;,]['"]?[\s]/g, s => s +'|') // replace if not escaped by backslash
+    .replace(punctuation, s => s +'|') // replace if not escaped by backslash
+    .replace(/\\[\.\!\?:;,]/g, s => s.slice(1)) // replace escaped by backslash - may be moved to some later stage?
+    .split('|');
+
+
+   if (ta.splitBy !== 'chunks') // group by sentences
+    for (let i = 0; i < rawChunks.length - 1 ; i++) {
+//      if (rawChunks[i].endsWith('<hr>') || /[\.\!\?\n]\s?$/.test(rawChunks[i])) continue;
+//      if (/(([\.\!\?\n])|(\<hr\>))\s*$/.test(rawChunks[i])) continue;
+// how about direct speech with quotation marks in?
+      if (/((\.['"’])|([\.\!\?\n。！？])|(\<hr\>))\s*$/.test(rawChunks[i])) continue;
+      rawChunks[i] += rawChunks[i+1];
+      rawChunks.splice(i+1, 1); // remove empty chunk
+	  i--; // then adjust i
+    }
+
+   for (let i = 0; i < rawChunks.length - 1 ; i++) { // group short sentences together
+    const curCh = rawChunks[i];
+    const nextCh = rawChunks[i+1];
+    if (curCh.endsWith('\n') || curCh.endsWith('<hr>')) continue;
+	
+	if (adjustedLength(curCh) < 15
+	    || (nextCh.endsWith('\n') && adjustedLength(nextCh) < 15)
+        || (!/[\.\!\?。，！？\n]\s*$/.test(curCh) && adjustedLength(nextCh) < 15)){
+	  rawChunks[i] += nextCh;
+      rawChunks.splice(i+1, 1); // remove 'empty' rawChunks[i+1]
+	  i--; // then adjust i
+	}
+/*
+	if ((!(/[\.\!\?\n]\s*$/.test(nextCh) && adjustedLength(nextCh) < 15)
+	      && (adjustedLength(curCh) > 23
+             || (adjustedLength(curCh) > 15 && adjustedLength(curCh + nextCh) > 45)
+			 )
+          )
+	   ) continue;
+	
+//    if ((nextCh.endsWith('\n') && adjustedLength(nextCh) < 12)
+	 
+    rawChunks[i] += nextCh;
+    rawChunks.splice(i+1, 1); // remove 'empty' rawChunks[i+1]
+	i--; // then adjust i
+*/
+   }
+
+   return rawChunks;
+  } // end of getChunks fn
+
+  let htext = '<x-br></x-br>';
+
+  const getGapTTS = s => s.slice(2, -2).split("=>")[0];
+
+  let cardCounter = flashcards ? 0 : '';
+
+  let dlgSpeaker = 0;
+  const flipSpeakers = [1, 2, 1]; 
+  
+  const wrapGapText = s => {
+    const v = s.replace(/<<|>>/g, '').split("=>")[0]; // what if there are several correct chunks?
+    return '<span x-gapped="' + v + '">' + gapTextToShow(s) + '</span>';
+  }
+
+  const preprocessText = s => {
+    let r = s.replace(/:title:.*/, s => handleTitle(s))
+    .replace(/:(lang2?|target|intro|outro):.*\r?\n?/g, '')
+    .replace(/<x-vars\s+.*?>/g, '')
+    .replace(/\<\)\)?/g, '') // speaker code in tasks
+    .replace(/<img\s+.*?>/g, '') // another way of handling images might be needed
+	;
+    r = extractComments(r); // 2023-11-18: put extractComments first to enable tips
+    r = highlightText(r); // handles tips among other things
+//if tips include comments, it becomes a problem
+    r = extractLinks(r);
+//    r = extractComments(r);
+    return r;
+  }
+  
+  let vocabEntry = 0; 
+
+  // *** Text processing in renderTA starts here ***
+
+  txt = gstore.vocab.render(txt);
+  getLangKeys(txt);
+
+  const rawText = preprocessText(txt);
+  const chunks = getChunks(rawText);
+  for (const chunk of chunks) {
+//    if (controlParam(chunk)) continue;
+    if (chunk.trim()) {
+
+      const parts = chunk.split('//'); // = comment
+
+      if (parts[1] && flip) { // flip flashcards
+        const m = parts[0];
+        parts[0] = parts[1];
+        parts[1] = m;
+      }
+	  
+//      parts[0] = parts[0].replace(/\[\[.*?\]\]/g, s => extractComment(s));
+//      if (parts[1]) parts[1] = parts[1].replace(/\[\[.*?\]\]/g, s => extractComment(s));
+
+// before comment
+      if ((parts[0]).match(/\\\/|\\-/)) htext += parts[0][1]; // non-clickable
+      else { //clickable
+//	    let firstPart = parts[0].trim();
+	    const firstPart = parts[0].trim();
+
+        // let dlgSpeakerName = ... can be added if really neeeded
+        let tts = firstPart;
+		if (vocabEntry) tts = tts.split('=')[0].trim();
+        else if (firstPart.includes(gstore.vocab.tag)) vocabEntry = 1; // vocab part started
+		
+		tts = tts
+            .replace(/<<.*?>>/g, s => getGapTTS(s)) // handle gaps put first 13 Dec 2022
+            .replace(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '') // remove html tags.
+            .replace(/"/g, '“') // use special quotes b/c " and ' can't be used.
+
+			.replace(/\[.*?\]\(say:.*?\)/g, s => s.split('say:')[1].slice(0, -1))
+
+            .replace(/{{atag}}/g, '') // remove atags
+            .replace(/{{comment}}/g, '') // remove comments
+            .replace(/\[\[.*?\]\]/g, '') // remove comments
+            .replace(/\/\*.*?\*\//g, '') // remove comments
+//			.replace(/^.*?:\s/, ''); // remove speakers in dialogues
+			.replace(/^.{0,14}:\s/, ''); // remove speakers in dialogues
+
+		const refText = tts.replace(/\s*\{pause\}\s*/g, ' ').trim(); // for dictation
+		
+		tts = tts.replace(/\s*\{pause\}\s*/g, ', ')
+//		    .replace(/{{link.*?}}/g, s => s.slice(7, -2))
+		    .replace(/{{.*}}/g, s => s.slice(2, -2).split('&')[0])
+			.replace(/[\[\]\(\)\{\}]/g, '')// also remove brackets
+			; // extract from multiple choice;
+
+        const tipPrefix = '<span class="task-tip" tip=';
+        const txt = acro ? makeAcronym(tts) // acronymize flashcards
+            : firstPart 
+			.replace(/\[[^\[]*?\]\(say:.*?\)/g, s => s.split('](')[0].slice(1))
+
+            .replace(/<<.*?>>/g, s => wrapGapText(s)) // handle gaps
+            .replace(/\/\*|\*\/|\[\[|\]\]/g, '') // remove comments
+            .replace(/{pause}/g, '') // remove {pause}
+			.replace(/<tip/g, tipPrefix)
+            .replace(/<\/tip/g, '</span')
+
+			.replace(/^.{0,14}:\s/, s => '<i>' + s + '</i>') // italicize speakers in dialogues
+			; 
+
+		// dialogue?
+		if (txt[0] === '-' || (!!txt.match(/^.{0,14}:\s/))) 
+          dlgSpeaker = flipSpeakers[dlgSpeaker];
+
+        if (flashcards) cardCounter++;
+ //       htext += '<span class="align-top light-color small-font">' + cardCounter + '))</span>';
+
+        if (tts) {
+          let speakerBtn = isPageHeader('shadowRead', 'ttsRead', 'dictate') ? speakShadowReadBtn() : speakTextBtn(cardCounter);
+		  if (isPageHeader('dictate')) {
+		    htext += '<div class="sp-line rel" style="margin-top:0.2em; width:97%">' + speakerBtn
+			+ '<div class="ta-line inblock" say="' + tts
+			+ '" ref-text="' + refText
+			+ '" dlg-speaker="' + dlgSpeaker + '"></div>' 
+			+ dictateInputField + tipDictateHtml(refText[0] + '...')
+			+ '</div>'
+			+ '<x-br></x-br>';
+          } else { // words, tts-read or shadow-read
+		    const taUnderline = isPageHeader('words') ? 'underline-onhover' : '';
+			// if (tts === txt) tts = ''; // might be added for lighter htext
+            htext += '<div class="sp-line inline">' + speakerBtn 
+			  + '<span class="ta-line ' + taUnderline 
+			  + '" onclick="handleQuery(this);" say="'
+              + tts + '" dlg-speaker="' + dlgSpeaker + '">' 
+			  + txt + '</span></div>';
+		  }
+        } else { // no tts
+          htext += '<span>' + txt + '</span>';
+        }
+      }
+
+// after comment
+      if (parts[1]) {
+        const part2 = parts[1]
+		          .replace(/<<.*?>>/g, s => getGapTTS(s))  // handle gaps
+                  .replace(/\/\*|\*\/|\[\[|\]\]|{{comment}}/g, "") // remove comments (or comment marks only?)
+
+        htext += bothSides ? ' &sdot; ' + part2 : tipPointHtml(part2);
+      }
+      if (flashcards) htext += '<hr class="flash-hr">';
+//      else if (chunk.includes('\n')) htext += '<x-br></x-br>';
+    }
+//console.log('Chunk',chunk);
+    if (!flashcards && chunk.includes('\n')) htext += '<x-br></x-br>';
+//    if (!flashcards && chunk.includes('\n') && !isPageHeader('dictate')) htext += '<x-br></x-br>';
+  }
+
+//console.log(htext);
+  htext = restoreComments(htext);
+  htext = restoreLinks(htext);
+  
+  if (isPageHeader('dictate')) {
+    htext = htext.replace(/(<x-br><\/x-br>){3}/g,'<br>')
+                 .replace(/(<x-br><\/x-br>){2}/g,'<x-br><\/x-br>');
+  } 
+  else {
+    htext = htext.replace(/(<x-br><\/x-br>){2}/g,'<x-br-l></x-br-l>');
+  }
+
+  htext = gstore.vocab.renderTag(htext, 'writing practice');
+  ta.innerHTML = htext;
+  setLanguages();
+  parseTTSTag(ta);
+  parseMarkTag(ta);
+  gstore.tips.initAll();
+  return; 
+} // End renderTA()
+
+const tipPointHtml = s => '<div class="inblock align-top small-padding" style="color: #bcd; cursor: default" pos="right" tip-class="flashcard" tip="' 
+        + s + '">&#9702;</div>';
+
+const tipDictateHtml = s => '<div class="inblock align-top small-font float-right padding-03em" style="cursor: default; color:#bbb" pos="bottom: -10" tip-class="flashcard font-100pc" onclick="tapOnTip(this)" tip="' 
+        + 'Hint:<br>' + s + '">👁</div>';
+
+const dictTip = (el, s, cmd = 'part') => {
+  let txt = s;
+  if (cmd === 'part') txt += '...';
+  el.innerHTML = txt;
+}
+
+//var wwords; // for debugging only
+//var tipLetterCount = 0; // for debugging only
+  const getRefArays = (ref) => {
+    const refArr = ref.split(' '); // bad logic if alternative includes several words
+	const res = [];
+	for (const w of refArr)
+	  res.push(w.replace(/{{.*}}/g, s => s.slice(2, -2)).split('&'));
+    return res;
+  }	
+
+  const compareAltStr = (source, ref) => {
+// fn updated 2023-05-11. This should be tested separately
+// intended to handle alternatives in ref
+// what about punctuation?
+    const sourceArr = source.split(' ');
+	const refArr = getRefArays(ref);
+//	for ([i, s] of sourceArr.entries())
+	for (const refWords of refArr) {
+//	  if (!refArr[i].includes(s)) return 0;
+      let match = 0;
+	  for (const refWord of refWords)
+	    if (source.startsWith(refWord)) {
+		match = refWord.length;
+		break;
+		}
+	  if (!match) return 0;
+	  source = source.slice(match).trim(); // tolerate several spaces in a row in source
+	}
+	return 1;
+  }
+
+const elOnblur = el => { 
+  gstore.elOnblurEl = el;
+  gstore.elOnblurSel = window.getSelection();
+}
+
+const restoreFocus = () => {
+  if (gstore.elOnblurEl) {
+    gstore.elOnblurEl.focus();
+	return gstore.elOnblurEl;
+  }
+  return '';
+}
+
+function dictUpdate(el) {
+  const sourceEl = el.previousElementSibling;
+  const refText = sourceEl.getAttribute('ref-text') || sourceEl.getAttribute('say');
+//console.log('say', el.previousElementSibling.getAttribute('say'));
+//  const text = el.textContent;
+  const text = el.innerText;
+
+// !!! The whole logic of how hiLine is built is too complicated. May be changed in the future
+  
+  const re = new RegExp('\\S' + String.fromCharCode(160) + '\\S', "g");
+  const words = text.replace(re, s=> s[0] + ' ' + s[2]).split(' '); // what about multiple spaces converted to &nbsp; ?
+//  wwords = text.split(' '); // what about multiple spaces converted to &nbsp; ?
+
+  const refWords = refText.split(' '); // if alternatives include more than one word, this logic breaks!
+  
+  const getLetters = (ref, i, cmd = '') => {
+    const refArr = ref.replace(/{{.*}}/g, s => s.slice(2, -2)).split('&');
+    const res = [];
+    for (const w of refArr) {
+      let l = w[i];
+	  if (l && cmd === 'UPPER_CASE') l = l.toUpperCase();
+      res.push(l);
+    }
+    return res;
+  }
+
+  let refw = 0;
+//  tipLetterCount = 0;
+  let tipLetterCount = 0;
+//  let tipEnd = false;
+  let hiLine = '';
+  // cycle for words in text: 
+  for (let w = 0; w < words.length; w++) {
+//console.log('# of words', words.length);
+// where to add spaces between words?
+    if (w) {
+	  hiLine += (w > refWords.length || !words[w-1] || words[w-1].length >= refWords[refw-1].length)? 
+	   ' ' : '<span style="background-color: #f223"> </span>';
+//	  hiLine += ' ';
+	  tipLetterCount ++; // this logic doesnt work well when &nbsp; are mixed with ' '
+// a totally different logic may be needed for hints/tips
+	}
+
+    let word = words[w];
+	if (!word) {
+	  continue;
+	}
+
+	if (word.length === 1 && word[0].charCodeAt() === 160) {
+//console.log('&nbsp;');
+      hiLine += word;
+	  continue; // don't analyze standalone &nbsp;
+	}
+	
+	if (word[0].charCodeAt() === 160) {
+//console.log('&nbsp;');
+      hiLine += word[0];
+	  word = word.slice(1); // remove leading &nbsp;
+	}
+	
+// check if the end of refWords is reached
+    const refWord = (refw < refWords.length) ? refWords[refw] : '';
+	refw++;
+
+//console.log('Word #', w, word);	
+//console.log('refWord #', w, refWord);	
+
+    for (let i = 0; i < word.length; i++) {
+	  const letter = word[i];
+//console.log('Letter', letter);
+	  if (letter === '\n') hiLine += '<br>';
+//      if (letter === refWord[i]) { // || letter.charCodeAt() === 160) // code for &nbsp; doesn't help
+      if (getLetters(refWord, i).includes(letter)) { // not perfect logic: letters can come from alternative words. Also, can alternatives include more than one word?
+        hiLine += letter;
+        tipLetterCount ++;
+	  }
+	  else {
+//	    if (letter.charCodeAt() === 160 && i === refWord.length - 1) {
+//          hiLine += '<span style="background-color: #fdd">&nbsp;</span>';
+//          break;
+//		}
+	    let warnColor = 'red';
+		if (refWord[i] && getLetters(refWord, i, 'UPPER_CASE').includes(letter.toUpperCase())) warnColor = '#c0f';
+		const warnStyle = (letter.charCodeAt() === 160 && i < refWord.length)?
+		  'background-color: #f223' : 'color:' + warnColor;
+	    hiLine += `<span style="${warnStyle}">` + letter + '</span>';
+//	    hiLine += '<span style="color:' + warnColor + '">' + letter + '</span>';
+//		if (!tipEnd) {
+//		  tipEnd = true;
+		  tipLetterCount ++;
+		  if (word === '_' + String.fromCharCode(160)) {
+		    hiLine += String.fromCharCode(160);
+		    tipLetterCount += refWord.length;
+			break;
+		  }
+		  if (word === '_') {
+		    tipLetterCount += refWord.length - 1;
+			break;
+		  }
+		  //else if (word === '_' + String.fromCharCode(160)) tipLetterCount += refWord.length;
+//		}
+      }
+	}
+  }
+
+  const hiEl = el.nextElementSibling;
+  hiEl.innerHTML = hiLine;
+
+//  let tipMark = '&#9702;';
+  let tipMark = '👁';
+  let tipLine = 'Hint:<br>' + refText.slice(0, tipLetterCount +1);
+  if (tipLetterCount < refText.length -1) tipLine += '...';
+  
+  if (text.trim('\n') === refText) {
+//  if (compareAltStr(text.trim('\n'), refText)) {
+    tipLine = '';
+	tipMark = '✔';
+  }
+
+  const tipEl = hiEl.nextElementSibling;
+  tipEl.setAttribute('tip', tipLine);
+  tipEl.innerHTML = tipMark;
+
+// adjust line height
+  dictSetLineHeight(el);
+}
+
+const dictSetLineHeight = el => {
+  const coords = getCoords(el);
+//console.log('Height', coords.bottom - coords.top);
+  el.parentNode.style.height = coords.bottom - coords.top - 9.4 + 'px';
+}
+
+const shiftCapsCallback = upper => {
+  if (isPageHeader('dictate')) {
+    uiblox.specKeys.set('onclick', upper);
+  }
+}
+
+const getKeyFromText = (txt, key) => txt.split(key)[1] .split(/\n/)[0] .trim();
+
+const getLangKeys = s => {
+  let res = 0;
+//  ttsGame.langCode = ''; // why not getLangCode()?
+//  storeLangCode(''); // why not getLangCode()?
+//  ttsGame.langCode2 = '';
+//  storeLangCode('', '2');
+  if (s.includes(':lang:')) {
+//    ttsGame.langCode = getKeyFromText(s, ':lang:');
+    storeLangCode(getKeyFromText(s, ':lang:'));
+    res = 1;
+  }
+  if (s.includes(':lang2:')) {
+//    ttsGame.langCode2 = getKeyFromText(s, ':lang2:');
+    storeLangCode(getKeyFromText(s, ':lang2:'), '2');
+    res = 1;
+  }
+  return res;
+}
+
+//const controlParam = (s = '') => /:target:|:intro:|:outro:/.test(s) //no longer needed
+
+const speakTextBtn = (s = '') => {
+  const sbtn = '<span title="Click to listen" class="tts-speak-alt" pos="before" onclick="speakLangText(this)">&thinsp;'
+    + s + '&thinsp;</span>';
+  const btn = s ? sbtn : speakBtn();
+  return '<div class="hover-speaker smaller-font">' + btn + '</div>';
+}
+
+/*
+const makeAcronymOld = (txt = '') => {
+  const words = txt.split(' ');
+  let res = [];
+  for (const s of words) {
+    if (s.length < 3) res.push(s);
+    else res.push(s[0].toUpperCase());
+  }
+   return res.join(' ');
+};
+*/
+const makeAcronym = (txt = '') => 
+  txt.split(' ')
+   .map(s => s.length < 3 ? s : s[0].toUpperCase())
+   .join(' ');
+
+const setTaFocusHandlers = () => {
+  const sel = document.getSelection();
+  
+  ta.onblur = () => {
+//console.log('Sel', sel);
+    elOnblur(ta); // for spec keys in dictation
+    ta.ranges = [];
+    for (let i = 0; i < sel.rangeCount; i++) 
+      ta.ranges[i] = sel.getRangeAt(i);
+//console.log('TA ranges', ta.ranges);
+  }
+  
+  ta.onfocus = () => {
+//console.log('Sel onfocus', sel);
+    if (!ta.ranges || !ta.ranges.length) {
+      let range = document.createRange();
+      range.setStart(ta.childNodes[0], 0);
+      range.collapse(true);
+    
+      ta.ranges = [range];
+	}
+    sel.removeAllRanges();
+    ta.ranges.forEach(r => sel.addRange(r));
+  }
+}
+
+const debugVoices = () => {
+//  const voices = tts.getVoices();
+//  let info = '';
+//  for (const v of voices) info += v.name + '\/' + v.lang + '\n';
+  info = tts.spVoice.name + '\/' + tts.spVoice.lang + '\n';
+  ta.textContent = info;
+}
+
+const resetPlayerSpeed = () => { setPlayerSpeed(speedCtrl.calcSpeed()); }
+
+const sttCallback = (cmd) => {
+  if (cmd === 'STT_NOT_SUPPORTED') displayAlarmMessage('The browser does not support speech recognition. Try Edge or Chrome.', 3500);
+  if (cmd === 'MIC_TURNED_OFF') afterMicTurnedOff();
+  if (cmd === 'MIC_TURNED_ON') afterMicTurnedOn();
+}
+
+const gCallback = (cmd) => {
+// callbacks from audiodrill-task.js
+  if (cmd === 'DIR_INFO_LOADED') showHeaderAndHowTo(getPageHeader());
+  if (cmd === 'TTS_READ_LINES') readTTSChunks();
+  if (cmd === 'SHOW_SETTINGS') showTopSettings();
+}
+
+/*
+const wrCallback = (cmd) => {
+// callbacks from word-ref.js - so far not really needed
+  if (cmd === 'YOUGLISH_LINK_NEEDED') return false;
+}
+*/
+
+const ygCallback = (cmd, param='') => {
+// callbacks from youglish-widget.js
+// if you decide to make this fn async, check if YouGlish can load
+  if (cmd === 'GET_AUTOSTART') return gstore.autoStartVideo;
+
+// components are actually set in onYouglishAPIReady, so no need to send them here
+//  if (cmd === 'GET_PARAMS') return {components: 8408, markerColor: '#efe', captionSize: 33, videoQuality: 'small'};
+  if (cmd === 'GET_PARAMS') return {markerColor: '#efe', captionSize: 33, videoQuality: 'small'};
+  if (cmd === 'GET_REPLAY_NUMBER') return getReplayNumber();
+
+  if (cmd === 'PLAYER_STATE_CHANGED') {
+    if ([1, 3].includes(param)) // playing or buffering video
+	  mic.turnOff(); // stop STT
+  }
+
+  if (cmd === 'PLAYER_READY') resetPlayerSpeed();
+  if (cmd === 'RESET_SPEED') resetPlayerSpeed();
+  if (cmd === 'SET_SPEED') setPlayerSpeed(speedCtrl.calcSpeed(param));
+
+  if (cmd === 'RELOAD_PLAYER') gstore.reloadYG = true;
+  if (cmd === 'SHOW_TRACK_INFO') {
+    showTrackInfo(param);
+	players.setWidgetBox();
+  }
+  if (cmd === 'SLEEP') return sleep(param);
+
+  if (cmd === 'WIDGET_READY' && gstore.reloadYG) {
+	gstore.reloadYG = false;
+console.log('Fetching current video');
+	fetchCurVideo();
+  }
+
+  if (cmd === 'YG_ERROR') players.reportError(param);
+
+/*
+// a separate async fn can be tested to retry youglish.reload() after await sleep(500)
+// b/c making ygCallback fn async inhibits autostart
+
+  if (cmd === 'YG_ERROR') {
+    if (gstore.YGErrorFlag) {
+	  gstore.YGErrorFlag = 0;
+	  players.reportError(param);
+	}
+	else { // retry once after a pause
+	  gstore.YGErrorFlag = 1;
+	  await sleep(500);
+	  youglish.reload();
+	}
+  }
+*/
+}
+
+const ttsCueClick = cue => { speakLangText(cue); }
+
+const hideFlashBtns = () => {
+//  ta.classList.remove('height-shrink');
+  setElHTML('ta-bottom', '');
+}
+
+const showTopSettings = () => { showSettings() }
+
+const showSettings = (hiElid) => {
+//  hideElid('settings-sign');
+  const el = elid('play-controls')
+  showEl(el);
+  el.init = true;
+  if (hiElid) highlightEl(elid(hiElid), 10000);
+//  localStorage.setItem('showSettings', 1);
+}
+
+const hideSettings = () => {
+  hideElid('play-controls');
+//  showElid('settings-sign');
+//  localStorage.removeItem('showSettings');
+}
+
+
+const showFlashBtns = () => {
+  prepNavBox();
+//  ta.classList.add('height-shrink');
+
+// save switch values to remake controls
+// this logic may be changed to keeping values as ta properties
+  const acroSwitch = elid('acro-switch');
+  const acro = (acroSwitch && acroSwitch.checked) ? 'checked' : '';
+
+  const flashSwitch = elid('flash-card-switch');
+  const showBack = (flashSwitch && flashSwitch.checked)
+     ? 'checked' : '';
+  const dot = '<span style="padding: 0 0.2em;">&sdot;</span>';
+  const s = `
+<div id="flash-card-switch-box" class="flex flex-center" 
+style="font-size:60%; color:#999; padding: 0 10px">
+<div class="btn" onclick="flipFlashCards()" title="Flip flashcards">
+Flip flashcards
+</div>
+
+${dot}
+
+<div title="Toggle view">
+<span class="btn" onclick="toggleFlashView()">
+Show both sides
+</span>
+<label class="switch show-focus">
+  <input id="flash-card-switch" type="checkbox" ${showBack} onchange="refreshTA()">
+  <div class="slider round"></div>
+</label>
+</div>
+
+${dot}
+
+<div title="Toggle acronymization">
+<span class="btn" onclick="toggleAcro()">
+Acro
+</span>
+<label class="switch show-focus">
+  <input id="acro-switch" type="checkbox" ${acro} onchange="refreshTA()">
+  <div class="slider round"></div>
+</label>
+</div>
+
+${dot}
+
+<div class="btn" onclick="loadGameFromTA('FLASHCARDS')" title="Voice game in Chrome or Edge">
+Play
+</div>
+</div>
+`;
+  setElHTML('ta-bottom', s);
+}
+
+const dictateInputField = `
+  <div class="editing" contenteditable oninput="dictUpdate(this)" onblur="elOnblur(this)"></div>
+  <div class="highlighting"></div>
+`;
+
+const cueTagBtn = () => '' // so far an empty twin of the fn in tasks
+
+</script>
+
+<script async src="../parts/youglish-widget.js"></script>
+<script async src="https://youglish.com/public/emb/widget.js" charset="utf-8"></script>
+
+</body>
+</html>
+
+<!-- == FUTURE PLANS ==
+- try out gzip compression for long read-enc urls: https://dev.to/ternentdotdev/json-compression-in-the-browser-with-gzip-and-the-compression-streams-api-4135
+The gain isn't too high.
+- .gstore.vocabArr could be organized as object with key-value pairs
+- lazy loading js files on demand https://jmperezperez.com/blog/ondemand-javascript-lazy-loading-stubs/
+- when clicking on index (with shevron), show dir list info in a separate window?
+- in dictation, how to give hints on alternative words?
+- ibid., how to give more than 1 word as an alternative, e.g., I'll & I will
+
++ highlighting in dictation based on https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/
+
+- Assign dialog speakers according to their names?
+
++- To avoid possible problems with '//' in <a> tag textContent, it may be saved in a separate array or with atag/links array
+
+- separator symbol(s) as url key, e.g. sep=; OR :sep:.!? 
+(from 29 May 2023, '|' is used in shared urls for wordlists.
+- side separastor for flashcards can be # (bad for urls) or ;; or -/ or == 
+or emoticon like /: or tab or 3+ spaces?
+- Treat gaps the same way via common fns in words & phrases, 
+games, and shadow reading.
+
+- How not to split contractions like e.g., et. al.?
+- wrap all words for tts/shadow reading, so that individual words were underlined on hover?
+- set voice, not just lang, via ':lang:' tag?
+
+** Lang and Voice setters **
+setLanguage fn sets a language;
+listLangVoices fn invokes loadVoiceList fn and loads voices for the current language
+chooseVoice fn sets a voice according to the language;
+setVoice fn sets voice by number in the voice-select list
+setVoiceByName fn sets voice by full name but doesn't change voice-select dropdown list
+
+   === BUGS ===
+- mixing comments and tips on hover (processed via highlightText()) breaks the logic
+- punctuation in url links can crash the logic
+- in words, in flashcards mode when sharing, cards are separated with commas, 
+but commas can be inside flashcards too. So, a new card separator is needed for flashcards.
+
+- no need to add lang key to url if there's :lang: param
+- comments [[]] and /* */ in renderTA are removed before //, but not after them
+- comments [[]] conflict with markup []()
+- comments /* */ do not work as intended due to *bold* highlightText
+
+- potential bug: ta.focus excluded in afterMicTurnedOn() - monitor for bugs
+-->

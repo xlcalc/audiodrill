@@ -1,0 +1,7 @@
+<i>Listen and repeat. What does the boy say in this fragment?</i>
+<cue start=45 end=50 url="https://youtu.be/ojajHDJrliM">You don't... Mr Thompson!</cue>
+
+<i>Fill the gaps for the previous fragment:</i>
+You don't <<have to>> throw <<that one>> back, Mr Thompson!
+
+<task url='/tasklist/demo1.txt'><i>See demo1 task list</i></task>

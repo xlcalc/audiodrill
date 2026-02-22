@@ -1,0 +1,99 @@
+### Frequently Asked Questions
+
+<Q>How can I loop a video or audio using its URL?</Q>
+Open audiodrill with the following URL parameters:
+`m=`[video or audio URL]
+`s=`[start time]
+`e=`[end time]
+`c=`[number of cues]
+`r=`[number of loops per cue]
+`speed=`[comma-separated relative speed factors]
+(Note: if `speed` parameter is set, `r` parameter is ignored)
+`noauto` - disable the prompt to loop
+
+<i>Example</i>
+[`https://audiodrill.com/?*m*=https://youtu.be/S0325A8-_A4&*s*=12:07&*e*=12:09.5&*speed*=1,0.5,1.2`](https://audiodrill.com/?m=https://youtu.be/S0325A8-_A4&s=12:07&e=12:09.5&speed=1,0.5,1.2)
+This URL will make Audiodrill loop the clip at https://youtu.be/S0325A8-_A4 from 12:07 to 12:09.5 three times with relative speed factors of 1, 0.5, and 1.2. Speeds are <i>relative</i> because the playback speed depends on the relative speed factor <i>and</i> the <i>Master speed rate</i> value.
+
+<Q>How can I play the same fragment several times at a different speed?</Q>
+You can set <i>Cue speed factors</i> in Advanced settings of loop controls. For example, setting this control to `1, 0.5, 1.2` will make each fragment play three times: at 1x, 0.5x, and 1.2x rate. Please note that these rates are <i>relative</i> because the playback speed also depends on the <i>Master speed rate</i> value.
+Another option is to use `speed` parameter in the URL, e.g., `https://audiodrill.com?speed=1,0.5,1.2`
+You can also slow down temporarily by pressing and holding left Control key.
+
+<Q>Can I loop several fragments one after another?</Q>
+Yes, in loop controls you can set the number of cues to be looped in a row. This may be used, e.g., for <a href='https://en.wikipedia.org/wiki/Speech_shadowing' target='_blank'>shadowing</a> practice.
+
+<Q>I've written a list of words and phrases in the text area. How can I save this list to drill it later?</Q>
+Click on the Share icon to the left of the text area. The link will be copied to the clipboard. Save the link, e.g., in your workbook, so that later you could open it to drill these words and phrases.
+
+<Q>What URL parameters are used in links to lists of words/phrases for drilling?</Q>
+Such links can use the following parameters:
+`w=`[a comma-separated list of words/phrases]
+`sl=`[English words that sound like a given English word or phrase]
+`ml=`[English words that mean like a given English word or phrase]
+`lang=`[language, e.g., <b>es</b> for spanish]
+`wikipedia`
+`pubchem`
+`speed`[sets Cue speed factors in Advanced settings]
+`font-size`
+
+<i>Notes:</i> 
+1. Spaces between words in phrases may be replaced with hyphens or underscores, as spaces in URL can cause issues when sharing a link.
+2. English is the default language, so it can be omitted.
+
+<i>Example</i>
+<a href="https://audiodrill.com/?w=bonjour,au-revoir&lang=fr">`https://audiodrill.com/?<b>w</b>=bonjour,au-revoir&<b>lang</b>=fr`</a>
+
+<Q>Can I control the player with hotkeys?</Q>
+<b>Use the following hotkeys</b>
+`Escape`: stop playing;
+Left `Control`: press and hold to slow down temporarily;
+Right `Control` (right `Command` on Mac): rewind (1 sec by default).
+
+<b>Additional hotkeys for drilling words and phrases with YouGlish</b>
+`Alt+Enter`: resume/start playing;
+`Alt+R`: restart video;
+`Alt+P`: previous video;
+`Alt+N`: next video.
+<i>Note:</i> on Mac keyboards, the Option key is equivalent to the Alt key on a PC.
+
+<Q id="qna_games">What games can I play in Audiodrill?</Q>
+Voice games can be played <em>only</em> in Chrome or Edge browser on computers because so far only these browsers have implemented voice recognition. You can find a small collection of voice games <a href='https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8' target='_blank'>here</a>. When you click on one of the games in this collection, it will load via url. To activate the loaded game, click on the mic icon to the left of the text area and say "Let's play the game".
+Read the <a onclick="showHelpQ('qna_create_game')">next question</a> to learn how to create your own voice game.
+
+There are also several built-in voice games at ~Voice games~ site page. 
+To start a game, click on the mic icon to the left of the text area and say one of the phrases:
+&bull; Let's play numbers
+&bull; Let's play colors
+&bull; Let's play conditionals
+&bull; Let's play irregular verbs
+&bull; Let's play sound-alike words
+
+To exit the game, say 'enough' or 'exit'.
+
+[This video](https://youtu.be/mcwy4N9fcEI) demonstrates how to play numbers. 
+
+<Q id="qna_create_game">How can I create my own voice game?</Q>
+To create an interactive dialogue with computer, open the link <a href="/new-game">https://audiodrill.com/new-game</a> and paste the dialog into the text field. Apart from English, other languages supported by the OS can be used. In this case, add a line with :lang: keyword and language code to the game script. E.g., for Spanish it will be
+`:lang: es`
+
+Finish editing by pressing the edit button, and the game will start. Don't forget to turn on the mic. Share the link to your game.
+
+For other types of voice games, read [here](https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8/edit#gid=1748845435).
+
+Please note that voice games can be played <em>only</em> in Chrome or Edge browser on computers because so far only these browsers have implemented voice recognition. 
+
+<Q>How can I create my own task?</Q>
+Open a task, e.g., [this one](https://audiodrill.com?t=/tasklist/voa/voa2-19.txt), and edit it by clicking on Edit icon Aa|. Save the edited text and click on Share icon to get the link. You can also save tasks as text files on your device and then open them by dragging and dropping to the task area from a file manager.
+
+<Q>Can I practice shadow reading?</Q>
+Speech shadowing, or shadow reading, allows you to develop listening and pronunciation skills. For more information about this technique, please visit <https://en.wikipedia.org/wiki/Speech_shadowing>
+Audiodrill offers two ways to practice shadow reading: with video and with computer-read text. Click on [this link](?t=/tasklist/shadowing.txt) to see how to practice with video.  Below we focus on speech shadowing with text.
+In Chrome browser you can listen to a computer-read text and repeat it sentence after sentence. To do that, find the text fragment you wish to practice on the internet, copy/paste it to the text area on the [games page](https://audiodrill.com?game=all), activate the mic and say "Let's read together." The computer will read the first text chunk, wait for your cue, and move on. Use the following voice commands to control reading, their meaning is self-evident:
+&bull; help
+&bull; restart
+&bull; repeat
+&bull; go back
+&bull; exit
+
+Controls under the text area allow choosing computer voice, speech rate, and the number of replays. User's speech can also be recorded and replayed.

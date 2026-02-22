@@ -1,0 +1,14 @@
+:title:Fill the Gaps
+
+:say:Add a synonym of the word "verge" and read the sentence.
+:write:The company is now on the _____ of collapse.
+:accept:The company is now on the brink of collapse.
+::
+:say:Read the sentence adding a synonym for "tight-fisted".
+:write:This guy is a st_____ skinflint.
+:accept:This guy is a stingy skinflint.
+::
+:say:Think of a synonym for "extremely interesting". Read the sentence.
+:write:It was a most f_____ story.
+:accept:It was a most fascinating story.
+::

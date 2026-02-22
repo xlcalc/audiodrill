@@ -1,0 +1,26 @@
+<x-vars video-size=50% doc-title="TV news channels">
+### TV channels for language learners <x-p>
+<div style="line-height: 1.6em; font-size: 80%">You can listen at a slower or faster playback rate and hop a few seconds backward/forward in order to repeat or skip certain video fragments. 
+Playback settings are under the player. 
+Keyboard shortcuts: 
+ * Press left |_Ctrl_| to slow down playback.
+ * Press right |_Ctrl_| to hop backwards. 
+ * For a longer skip, hold |_Alt_| while pressing Hop buttons.
+Tip: You can read live captions [in Chrome](https://support.google.com/chrome/answer/10538231) and in [Windows 11](https://www.microsoft.com/en-us/windows/learning-center/choose-best-caption-settings). Chrome also offers live translation.</div><hr>
+</x-p>
+<i>In English</i>
+[Sky News (UK)](stream: YDvsBbKfLPA), [ABC News (AU)](stream: vOTiJkg1voo), [CNA (SG)](stream: XWq5kBlakcQ), [DW News (DE)](stream: LuKwFajn37U), [Euronews (EN)](stream: pykpO5kQJ98), [Fox (US)](stream: YDfiTGGPYCk), [France 24 English (FR)](stream: Ap-UM1O9RBU).
+
+<i>In other languages</i>
+`be/ru/uk:` [Belsat](stream: YA9ukP4k_Fk)
+`de:` [Euronews](stream: CQ3KsEbsYHs), [OE24 (AT)](stream: OoeHvQ1XkcY)
+`es:` [Euronews](stream: O9mOtdZ-nSk), [Foro (MX)](stream: p2AzyIEuFak), [LN+ (AR)](stream: Hb0GIEL8nWc)
+`fr:` [Euronews](stream: NiRIbKwAejk), [France 24](stream: l8PMl7tUDIE)
+`it:` [Euronews](stream: pUcmpyynASM)
+`ja:` [JapaNews24](stream: coYw-eVU0Ks)
+`ko:` [YonhapnewsTV](stream: 6QZ_qc75ihU)
+`pl:` [Republika](stream: dzntyCTgJMQ), [TVP Info](stream: 3jKb-uThfrg)
+`pt:` [Euronews](stream: XuZAl-ZPEcA)
+`ru:` [Euronews](stream: lwYzwdBiaho), [DW (DE)](stream: gP7872YRFDk)
+`uk:` [TSN](stream: WY8sDvZdWEA)
+`zh:` [CCTV 4 (CN)](stream: 7j92Myu2wzg), [EBC (TW)](stream: E0zhe2gkXBs), [CTI (TW)](stream: vr3XyVCR4T0), [TVBS (TW)](stream: m_dhMSvUCIc)

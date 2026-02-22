@@ -1,0 +1,25 @@
+2023-05-04 in words/index.html, text-align removed from .flex-container > div, ta-bgr, ta. At the same time, it was added to ta-buttons.
+2023-05-03 logic of recognition.allowed changed in index and stt.js
+2020-06-01 cues added to controls. YT player control logic changed. Games and tasks can be sent via url.
+2020-05-01 Link to playphrase.me. Base64 encoding of tasks supported.
+2020-04-30 TTS in tasks.
+2020-04-24 Country varieties for TTS
+Games in Youglish
+2020-03-29 Wikipedia in each language
+2020-03-29 Dictation in Chrome
+2020-03-27 pubChem and wikipedia checkboxes
+2020-03-23 pubChem and wikipedia keys for youglish page
+2020-03-21 hotkeys for youglish player added.
+2020-03-18 link to list for drilling with YouGlish; help added.
+2020-03-15 wordlist to drill added
+2020-03-08 url params added for loading and looping
+2020-03-03 video reference added to youglish
+2020-03-02 pbr control added to youglish
+2020-02-28 ru,tr,kr languages added to youglish
+2020-02-13a The list of live TV channels updated
+2020-02-13 Wiktionary added to drill pronunciation page
+2020-02-05 live TV channels added to tasklists. 
+2020-01-27 populateTranscriptWithYTSubs() updated, chevron for hiding/showing app-intro
+2020-01-26a typo fixed ('Repat' => 'Repeat')
+2020-01-26a parseTaskText() and copyTask()  updated
+2020-01-26 default and pronunciation tasks updated
