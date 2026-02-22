@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <style>
 .btn {
   background-color: #fed;
@@ -28,6 +29,7 @@
 <body>
 <script src="parts/audiodrill-task.js"></script>
 <script src="parts/bottom-bar.js"></script>
+<script src="https://translate.google.com/translate_a/element.js"></script>
 
 <div style="margin-left: 1em;">
 <div style="font-size:140%; margin: 0.4em 0;">Demo: embed Audiodrill voice games in your site</div>
@@ -66,12 +68,14 @@ It will help us to further develop this free tool.</b>
 </div> 
 </div>
 <!--  Footer   -->
-<div id="bottomBar"></div>
+<div id="bottom-bar"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', event => {
   analyzeURL();
-  setElHTML('bottomBar', bottomBar);
+//  setElHTML('bottomBar', bottomBar);
+  setBottomBar();
+  googleTranslateElementInit();
 })
 
 const frameDiv = elid("frame-div");
