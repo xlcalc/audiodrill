@@ -2252,7 +2252,7 @@ console.log('langListCtrl', !!langListCtrl());
 	langNames: gstore.langNames, 
 	langCodes: gstore.langCodes
   };
-  ttsInitParam.langSelector = elid('language-select');
+//  ttsInitParam.langSelector = elid('language-select');
   tts.init(ttsInitParam);
   
   loadLangList();
@@ -2333,10 +2333,11 @@ const addLangCtrl = () => {
   const html = `
 <span title="Used for speech recognition and text-to-speech">Speech Language: </span>
 <select id="language-select" class="drop-down darker-hover"
-  name="language" onchange="handleLangSelect()">
+  name="language">
 </select>
 `;
   setElHTML('lang-ctrl', html);
+  elid('language-select').onchange = handleLangSelect;
 }
 
 const loadLangList = () => {

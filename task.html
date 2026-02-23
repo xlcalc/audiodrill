@@ -3302,13 +3302,21 @@ const hideSettings = () => {
 
 const getActivityKey = () => '/?t=';
 
-function handleLangSelect() {
+function handleLangSelect(e) {
+//console.log('Lang set:', e.target.value);
+  tts.langSelector.value = e.target.value;
+  
   const lang = getLangCode();
   storeLangCode(lang);
   tts.langSelector.title = tts.getFullLangName(lang);
   tts.manuallyPickedVoice = 'LANG_PICKED';
   listLangVoices();
   setSpecialKeys();
+  
+  if (tts.langSelectorClone) {
+    tts.langSelectorClone.title = tts.getFullLangName(lang);
+    tts.langSelectorClone.value = e.target.value;
+  }
 }
 
 const shareFragment = () => {
@@ -4516,12 +4524,25 @@ tstore.STT = {
   },
 
   init() {
-    const msg = '<div id="gap-tools-box">' + uiblox.specKeys.boxHtml
-	  + '<div id="stt-switch-box"><span class="padding-01em" style="cursor:default">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></div></div>';
-    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray); left:auto; right:0; transform: translateX(-10px);';
+    const langCtrlCloneBox = '<div id="lang-ctrl-clone-box" class="inblock"></div>';
+    const msg = '<div id="gap-tools-box">' 
+	  + uiblox.specKeys.boxHtml 
+	  + '<div>'
+	  + langCtrlCloneBox
+	  + '<span id="stt-switch-box" class="padding-01em" style="cursor:default">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></div></div>';
+//    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray); left:auto; right:0; transform: translateX(-10px);';
+    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray)';
     displayOverlay({msg: parseXswitch(msg), style: msgStyle, noCloseBtn: true});
 
 	uiblox.specKeys.set('onmousedown');
+
+// check if tts.langSelector?	
+	tts.langSelectorClone = tts.langSelector.cloneNode(true);
+    elid('lang-ctrl-clone-box').appendChild(tts.langSelectorClone);
+    tts.langSelectorClone.id = 'langSelectClone';
+	tts.langSelectorClone.value = tts.langSelector.value;
+	tts.langSelectorClone.onchange = handleLangSelect;
+
 	this.set(this.switchIsOn);
   },
   
@@ -4624,7 +4645,7 @@ const onSpecKeyClick = (event, el) => {
 //console.log('Event:', event);
   event.preventDefault();
   const input = tstore.SttInputEl;
-console.log(input.selectionStart, input.selectionEnd);
+//console.log(input.selectionStart, input.selectionEnd);
   if (!input) return;
 
   input.setRangeText(
