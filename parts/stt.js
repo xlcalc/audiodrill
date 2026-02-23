@@ -8,7 +8,7 @@ const loadSTT = (cmd) => {
   else if ('webkitSpeechRecognition' in window) {recognition = new webkitSpeechRecognition(); }
   else {
 console.log ('speech recognition API not supported');
-    recognition = 'STT not supported';
+//    recognition = 'STT not supported';
 	recognition.supported = false;
     return 0;
   }
@@ -95,8 +95,18 @@ const abortSTT = async () => {
 console.log('abortSTT started');  
   recognition.allowed = false; // a flag checked by handleSttResult fn
   mic.isOff = true; // added 2026-01-10
+  
+// Wait for the 'end' event instead of polling
+  await new Promise(resolve => {
+    const handleEnd = () => {
+      recognition.removeEventListener('end', handleEnd);
+      resolve();
+    };
+    recognition.addEventListener('end', handleEnd);
+  });
+  
   recognition.abort();
-  while (recognition.isOn) await sleep (100);
+//  while (recognition.isOn) await sleep (100); // This busy-wait loop is inefficient. Consider using an event listener instead or Promise-based approach.
 console.log('abortSTT complete');  
 }
 
@@ -118,13 +128,14 @@ console.log('Recognition of', recognition.lang, 'starts...');
 //    if (typeof audioRecorder !== 'undefined') audioRecorder.cmd('REC_START');
     if (recognition.useAudioRecorder) audioRecorder.cmd('REC_START');
   }
-  catch {
-console.log('StartSTT FAILED'); 
+  catch (err){
+console.log('StartSTT FAILED:', err); 
   }
 }
 
 const setSTTLang = ttsVoice => {
-// Why is this not used in startSTT()?
+// Is this fn needed? It is only used in words\index.html, while task.html can do without it.
+// recognition.lang is set in StartSTT anyway
   recognition.lang = (ttsVoice && ttsVoice.lang) ? ttsVoice.lang : 'en-UK';
 console.log('Recognition of', recognition.lang); 
 }
