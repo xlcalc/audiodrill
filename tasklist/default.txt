@@ -29,7 +29,7 @@ Build your listening and speaking skills in foreign languages. Practice pronunci
 ### 4. Create your own tasks
 
 ✍️ From your own text:
-Got a text to study? Paste it below (or click <span class="inline no-tts a" onclick="qsel('textarea').value='\#\# Try out some interactive features\n\n\#\#\# 1. Gaps: type in your answers or use \=\=voice dictation\=\=\n\*Fill the gaps with the verbs in the present simple tense\*\nThe staff \[\[isn\'t / is not / aren\'t / are not\]\] (\~be\~) new to handling difficult customers.\nShe often \[\[stops => stop__\]\] at this café on the way home.\n\n\n\#\#\# 2. Drop-down lists\n\*Choose the correct preposition\*\nWe met \[\[at|in|\*\*on\]\] Tuesday \[\[\*\*at|in|on\]\] 9.\n\n\n\#\#\# 3. Text-to-speech\n\*Click on the \=\=speaker icons\=\= and write the words you hear\*\n<\)\) \[\[debt\]\], <\)\) \[\[yacht\]\], <\)\) \[\[gnome\]\]\n'"}>here</span> to get an example), then hit *Go!* and start exploring it.
+Got a text to study? Paste it below (or click <span class="inline no-tts a" onclick="qsel('textarea').value='\#\# Try out some interactive features\n\n\#\#\# 1. Gaps: type in your answers or use \=\=voice dictation\=\=\n\*Fill the gaps with the verbs in the present simple tense\*\nThe staff \[\[isn\'t / is not / aren\'t / are not\]\] (\~be \/ not\~) new to handling difficult customers.\nShe often \[\[stops => stop__\]\] at this café on the way home.\n\n\n\#\#\# 2. Drop-down lists\n\*Choose the correct preposition\*\nWe met \[\[at|in|\*\*on\]\] Tuesday \[\[\*\*at|in|on\]\] 9.\n\n\n\#\#\# 3. Text-to-speech\n\*Click on the \=\=speaker icons\=\= and write the words you hear\*\n<\)\) \[\[debt\]\], <\)\) \[\[yacht\]\], <\)\) \[\[gnome\]\]\n'"}>here</span> to get an example), then hit *Go!* and start exploring it.
 <div class="flex-wrap no-tts" style="align-items: flex-end"><textarea id="story" class="inherit" style="margin-right: 0.4em; flex: 1 1 75%; min-width: 250px; max-width:700px; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea><button style="height:fit-content; margin-top: 0.4em; padding: 0.5em 1.2em; flex: 0 0 auto" onclick="loadElementWithText(qsel('textarea').value, 'transcriptText')">Go!</button></div>
 
 <color:silver>▶</color> From a YouTube video:
@@ -46,4 +46,5 @@ Click the <tip '' ref='edit-task' y-shift=12><code style='border-right:1px solid
 
  * Discover [more activities and voice games](/tasks). 
  * Want to make your own voice game? Check out [this document](https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8/edit#gid=1748845435). 
+
  * Have feedback or suggestions? Leave them [here](/info/?show=feedback).
