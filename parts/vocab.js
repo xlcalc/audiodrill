@@ -208,7 +208,7 @@ const markVocabEntries = (s, vocab, cmd, options = {}) => {
 
     if (cmd === 3) { // fading span
       const direct = (['he', 'ar'].includes(tts.langCode))? 'rtl' : 'ltr';
-      markedEntry = `==<span class="transp-grad-${direct} not-transp-on-hover">` + entry + '</span>=='; 
+      markedEntry = `==<span class="transp-grad-${direct}">` + entry + '</span>=='; 
 //      markedEntry = `==<span class="reveal-on-hover-${direct}">` + entry + '</span>=='; // experimental
     }
 

@@ -127,7 +127,6 @@ a:hover, .a:hover {
   position: fixed;
 /*  height: 2em; */
   width: 20em;
-/*  top: calc(85vh - (2em / 2));*/
   bottom: 12px;
   left: calc(50vw - (/* width */22em / 2)); 
   left:50%;
@@ -152,7 +151,6 @@ box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 20px 0 rgba(0, 0, 0, 0.19);
 
 .close-x {
   position: absolute;
-/*  top: 1em;*/
   right: .1em;
   line-height: 20px;
   width: 20px;
@@ -248,8 +246,6 @@ box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 20px 0 rgba(0, 0, 0, 0.19);
   border: dotted 1px #aaa;
   font-size:130%;
 }
-
-/*.tooltip-link {width: 200px}*/
 
 .info-point {
 display: inline-block; 
@@ -367,17 +363,6 @@ border-radius: 50%;
 
 .switch-btn {width: 2em;}
 
-/*
-.switch-old-to-be-deleted {
-  position: relative;
-  display: inline-block;
-  width:1.7em;
-  height: 0.75em;
-  cursor: pointer;
-/*  vertical-align: middle; since 2023-08-29 not needed, as div turned to button 
-}
-*/
-
 .switch input { 
   width: 0;
   height: 0;
@@ -391,21 +376,6 @@ border-radius: 50%;
   -webkit-transition: .15s;
   transition: .15s;
 }
-
-/*.switch:hover {outline: 1px solid var(--a-color)}*/
-
-/*
-.slider-old-to-be-deleted {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .3s;
-  transition: .3s;
-}
-*/
 
 .slider {
   width: 100%;
@@ -588,8 +558,7 @@ select::-webkit-scrollbar {width: 18px;}
 }
 .btn-darker:active { backdrop-filter: brightness(0.92) } 
 
-.btn-lighgray { background-color: inherit } /* good for night mode */
-.btn-lighgray { background-color: var(--btn-lighgray) }
+.btn-lighgray { background-color: var(--btn-lighgray) }  /* good for night mode */
 .btn-lighgray:hover {
   background-color: var(--btn-lighgray-hovered);
   cursor: pointer;
@@ -620,8 +589,6 @@ select::-webkit-scrollbar {width: 18px;}
   font-size: 80%;
 }
 
-/*.text-center {text-align: center}*/
-/*.block {display: block;}*/
 .inblock {display: inline-block;}
 .inline {display: inline;}
 
@@ -741,7 +708,6 @@ font-s, .font-75pc {font-size: 75%}
 .light-green-bgr {background-color: #efe}
 .light-blue-bgr {background-color: #eff}
 
-/*.v-align-15pc {vertical-align: 15%}*/
 .v-align-middle {vertical-align: middle !important}
 .align-top {vertical-align: top}
 
@@ -755,18 +721,54 @@ font-s, .font-75pc {font-size: 75%}
 .red { color: #e11a; !important }
 .lightcoral { color: lightcoral; }
 
+/*
 .transp-grad-ltr {-webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1), rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,0))}
 .transp-grad-rtl {-webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0), rgba(0,0,0,0), rgba(0,0,0,0))}
 .not-transp-on-hover:hover {-webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,1))}
+*/
 
-.reveal-on-hover-ltr {/* experimental */
+.transp-grad-ltr {
+  --mask-direction: to right;
+  -webkit-mask-position: 120% 0%;
+}
+
+.transp-grad-rtl {
+  --mask-direction: to left;
+  -webkit-mask-position: -20% 0%;
+}
+
+.transp-grad-ltr, .transp-grad-rtl {
+  -webkit-mask-image: linear-gradient(
+    var(--mask-direction),
+    black 0%,
+    black 50%,
+    transparent 75%,
+    transparent 100%
+  );
+  
+  -webkit-mask-size: 200% 100%;
+  -webkit-mask-repeat: no-repeat;
+  transition: -webkit-mask-position 0.1s 1.7s; 
+}
+
+.transp-grad-ltr:hover {
+  -webkit-mask-position: 0% 0%;
+  transition: 0s;
+}
+
+.transp-grad-rtl:hover {
+  -webkit-mask-position: 100% 0%;
+  transition: 0s;
+}
+
+.reveal-on-hover-ltr {/* experimental, not used */
   background: linear-gradient(to right, #000 10%, transparent 10%);
   -webkit-background-clip: text;
   color: transparent;
   transition: background 1.5s ease;}
 
 /* On hover: reveal all instantly (no transition in) */
-.reveal-on-hover-ltr:hover {/* experimental */
+.reveal-on-hover-ltr:hover {/* experimental, not used */
   background: none;
   color: initial; /* Final color */
 }
