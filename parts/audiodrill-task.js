@@ -515,6 +515,12 @@ gstore.speakerIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="1em"
   1.89A.5.5 0 0 0 9 12V4zm3.025 4a4.486 4.486 0 0 1-1.318 3.182L10 10.475A3.489 3.489 0 0 0 11.025 
   8 3.49 3.49 0 0 0 10 5.525l.707-.707A4.486 4.486 0 0 1 12.025 8z"/>
   </svg>`;
+  
+// printIcon svg from https://fontawesomeicons.com/svg/icons/printer-line
+gstore.printIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <g transform="translate(-.6, -.6) scale(1.1)">
+  <path fill=currentColor d="M6 19H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm0-2v-1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1h2V9H4v8h2zM8 4v3h8V4H8zm0 13v3h8v-3H8zm-3-7h3v2H5v-2z"/>
+  </g></svg>`;
 
 // settingIcon from https://www.svgrepo.com/vectors/settings/
 gstore.settingsIcon = `<svg style="vertical-align: -0.2em" width="0.9em" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">`
