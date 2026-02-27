@@ -175,6 +175,9 @@ const taBottom= elid('ta-bottom');
 
 const sttCallback = (cmd) => {
   if (cmd === 'STT_NOT_SUPPORTED') displayMessage('The browser does not support speech recognition. Try Edge or Chrome.', 3500);
+  if (cmd === 'MIC_TURNED_OFF') afterMicTurnedOff();
+  if (cmd === 'MIC_TURNED_ON') afterMicTurnedOn();
+
 }
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -336,7 +339,7 @@ const debugFn5 = async() => {
 
 const sayFinalThanks = () => {
   ttsSpeakLang('Thank you!', 'en-US');
-//  displayInfo('Thank you. Will appreciate your <a href="/info/?show=feedback">feedback</a>. 😊', 200);
+//  displayInfo('Thank you. Will appreciate your <a href="/info/?show=feedback">feedback</a>. ðŸ˜Š', 200);
 }
 
 
@@ -360,7 +363,7 @@ Issues:
 
     === Future Plans ===
 - add debug key
-- add a gear ⚙️ for settings, e.g., TTS speed. See https://www.compart.com/en/unicode/U+2699
+- add a gear âš™ï¸ for settings, e.g., TTS speed. See https://www.compart.com/en/unicode/U+2699
 */
 </script>
 
