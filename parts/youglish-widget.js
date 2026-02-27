@@ -60,11 +60,13 @@ console.log('Caption consumed, id:', e.id);
     replayOrNext();
   }
 
+/*
   const onCaptionChange = async e => {
-//console.log('Caption:' ,e.caption);
-//console.log('Caption ID:' ,e.id);
+console.log('Caption:' ,e.caption);
+console.log('Caption ID:' ,e.id);
 // info on captions could be collected as {video id, caption id, caption text} and shown to the user
   }
+*/
 
   const onPlayerStateChange = e => {
   // e.state values are those of YT player
@@ -103,7 +105,7 @@ console.log('Caption consumed, id:', e.id);
       'onVideoChange': onVideoChange,
       'onPlayerReady': onPlayerReady,
       'onCaptionConsumed': onCaptionConsumed,
-      'onCaptionChange': onCaptionChange,
+//      'onCaptionChange': onCaptionChange,
       'onPlayerStateChange': onPlayerStateChange
     }          
   });

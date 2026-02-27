@@ -911,7 +911,7 @@ const escToCloseWindow = () => {
 
 const relayKey = e => {
   if (e.code === 'Escape' && escToCloseWindow()) return;
-  handleKeyEvent(e);
+  if (typeof handleKeyEvent !== "undefined") handleKeyEvent(e);
 }
 
 const keyShiftCapsCheck = e => {
@@ -1358,7 +1358,7 @@ console.log('Please check the mic');
 const audioRecAllowed = () => audioRecAllowed2() 
 //  && (elid('rec-checkbox-div').style.display !== 'none');
 
-const audioRecAllowed2 = () => elid('rec-switch').classList.contains('switch-on');
+const audioRecAllowed2 = () => elid('rec-switch')?.classList.contains('switch-on');
 
 const setRecSwitch = v => {
   setElClass(elid('rec-switch'), 'switch-on', v);

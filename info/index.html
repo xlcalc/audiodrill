@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="../icon.png">
 <link rel="stylesheet" type="text/css" href="../parts/shared.css">
 
@@ -67,7 +69,7 @@ new::after {
 <script>
 const analyzeURL = () => {
   const urlKeys = new URLSearchParams(location.search);
-  show = (urlKeys.get("show"));
+  const show = (urlKeys.get("show"));
 //console.log('show = ', show);
   if (show === 'feedback') {
     const iframeText = '<div class="iframe-box"><iframe src="https://docs.google.com/forms/d/e/1FAIpQLScqLTNJZzdJLDXFntqDa5QoTnliZ-l6YjFC21Sii-eUQCc3xw/viewform?embedded=true" '
@@ -81,8 +83,9 @@ const analyzeURL = () => {
   else {
     const fname = show || '';
     if (fname) {
-      const url = location.pathname + fname + '.txt';
-      loadElementFromURL('main-container', url);
+      const url = location.pathname + fname;
+	  const altUrl = url.endsWith('.txt') ? '' : url + '.txt';
+      loadElementFromURL('main-container', url, altUrl);
     }
   }
 }
