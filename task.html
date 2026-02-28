@@ -81,7 +81,7 @@
 }
 
 .dropdown-label::after {
-  content: "â–¼";
+  content: "▼";
   color: lightgray;
   font-size: 60%;
   padding-right: 0.1em;
@@ -237,12 +237,12 @@ border-bottom: 1px gainsboro solid;
 }
 */
 
+
 .cue {
   border-left: 3px solid transparent;
   margin:0;
   cursor: pointer;
 }
-
 /*
 .cue:focus {outline: none}
 */
@@ -880,9 +880,9 @@ padding: 0;
 
 <div id="chunk-tooltip-menu" class="chunk-tooltip-menu" style="top: -100px" tabindex="0" role="tooltip" aria-label="Tooltip with buttons">
   <button id="speak-btn" tip="Click to hear, or<br>|_Ctrl_| + click to hear the whole sentence"></button>
-  <button id="search-btn" tip="Look up with Google">ðŸ”Ž&#xFE0E;</button>
+  <button id="search-btn" tip="Look up with Google">🔎&#xFE0E;</button>
   <button id="translate-btn" tip-class="tooltip-link" tip="Translate"></button>
-  <button id="add-to-vocab-btn" tip="Explore and add to vocabulary">ðŸ“–&#xFE0E;</button>
+  <button id="add-to-vocab-btn" tip="Explore and add to vocabulary">📖&#xFE0E;</button>
 </div>
 
 <!-- Vocab Input UI -->
@@ -894,7 +894,7 @@ padding: 0;
     <div id="selectedChunkDisplay" class="inline semibold italic light-green-bgr"></div>
     <div id="chunk-action-buttons" class="inline chunk-action-buttons">
       <button id="speak-btn2" title="Speak"></button>
-      <button id="search-btn2" title="Look up with Google">ðŸ”Ž&#xFE0E;</button>
+      <button id="search-btn2" title="Look up with Google">🔎&#xFE0E;</button>
       <button id="translate-btn2" title="Google Translate"></button>
 	</div>
     <input id="translationInput" placeholder="Enter meaning or translation" />
@@ -2218,7 +2218,7 @@ defined by start and stop time"><span class="inline-flex align-top"></span>
 <div title="Copy start and stop time" class="btn-inside inline-flex align-top" 
   style="filter: invert(0.36) brightness(1.6); background-color: transparent;"
   onclick="copyStartStop()" tabindex="0">
-  <span style="position: relative;">ðŸ“„</span><span style="position: absolute; top: .2em; left: .4em">ðŸ“„</span>
+  <span style="position: relative;">📄</span><span style="position: absolute; top: .2em; left: .4em">📄</span>
 </div>
 
 &thinsp;
@@ -2254,7 +2254,7 @@ Alt+click for longer hop">
 
 &emsp;
 <button class="time-mark-btn btn" onclick="markTime()" title="Copy current time">
-  <div>ðŸ•‘</div>
+  <div>🕑</div>
 </button>
 </div>
 
@@ -2313,7 +2313,7 @@ Just load the audio or video from the Internet...<br>
     placeholder="Enter URL here" 
     onchange="getVideoFromURLInput(this)">
   <input type="submit" class="plain-button font-80pc rounded darker-bg-onhover" 
-value="ðŸ”" onclick="getVideoFromURLInput(this.previousElementSibling)">
+value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
 </div>
 </label>
@@ -2363,7 +2363,7 @@ value="ðŸ”" onclick="getVideoFromURLInput(this.previousElementSibling)">
 	</div>
 
     <div id="download-task" class="action-icon height12 font-75pc"><div 
-	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">â†“</div></div>
+	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">↓</div></div>
 	
     <div id="share-link" class="action-icon share-icon height12" title="Share task">
 	</div>
@@ -2385,7 +2385,7 @@ value="ðŸ”" onclick="getVideoFromURLInput(this.previousElementSibling)">
 <!-- wordlist-box no longer needed? -->
   <div id="wordlist-box" class="hidden">
     <div class="box-header">&emsp;Word list to explore
-      <span class="action-icon float-left" id="drill-wordlist" title="Explore with Audiodrill words and phrases">âžª</span>
+      <span class="action-icon float-left" id="drill-wordlist" title="Explore with Audiodrill words and phrases">➪</span>
       <img class="action-icon float-left" id="copy-words" src='copy.svg' title="Copy to clipboard">
       <span class="action-icon close-x01" id="clear-wordlist" title="Clear the list">&times;</span>
     </div>
@@ -3668,7 +3668,7 @@ function handleSelection() {
   if (text.length) {
     transcriptText.lastSelectionText = text;
     transcriptText.justHandledSelection = true; // set flag to suppress click handling
-//console.log('ðŸ“Œ Text selection:', text);
+//console.log('📌 Text selection:', text);
 // Show selection tooltip here
 	gstore.engagedEl = node.nodeType === Node.TEXT_NODE
     ? node.parentElement
@@ -3733,7 +3733,7 @@ transcriptText.onclick = async (e) => {
 	const s = gstore.clickedWord;
 
     if (s) {
-//console.log('ðŸ”¹ clicked:', s);
+//console.log('🔹 clicked:', s);
 	  if (e.ctrlKey || e.metaKey) tstore.ttsOverlay.init(gstore.engagedEl);
       else handleTextInteraction(s, 'CLICK', e.target);  
     }
@@ -3786,8 +3786,8 @@ tstore.ttsOverlay = {
     + uiblox.chevronIcon(par.dir)  
     + '</button>';
 
-    const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + â†)', dir: 'left'});
-    const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + â†’)', dir: 'right'});
+    const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + ←)', dir: 'left'});
+    const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + →)', dir: 'right'});
   
     const translateBtn = `<button id="tts-translate-btn" title="Translate" 
       class="${commonBtn} inblock font-85pc" tip-class="tooltip-link"
@@ -4003,7 +4003,7 @@ function getClickedTextFragment(lang, granularity) {
 	    parentText += nextNode.textContent;
 	  }
 //	  else if (nextNode.nodeName === 'BR') {
-//	    if (!/[.!?ã€‚ï¼Ÿï¼]\s*$/.test(parentText)) parentText += '. ';
+//	    if (!/[.!?。？！]\s*$/.test(parentText)) parentText += '. ';
 //	  }
 	  else break;
       currentNode = nextNode;  
@@ -4030,7 +4030,7 @@ function getClickedTextFragment(lang, granularity) {
 */
       if (nextNode.textContent) {
 		let chunk = nextNode.textContent;
-//	    if (lastNodeName === 'BR' && !/[.!?ã€‚ï¼Ÿï¼]\s*$/.test(chunk)) chunk += '. ';
+//	    if (lastNodeName === 'BR' && !/[.!?。？！]\s*$/.test(chunk)) chunk += '. ';
         if (!chunk.trim()) chunk = ' '; // collapse spaces and \n into one space
 	    parentText = chunk + parentText;
 		clickedOffset += chunk.length; // edge cases should be tested
@@ -4184,7 +4184,7 @@ gstore.vocab.addMeaning = async (el) => {
   const entry = transcriptText.lastSelectionText.trim();
   const meaning = el.value.trim();
   if (meaning) {
-console.log('ðŸ“š Add to vocab:', {
+console.log('📚 Add to vocab:', {
       word: entry,
       meaning: meaning
     });
@@ -4556,7 +4556,7 @@ tstore.STT = {
 	  + uiblox.specKeys.boxHtml 
 	  + '<div>'
 	  + langCtrlCloneBox
-	  + '<span id="stt-switch-box" class="padding-01em" style="cursor:default">ðŸ—£</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></div></div>';
+	  + '<span id="stt-switch-box" class="padding-01em" style="cursor:default">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></div></div>';
 //    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray); left:auto; right:0; transform: translateX(-10px);';
     const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray)';
     displayOverlay({msg: parseXswitch(msg), style: msgStyle, noCloseBtn: true});
@@ -4630,7 +4630,7 @@ const enableVoiceInput = async () => {
 //Switch state tstore.STT.switchIsOn is persistent, so that it's restored after displayOverlay is closed and opened again
  
   
-//console.log('âœ”ï¸ Enable Voice Input: STT allowed?', sttAllowed());
+//console.log('✔️ Enable Voice Input: STT allowed?', sttAllowed());
   if (!recognition.supported) return;
 
   let micPermission = await getNavigatorMicPermission();
@@ -4657,7 +4657,7 @@ const enableVoiceInput = async () => {
 const disableVoiceInput = () => {
   if (!recognition.supported) return;
 
-//console.log('âŒ Disable Voice Input: STT allowed?', sttAllowed());
+//console.log('❌ Disable Voice Input: STT allowed?', sttAllowed());
 //  abortSTT();
 //  mic.turnOff();
   mic.isOff = true;
