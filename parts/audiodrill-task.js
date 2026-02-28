@@ -2641,6 +2641,10 @@ const getYouTubeId = url => {
   return res;
 }
 
+gstore.getContextLangCode = (el) => ((el || gstore.engagedEl) && typeof getContextLang !== "undefined")
+  ? getContextLang(el || gstore.engagedEl)
+  : getLangCode(); 
+
 /*
 window.onunhandledrejection = event => {
   const error = event.reason;

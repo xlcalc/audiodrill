@@ -81,7 +81,7 @@
 }
 
 .dropdown-label::after {
-  content: "▼";
+  content: "â–¼";
   color: lightgray;
   font-size: 60%;
   padding-right: 0.1em;
@@ -230,21 +230,22 @@ border-bottom: 1px gainsboro solid;
 /*  unicode-bidi:plaintext;*/
 }
 
-.task-body::selection {
 /*
+.task-body::selection {
   color: #ddd;
   background-color: #ddd;
-*/
 }
+*/
 
 .cue {
   border-left: 3px solid transparent;
   margin:0;
   cursor: pointer;
 }
-.cue:focus {
-/*  outline: none; */
-}
+
+/*
+.cue:focus {outline: none}
+*/
 
 .play-pause {
   padding: 0 0.11em;
@@ -879,9 +880,9 @@ padding: 0;
 
 <div id="chunk-tooltip-menu" class="chunk-tooltip-menu" style="top: -100px" tabindex="0" role="tooltip" aria-label="Tooltip with buttons">
   <button id="speak-btn" tip="Click to hear, or<br>|_Ctrl_| + click to hear the whole sentence"></button>
-  <button id="search-btn" tip="Look up with Google">🔎&#xFE0E;</button>
+  <button id="search-btn" tip="Look up with Google">ðŸ”Ž&#xFE0E;</button>
   <button id="translate-btn" tip-class="tooltip-link" tip="Translate"></button>
-  <button id="add-to-vocab-btn" tip="Explore and add to vocabulary">📖&#xFE0E;</button>
+  <button id="add-to-vocab-btn" tip="Explore and add to vocabulary">ðŸ“–&#xFE0E;</button>
 </div>
 
 <!-- Vocab Input UI -->
@@ -893,7 +894,7 @@ padding: 0;
     <div id="selectedChunkDisplay" class="inline semibold italic light-green-bgr"></div>
     <div id="chunk-action-buttons" class="inline chunk-action-buttons">
       <button id="speak-btn2" title="Speak"></button>
-      <button id="search-btn2" title="Look up with Google">🔎&#xFE0E;</button>
+      <button id="search-btn2" title="Look up with Google">ðŸ”Ž&#xFE0E;</button>
       <button id="translate-btn2" title="Google Translate"></button>
 	</div>
     <input id="translationInput" placeholder="Enter meaning or translation" />
@@ -1086,7 +1087,7 @@ const resetChoiceColor = el => { el.classList.remove('red', 'green', 'view-cloze
 const onGapFocus = el => {
   el.value = el.value.replace(/_/g,'');
   resetChoiceColor(el);
-  tstore.SttInputEl = el;
+  gstore.engagedEl = el;
   enableVoiceInput();
 }
 
@@ -2217,7 +2218,7 @@ defined by start and stop time"><span class="inline-flex align-top"></span>
 <div title="Copy start and stop time" class="btn-inside inline-flex align-top" 
   style="filter: invert(0.36) brightness(1.6); background-color: transparent;"
   onclick="copyStartStop()" tabindex="0">
-  <span style="position: relative;">📄</span><span style="position: absolute; top: .2em; left: .4em">📄</span>
+  <span style="position: relative;">ðŸ“„</span><span style="position: absolute; top: .2em; left: .4em">ðŸ“„</span>
 </div>
 
 &thinsp;
@@ -2253,7 +2254,7 @@ Alt+click for longer hop">
 
 &emsp;
 <button class="time-mark-btn btn" onclick="markTime()" title="Copy current time">
-  <div>🕑</div>
+  <div>ðŸ•‘</div>
 </button>
 </div>
 
@@ -2312,7 +2313,7 @@ Just load the audio or video from the Internet...<br>
     placeholder="Enter URL here" 
     onchange="getVideoFromURLInput(this)">
   <input type="submit" class="plain-button font-80pc rounded darker-bg-onhover" 
-value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
+value="ðŸ”" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
 </div>
 </label>
@@ -2362,7 +2363,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 	</div>
 
     <div id="download-task" class="action-icon height12 font-75pc"><div 
-	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">↓</div></div>
+	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">â†“</div></div>
 	
     <div id="share-link" class="action-icon share-icon height12" title="Share task">
 	</div>
@@ -2384,7 +2385,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 <!-- wordlist-box no longer needed? -->
   <div id="wordlist-box" class="hidden">
     <div class="box-header">&emsp;Word list to explore
-      <span class="action-icon float-left" id="drill-wordlist" title="Explore with Audiodrill words and phrases">➪</span>
+      <span class="action-icon float-left" id="drill-wordlist" title="Explore with Audiodrill words and phrases">âžª</span>
       <img class="action-icon float-left" id="copy-words" src='copy.svg' title="Copy to clipboard">
       <span class="action-icon close-x01" id="clear-wordlist" title="Clear the list">&times;</span>
     </div>
@@ -3552,8 +3553,6 @@ const afterTaskLoaded = () => {
   prepareCloze(); // run after parseTTSTag and tstore.sentences.init
 
   setupVoiceInputForTextareas();
-  
-//  tstore.taskSentences = getTaskSentences(transcriptText);
 }
 
 const emulateCueClick = () => {
@@ -3594,6 +3593,7 @@ onpopstate = event => {
 };
 
 const getContextLang = (el) => {
+/*
   const getDivLang = el => {
     while (el) {
       if (el.lang) return el.lang;
@@ -3601,6 +3601,8 @@ const getContextLang = (el) => {
     }
     return '';
   }
+*/  
+  const getDivLang = el => el?.closest('#transcriptText [lang]')?.lang || ''; // Check with CSS selector
   return getDivLang(el) || tts.langCode || 'en';
 }
 
@@ -3658,26 +3660,27 @@ function handleSelection() {
 //  if (!transcriptText.contains(node) || tstore.doubleClicked) return;
   if (!transcriptText.contains(node)) return;
 
+  tstore.STT.destroyToolbar();  // added 2026-02-28, to be tested
+	
   const text = selection.toString().trim();
 
 //  if (text.length > 0 && text !== transcriptText.lastSelectionText) {
   if (text.length) {
     transcriptText.lastSelectionText = text;
     transcriptText.justHandledSelection = true; // set flag to suppress click handling
-//console.log('📌 Text selection:', text);
+//console.log('ðŸ“Œ Text selection:', text);
 // Show selection tooltip here
-	const el = node.nodeType === Node.TEXT_NODE
+	gstore.engagedEl = node.nodeType === Node.TEXT_NODE
     ? node.parentElement
     : node;
 
-// speaking commented out b/c it may be awkward when copy/pasting
-//	handleTextInteraction(text, 'SELECTED_TEXT', el); 
+
+// immediate TTS commented out b/c it may be awkward when copy/pasting
+//	handleTextInteraction(text, 'SELECTED_TEXT', gstore.engagedEl); 
     tstore.showChunkTooltip(text);
 
     // Reset after a short delay to allow click suppression
     setTimeout(() => transcriptText.justHandledSelection = false, 100);
-
-//    const lang = getContextLang(el);
   }
 }
 
@@ -3704,7 +3707,6 @@ document.addEventListener('selectionchange', () => {
 transcriptText.onclick = async (e) => {
   await sleep(200); // for double click
   const sel = window.getSelection();
-  gstore.clickedNode = sel.anchorNode;
 
   const text = sel.toString().trim();
 
@@ -3716,7 +3718,9 @@ transcriptText.onclick = async (e) => {
 	|| !sel.rangeCount
   ) return;
 
-  if (sel.anchorNode.nodeType === 3) gstore.clickedNode = sel.anchorNode.parentElement;
+  tstore.STT.destroyToolbar();
+  
+  gstore.engagedEl = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode; 
 
 // Safe to assume this was a true click on a word
   const range = document.caretRangeFromPoint
@@ -3724,13 +3728,13 @@ transcriptText.onclick = async (e) => {
     : null;
 
   if (range) {
-    const lang = getContextLang(e);
+    const lang = getContextLang(e.target);
 	gstore.clickedWord = getClickedTextFragment(lang, 'word');
 	const s = gstore.clickedWord;
 
     if (s) {
-//console.log('🔹 clicked:', s);
-	  if (e.ctrlKey || e.metaKey) tstore.ttsOverlay.init(gstore.clickedNode);
+//console.log('ðŸ”¹ clicked:', s);
+	  if (e.ctrlKey || e.metaKey) tstore.ttsOverlay.init(gstore.engagedEl);
       else handleTextInteraction(s, 'CLICK', e.target);  
     }
   }
@@ -3782,8 +3786,8 @@ tstore.ttsOverlay = {
     + uiblox.chevronIcon(par.dir)  
     + '</button>';
 
-    const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + ←)', dir: 'left'});
-    const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + →)', dir: 'right'});
+    const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + â†)', dir: 'left'});
+    const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + â†’)', dir: 'right'});
   
     const translateBtn = `<button id="tts-translate-btn" title="Translate" 
       class="${commonBtn} inblock font-85pc" tip-class="tooltip-link"
@@ -3853,8 +3857,11 @@ tstore.ttsOverlay = {
 	const line = tstore.taskSentences[this.currentNum]; 
 // !! Using tstore.taskSentences can lead to discrepancy with span data-sentence-index in complex htmls?
 
+// get language, as sentences may be in different divs with different languages
+    const lang = gstore.getContextLangCode(tstore.nodes[this.currentNum]);
     tstore.TTSsource = 'sentence';
-    ttsSpeakLang(line, '', 'DONT_WAIT'); //no need to specify the language 
+//    ttsSpeakLang(line, '', 'DONT_WAIT'); //no need to specify the language 
+    ttsSpeakLang(line, lang, 'DONT_WAIT');
 
     this.markSentence(this.currentNum, 1);
   },
@@ -3996,7 +4003,7 @@ function getClickedTextFragment(lang, granularity) {
 	    parentText += nextNode.textContent;
 	  }
 //	  else if (nextNode.nodeName === 'BR') {
-//	    if (!/[.!?。？！]\s*$/.test(parentText)) parentText += '. ';
+//	    if (!/[.!?ã€‚ï¼Ÿï¼]\s*$/.test(parentText)) parentText += '. ';
 //	  }
 	  else break;
       currentNode = nextNode;  
@@ -4023,7 +4030,7 @@ function getClickedTextFragment(lang, granularity) {
 */
       if (nextNode.textContent) {
 		let chunk = nextNode.textContent;
-//	    if (lastNodeName === 'BR' && !/[.!?。？！]\s*$/.test(chunk)) chunk += '. ';
+//	    if (lastNodeName === 'BR' && !/[.!?ã€‚ï¼Ÿï¼]\s*$/.test(chunk)) chunk += '. ';
         if (!chunk.trim()) chunk = ' '; // collapse spaces and \n into one space
 	    parentText = chunk + parentText;
 		clickedOffset += chunk.length; // edge cases should be tested
@@ -4126,7 +4133,8 @@ console.log('showChunkTooltip', text);
   tstore.speakBtn.onclick = () => {
 //    const s = (gstore.ctrlKey || gstore.metaKey) && gstore.clickedSentence ? gstore.clickedSentence : text;
 //    ttsSpeakLang(s, tstore.contextLang, 'DONT_WAIT');
-    ttsSpeakLang(text, tstore.contextLang, 'DONT_WAIT');
+//    ttsSpeakLang(text, tstore.contextLang, 'DONT_WAIT');
+    ttsSpeakLang(text, gstore.getContextLangCode(), 'DONT_WAIT');
   } 
   
   tstore.translateBtn.onclick = () => {
@@ -4176,7 +4184,7 @@ gstore.vocab.addMeaning = async (el) => {
   const entry = transcriptText.lastSelectionText.trim();
   const meaning = el.value.trim();
   if (meaning) {
-console.log('📚 Add to vocab:', {
+console.log('ðŸ“š Add to vocab:', {
       word: entry,
       meaning: meaning
     });
@@ -4540,13 +4548,15 @@ tstore.STT = {
     if (mic.isOff) disableVoiceInput();
   },
 
+  destroyToolbar() { displayOverlay('') },
+  
   init() {
     const langCtrlCloneBox = '<div id="lang-ctrl-clone-box" class="inblock"></div>';
     const msg = '<div id="gap-tools-box">' 
 	  + uiblox.specKeys.boxHtml 
 	  + '<div>'
 	  + langCtrlCloneBox
-	  + '<span id="stt-switch-box" class="padding-01em" style="cursor:default">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></div></div>';
+	  + '<span id="stt-switch-box" class="padding-01em" style="cursor:default">ðŸ—£</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></div></div>';
 //    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray); left:auto; right:0; transform: translateX(-10px);';
     const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray)';
     displayOverlay({msg: parseXswitch(msg), style: msgStyle, noCloseBtn: true});
@@ -4557,7 +4567,8 @@ tstore.STT = {
 	tts.langSelectorClone = tts.langSelector.cloneNode(true);
     elid('lang-ctrl-clone-box').appendChild(tts.langSelectorClone);
     tts.langSelectorClone.id = 'langSelectClone';
-	tts.langSelectorClone.value = tts.langSelector.value;
+//	tts.langSelectorClone.value = gstore.engagedEl? getContextLang(gstore.engagedEl) : tts.langSelector.value;
+	tts.langSelectorClone.value = gstore.getContextLangCode();
 	tts.langSelectorClone.onchange = handleLangSelect;
 
 	this.set(this.switchIsOn);
@@ -4580,13 +4591,13 @@ console.log ('** Transcript: ', txt);
 
   txt = txt.replace(/\s*[.?!]\s*$/, ''); // for Edge browser
 
-  if (tstore.SttInputEl.nodeName === 'TEXTAREA') insertSTTText(tstore.SttInputEl, txt)
+  if (gstore.engagedEl.nodeName === 'TEXTAREA') insertSTTText(gstore.engagedEl, txt)
   else {
     mic.isOff = true;
-    tstore.SttInputEl.value = txt;
-	adjustGapWidth(tstore.SttInputEl, txt);
-	tstore.SttInputEl.blur() // onblur calls checkClozeInput fn
-	if (checkGapMatch(tstore.SttInputEl)) ttsSpeakLang(txt);
+    gstore.engagedEl.value = txt;
+	adjustGapWidth(gstore.engagedEl, txt);
+	gstore.engagedEl.blur() // onblur calls checkClozeInput fn
+	if (checkGapMatch(gstore.engagedEl)) ttsSpeakLang(txt, recognition.lang);
   }
 }
 
@@ -4595,7 +4606,7 @@ const setupVoiceInputForTextareas = () => {
 
   textareas.forEach(el => {
     el.onfocus = () => {
-	  tstore.SttInputEl = el;
+	  gstore.engagedEl = el;
 	  enableVoiceInput();
 	}
     el.onblur = () => disableVoiceInput();
@@ -4619,7 +4630,7 @@ const enableVoiceInput = async () => {
 //Switch state tstore.STT.switchIsOn is persistent, so that it's restored after displayOverlay is closed and opened again
  
   
-//console.log('✔️ Enable Voice Input: STT allowed?', sttAllowed());
+//console.log('âœ”ï¸ Enable Voice Input: STT allowed?', sttAllowed());
   if (!recognition.supported) return;
 
   let micPermission = await getNavigatorMicPermission();
@@ -4646,7 +4657,7 @@ const enableVoiceInput = async () => {
 const disableVoiceInput = () => {
   if (!recognition.supported) return;
 
-//console.log('❌ Disable Voice Input: STT allowed?', sttAllowed());
+//console.log('âŒ Disable Voice Input: STT allowed?', sttAllowed());
 //  abortSTT();
 //  mic.turnOff();
   mic.isOff = true;
@@ -4661,7 +4672,7 @@ const onSpecKeyClick = (event, el) => {
 //const onSpecKeyClick = (el) => {
 //console.log('Event:', event);
   event.preventDefault();
-  const input = tstore.SttInputEl;
+  const input = gstore.engagedEl;
 //console.log(input.selectionStart, input.selectionEnd);
   if (!input) return;
 

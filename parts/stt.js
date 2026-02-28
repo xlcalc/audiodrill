@@ -17,13 +17,13 @@ console.log ('speech recognition API not supported');
   recognition.useAudioRecorder = cmd !== 'NO_AUDIO_RECORDER';
   recognition.onresult = e => handleSttResult(e.results[0][0].transcript);
   recognition.onend = e => {
-console.log('🏁 STT ended'); 
+console.log('ðŸ STT ended'); 
     recognition.isOn = false; 
     if (recognition.useAudioRecorder) audioRecorder.cmd('REC_STOP');
 
     startSTT(); // start new STT cycle
   }
-  recognition.onstart = e => {recognition.isOn = true; console.log('🚀 STT started');}
+  recognition.onstart = e => {recognition.isOn = true; console.log('ðŸš€ STT started');}
   return 1;
 }
 
@@ -119,7 +119,8 @@ console.log('StartSTT quits: STT not allowed');
   }
 
 //  recognition.lang = tts.spVoice ? tts.spVoice.lang.replace('_', '-') : 'en-UK';
-  recognition.lang = getLangCode(); // introduced 2026-02-09
+//  recognition.lang = getLangCode(); // introduced 2026-02-09
+  recognition.lang = gstore.getContextLangCode(); // changed 2026-02-28
 //  recognition.interimResults = true; // doesn't work well: it can stop after recognizing just a part of a word
 console.log('Recognition of', recognition.lang, 'starts...'); 
 //  setSTTLang(tts.spVoice);

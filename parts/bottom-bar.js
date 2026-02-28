@@ -471,7 +471,8 @@ uiblox.specKeys = {
   },
 
   getBtns(upper) {
-    const lang = getLangCode();
+//    const lang = getLangCode();
+    const lang = gstore.getContextLangCode();
     const keys = {'cs': 'áčďéěíňóřšťúůýž', 'de': 'äöüß', 'es': 'áéíóúüñ¿¡', 
 	  'fr': 'àâäæçéèêëîïôœùûüÿ', 'it': 'àèéìíîòóù', 'pl': 'ąćęłńóśźż', 'pt': 'áàâãçéêíóôõú',
 	};
