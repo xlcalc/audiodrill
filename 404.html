@@ -6,7 +6,7 @@
 //console.log('pathname: ', location.pathname);
   const match = location.pathname.match(/^\/([mt])\/(.+)/);
   if (match) {
-    const [, type, path] = match;
+    let [, type, path] = match;
 	let prefix = path.startsWith('/') ? '//' : '/';
 	if (path.includes('//')) prefix = '';
 	path = prefix + path;
