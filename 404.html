@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <script>
 (() => { // redirect if starts with /m/
 //console.log('pathname: ', location.pathname);
-const match = location.pathname.match(/^\/([mt])\/(.+)/);
-if (match) {
-  const [, type, value] = match;
-  window.location.assign(`/task.html?${type}=${value}${location.search}`);
-}
-
-/*
-  if (location.pathname.startsWith('/m/')) {
-    window.location.assign('/task.html?m=' + location.pathname.slice(3) + location.search);
-    return;
+  const match = location.pathname.match(/^\/([mt])\/(.+)/);
+  if (match) {
+    const [, type, path] = match;
+	let prefix = path.startsWith('/') ? '//' : '/';
+	if (path.includes('//')) prefix = '';
+	path = prefix + path;
+    window.location.assign(`/task.html?${type}=${path}${location.search}`);
   }
-*/	
 })()
 </script>
 
