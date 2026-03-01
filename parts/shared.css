@@ -718,7 +718,7 @@ font-s, .font-75pc {font-size: 75%}
   color: #00a500; 
   color: #095 !important; 
 }
-.red { color: #e11a; !important }
+.red { color: #e11a !important }
 .lightcoral { color: lightcoral; }
 
 /*
@@ -804,11 +804,11 @@ content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewB
   line-height: 0.5em;
   cursor: pointer;
 }
-.chevron:hover {
 /*
+.chevron:hover {
   transform: rotate(-90deg) scale(1.2, 3.6);
-*/
 }
+*/
 
 .chevron-btn {
   margin-left: 0.2em;
@@ -819,12 +819,12 @@ content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewB
 }
 
 .chevron-btn>svg {width: 1em}
-
+/*
 .chevron-btn:focus {
-/*  box-shadow: 0px 0px 0px 1px var(--a-color);*/
-/*  outline-color: var(--a-color);*/
+  box-shadow: 0px 0px 0px 1px var(--a-color);
+  outline-color: var(--a-color);
 }
-
+*/
 .chevron:hover, chevron-btn:hover {transform: scale(1.2)}
 
 .chevron-left {
@@ -992,6 +992,12 @@ video::-webkit-media-controls-panel/*,
 audio::-webkit-media-controls-current-time-display,
 video::-webkit-media-controls-current-time-display*/ { background-color: var(--audio-controls-bg); }
 
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem; /* row gap | column gap */
+}
+
 @media screen and (max-width: 700px) {
 /*  .tts-speak-alt {
 	font-size:100%;
@@ -1000,4 +1006,5 @@ video::-webkit-media-controls-current-time-display*/ { background-color: var(--a
 */
   .hover-speaker span:after{font-size: 14pt !important}
   ::-webkit-scrollbar {-webkit-appearance: none; width: 8px}
+  .grid2 { grid-template-columns: 1fr }
 }
