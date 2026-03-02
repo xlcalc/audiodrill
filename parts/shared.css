@@ -1,5 +1,6 @@
 :root {
   --color-text: DarkSlateGray;
+  --color-marked-text: DarkSlateGray;
   --a-color: #2069a0;
   --ah-color: #206090;
   --audio-controls-bg: initial;
@@ -20,6 +21,7 @@
 
 :root.night-mode {
   --color-text: #665030;
+  --color-marked-text: #222;
   --color-text: #776633;
   --a-color: #565;
   --ah-color: #676;
@@ -985,6 +987,7 @@ x-small-caps {font-variant: small-caps}
 .marked {
   border-radius: 5px;
   background-color: hsla(265, 85%, 94%, 0.6);
+  color: var(--color-marked-text);
 }
 
 audio::-webkit-media-controls-panel,
