@@ -4,7 +4,7 @@
 On the [Words and phrases page](/?w), you can click on the mic and dictate any word or phrase you want to explore.
 
 <color:slategray>2 January 2026</color>
-On the [Tasks page](/?t), <kbd>Ctrl</kbd> + click on a word to hear the full sentence. This opens playback controls that let you continue listening through the text. You can also start reading from the system menu by choosing ~Read lines~.
+On the [Tasks page](/?t), <kbd>Ctrl</kbd> + click on a word to hear the full sentence. This opens playback controls that let you continue listening through the text. You can also start reading from the system menu by choosing ~“🗣 Read lines~.
 
 <color:slategray>31 October 2025</color>
 On the [Tasks page](/?t), a tooltip appears when you select a word or phrase, giving options to listen, explore, translate, or save it to the task vocabulary.

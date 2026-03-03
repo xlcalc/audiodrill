@@ -548,8 +548,8 @@ const parseTTSTag = (el, lightBtn = '') => {
 // onmousedown="event.preventDefault();" was added so that focus on parent div isn't lost, 
 // which is important for vocab-entries div in tasks page
       spHtml += `<button class="tts-speak-task btn-lighgray ${lightBtn}" title="${title}"
- pos="${pos}" say="${say}" speed="${speed}" lang="${lang}" onmousedown="event.preventDefault();" onclick="ttsCueClick(this)">
- <span class="small-padding">${country}${gstore.speakerIcon}</span></button>`;
+pos="${pos}" say="${say}" speed="${speed}" lang="${lang}" onmousedown="event.preventDefault();" onclick="ttsCueClick(this)">
+<span class="small-padding">${country}${gstore.speakerIcon}</span></button>`;
     }
 
 //	spHtml = '<span>' + spHtml + '</span>';
