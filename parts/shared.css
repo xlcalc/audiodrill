@@ -491,6 +491,10 @@ hr {border-color: var(--btn-lighgray)}
 }
 
 .center {text-align: center}
+.block-center {
+  display: block;
+  margin: 0 auto;
+}
 .inline-flex {display: inline-flex}
 .flex, .flex-center, .flex-hor-center {display: flex}
 .flex-wrap {display: flex; flex-wrap: wrap}

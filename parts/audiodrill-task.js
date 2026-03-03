@@ -1960,7 +1960,38 @@ const highlightText = txt => {
     else return `<video style="max-width:75%" src="${getNewURL(url)}" controls></video>`;
   }
 
-  const expandImage = url => `<img style="max-width:75%" src="${getNewURL(url)}">`; // title might be extracted
+  const expandImage = cmd => {
+    const params = cmd.split(' ');
+    const url = params[0];
+    const options = params.slice(1);
+    const classes = {
+      center: 'block-center',
+      left: 'float-left',
+      right: 'float-right',
+    };
+
+    const cl = options
+      .filter(opt => classes[opt])
+      .map(opt => classes[opt])
+      .join(' ');
+
+    const styles = {
+      left: 'margin: 0 0.8em 0.5em 0;',
+      right: 'margin: 0 0 0.5em 0.8em;',
+    };
+
+    const st = options
+      .filter(opt => styles[opt])
+      .map(opt => styles[opt])
+      .join(' ');
+	  
+    const st2 = options
+      .filter(opt => !styles[opt])
+      .join(';');
+
+	return `<img src=${getNewURL(url)} class="${cl}" style="max-width:75%; ${st}; ${st2}">`; 
+  }
+
 
   const simpleATag = url => `<a href=${url} target="_blank">${url}</a>`;
 
