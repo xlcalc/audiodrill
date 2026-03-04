@@ -2676,6 +2676,16 @@ gstore.getContextLangCode = (el) => ((el || gstore.engagedEl) && typeof getConte
   ? getContextLang(el || gstore.engagedEl)
   : getLangCode(); 
 
+const getHashFromUrl = () => window.location.hash
+    ? window.location.hash.substring(1)
+    : null;
+
+function scrollToHash() {
+  const id = getHashFromUrl();
+  const el = elid(id);
+  if (el) 
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 /*
 window.onunhandledrejection = event => {
   const error = event.reason;

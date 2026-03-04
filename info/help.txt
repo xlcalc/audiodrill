@@ -11,7 +11,7 @@ Open audiodrill with the following URL parameters:
 (Note: if `speed` parameter is set, `r` parameter is ignored)
 `noauto` - disable the prompt to loop
 
-<i>Example</i>
+~Example~
 [`https://audiodrill.com/?*m*=https://youtu.be/S0325A8-_A4&*s*=12:07&*e*=12:09.5&*speed*=1,0.5,1.2`](https://audiodrill.com/?m=https://youtu.be/S0325A8-_A4&s=12:07&e=12:09.5&speed=1,0.5,1.2)
 This URL will make Audiodrill loop the clip at https://youtu.be/S0325A8-_A4 from 12:07 to 12:09.5 three times with relative speed factors of 1, 0.5, and 1.2. Speeds are <i>relative</i> because the playback speed depends on the relative speed factor <i>and</i> the <i>Master speed rate</i> value.
 
@@ -74,7 +74,7 @@ To exit the game, say 'enough' or 'exit'.
 [This video](https://youtu.be/mcwy4N9fcEI) demonstrates how to play numbers. 
 
 <Q id="qna_create_game">How can I create my own voice game?</Q>
-To create an interactive dialogue with computer, open the link <a href="/new-game">https://audiodrill.com/new-game</a> and paste the dialog into the text field. Apart from English, other languages supported by the OS can be used. In this case, add a line with :lang: keyword and language code to the game script. E.g., for Spanish it will be
+To create an interactive dialogue with computer, open the link <https://audiodrill.com/new-game> and paste the dialog into the text field. Apart from English, other languages supported by the OS can be used. In this case, add a line with :lang: keyword and language code to the game script. E.g., for Spanish it will be
 `:lang: es`
 
 Finish editing by pressing the edit button, and the game will start. Don't forget to turn on the mic. Share the link to your game.
@@ -84,7 +84,12 @@ For other types of voice games, read [here](https://docs.google.com/spreadsheets
 Please note that voice games can be played <em>only</em> in Chrome or Edge browser on computers because so far only these browsers have implemented voice recognition. 
 
 <Q>How can I create my own task?</Q>
-Open a task, e.g., [this one](https://audiodrill.com?t=/tasklist/voa/voa2-19.txt), and edit it by clicking on Edit icon Aa|. Save the edited text and click on Share icon to get the link. You can also save tasks as text files on your device and then open them by dragging and dropping to the task area from a file manager.
+On the task homepage, go to section [4. Create your own tasks](?t=/tasklist/default.txt#createTasks) and follow the instructions. 
+Alternatively, open a task, e.g., [this one](https://audiodrill.com/voa219), and edit it by clicking on Edit icon Aa|. Save the edited text and click on Share icon to get the link. You can also save tasks as text files on your device and then open them by dragging and dropping to the task area from a file manager.
+
+
+<Q>Can computer read the task text (text-to-speech)?</Q>
+When in a task, click a word to hear it, or |_Ctrl_| (|_Command_| on Mac) + click a word to hear the entire sentence. Alternatively, in the system menu choose ~🗣 Read lines~. You can play either by lines/sentences or the whole text. Finally, if you select a word or phrase, a tooltip appears, giving options to listen, explore, translate, or add it to the task vocabulary.
 
 <Q>Can I practice shadow reading?</Q>
 Speech shadowing, or shadow reading, allows you to develop listening and pronunciation skills. For more information about this technique, please visit <https://en.wikipedia.org/wiki/Speech_shadowing>
@@ -96,4 +101,4 @@ In Chrome browser you can listen to a computer-read text and repeat it sentence 
 &bull; go back
 &bull; exit
 
-Controls under the text area allow choosing computer voice, speech rate, and the number of replays. User's speech can also be recorded and replayed.
+Controls in the settings allow choosing computer voice, speech rate, and the number of replays. User's speech can also be recorded and replayed.
