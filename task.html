@@ -4561,7 +4561,10 @@ tstore.sentences = {
   getTextWithAlts(el) {
     const clone = el.cloneNode(true);
     clone.querySelectorAll('.cloze').forEach(input => {
-      const text = document.createTextNode(input.getAttribute('alt') || '');
+      const text = document.createTextNode(
+        (input.getAttribute('alt') || '')
+        .split('=>')[0]  // to be tested: added 2026-03-05
+      );
       input.replaceWith(text);
     });
 
