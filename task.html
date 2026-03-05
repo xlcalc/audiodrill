@@ -2624,6 +2624,23 @@ const prepareSettings = () => {
   }
 }
 
+function borrowControl(id, newContainer, refId, position = "after") {
+  const el = elid(id);
+  if (!el) return;
+
+  const placeholder = document.createElement("div");
+  placeholder.dataset.placeholderFor = id;
+  el.parentNode.insertBefore(placeholder, el);
+
+  const ref = elid(refId);
+
+  if (ref) {
+    ref.insertAdjacentElement(position === "before" ? "beforebegin" : "afterend", el);
+  } else {
+    newContainer.appendChild(el);
+  }
+}
+
 const moveControlsTo = el => {
   el.prepend(
     elid('basic-controls')
@@ -2637,9 +2654,21 @@ const moveControlsTo = el => {
   );
 }
 
+function returnControl(id) {
+  const el = elid(id);
+  if (!el) return;
+
+  const placeholder = document.querySelector(`[data-placeholder-for="${id}"]`);
+  if (!placeholder) return;
+
+  placeholder.replaceWith(el);
+}
+
 const restoreLeftColSettings = () => {
 // bring some settings back from the top settings
-  moveControlsTo(elid('manual-controls-box'))
+  returnControl('advanced-speed-box');
+  moveControlsTo(elid('manual-controls-box')); 
+// in the future, borrowControl and returnControl can be used instead of moveControlsTo
 }
 
 const prepareTopSettings = (cmd = '') => {
@@ -2648,7 +2677,8 @@ const prepareTopSettings = (cmd = '') => {
 
   if (cmd === 'ADD_MORE') {
     moveControlsTo(el);
-	tstore.settingsMovedToTop = true;
+    borrowControl('advanced-speed-box', 'top-settings', 'master-pbr-box');
+	  tstore.settingsMovedToTop = true;
   } else tstore.settingsMovedToTop = false;
   
   if (!elWasPrepared) {
@@ -2675,6 +2705,7 @@ const showTopSettings = async (par = '') => {
   const topSettingsEls = [
     'rec-switch-box',
     'master-pbr-box',
+    'advanced-speed-box',
     'lang-voice-box',
     'tts-click-switch-box',
     'use-dic-switch-box',
@@ -3758,6 +3789,8 @@ tstore.isIgnoredByTTSOnClick = el => {
 const readTTSChunks = (cmd) => { tstore.ttsOverlay.init(cmd) } // used by {x-tts-read}
 
 tstore.ttsOverlay = {
+  repeatNum: 0,
+
   init(cmd) {
     if (!tstore.ttsClickSwitch.isOn || !tstore.taskSentences) return;
 
@@ -3800,7 +3833,7 @@ tstore.ttsOverlay = {
     const settingsBtn = tstore.settingsMovedToTop ? `<button id="play-tts-settings" 
       title="Speed, voice and translation settings" 
       class="${commonBtn} font-95pc"
-     	onclick = "showTopSettings(['master-pbr-box', 'lang-voice-box', 'transl-lang-box'])">`
+     	onclick = "showTopSettings(['master-pbr-box', 'advanced-speed-box', 'lang-voice-box', 'transl-lang-box'])">`
       + gstore.settingsIcon
       + '</button>'
       : '';
@@ -3849,21 +3882,30 @@ tstore.ttsOverlay = {
 
   pause() { 
     tts.cancel();  
-	this.showPlaying(0);
+	  this.showPlaying(0);
   },
 
   play() {
     this.setClickedPlayBtn(1);
 
     tts.cancel();
-	const line = tstore.taskSentences[this.currentNum]; 
+	  const line = tstore.taskSentences[this.currentNum]; 
+    if (this.currentNum === this.prevNum) {
+      this.repeatNum ++;
+      if (this.repeatNum >= speedCtrl.getAdvanced().length) this.repeatNum = 0;
+    } else {
+      this.prevNum = this.currentNum;
+      this.repeatNum = 0;
+    }
+    
 // !! Using tstore.taskSentences can lead to discrepancy with span data-sentence-index in complex htmls?
 
 // get language, as sentences may be in different divs with different languages
     const lang = gstore.getContextLangCode(tstore.nodes[this.currentNum]);
     tstore.TTSsource = 'sentence';
-//    ttsSpeakLang(line, '', 'DONT_WAIT'); //no need to specify the language 
-    ttsSpeakLang(line, lang, 'DONT_WAIT');
+
+    const speed = speedCtrl.calcSpeed(this.repeatNum);
+    ttsSpeakLang(line, lang, 'DONT_WAIT', speed);
 
     this.markSentence(this.currentNum, 1);
   },
@@ -3875,7 +3917,7 @@ tstore.ttsOverlay = {
 	  && tstore.TTSsource === 'sentence' 
 	  && this.tryNextSentence() !== -1
 	  ) this.play();
-	else this.showPlaying(0);
+  	else this.showPlaying(0);
   },
 
   playNext(v) { 
@@ -3904,33 +3946,33 @@ tstore.ttsOverlay = {
   showPlaying(cmd) {
     const btnEl = elid('tts-play-pause-btn');
 //console.log('ttsOverlay btnEl', !!btnEl);
-	if (!btnEl) return;
-	showOrHideEl(elid('tts-pause-btn'), cmd);
-	showOrHideEl(elid('tts-play-btn'), !cmd);
-	if (cmd) {
+    if (!btnEl) return;
+	  showOrHideEl(elid('tts-pause-btn'), cmd);
+	  showOrHideEl(elid('tts-play-btn'), !cmd);
+	  if (cmd) {
       this.updatePevNextBts();
-	  this.setClickedPlayBtn(0);
-	  btnEl.onclick = () => { this.pause(); }
-	} else {
+	    this.setClickedPlayBtn(0);
+	    btnEl.onclick = () => { this.pause(); }
+	  } else {
 	  btnEl.onclick = () => { this.play(); }
-	}
+	  }
   },
 
   setBtn(id, cmd) {
     const el = elid(id);
-	if (cmd) {
-	  el.classList.add('gray-bg-onhover', 'grayish');
+    if (cmd) {
+	    el.classList.add('gray-bg-onhover', 'grayish');
 //	  el.classList.remove('gray');
       el.style.color = '';
-	  el.removeAttribute("disabled");
-	}
-	else {
-	  el.classList.remove('gray-bg-onhover', 'grayish');
+	    el.removeAttribute("disabled");
+	  }
+	  else {
+	    el.classList.remove('gray-bg-onhover', 'grayish');
 //	  el.classList.add('gray');
       el.style.color = 'var(--color-ccc-444)';
-	  el.setAttribute("disabled", "");
-	  elid('tts-play-pause-btn').focus();
-	}
+	    el.setAttribute("disabled", "");
+	    elid('tts-play-pause-btn').focus();
+	  }
   },
 
   updatePevNextBts() {
@@ -3938,13 +3980,13 @@ tstore.ttsOverlay = {
 
     const prevBtnState = this.currentNum > 0;
     this.setBtn('play-prev-sentence', prevBtnState);
-	
+
     const nextBtnState = this.currentNum < tstore.taskSentences.length -1;
-	this.setBtn('play-next-sentence', nextBtnState);
+    this.setBtn('play-next-sentence', nextBtnState);
   },
   
   setReadMode(cmd) {
-	this.readMode = !!cmd;
+    this.readMode = !!cmd;
     if (!cmd) this.unmarkAll(); 
   },
 

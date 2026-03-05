@@ -216,9 +216,9 @@ function speak(text = gstore.currentQuery || '', cmd, speed) {
   if (tts.spVoice) ttsSpeak(tts.spVoice, text, cmd, speed);
 }
 
-const ttsSpeakLang = (txt, lang, cmd = true) => {
+const ttsSpeakLang = (txt, lang, cmd = true, speed) => {
   const voice = lang? getVoice(lang) : tts.spVoice;
-  if (txt && voice) ttsSpeak(voice, txt, cmd);
+  if (txt && voice) ttsSpeak(voice, txt, cmd, speed);
 }
 
 const speakEl = (el, par) => {
