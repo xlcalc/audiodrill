@@ -1661,7 +1661,7 @@ const adjustPBR = () => {
 }
 
 const speedCtrlEl = (s = '') => {
-  const tip = `Actual playback speed depends on master speed rate and on cue speed factors (see advanced settings).
+  const tip = `Actual playback speed depends on master speed rate and on replay speed factors (see advanced settings).
 <x-br></x-br>
 To slow down temporarily, press and hold left <kbd>Ctrl</kbd> key.
 `;
@@ -1672,10 +1672,10 @@ To slow down temporarily, press and hold left <kbd>Ctrl</kbd> key.
 }
 
 const advSpeedCtrlEl = () => {
-  const tip = 'Comma-separated relative speed factors specify how many times and how fast a cue is played';
+  const tip = 'Comma-separated speed factors determine the number of repeats and playback speed';
 
   return `<div id="speed-set-box" class="inblock">
-<label>Cue speed factors`
+<label>Replay speed factors`
   + uiblox.infoPoint(tip)
   + `<input type="text" id="speed-set" placeholder="E.g., 0.9, 0.75, 1"
     style="width: 7em;"  oninput="advancedSpeedUserChange(this.value)"/> 

@@ -3842,23 +3842,27 @@ tstore.ttsOverlay = {
     + prevBtn + playBtn + nextBtn + translateBtn + settingsBtn
     + '</div></div>';
 
-//    const prompt = '<div class="inblock font-85pc gray2">Read lines</div>';
-    const prompt = '<select id="playMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">'
-	  + '<option value="sentence">Play a line</option><option value="all">Play all</option></select>';
-//    const prompt = '<div class="inblock">' + playmodes + '</div>';
-//    const prompt = playmodes;
+    const prompt = '<select id="ttsPlayMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">'
+	  + '<option value="sentence" title="Replay the line at multiple speeds \r(see Replay speed factors in the settings)">Play a line</option>'
+    + '<option value="all" title="Play the whole text at one speed \r(see Master speed rate in the settings)">Play all text</option>'
+    + '<option value="ALL_WITH_REPS" title="Play each line at multiple speeds \r(see Replay speed factors in the settings)">Play all (reps)</option>'
+    + '</select>';
 
     displayOverlay({msg: '<div id="tts-sentence-reader">' + prompt + btnDiv + '</div>', style: 'width:auto; padding: 4px 1.5em;'});
     elid('tts-play-pause-btn').focus();
-	this.setPlaymode();
+	this.setTtsPlayMode();
   },
   
-  setPlaymode() {
-	this.playMode ??= 'sentence';
-//console.log('playMode', this.playMode);	
-    const el = elid('playMode');
-	el.value = this.playMode;
-	el.onchange = () => {this.playMode = el.value};
+  setTtsPlayMode() {
+    const el = elid('ttsPlayMode');
+
+    const setDDL = () => {
+      this.ttsPlayMode = el.value;
+      const selectedOption = el.options[el.selectedIndex];
+      el.title = selectedOption.title || '';
+    }
+    setDDL();
+    el.onchange = () => { setDDL() }
   },
   
   unmarkAll() {
@@ -3913,7 +3917,12 @@ tstore.ttsOverlay = {
   ttsEnded() {
 //console.log('!!tstore.TTSsource', tstore.TTSsource);  
     if (!this.readMode) return;
-    if (this.playMode === 'all' 
+    if (this.ttsPlayMode === 'ALL_WITH_REPS') {
+      if (this.repeatNum +1 < speedCtrl.getAdvanced().length) this.play();
+      else if (this.tryNextSentence() !== -1) this.play();
+  	  else this.showPlaying(0);
+    }
+    else if (this.ttsPlayMode === 'all' 
 	  && tstore.TTSsource === 'sentence' 
 	  && this.tryNextSentence() !== -1
 	  ) this.play();
