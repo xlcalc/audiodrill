@@ -4594,14 +4594,18 @@ const getTextFromHTML = s => { // transforms html to text
 
 tstore.STT = {
   switchID: 'stt-switch',
-  switchIsOn: true,
+  switchIsOn: false,
   
-  toggle(el) {
-//console.log('STT switch is', el.checked);
+  async toggle(el) {
     this.switchIsOn = el.checked;
-	this.set(this.switchIsOn); // to set the tooltip
+	  this.set(this.switchIsOn); // to set the tooltip
     mic.isOff = !el.checked;
     if (mic.isOff) disableVoiceInput();
+    else if (! await testMic()) { // added 2026-03-08
+      this.switchIsOn = el.checked = false;
+      this.init();
+      return;
+    }
   },
 
   destroyToolbar() { displayOverlay('') },
