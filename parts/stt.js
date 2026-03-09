@@ -17,13 +17,13 @@ console.log ('speech recognition API not supported');
   recognition.useAudioRecorder = cmd !== 'NO_AUDIO_RECORDER';
   recognition.onresult = e => handleSttResult(e.results[0][0].transcript);
   recognition.onend = e => {
-console.log('ðŸ STT ended'); 
+console.log('>> STT ended'); 
     recognition.isOn = false; 
     if (recognition.useAudioRecorder) audioRecorder.cmd('REC_STOP');
 
     startSTT(); // start new STT cycle
   }
-  recognition.onstart = e => {recognition.isOn = true; console.log('ðŸš€ STT started');}
+  recognition.onstart = e => {recognition.isOn = true; console.log('>> STT started');}
   return 1;
 }
 
@@ -85,14 +85,14 @@ console.log('audioRecorder startBanned');
 const restartSTT = () => { // used in audiodrill.js for words and embed page only
   recognition.allowed = true;
   if (!sttAllowed()) return; 
-console.log('** Restart STT'); 
+console.log('>> Restart STT'); 
 
   if (recognition.isOn) { abortSTT() } //startSTT() will follow automatically via recognition.onend
   else { startSTT(); }
 }
 
 const abortSTT = async () => {
-console.log('abortSTT started');  
+console.log('>> abortSTT started');  
   recognition.allowed = false; // a flag checked by handleSttResult fn
   mic.isOff = true; // added 2026-01-10
   
@@ -135,10 +135,10 @@ console.log('StartSTT FAILED:', err);
 }
 
 const setSTTLang = ttsVoice => {
-// Is this fn needed? It is only used in words\index.html, while task.html can do without it.
-// recognition.lang is set in StartSTT anyway
+// This fn is  used in embed and words\index.html, 
+// while task.html can do without it b/c recognition.lang is set in StartSTT anyway
   recognition.lang = (ttsVoice && ttsVoice.lang) ? ttsVoice.lang : 'en-UK';
-console.log('Recognition of', recognition.lang); 
+console.log('setSTTLang(voice):', recognition.lang); 
 }
 
 // experimental: 2026-01-10
