@@ -2736,10 +2736,10 @@ const handleKeyEvent = e => {
 
   if (e.key === 'Escape') {
     hitStopButton();
-	hideElid('top-controls');
-	tstore.hideChunkTooltip();
-	hideEl(vocabInput);
-	hideEl(qsel('.dropzone')); // trying to fix the rare bug of showing dropzone while selecting text
+    hideElid('top-controls');
+    tstore.hideChunkTooltip();
+    hideEl(vocabInput);
+    hideEl(qsel('.dropzone')); // trying to fix the rare bug of showing dropzone while selecting text
   }
 
   if (e.target === elid('vocab-meaning-input') && e.key === 'Enter') {
@@ -2762,10 +2762,10 @@ const handleKeyEvent = e => {
   if (e.code === 'KeyE' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
 //    toggleElid('task-header');
     const el = elid('task-header');
-	if (isElHidden(el)) {
-	  showEl(el);
-	  elid('edit-task').click();
-	} else hideEl(el);
+	  if (isElHidden(el)) {
+	    showEl(el);
+	    elid('edit-task').click();
+	  } else hideEl(el);
   }
 }
 
@@ -2868,12 +2868,10 @@ const setVideoSize = cmd => {
     return;
   }
   
-  const widths = [400, 640, 800];
-  
   const vctrl = function(n) {
     const ctrls = document.querySelectorAll('.video-size');
     const classes = ['video-smaller', 'video-bigger'];
-	return {
+  	return {
 	  enable: (n) => {
         ctrls[n].classList.add(classes[n]);
         ctrls[n].classList.remove('video-size-disabled');
@@ -2901,9 +2899,10 @@ const setVideoSize = cmd => {
     hideEl(leftCol);
     return;
   }
-  else showEl(leftCol);
+
+  showEl(leftCol);
   
-  if ([0, 1, 2].includes(width)) width = widths[width]; // legacy values
+  if ([0, 1, 2].includes(width)) width = [400, 640, 800][width]; // legacy values
 
   const cmdString = cmd + '';
   if (cmdString.endsWith('%'))
@@ -2948,6 +2947,7 @@ const changeVideoSize = cmd => {
 const videoResizerReset = () => {
   showVideoResizer(1);
   if (players.resizeTimeout) clearTimeout(players.resizeTimeout);
+// This works only for html video, since mouse movement over YT iframe can't be detected
   if (!players.mouseOverVideoResize && players.isHtml)
     players.resizeTimeout = setTimeout(()=>{ showVideoResizer(0) }, 2000);
 }
