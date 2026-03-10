@@ -4533,24 +4533,25 @@ tstore.sentences = {
   
   getSentences(el) {
     const toBuffer = (key, s) => {
-	  this.buffer[key] ??= [];
-	  this.buffer[key].push(s);
-	  return `<x-dummy>\n<x-${key}><x-dummy>\n`;
-	}
+  	  this.buffer[key] ??= [];
+	    this.buffer[key].push(s);
+	    return `<x-dummy>\n<x-${key}><x-dummy>\n`;
+	  }
 	
     let index = 0;
   
     const getWrappedLine = s => {
-	  s = s.replaceAll('<x-dummy>\n', '');
+      if (s.includes(' no-tts ')) return '';
+  	  s = s.replaceAll('<x-dummy>\n', '');
 //console.log('Line', index, ':', s ,'$end');
       if (getTextFromHTML(s).trim()) {
 // Put the trailing spaces outside <span>
 //	    s = s.replace(/^(\s*)(.*?)(\s*)$/, '$1' + `<span data-sentence-index="${index}">` + '$2</span>$3');
-	    s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence-index="${index}">` + '$2</span>$3');
+	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence-index="${index}">` + '$2</span>$3');
 //console.log(s);
-	    index++;
-	  }
-	  return s;
+	      index++;
+	    }
+	    return s;
     }
 
     this.buffer = {};
