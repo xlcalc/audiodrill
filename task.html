@@ -4541,7 +4541,7 @@ tstore.sentences = {
     let index = 0;
   
     const getWrappedLine = s => {
-      if (s.includes(' no-tts ')) return '';
+      if (s.includes('no-tts')) return '';
   	  s = s.replaceAll('<x-dummy>\n', '');
 //console.log('Line', index, ':', s ,'$end');
       if (getTextFromHTML(s).trim()) {
