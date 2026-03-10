@@ -1997,10 +1997,13 @@ const analyzeURLParams = async () => {
   gstore.calledFromWords = urlKeys.get('from-words') !== null;
 
   setVideoSize(urlKeys.get('video-size') || localStorage.getItem('videoWidth') || 1);
-//  ltrSize.set(urlKeys.get('font-size'));
+
   const lang = urlKeys.get('lang') || localStorage.getItem('langCode') || 'en';
   setLanguage(lang, true);
   storeLangCode(lang);
+
+  const tlang = urlKeys.get('tlang');
+  tstore.translLangCtrl.set(tlang);
 
   loadWordList(urlKeys.get('v'));
 
@@ -4350,32 +4353,41 @@ tstore.downloadTask = () => {
 // === end of Vocab UI ===
 
 tstore.translLangCtrl = {
+  selectorId: 'tr-language-select',
+
   load() {
 //    const langList = ['de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'pt', 'ru', 'zh'];
     const langList = {de: 'German', en: 'English', es: 'Spanish', 
 	  fr: 'French', it: 'Italian', nl: 'Dutch', pl: 'Polish', 
 	  pt: 'Portuguese', ru: 'Russian', zh: 'Chinese'
 	  };
+
     let ddl = '';
     for (const lang in langList)
       ddl += `<option value="${lang}" title="${langList[lang]}">` + lang + '</option>';
 
     const html = '<span tip = "Choose the target language for translation">Translate to </span>'
-    + '<select id="tr-language-select" class="drop-down darker-hover" name="language" onchange="handleTrLangSelect()">'
+    + `<select id="${this.selectorId}" class="drop-down darker-hover" name="language" onchange="handleTrLangSelect()">`
     + ddl
     + '</select>';
 
     setElHTML('transl-lang-box', html);
-    
-	const el = elid('tr-language-select');
-    el.value = localStorage.getItem('translLangCode') || 'ru';
-	el.title = langList[el.value];
-	
+
+    const el = elid(this.selectorId);	
     el.onchange = function() {
 //	  tstore.translLangCtrl.lang = el.value;
 //console.log('Transl lang selected', el.value);
-	  localStorage.setItem('translLangCode', el.value); 
-	};
+	    localStorage.setItem('translLangCode', el.value); 
+	  };
+
+    this.set();
+  },
+
+  set(lang) {
+    const el = elid(this.selectorId);
+    el.value = lang || localStorage.getItem('translLangCode') || 'ru';
+    const selectedOption = el.options[el.selectedIndex];
+    el.title = selectedOption.title || '';
   }
 }
 
