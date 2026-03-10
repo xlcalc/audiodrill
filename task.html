@@ -4416,7 +4416,7 @@ tstore.transl = async (s, par) => {
   s = s.trim();
 //  let tip = '<div class="spinner" style="width: 10px; height: 10px; margin: 0 0 .2em;"></div> click to use Google Translate';
 
-  const targetLang = localStorage.getItem('translLangCode') || 'ru';
+  const targetLang = localStorage.getItem('translLangCode') || 'en';
   
   let res = gstore.vocab.getMeaning(s);
   if (!res) {
