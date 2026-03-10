@@ -4501,12 +4501,13 @@ tstore.sentences = {
   init(el) {
 //return
     el.innerHTML = this.wrap(el);
-//	  tstore.nodes = document.querySelectorAll('[data-sentence-index]');
+	  tstore.nodes = document.querySelectorAll('[data-sentence-index]');
+/*
     tstore.nodes = [...document.querySelectorAll('[data-sentence]')]
       .filter(el => !el.closest('.no-tts'))
       .forEach((el, i) => el.dataset.sentenceIndex = i);
-
-    tstore.taskSentences = tstore.nodes.map(el => this
+*/
+    tstore.taskSentences = [...tstore.nodes].map(el => this
       .getTextWithAlts(el)
 	    .replace(/\(.*?\)/g, '') //remove comments in brackets
 	  );
@@ -4540,7 +4541,7 @@ tstore.sentences = {
 	    return `<x-dummy>\n<x-${key}><x-dummy>\n`;
 	  }
 	
-//    let index = 0;
+    let index = 0;
   
     const getWrappedLine = s => {
   	  s = s.replaceAll('<x-dummy>\n', '');
@@ -4548,10 +4549,10 @@ tstore.sentences = {
       if (getTextFromHTML(s).trim()) {
 // Put the trailing spaces outside <span>
 //	    s = s.replace(/^(\s*)(.*?)(\s*)$/, '$1' + `<span data-sentence-index="${index}">` + '$2</span>$3');
-//	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence-index="${index}">` + '$2</span>$3');
-	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence">` + '$2</span>$3');
+	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence-index="${index}">` + '$2</span>$3');
+//	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence">` + '$2</span>$3');
 //console.log(s);
-//	      index++;
+	      index++;
 	    }
 	    return s;
     }
