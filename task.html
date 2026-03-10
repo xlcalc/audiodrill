@@ -4501,24 +4501,25 @@ tstore.sentences = {
   init(el) {
 //return
     el.innerHTML = this.wrap(el);
-	tstore.nodes = document.querySelectorAll('[data-sentence-index]');
+	  tstore.nodes = document.querySelectorAll('[data-sentence-index]');
 //    tstore.taskSentences = [...tstore.nodes].map(el => el.textContent.trim());
     tstore.taskSentences = [...tstore.nodes]
-	  .map(el => this.getTextWithAlts(el)
-	  .replace(/\(.*?\)/g, '') //remove comments in brackets
-	  );
+	    .map(el => this
+        .getTextWithAlts(el)
+	      .replace(/\(.*?\)/g, '') //remove comments in brackets
+	    );
   },
 
   wrap(el) {
     const arr = this.getSentences(el);
-	this.arr = arr; // for debugging
+  	this.arr = arr; // for debugging
 //console.log(arr);
 //return arr;
     return arr
       .join('')
 //      .replaceAll('<x-dummy>\n', '')
       .replaceAll('\uE000', '?')
-	  .replaceAll('<x-dot>', '.')
+  	  .replaceAll('<x-dot>', '.')
       .replaceAll('\n', '<br>')
 
 // In getSentences(), the tags below are added to buffer in a specific order, 
@@ -4526,8 +4527,8 @@ tstore.sentences = {
 // If such errors occur, they should be extracted in reverse order.
 // Or maybe the buffer structure could be revised, e.g., into array: buffer[{tag: value}, {tag: value}, ...] ???
       .replace(/<x-(label|button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
-	  .replace('<x-vocab-header>', this.buffer.vocabHeader)
-	  ;
+	    .replace('<x-vocab-header>', this.buffer.vocabHeader)
+	    ;
   },
   
   getSentences(el) {
@@ -4553,21 +4554,21 @@ tstore.sentences = {
     }
 
     this.buffer = {};
-	this.buffer.vocabHeader = qsel('.vocab-header')?.innerHTML || '<x-empty>';
+	  this.buffer.vocabHeader = qsel('.vocab-header')?.innerHTML || '<x-empty>';
 
     this.source = el.innerHTML
-	.replace(this.buffer.vocabHeader, '<x-vocab-header>')
+  	.replace(this.buffer.vocabHeader, '<x-vocab-header>')
     .replaceAll('<x-br></x-br>', '<div style="display: block; height: .4em;"></div>')
     .replaceAll('<x-br-l></x-br-l>', '<div style="display: block; height: .7em;"></div>')
     .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
-	.replaceAll('<br>', '\n')
-	.replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
-	.replace(/([\s>])(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
-	.replace(/<label.*<\/label>/g, s => toBuffer('label', s))
-	.replace(/<button.*<\/button>/g, s => toBuffer('button', s))
-	.replace(/<style.*<\/style>/g, s => toBuffer('style', s))
-	.replace(/<div[^>]*>/g, s => toBuffer('div', s))
-	.replace(/(<\/?)(h[1-6]|div)([^>]*>)/g, '<x-dummy>\n$1$2$3<x-dummy>\n')
+	  .replaceAll('<br>', '\n')
+	  .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
+	  .replace(/([\s>])(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
+	  .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
+	  .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
+	  .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))
+	  .replace(/<div[^>]*>/g, s => toBuffer('div', s))
+	  .replace(/(<\/?)(h[1-6]|div)([^>]*>)/g, '<x-dummy>\n$1$2$3<x-dummy>\n')
 	;
 // should bittons be treated differently? Now sentences inside buttons will be read
 // What with <img> tags?
@@ -4898,8 +4899,7 @@ TBD:
 unicode-bidi replaced with direction rtl or ltr 2024-06-10.
 
 Issues:
-- When Russian interface is default, TTS will play Russian if English or another language wasn't set and stored in localStorage
-- so default English in the Settings doesn't take effect by default until it's selected manually
+- TTS sentences not always recognized when there are time cues. To be investigated.
 - if playing directly in YT player, clicking on cue will skip the first replay 
 and go right away to "repeat after the speaker".
 
