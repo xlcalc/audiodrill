@@ -3795,6 +3795,37 @@ tstore.isIgnoredByTTSOnClick = el => {
 const readTTSChunks = (cmd) => { tstore.ttsOverlay.init(cmd) } // used by {x-tts-read}
 
 tstore.ttsOverlay = {
+  addDictDiv(id) {
+    const dictDiv = `<div id="${id}" class="box-shadow rounded" 
+    contentEditable="true" 
+    style="position: fixed; left: 50%; transform: translateX(-50%);
+    opacity: .95; bottom: 48px; width:70vw; padding: .1em .3em; 
+    text-align: left; background-color: var(--btn-lighgray);"
+    ></div>
+    `;
+
+    elid('tts-sentence-reader').insertAdjacentHTML('afterbegin', dictDiv);
+  },
+
+  insertSTT(text) {
+    const id = 'dictationDiv';
+    const el = elid(id);
+
+    if (!el) {
+      this.addDictDiv(id);
+      this.insertSTT('');
+    }
+    else el.focus();
+
+    const sel = window.getSelection();
+    const range = sel.getRangeAt(0)
+    range.deleteContents();
+    range.insertNode(document.createTextNode(text + " "));
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range); 
+  }, 
+
   repeatNum: 0,
 
   init(cmd) {
@@ -3854,7 +3885,8 @@ tstore.ttsOverlay = {
     + '<option value="ALL_WITH_REPS" title="Play each line at multiple speeds \r(see Replay speed factors in the settings)">Play all (reps)</option>'
     + '</select>';
 
-    displayOverlay({msg: '<div id="tts-sentence-reader">' + prompt + btnDiv + '</div>', style: 'width:auto; padding: 4px 1.5em;'});
+    
+    displayOverlay({msg: '<div id="tts-sentence-reader" class="rel">' + prompt + btnDiv + '</div>', style: 'width:auto; padding: 4px 1.5em;'});
     elid('tts-play-pause-btn').focus();
 	this.setTtsPlayMode();
   },
@@ -4675,9 +4707,9 @@ console.log ('** Transcript: ', txt);
   else {
     mic.isOff = true;
     gstore.engagedEl.value = txt;
-	adjustGapWidth(gstore.engagedEl, txt);
-	gstore.engagedEl.blur() // onblur calls checkClozeInput fn
-	if (checkGapMatch(gstore.engagedEl)) ttsSpeakLang(txt, recognition.lang);
+  	adjustGapWidth(gstore.engagedEl, txt);
+	  gstore.engagedEl.blur() // onblur calls checkClozeInput fn
+	  if (checkGapMatch(gstore.engagedEl)) ttsSpeakLang(txt, recognition.lang);
   }
 }
 
