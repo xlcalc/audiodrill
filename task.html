@@ -1089,6 +1089,7 @@ const onGapFocus = el => {
   el.value = el.value.replace(/_/g,'');
   resetChoiceColor(el);
   gstore.engagedEl = el;
+  tstore.STT.source = 'GAP';
   enableVoiceInput();
 }
 
@@ -3826,6 +3827,13 @@ tstore.ttsOverlay = {
     sel.addRange(range); 
   }, 
 
+  enableSTT() {
+// simplified for test only. More code like should be added, like in enableVoiceInput()
+    tstore.STT.source = 'TTS_LINES';
+    mic.isOff = false;
+    startSTT();
+  },
+
   repeatNum: 0,
 
   init(cmd) {
@@ -4703,7 +4711,8 @@ console.log ('** Transcript: ', txt);
 
   txt = txt.replace(/\s*[.?!]\s*$/, ''); // for Edge browser
 
-  if (gstore.engagedEl.nodeName === 'TEXTAREA') insertSTTText(gstore.engagedEl, txt)
+  if (tstore.STT.source === 'TTS_LINES') tstore.ttsOverlay.insertSTT(txt);
+  else if (tstore.STT.source === 'TEXT_AREA') insertSTTText(gstore.engagedEl, txt)
   else {
     mic.isOff = true;
     gstore.engagedEl.value = txt;
@@ -4719,6 +4728,7 @@ const setupVoiceInputForTextareas = () => {
   textareas.forEach(el => {
     el.onfocus = () => {
 	  gstore.engagedEl = el;
+    tstore.STT.source = 'TEXT_AREA';
 	  enableVoiceInput();
 	}
     el.onblur = () => disableVoiceInput();
@@ -4762,7 +4772,7 @@ const enableVoiceInput = async () => {
   micPermission = await getNavigatorMicPermission();
   if (micPermission !== 'denied' && tstore.STT.switchIsOn) {
     mic.isOff = false;
-	startSTT();
+    startSTT();
   }
 }
 
