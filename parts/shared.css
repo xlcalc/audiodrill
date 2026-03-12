@@ -717,6 +717,8 @@ font-s, .font-75pc {font-size: 75%}
 .v-align-middle {vertical-align: middle !important}
 .align-top {vertical-align: top}
 
+.faded {opacity:0 !important}
+
 .gray {color: var(--dark-gray3)}
 .gray2 {color: var(--dark-gray2)}
 .grayish {color: #7799bb}
