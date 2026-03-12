@@ -12,7 +12,7 @@ function showTrackInfo(arr) {
 
   const queryForURI = encodeURIComponent(query);
   const widgetHeader = total ?
-    wrstore.iconYT + `[YouTube](https://youtu.be/${videoID} Open on YouTube) 
+    `[${wrstore.iconYT} YouTube](https://youtu.be/${videoID} Open on YouTube) 
 	clips via [YouGlish](https://youglish.com/pronounce/"${queryForURI}"/${lang} Open on YouGlish):
 	[${current}](/?noauto&m=https://youtu.be/${videoID} Open on Audiodrill) of ${total}`
     + getYGChevronHtml()

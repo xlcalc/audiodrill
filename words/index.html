@@ -1247,7 +1247,7 @@ function handleKeyEvent(e) { // used function declaration b/c, unlike arrow fn, 
   if ('rR'.includes(e.key) && !e.ctrlKey && isTTSHotkeysAllowed()) repeatTTSChunk();
   if ('pP'.includes(e.key) && !e.ctrlKey && isTTSHotkeysAllowed()) clickPlay();
 
-  if (!widget || !widget.totalTracks) return;
+  if (!widget || !youglish.totalTracks) return;
   switch (e.key) {
     case 'Escape':
       players.pause();
@@ -1255,15 +1255,15 @@ function handleKeyEvent(e) { // used function declaration b/c, unlike arrow fn, 
 
     case 'Enter':
       if (e.altKey || (document.activeElement !== ta && document.activeElement !== elid('vocab-meaning-input'))) {
-        if (!widget.manuallyClosed) {
-		  widget.manuallyPaused = false;
+        if (!youglish.manuallyClosed) {
+		      youglish.manuallyPaused = false;
           widget.play(); 
-		}
+		    }
       }
       break;
 
     case 'R': case 'r': 
-      if (e.altKey) { widget.manuallyPaused = false; widget.replay(); }
+      if (e.altKey) { youglish.manuallyPaused = false; widget.replay(); }
       break;
 
     case 'N': case 'n': 
@@ -1289,20 +1289,20 @@ function handleKeyEvent(e) { // used function declaration b/c, unlike arrow fn, 
 players.pause = () => {
   if (widget) {
     widget.pause();
-	widget.manuallyPaused = true;
+	youglish.manuallyPaused = true;
   }
 }
 
 players.stop = () => {
   if (widget) {
     players.pause();
-    widget.manuallyClosed = true;
+    youglish.manuallyClosed = true;
   }
 }
 
 players.rewind = () => {
-  if (!widget.manuallyClosed && gstore.autoStartVideo) {
-    widget.manuallyPaused = false; 
+  if (!youglish.manuallyClosed && gstore.autoStartVideo) {
+    youglish.manuallyPaused = false; 
     widget.move(-1); 
   }
 }
