@@ -634,6 +634,32 @@ padding: 0;
 
 .m-wrap {display: flex}
 
+#tts-overlay-controls {
+  position: fixed;
+  bottom: 0;
+  padding: 10px;
+  background-color: var(--btn-lighgray);
+  max-width: 480px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+#dictation-box {
+  min-height: 60px;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #aaa;
+  background: white;
+}
+
+#dictationDiv {
+  outline: none;
+  transition: opacity 0.25s; 
+  opacity: 1;
+}
+
+
 @media screen and (max-width: 700px) {
   .m-wrap {flex-wrap: wrap}
 /*  .menu-button {right:-0.1em !important} */
@@ -2407,6 +2433,29 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 </div> <!--   End of row   -->
 </div> <!--  End of main-page  -->
 
+
+<div id="tts-overlay-controls" hidden class="rounded">
+  <span class="action-icon close-x01">&times;</span>
+  <!-- Dictation (shown only in shadowing mode) -->
+  <div id="dictation-box" hidden>
+    <div id="dictationDiv" contenteditable="true"></div>
+  </div>
+
+  <!-- TTS Sentence Reader -->
+  <div id="tts-sentence-reader" class="rounded">
+    <select id="ttsPlayMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">
+  	  <option value="sentence" title="Replay the line at multiple speeds
+(see Replay speed factors in the settings)">Play a line</option>
+	    <option value="SENTENCE_WITH_DICTATE" title="Play the line and say it">Shadow a line</option>
+      <option value="all" title="Play the whole text at one speed
+(see Master speed rate in the settings)">Play all text</option>
+      <option value="ALL_WITH_REPS" title="Play each line at multiple speeds
+(see Replay speed factors in the settings)">Play all (reps)</option>
+    </select>
+  </div>
+
+</div>
+
 <!--  Footer   -->
 <div id="bottom-bar"></div>
 <script>
@@ -3799,21 +3848,25 @@ const readTTSChunks = (cmd) => { tstore.ttsOverlay.init(cmd) } // used by {x-tts
 tstore.ttsOverlay = {
   dictDiv: {
     id: 'dictationDiv',
+    boxId: 'dictation-box',
+    speakPrompt: '<i>Speak here...</i>',
 
     async clear() {
       el = elid(this.id);
-      if (!el) return;
+//      if (!el) return;
       await blinkElClass(el, 'faded', 1, 500);
-      el.textContent = "";
+//      el.textContent = "";
+      el.innerHTML = this.speakPrompt;
     },
 
     remove() {
-      if (elid(this.id)) elid(this.id).parentElement.remove();
+//      if (elid(this.id)) elid(this.id).parentElement.remove();
+      elid(this.boxId).hidden = true;
       disableVoiceInput();
     },
 
-  set() {
-console.log('dict ID', this.id);
+  set() { // not used since 2026-03-13
+//console.log('dict ID', this.id);
     const dictDiv = `<div class="box-shadow rounded"
 style="position: fixed; left: 50%; transform: translateX(-50%);
 bottom: 72px; width:70vw; padding: .1em .3em; 
@@ -3828,14 +3881,10 @@ transition: opacity 0.25s; opacity: 1;"
 },
 
   insertSTT(text) {
-    const el = elid(this.dictDiv.id);
+    elid(this.dictDiv.boxId).hidden = false;
 
-    if (!el) {
-      this.dictDiv.set();
-      return;
-//      this.insertSTT('');
-    }
-    else if (el.innerHTML === '<i>Repeat what you heard</i>') el.innerHTML = '';
+    const el = elid(this.dictDiv.id);
+    if (text && el.innerHTML.includes(this.dictDiv.speakPrompt)) el.innerHTML = '';
     el.focus();
 
     const sel = window.getSelection();
@@ -3850,13 +3899,15 @@ transition: opacity 0.25s; opacity: 1;"
   enableSTT() {
 // simplified for test only. More code like should be added, like in enableVoiceInput()
     tstore.STT.source = 'TTS_LINES';
-//    this.insertSTT();
-    this.dictDiv.set();
+    this.insertSTT();
+//    this.dictDiv.set();
     mic.isOff = false;
     startSTT();
   },
 
   repeatNum: 0,
+
+  show(cmd) { elid('tts-overlay-controls').hidden = !cmd },
 
   init(cmd) {
     if (!tstore.ttsClickSwitch.isOn || !tstore.taskSentences) return;
@@ -3866,7 +3917,7 @@ transition: opacity 0.25s; opacity: 1;"
 	this.unmarkAll();
 	this.setReadMode(1);
  
-    this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
+  this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
 	if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
 	this.play();
 	this.showCtrls();
@@ -3908,7 +3959,7 @@ transition: opacity 0.25s; opacity: 1;"
     const btnDiv = '<div class="inblock v-align-middle"><div class="flex-center">'
     + prevBtn + playBtn + nextBtn + translateBtn + settingsBtn
     + '</div></div>';
-
+/*
     const prompt = '<select id="ttsPlayMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">'
 	  + '<option value="sentence" title="Replay the line at multiple speeds \r(see Replay speed factors in the settings)">Play a line</option>'
 	  + '<option value="SENTENCE_WITH_DICTATE" title="Play the line and say it">Shadow a line</option>'
@@ -3918,6 +3969,14 @@ transition: opacity 0.25s; opacity: 1;"
 
     
     displayOverlay({msg: '<div id="tts-sentence-reader" class="rel">' + prompt + btnDiv + '</div>', style: 'width:auto; padding: 4px 1.5em;'});
+*/
+//    elid('tts-overlay-controls').hidden = false;
+    if (!elid('tts-play-pause-btn')) {
+      elid('tts-overlay-controls').querySelector('.close-x01').onclick = () => { this.setReadMode(0) }
+      elid('tts-sentence-reader').insertAdjacentHTML('beforeend', btnDiv);
+    }
+
+    this.show(true);
     elid('tts-play-pause-btn').focus();
     this.setTtsPlayMode();
   },
@@ -3995,7 +4054,7 @@ transition: opacity 0.25s; opacity: 1;"
     if (!this.readMode) return;
     if (this.ttsPlayMode === 'SENTENCE_WITH_DICTATE') {
   	  this.showPlaying(0);
-      this.dictDiv.set();
+//      this.dictDiv.set();
       this.enableSTT();
     }
     else if (this.ttsPlayMode === 'ALL_WITH_REPS') {
@@ -4077,7 +4136,12 @@ transition: opacity 0.25s; opacity: 1;"
   
   setReadMode(cmd) {
     this.readMode = !!cmd;
-    if (!cmd) this.unmarkAll(); 
+    if (!cmd) {
+      this.show(false);
+      disableVoiceInput();
+//      elid('tts-overlay-controls').hidden = true;
+      this.unmarkAll(); 
+    }
   },
 
   translate(btn) {
