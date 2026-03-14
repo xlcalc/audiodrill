@@ -639,14 +639,15 @@ padding: 0;
   bottom: 0;
   padding: 10px;
   background-color: var(--btn-lighgray);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.82);
   width:fit-content;
   left: 50%;
   transform: translateX(-50%);
 }
 
 #dictation-box {
-  min-height: 60px;
-  padding: 8px;
+  padding: 4px; 
   margin-bottom: 8px;
   border: 1px solid #aaa;
   background: var(--color-white-darkgray);
@@ -656,6 +657,11 @@ padding: 0;
 }
 
 #dictationDiv {
+  margin: -4px;   /* cancel parent padding for scrollbar */
+  padding: 4px;   /* keep text aligned */
+  min-height: 60px;
+  max-height: 120px;
+  overflow-y: auto;
   outline: none;
   transition: opacity 0.25s; 
   opacity: 1;
@@ -2437,7 +2443,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 </div> <!--  End of main-page  -->
 
 
-<div id="tts-overlay-controls" hidden class="rounded box-shadow">
+<div id="tts-overlay-controls" hidden data-themeable class="rounded box-shadow">
   <span class="action-icon close-x01">&times;</span>
   <!-- Dictation (shown only in shadowing mode) -->
   <div id="dictation-box" hidden>
@@ -2446,7 +2452,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
   <!-- TTS Sentence Reader -->
   <div id="tts-sentence-reader" class="rounded block-center">
-    <select id="ttsPlayMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">
+    <select id="ttsPlayMode" class="font-80pc drop-down darker-hover" style="margin: .1em">
   	  <option value="sentence" title="Replay the line at multiple speeds
 (see Replay speed factors in the settings)">Play a line</option>
 	    <option value="SENTENCE_WITH_DICTATE" title="Play the line and say it">Shadow a line</option>
