@@ -15,7 +15,7 @@ Build your listening and speaking skills in foreign languages. Practice pronunci
 
 ### 3. Make learning interactive
 
- * 🎧 Click a word to hear it, or |_Ctrl_| (|_Command_| on Mac) + click a word to hear the entire sentence.
+ * 🎧 Click a word to hear it, or |_Ctrl_| (|_Command_| on Mac) + to hear the sentence. You can also play the full text or shadow the sentence, i.e. listen and dictate.
  * 🔍 Select a text to hear it, look it up, translate and add to vocabulary.
  * 🔁 Loop audio/video fragments at custom speed: 
  <input type="url" placeholder="Enter URL here" class="inherit" onchange="getVideoFromURLInput(this)"><input type="submit" class="plain-button font-80pc rounded darker-bg-onhover" value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)"> or <label><a title="Open a local audio or video file">open a local file</a><input type="file" id="open-media2" onchange="uploadTaskOrVideoFile(this)" accept="video/{star}, audio/{star}" style="position: fixed; top: -100em"></label>/drag-and-drop.
