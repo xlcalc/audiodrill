@@ -639,10 +639,9 @@ padding: 0;
   bottom: 0;
   padding: 10px;
   background-color: var(--btn-lighgray);
-  max-width: 480px;
+  width:fit-content;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
 }
 
 #dictation-box {
@@ -650,7 +649,10 @@ padding: 0;
   padding: 8px;
   margin-bottom: 8px;
   border: 1px solid #aaa;
-  background: white;
+  background: var(--color-white-darkgray);
+  color: var(--color-777-eee);
+  color: var(--color-text);
+  width: 420px;
 }
 
 #dictationDiv {
@@ -659,6 +661,7 @@ padding: 0;
   opacity: 1;
 }
 
+#tts-sentence-reader { width:fit-content }
 
 @media screen and (max-width: 700px) {
   .m-wrap {flex-wrap: wrap}
@@ -2434,7 +2437,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 </div> <!--  End of main-page  -->
 
 
-<div id="tts-overlay-controls" hidden class="rounded">
+<div id="tts-overlay-controls" hidden class="rounded box-shadow">
   <span class="action-icon close-x01">&times;</span>
   <!-- Dictation (shown only in shadowing mode) -->
   <div id="dictation-box" hidden>
@@ -2442,7 +2445,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
   </div>
 
   <!-- TTS Sentence Reader -->
-  <div id="tts-sentence-reader" class="rounded">
+  <div id="tts-sentence-reader" class="rounded block-center">
     <select id="ttsPlayMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">
   	  <option value="sentence" title="Replay the line at multiple speeds
 (see Replay speed factors in the settings)">Play a line</option>
@@ -3853,10 +3856,13 @@ tstore.ttsOverlay = {
 
     async clear() {
       el = elid(this.id);
-//      if (!el) return;
       await blinkElClass(el, 'faded', 1, 500);
-//      el.textContent = "";
-      el.innerHTML = this.speakPrompt;
+      el.textContent = "";
+//      el.innerHTML = this.speakPrompt;
+    },
+
+    showPrompt() {
+      elid(this.id).innerHTML = this.speakPrompt;
     },
 
     remove() {
@@ -4055,6 +4061,7 @@ transition: opacity 0.25s; opacity: 1;"
     if (this.ttsPlayMode === 'SENTENCE_WITH_DICTATE') {
   	  this.showPlaying(0);
 //      this.dictDiv.set();
+      this.dictDiv.showPrompt()
       this.enableSTT();
     }
     else if (this.ttsPlayMode === 'ALL_WITH_REPS') {

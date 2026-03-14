@@ -16,7 +16,7 @@
   --btn-lighgray-hovered: #e6e6e6;
   --scroll-track-bgcolor: rgba(200, 200, 200, .3);
   --scroll-thumb-bgcolor: rgba(0, 0, 0, .1);
-  --scroll-thumb-border-color: white;
+  --color-white-darkgray: white;
 }
 
 :root.night-mode {
@@ -39,7 +39,7 @@
   --audio-controls-bg: var(--dark-gray);
   --scroll-track-bgcolor: rgba(200, 200, 200, .1);
   --scroll-thumb-bgcolor: #282828;
-  --scroll-thumb-border-color: #282828;
+  --color-white-darkgray: #282828;
 }
 
 * {outline-color: var(--a-color);}
@@ -531,7 +531,7 @@ select::-webkit-scrollbar {width: 18px;}
 ::-webkit-scrollbar-thumb {
   background-color: var(--scroll-thumb-bgcolor);
   border-radius: 10px;
-  border: 1px solid var(--scroll-thumb-border-color);
+  border: 1px solid var(--color-white-darkgray);
 }
 
 ::-webkit-scrollbar-track {
