@@ -827,6 +827,15 @@ padding: 0;
   background-color: #ccc;
 }
 
+.wrong-word {
+    background-color: #ffe0b0; /* light orange */
+}
+
+.extra-word {
+    color: #888;
+    text-decoration: line-through;
+}
+
 @media (min-width: 768px) {
   .task-box, #wordlist-box { border: 1px hsl(150, 20%, 92%) solid; }
 
@@ -3460,8 +3469,8 @@ tstore.translation = { // experimental: 2026-02-14
       this.text = captured.trim();
 
 // language of translation may be added after the marker, just like for :lang: marker	  
-	  const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
-	  this.sentences = [...segmenter.segment(this.text)] .map(entry => entry.segment.trim()); // trim() removes \s including \n
+  	  const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
+	    this.sentences = [...segmenter.segment(this.text)] .map(entry => entry.segment.trim()); // trim() removes \s including \n
 
       return '';
     }).trim();
@@ -3892,20 +3901,47 @@ transition: opacity 0.25s; opacity: 1;"
   },
 },
 
-  insertSTT(text) {
+  async insertSTT(text) {
     elid(this.dictDiv.boxId).hidden = false;
 
     const el = elid(this.dictDiv.id);
     if (text && el.innerHTML.includes(this.dictDiv.speakPrompt)) el.innerHTML = '';
     el.focus();
+    if (!text) return;
 
-    const sel = window.getSelection();
-    const range = sel.getRangeAt(0)
+    let sel = window.getSelection();
+    let range = sel.getRangeAt(0)
     range.deleteContents();
     if (text) range.insertNode(document.createTextNode(text + " "));
+/*
     range.collapse(false);
     sel.removeAllRanges();
     sel.addRange(range); 
+*/
+    const curText = el.textContent;
+//    await sleep(2000);
+    el.innerHTML = checkStringVsRef(curText, this.ttsLine, this.ttsLang)
+      .replace(/(___ ?)+$/g, "");
+    range = document.createRange();
+    sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);   // move caret to end
+    sel.removeAllRanges();
+    sel.addRange(range);
+    return;
+/*    
+    await sleep(3000);
+    // restore original text and put caret at end
+    el.textContent = curText;
+
+    range = document.createRange();
+    sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);   // move caret to end
+    sel.removeAllRanges();
+    sel.addRange(range);
+//    el.focus();
+*/
   }, 
   
   enableSTT() {
@@ -4040,7 +4076,7 @@ transition: opacity 0.25s; opacity: 1;"
     this.setClickedPlayBtn(1);
 
     tts.cancel();
-	  const line = tstore.taskSentences[this.currentNum]; 
+
     if (this.currentNum === this.prevNum) {
       this.repeatNum ++;
       if (this.repeatNum >= speedCtrl.getAdvanced().length) this.repeatNum = 0;
@@ -4050,13 +4086,13 @@ transition: opacity 0.25s; opacity: 1;"
     }
     
 // !! Using tstore.taskSentences can lead to discrepancy with span data-sentence-index in complex htmls?
-
+	  this.ttsLine = tstore.taskSentences[this.currentNum]; 
 // get language, as sentences may be in different divs with different languages
-    const lang = gstore.getContextLangCode(tstore.nodes[this.currentNum]);
+    this.ttsLang = gstore.getContextLangCode(tstore.nodes[this.currentNum]);
     tstore.TTSsource = 'sentence';
 
     const speed = speedCtrl.calcSpeed(this.repeatNum);
-    ttsSpeakLang(line, lang, 'DONT_WAIT', speed);
+    ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
     this.markSentence(this.currentNum, 1);
   },
@@ -4957,6 +4993,65 @@ function printTask() {
   document.body.classList.add('print-div');
   window.print();
   document.body.classList.remove('print-div');
+}
+
+//  == Compare STT with reference ==
+const getSegmentedText = (text, param) => {
+    text = removePunctuation2(text);
+	  const segmenter = new Intl.Segmenter(param?.lang || 'en', { granularity: param?.granularity || 'word' });
+	  return [...segmenter.segment(text)]
+      .map(entry => entry.segment.trim())
+      .filter(entry => entry);
+}
+
+function alignTokens(hyp, ref) {
+  const m = ref.length;
+  const n = hyp.length;
+
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = ref[i - 1] === hyp[j - 1] ? 0 : 1;
+
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,      // deletion (missing)
+        dp[i][j - 1] + 1,      // insertion (extra)
+        dp[i - 1][j - 1] + cost // substitution
+      );
+    }
+  }
+
+  let i = m, j = n;
+  const out = [];
+
+  while (i > 0 || j > 0) {
+
+    if (i > 0 && j > 0 && ref[i - 1] === hyp[j - 1]) {
+      out.unshift(hyp[j - 1]);
+      i--; j--;
+    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {   // prefer deletion
+      out.unshift("___");
+      i--;
+    } else if (j > 0 && dp[i][j] === dp[i][j - 1] + 1) {   // then insertion
+      out.unshift(`<span class="extra-word">${hyp[j - 1]}</span>`);
+      j--;
+    } else {                                                  // substitution
+      out.unshift(`<span class="wrong-word">${hyp[j - 1]}</span>`);
+      i--; j--;
+    }
+  }
+
+  return out.join(" ");
+}
+
+const checkStringVsRef = (str, ref, lang) => {
+  str = getSegmentedText(str.toLowerCase(), {lang: lang || getLangCode()});
+  ref = getSegmentedText(ref.toLowerCase(), {lang: lang || getLangCode()});
+  return alignTokens(str, ref);
 }
 
 // ***  Beep  ***
