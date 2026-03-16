@@ -5004,7 +5004,9 @@ const getSegmentedText = (text, param) => {
       .filter(entry => entry);
 }
 
-function alignTokens(hyp, ref) {
+function alignTokens(str, reference) {
+  const hyp = str.map(s => s.toLowerCase());
+  const ref = reference.map(s => s.toLowerCase());
   const m = ref.length;
   const n = hyp.length;
 
@@ -5031,16 +5033,17 @@ function alignTokens(hyp, ref) {
   while (i > 0 || j > 0) {
 
     if (i > 0 && j > 0 && ref[i - 1] === hyp[j - 1]) {
-      out.unshift(hyp[j - 1]);
+//      out.unshift(hyp[j - 1]);
+      out.unshift(reference[i - 1]); // insert from the original
       i--; j--;
     } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {   // prefer deletion
       out.unshift("___");
       i--;
     } else if (j > 0 && dp[i][j] === dp[i][j - 1] + 1) {   // then insertion
-      out.unshift(`<span class="extra-word">${hyp[j - 1]}</span>`);
+      out.unshift(`<span class="extra-word">${str[j - 1]}</span>`);
       j--;
-    } else {                                                  // substitution
-      out.unshift(`<span class="wrong-word">${hyp[j - 1]}</span>`);
+    } else {                                               // substitution
+      out.unshift(`<span class="wrong-word">${str[j - 1]}</span>`);
       i--; j--;
     }
   }
@@ -5049,9 +5052,9 @@ function alignTokens(hyp, ref) {
 }
 
 const checkStringVsRef = (str, ref, lang) => {
-  str = getSegmentedText(str.toLowerCase(), {lang: lang || getLangCode()});
-  ref = getSegmentedText(ref.toLowerCase(), {lang: lang || getLangCode()});
-  return alignTokens(str, ref);
+  const strArr = getSegmentedText(str, {lang: lang || getLangCode()});
+  const refArr = getSegmentedText(ref, {lang: lang || getLangCode()});
+  return alignTokens(strArr, refArr);
 }
 
 // ***  Beep  ***
