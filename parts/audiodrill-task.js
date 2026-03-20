@@ -22,7 +22,7 @@ const trimToLower = txt => txt.trim() .toLowerCase();
 //backslash added 2022-10-30. What about ()and []?
 // trimming apostrophes added 2024-07-18
 const removePunctuation = txt => txt.replace(/[.!?,"“”,。,？,！,，,、:\\]/g, '').replace(/^'|'$/g,'');
-const removePunctuation2 = txt => txt.replace(/[\(\);.!?,"“”,。,？,！,，,、:\\]/g, '') //(); added 2024-06-29. What about ()and []?
+const removePunctuation2 = txt => txt.replace(/[\(\);.!?,"“”,。,？,！,，,、:\\]/g, '') //(); added 2024-06-29. What about []?
 //const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s|-/g,' ').replace(/’/g,"'"); // hyphen moved here from removePunctuation
 const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s+|-/g,' ').replace(/’/g,"'"); // hyphen moved here from removePunctuation
 const normalizeStr = txt => trimToLower(txt.replace(/\s+/g, ' ') .replace(/_+/g,''));

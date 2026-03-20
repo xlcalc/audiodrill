@@ -4997,13 +4997,14 @@ function printTask() {
 
 //  == Compare STT with reference ==
 const getSegmentedText = (text, param) => {
-    text = removePunctuation2(text);
+//    text = removePunctuation2(text);
 	  const segmenter = new Intl.Segmenter(param?.lang || 'en', { granularity: param?.granularity || 'word' });
 	  return [...segmenter.segment(text)]
       .map(entry => entry.segment.trim())
-      .filter(entry => entry);
+//      .filter(entry => entry);
 }
 
+/*
 function alignTokens(str, reference) {
   const hyp = str.map(s => s.toLowerCase());
   const ref = reference.map(s => s.toLowerCase());
@@ -5050,12 +5051,87 @@ function alignTokens(str, reference) {
 
   return out.join(" ");
 }
-
+*/
 const checkStringVsRef = (str, ref, lang) => {
   const strArr = getSegmentedText(str, {lang: lang || getLangCode()});
   const refArr = getSegmentedText(ref, {lang: lang || getLangCode()});
-  return alignTokens(strArr, refArr);
+//  return alignTokens(strArr, refArr);
+  return alignTokensWithPunct(strArr, refArr);
 }
+
+function alignTokensWithPunct(strTokens, referenceTokens) {
+  // Edge case with hyphens isn't treated yet
+  const punctuationSet = new Set(`.,!?;:”“'"()[]{}-—…。？！，、`); // extend as needed
+  const isWord = t => t && !punctuationSet.has(t);
+
+  const refWords = referenceTokens.filter(isWord);
+  const str = strTokens.filter(isWord);
+
+  const ref = refWords.map(s => s.toLowerCase());
+  const hyp = str.map(s => s.toLowerCase());
+
+  const m = ref.length;
+  const n = hyp.length;
+
+  // DP table
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = ref[i - 1] === hyp[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,      // deletion
+        dp[i][j - 1] + 1,      // insertion
+        dp[i - 1][j - 1] + cost // substitution
+      );
+    }
+  }
+
+  // Backtracking
+  let i = m, j = n;
+  let rIdx = referenceTokens.length - 1;
+  const out = [];
+
+  while (rIdx >= 0 || i > 0 || j > 0) {
+    const t = referenceTokens[rIdx];
+
+    // Space token
+    if (rIdx >= 0 && t === "") {
+      out.unshift(" ");
+      rIdx--;
+      continue;
+    }
+
+    // Punctuation token
+    if (rIdx >= 0 && punctuationSet.has(t)) {
+      out.unshift(t);
+      rIdx--;
+      continue;
+    }
+
+    // Word alignment
+    if (i > 0 && j > 0 && ref[i - 1] === hyp[j - 1]) {
+      out.unshift(refWords[i - 1]);
+      i--; j--; rIdx--;
+    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {
+      out.unshift("___"); // deletion
+      i--; rIdx--;
+    } else if (j > 0 && dp[i][j] === dp[i][j - 1] + 1) {
+      out.unshift(` <span class="extra-word">${str[j - 1]}</span>`); // insertion
+      j--;
+    } else if (i > 0 && j > 0) {
+      out.unshift(`<span class="wrong-word">${str[j - 1]}</span>`); // substitution
+      i--; j--; rIdx--;
+    } else {
+      rIdx--; // fallback for remaining punctuation or spaces
+    }
+  }
+
+  return out.join("");
+}
+
 
 // ***  Beep  ***
 /* This fn may be needed later
