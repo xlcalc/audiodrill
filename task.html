@@ -3921,7 +3921,8 @@ transition: opacity 0.25s; opacity: 1;"
     const curText = el.textContent;
 //    await sleep(2000);
     el.innerHTML = checkStringVsRef(curText, this.ttsLine, this.ttsLang)
-      .replace(/(___ ?)+$/g, "");
+//      .replace(/(___ ?)+$/g, "");
+      .replace(/(___[ \p{P}]*)+$/u, "");
     range = document.createRange();
     sel = window.getSelection();
     range.selectNodeContents(el);
