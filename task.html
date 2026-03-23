@@ -2054,8 +2054,15 @@ const analyzeURLParams = async () => {
 
   let taskText = urlKeys.get('l'); // "l" means load encoded task from url
   if (taskText) {
-//    gstore.vocabMode = 4; // later could be read from urlKeys.get...
-    taskText = taskText.replace(/ /g, '+');
+//    taskText = taskText.replace(/ /g, '+'); // not needed? Commented out 2026-03-23
+    loadElementWithText(taskText, 'transcriptText');
+  }
+
+  taskText = urlKeys.get('txt'); // "txt" means load unencoded text from url
+  if (taskText) {
+    taskText = taskText.replace(/--/g, '{hyphen}')
+	  .replace(/-/g, ' ')
+      .replace(/{hyphen}/g, '-');
     loadElementWithText(taskText, 'transcriptText');
   }
 
