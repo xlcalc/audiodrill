@@ -629,7 +629,10 @@ display: block;
 height: .7em; 
 }
 
-x-cmd {display: inline-block;}
+x-cmd {
+  display: inline-block;
+  white-space: normal;
+}
 
 .spinner {
   width: 20px;
