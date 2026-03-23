@@ -2649,6 +2649,9 @@ tstore.nightModeSwitch = new ToggleSwitch({id: 'night-mode-switch',
   });
 
 window.onload = () => {
+  if (!loadSTT('NO_AUDIO_RECORDER')) // it can work with audioRecorder as well, but so far recording is not needed 
+    console.warn('STT not supported'); 
+	
   if (localStorage.getItem('showSettings')) showSettings();
   else hideSettings();
   
@@ -2664,7 +2667,7 @@ window.onload = () => {
 
   initVideoResizer();
   
-  gstore.tips.initAll(); // experimental, added 2025-10-11
+  gstore.tips.initAll();
 
   adjustPostRecActions('0.7U, 0.7O, U, O');
   
@@ -2678,10 +2681,6 @@ window.onload = () => {
   elid('print-task').innerHTML = gstore.printIcon;
   elid('share-link').innerHTML = uiblox.shareIcon('2 2 20 22', 12);
   elid('share-fragment').innerHTML = uiblox.shareIcon('0 0 24 24', 24);
-  
-//  mic.init();
-  if (!loadSTT('NO_AUDIO_RECORDER')) // it can work with audioRecorder as well, but so far recording is not needed 
-    console.warn('STT not supported'); 
 
   setNightMode('default');
 }
