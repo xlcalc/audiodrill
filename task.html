@@ -2062,7 +2062,9 @@ const analyzeURLParams = async () => {
   if (taskText) {
     taskText = taskText.replace(/--/g, '{hyphen}')
 	  .replace(/-/g, ' ')
-      .replace(/{hyphen}/g, '-');
+      .replace(/{hyphen}/g, '-')
+	  .replace(/\\n/g, '<br>')
+	  ;
     loadElementWithText(taskText, 'transcriptText');
   }
 
