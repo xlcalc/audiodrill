@@ -2054,11 +2054,9 @@ const analyzeURLParams = async () => {
 
   let taskText = urlKeys.get('l'); // "l" means load encoded task from url
   if (taskText) {
-//    taskText = taskText.replace(/ /g, '+'); // not needed? Commented out 2026-03-23
+    taskText = taskText.replace(/ /g, '+');
     loadElementWithText(taskText, 'transcriptText');
-  }
-
-  taskText = urlKeys.get('txt'); // "txt" means load unencoded text from url
+  } else taskText = urlKeys.get('txt'); // "txt" means load unencoded text from url
   if (taskText) {
     taskText = taskText.replace(/--/g, '{hyphen}')
 	  .replace(/-/g, ' ')
