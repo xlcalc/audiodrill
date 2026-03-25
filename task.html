@@ -3969,11 +3969,12 @@ transition: opacity 0.25s; opacity: 1;"
     if (!tstore.ttsClickSwitch.isOn || !tstore.taskSentences) return;
 
 // rescanning with wrapTaskSentences() can't be run here b/c it'll add more spans over already existing ones
+	closeXaudio();
 
 	this.unmarkAll();
 	this.setReadMode(1);
- 
-  this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
+
+ 	this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
 	if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
 	this.play();
 	this.showCtrls();
