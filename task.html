@@ -3880,11 +3880,14 @@ tstore.ttsOverlay = {
       el = elid(this.id);
       await blinkElClass(el, 'faded', 1, 500);
       el.textContent = "";
+	  setElClass(el, 'green', 0);
 //      el.innerHTML = this.speakPrompt;
     },
 
-    showPrompt() {
-      elid(this.id).innerHTML = this.speakPrompt;
+    async showPrompt(s) {
+	  elid(this.boxId).hidden = false;
+	  await this.clear();
+      elid(this.id).innerHTML = s? s: this.speakPrompt;
     },
 
     remove() {
@@ -3909,7 +3912,7 @@ transition: opacity 0.25s; opacity: 1;"
 },
 
   async insertSTT(text) {
-    elid(this.dictDiv.boxId).hidden = false;
+//    elid(this.dictDiv.boxId).hidden = false;
 
     const el = elid(this.dictDiv.id);
     if (text && el.innerHTML.includes(this.dictDiv.speakPrompt)) el.innerHTML = '';
@@ -3919,7 +3922,8 @@ transition: opacity 0.25s; opacity: 1;"
     let sel = window.getSelection();
     let range = sel.getRangeAt(0)
     range.deleteContents();
-    if (text) range.insertNode(document.createTextNode(text + " "));
+//    if (text) range.insertNode(document.createTextNode(text + " "));
+    range.insertNode(document.createTextNode(' ' + text + ' '));
 /*
     range.collapse(false);
     sel.removeAllRanges();
@@ -3927,7 +3931,7 @@ transition: opacity 0.25s; opacity: 1;"
 */
     const curText = el.textContent;
 //    await sleep(2000);
-    el.innerHTML = checkStringVsRef(curText, this.ttsLine, this.ttsLang)
+	const sttOutput = el.innerHTML = checkStringVsRef(curText, this.ttsLine, this.ttsLang)
 //      .replace(/(___ ?)+$/g, "");
       .replace(/(___[ \p{P}]*)+$/u, "");
     range = document.createRange();
@@ -3936,6 +3940,8 @@ transition: opacity 0.25s; opacity: 1;"
     range.collapse(false);   // move caret to end
     sel.removeAllRanges();
     sel.addRange(range);
+	
+	setElClass(el, 'green', sttOutput === this.ttsLine);
     return;
 /*    
     await sleep(3000);
@@ -3969,12 +3975,12 @@ transition: opacity 0.25s; opacity: 1;"
     if (!tstore.ttsClickSwitch.isOn || !tstore.taskSentences) return;
 
 // rescanning with wrapTaskSentences() can't be run here b/c it'll add more spans over already existing ones
-	closeXaudio();
+    closeXaudio();
 
 	this.unmarkAll();
 	this.setReadMode(1);
-
- 	this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
+ 
+  this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
 	if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
 	this.play();
 	this.showCtrls();
@@ -4057,8 +4063,9 @@ transition: opacity 0.25s; opacity: 1;"
   
   shadowLines() {
 	tstore.ttsOverlay.init();
-	tstore.ttsOverlay.setTtsPlayMode('SENTENCE_WITH_DICTATE');
+	tstore.ttsOverlay.setTtsPlayMode(this.shadowModeName);
   },
+
   
   unmarkAll() {
     tstore.nodes.forEach(el => el.classList.remove('marked'));
@@ -4087,7 +4094,7 @@ transition: opacity 0.25s; opacity: 1;"
 
   play() {
     disableVoiceInput();
-    this.dictDiv.clear();
+//    this.dictDiv.clear();
 
     this.setClickedPlayBtn(1);
 
@@ -4110,13 +4117,14 @@ transition: opacity 0.25s; opacity: 1;"
     const speed = speedCtrl.calcSpeed(this.repeatNum);
     ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
+	if (this.isShadowMode()) this.dictDiv.showPrompt(this.ttsLine);
     this.markSentence(this.currentNum, 1);
   },
   
   ttsEnded() {
 //console.log('!!tstore.TTSsource', tstore.TTSsource);  
     if (!this.readMode) return;
-    if (this.ttsPlayMode === 'SENTENCE_WITH_DICTATE') {
+    if (this.isShadowMode()) {
   	  this.showPlaying(0);
 //      this.dictDiv.set();
       this.dictDiv.showPrompt()
@@ -4214,6 +4222,10 @@ transition: opacity 0.25s; opacity: 1;"
     btn.setAttribute('onblur', "leaveTipParent(this)");
     tstore.transl(tstore.taskSentences[this.currentNum], {el: btn});
   },
+  
+  shadowModeName: 'SENTENCE_WITH_DICTATE',
+
+  isShadowMode() {return this.ttsPlayMode === this.shadowModeName},
 }
 
 function getClickedTextFragment(lang, granularity) {
