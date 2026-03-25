@@ -1635,6 +1635,7 @@ const getNextSibling = (elem, selector) => {
 }
 
 const replayFragment = async (firstCue, isTTS = false) => {
+  displayMessage('');
   await sleep (300);
 /*
   if (doubleClicked()) { // avoid playing lines if they are double clicked.
@@ -3284,7 +3285,7 @@ console.log('movePlayer: players.ytAPI', players.ytAPI);
 const closeXaudio = () => {
   playerStop();
   hideEl(xAudioBox);
-  xAudioBox.isReady = false;
+//  xAudioBox.isReady = false;
 }
 
 const prepXAudio = () => {
@@ -4858,6 +4859,8 @@ tstore.STT = {
   destroyToolbar() { displayOverlay('') },
   
   init() {
+	hideEl(xAudioBox);
+
     const langCtrlCloneBox = '<div id="lang-ctrl-clone-box" class="inblock"></div>';
     const msg = '<div id="gap-tools-box">' 
 	  + uiblox.specKeys.boxHtml 
