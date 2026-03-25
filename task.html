@@ -4037,7 +4037,7 @@ transition: opacity 0.25s; opacity: 1;"
     this.setTtsPlayMode();
   },
   
-  setTtsPlayMode() {
+  setTtsPlayMode(mode) {
     const el = elid('ttsPlayMode');
 
     const setDDL = () => {
@@ -4045,11 +4045,18 @@ transition: opacity 0.25s; opacity: 1;"
       const selectedOption = el.options[el.selectedIndex];
       el.title = selectedOption.title || '';
     }
+
+	if (mode) el.value = mode;
     setDDL();
     el.onchange = () => { 
       setDDL();
       this.dictDiv.remove();
     }
+  },
+  
+  shadowLines() {
+	tstore.ttsOverlay.init();
+	tstore.ttsOverlay.setTtsPlayMode('SENTENCE_WITH_DICTATE');
   },
   
   unmarkAll() {
