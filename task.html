@@ -1406,12 +1406,14 @@ console.log('ERROR loading html video', e);
 	}
   }
 
+/*
   if (players.mediaInTask && xAudioBox.childElementCount) {
     showEl(xAudioBox);
 	adjustMediaInTask();
   }
-//  if (players.mediaInTask) adjustMediaInTask();
-  
+*/
+  adjustMediaInTask();
+
   // wait for the video to be ready
 console.log('Loading the media file...'); 
   await new Promise(resolve => players.resolveVideoReady = resolve);
@@ -1561,6 +1563,8 @@ const testPlay = async () => {
 console.log ('testPlay waiting for flags to be cleared'); 
     await sleep(100);
   }
+
+  adjustMediaInTask();
 
   players.flag = 1;
   players.jsPlay = true;
@@ -2929,7 +2933,9 @@ const setLeftColWidth = lw => { // could be used to resize the video
 }
 
 const adjustMediaInTask = () => {
-  if (!players.mediaInTask) return;
+  if (!players.mediaInTask || !xAudioBox.childElementCount) return false;
+
+  showEl(xAudioBox);
 
   if (players.mediaType === 'video') {
     const width = 360;
@@ -2938,14 +2944,19 @@ const adjustMediaInTask = () => {
     xAudioBox.style.width = 'fit-content';
 
 	showVideoResizer(0);
-  }  
+  }
+
+  return true;
 }
 
 const setVideoSize = cmd => {
+  if (adjustMediaInTask()) return;
+/*  
   if (players.mediaInTask) {
     adjustMediaInTask();
     return;
   }
+*/
   
   const vctrl = function(n) {
     const ctrls = document.querySelectorAll('.video-size');
