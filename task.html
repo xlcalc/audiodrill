@@ -1157,7 +1157,8 @@ const adjustGapWidth = (gap, s = '') => {
   // else don't shrink while typing
 }
 
-const strMatch = (s1, s2) => (normalizeStr(s1) === normalizeStr(s2));
+//const strMatch = (s1, s2) => (normalizeStr(s1) === normalizeStr(s2));
+const strMatch = (s, ref) => normalizeStr(s).includes(normalizeStr(ref));
 
 const checkGapMatch = gap => {
   if (strMatch(gap.value, gap.alt)) { // pure gap without \\ part
