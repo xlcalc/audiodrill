@@ -1298,7 +1298,7 @@ const clozeInputToSpans = () => {
   document.querySelectorAll('.cloze').forEach(input => {
     const span = document.createElement('span');
 // set some data in the span
-    span.textContent = input.alt;
+    span.textContent = input.alt.split(/=>/)[0].trim();
     span.dataset.cloze='';
 // any other data?
 
