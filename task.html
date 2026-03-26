@@ -1063,7 +1063,9 @@ htmlPlayer.onerror = err => {
 
 const prepareCloze = () => {
   transcriptText.querySelectorAll('.cloze') .forEach(el => {
-    el.value = (el.alt.split(/=>|\\--/)[1] || '').trim();
+	const out = (el.alt.split(/=>|\\--/)[1] || '').trim();  
+	if (tstore.textToClozeMode) el.placeholder = out;
+	else el.value = out;
 	el.onkeypress = e => checkGapForEnter(el, e);
     el.onblur = () => checkClozeInput(el);
     el.onfocus = () => onGapFocus(el);
@@ -1153,7 +1155,7 @@ const getTextWidth = (el, s = '') => {
 }
 
 const adjustGapWidth = (gap, s = '') => {
-  const txt = s || gap.value || '_____'; // the latter is for an empty field
+  const txt = s || gap.placeholder || gap.value || '_____'; // the latter is for an empty field
 //console.log('Adjust gap width for', txt);
   const newWidth = getTextWidth(gap, txt);
   const oldWidth = parseFloat(gap.style.width);
