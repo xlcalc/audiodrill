@@ -1290,7 +1290,7 @@ const clozeSpansToInput = () => {
     const input = document.createElement('input');
     input.type = 'text';
     input.alt = span.dataset.cloze;
-    input.value = (input.alt.split(/=>|\\--/)[1] || '').trim();
+    input.placeholder = (input.alt.split(/=>|\\--/)[1] || '').trim();
     input.classList.add('cloze');
     span.replaceWith(input);
   });
