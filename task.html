@@ -1216,8 +1216,15 @@ const checkClozeInput = gap => {
 }
 
 const toggleGaps = el => {
-  if (!tstore.touchScreen && el.checked) displayMessage('Hover the mouse to see the answer', 2000);
-  viewTestAnswers(el.checked);
+  if (tstore.textToClozeMode) {
+//    if (el.checked && document.querySelectorAll('span[data-cloze]').length) clozeSpansToInput();
+    if (el.checked) clozeSpansToInput();
+	else clozeInputToSpans();
+  }
+  else {
+    if (!tstore.touchScreen && el.checked) displayMessage('Hover the mouse to see the answer', 2000);
+    viewTestAnswers(el.checked);
+  }
 }
 
 const viewTestAnswers = cmd => {
@@ -3438,7 +3445,8 @@ const analyzeXvars = () => {
   tstore.playerTitle.displayMsg(getV('player-title'));
   
 //  setTaskTitle(getV('task-title')); // so far kept to allow prev/next episode btns in the title
-  
+  tstore.textToClozeMode = getV('text-cloze') !== null;
+
   return 1;
 }
 
@@ -3703,7 +3711,9 @@ const afterTaskLoaded = () => {
 
   tstore.sentences.init(transcriptText);
   handleVocab();
-  prepareCloze(); // run after parseTTSTag and tstore.sentences.init
+
+  if (tstore.textToClozeMode) clozeInputToSpans();
+  else prepareCloze(); // run after parseTTSTag and tstore.sentences.init
 
   setupVoiceInputForTextareas();
   scrollToHash();
