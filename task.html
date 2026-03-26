@@ -1062,9 +1062,12 @@ htmlPlayer.onerror = err => {
 /*   === CLOZE: gaps and DDLs ===    */
 
 const prepareCloze = () => {
-  transcriptText.querySelectorAll('.cloze') .forEach(gap => {
-    gap.value = (gap.alt.split(/=>|\\--/)[1] || '').trim();
-    adjustGapWidth(gap);
+  transcriptText.querySelectorAll('.cloze') .forEach(el => {
+    el.value = (el.alt.split(/=>|\\--/)[1] || '').trim();
+	el.onkeypress = e => checkGapForEnter(el, e);
+    el.onblur = () => checkClozeInput(el);
+    el.onfocus = () => onGapFocus(el);
+    adjustGapWidth(el);
   })
 }
 
@@ -1078,7 +1081,8 @@ const makeTestForm = txt => { //updated 2021-07-23 handle '|' symbol
       clprefix = /<</g,
       clsuffix = />>/g,
       clprefixNew = '<input class="cloze" type="text" alt="',
-      clsuffixNew = '" onkeypress="checkGapForEnter(this,event)" onblur="checkClozeInput(this)" onfocus="onGapFocus(this)" />';
+//      clsuffixNew = '" onkeypress="checkGapForEnter(this,event)" onblur="checkClozeInput(this)" onfocus="onGapFocus(this)" />';
+      clsuffixNew = '"/>';
 
     return txt
       .replace(clprefix, clprefixNew) .replace(clsuffix, clsuffixNew)
@@ -1212,9 +1216,8 @@ const checkClozeInput = gap => {
 }
 
 const toggleGaps = el => {
-  const sw = el;
-  if (!tstore.touchScreen && sw.checked) displayMessage('Hover the mouse to see the answer', 2000);
-  viewTestAnswers(sw.checked);
+  if (!tstore.touchScreen && el.checked) displayMessage('Hover the mouse to see the answer', 2000);
+  viewTestAnswers(el.checked);
 }
 
 const viewTestAnswers = cmd => {
@@ -1271,6 +1274,29 @@ const viewTestAnswers = cmd => {
       } else ddl.value = '';
 	}
   }
+}
+
+const clozeSpansToInput = () => {
+  document.querySelectorAll('span[data-cloze]').forEach(span => {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.alt = span.textContent;
+    input.classList.add('cloze');
+    span.replaceWith(input);
+  });
+  prepareCloze();
+}
+
+const clozeInputToSpans = () => {
+  document.querySelectorAll('.cloze').forEach(input => {
+    const span = document.createElement('span');
+// set some data in the span
+    span.textContent = input.alt;
+    span.dataset.cloze='';
+// any other data?
+
+    input.replaceWith(span);
+  });
 }
 
 /*   === END OF CLOZE ===   */
