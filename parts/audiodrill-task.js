@@ -312,11 +312,13 @@ const parseTextFile = (txt, cmd) => {
 }
 
 const parseXswitch = s => {
-  const xswitchPrefix = "<label class='switch show-focus font-75pc'><input class='hidden' type='checkbox' onchange=";
+//  const xswitchPrefix = "<label class='switch show-focus font-75pc'><input class='hidden' type='checkbox' onchange=";
+  const xswitchPrefix = (s) => `<label class='switch show-focus font-75pc' ${s}><input class='hidden' type='checkbox' onchange=`;
   const xswitchSuffix = "><div class='slider round'></div></label>";
 
   return s
-    .replace(/<x-switch>/g, xswitchPrefix)
+//    .replace(/<x-switch>/g, xswitchPrefix)
+	.replace(/<x-switch(.*?)>/g, (s, p) => xswitchPrefix(p))
     .replace(/<\/x-switch>/g, xswitchSuffix)
 }
 
@@ -327,9 +329,10 @@ function parseTaskText(sourceText, saveTask) {
   const pcuePrefix = "<p class='cue' onclick=replayFragment(this)";
 //  const viewGaps = '<span style="cursor:default; margin-right:-0.65em; color:#aaa;">👁</span><b>/</b>' 
 //    + '&nbsp;&nbsp;<x-switch>viewTestAnswers(this.checked)</x-switch> 👁';
-  //const viewGaps2 = '<div title="Toggle gaps" class="view-gap" onclick="toggleGaps(this)"><x-switch></x-switch></div>';
+//  const viewGaps2 = '<div title="Toggle gaps" class="view-gap" onclick="toggleGaps(this)"><x-switch></x-switch></div>';
 //  const viewGaps2 = '<button title="Toggle gaps" class="view-gap" onclick="toggleGaps(this)"><x-switch></x-switch></button>';
-  const viewGaps2 = '<span title="Toggle gaps"><x-switch>"toggleGaps(this)" title="Toggle gaps"</x-switch></span>';
+//  const viewGaps2 = '<span title="Toggle gaps"><x-switch>"toggleGaps(this)" title="Toggle gaps"</x-switch></span>';
+  const viewGaps2 = '<x-switch title="Toggle gaps">"toggleGaps(this)"</x-switch>';
 
 //  let s = decodedText(sourceText);
   let s = sourceText;
