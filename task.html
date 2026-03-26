@@ -1287,7 +1287,8 @@ const clozeSpansToInput = () => {
   document.querySelectorAll('span[data-cloze]').forEach(span => {
     const input = document.createElement('input');
     input.type = 'text';
-    input.alt = span.textContent;
+    input.alt = span.dataset.cloze;
+    input.value = (input.alt.split(/=>|\\--/)[1] || '').trim();
     input.classList.add('cloze');
     span.replaceWith(input);
   });
@@ -1298,8 +1299,8 @@ const clozeInputToSpans = () => {
   document.querySelectorAll('.cloze').forEach(input => {
     const span = document.createElement('span');
 // set some data in the span
-    span.textContent = input.alt.split(/=>/)[0].trim();
-    span.dataset.cloze='';
+    span.dataset.cloze = input.alt;
+    span.textContent = input.alt.split(/=>|\\--/)[0].trim();
 // any other data?
 
     input.replaceWith(span);
