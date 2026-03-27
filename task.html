@@ -1161,7 +1161,7 @@ const getTextWidth = (el, s = '') => {
 }
 
 const adjustGapWidth = (gap, s = '') => {
-  const txt = s || gap.placeholder || gap.value || '_____'; // the latter is for an empty field
+  const txt = s || gap.value || gap.placeholder || '_____'; // the latter is for an empty field
 //console.log('Adjust gap width for', txt);
   const newWidth = getTextWidth(gap, txt);
   const oldWidth = parseFloat(gap.style.width);
