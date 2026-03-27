@@ -1170,7 +1170,13 @@ const adjustGapWidth = (gap, s = '') => {
 }
 
 //const strMatch = (s1, s2) => (normalizeStr(s1) === normalizeStr(s2));
-const strMatch = (s, ref) => normalizeStr(s).includes(normalizeStr(ref));
+//const strMatch = (s, ref) => normalizeStr(s).includes(normalizeStr(ref));
+const strMatch = (str, reference) => {
+  str = normalizeStr(str);
+  reference = normalizeStr(reference);
+  const pattern = new RegExp(`(^|\\s)${reference}($|\\s)`);
+  return pattern.test(str);
+}
 
 const checkGapMatch = gap => {
   if (strMatch(gap.value, gap.alt)) { // pure gap without \\ part
