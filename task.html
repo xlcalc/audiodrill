@@ -1805,12 +1805,16 @@ const fetchStartStop = cue => {
   StopAt = hmsToSeconds(end);
   
   if (isNaN(StartFrom) || StartFrom === null) players.stream = true;
-console.log('StartFrom', StartFrom, ' StopAt', StopAt);
+//  players.cueLength added 2026-03-28
+// players.fragmLength() will change if players.pausedAt, but players.cueLength won't.
+  else if (!players.pausedAt && StopAt) players.cueLength = StopAt - StartFrom;
+console.log('StartFrom', StartFrom, ' StopAt', StopAt, 'Cue length', players.cueLength);
 }
 
 players.fragmLength = () => StopAt - StartFrom;
 const loopingNeeded = () => (elid('longLoopCheckbox').checked || 
-       (players.fragmLength() < elid('thresholdForLooping').value)) && StopAt && StopAt >= StartFrom;
+//   (players.fragmLength() < elid('thresholdForLooping').value)) && StopAt && StopAt >= StartFrom;
+  (players.cueLength && players.cueLength < elid('thresholdForLooping').value)) && StopAt && StopAt >= StartFrom;
 
 
 // *** Central looping function ***
