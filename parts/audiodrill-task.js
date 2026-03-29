@@ -611,12 +611,13 @@ const squeezedUrl = (url, keep = 1) => getNewURL(url, keep)
   .replace('https://raw.githubusercontent.com/xlcalc/blog/main/', 's2://');
 
 const adjustUrl = (path = '') => {
+// for media files
   if (!path) return '';
+  path = path.replaceAll('?', '&');
   if (path.startsWith('s2://')) return path.replace('s2://', 'https://raw.githubusercontent.com/xlcalc/blog/main/');
   if (path.startsWith('//')) return path.replace('//', 'https://drmedia.netlify.app/');
   return path;
 }
-
 const loadHtmlTaskByRef = ref => {
   const key = ref.getAttribute("game") ? '/?game=1&url=' : '/?t=';
   const url = ref.getAttribute("url");
