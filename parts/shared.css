@@ -999,6 +999,15 @@ x-small-caps {font-variant: small-caps}
   color: var(--color-marked-text);
 }
 
+.wrong-word {
+    background-color: #ffe0b0; /* light orange */
+}
+
+.extra-word {
+    color: #888;
+    text-decoration: line-through;
+}
+
 audio::-webkit-media-controls-panel,
 video::-webkit-media-controls-panel/*,
 audio::-webkit-media-controls-current-time-display,
