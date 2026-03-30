@@ -329,7 +329,7 @@ function parseTaskText(sourceText, saveTask) {
   const pcuePrefix = "<p class='cue' onclick=replayFragment(this)";
 //  const viewGaps = '<span style="cursor:default; margin-right:-0.65em; color:#aaa;">👁</span><b>/</b>' 
 //    + '&nbsp;&nbsp;<x-switch>viewTestAnswers(this.checked)</x-switch> 👁';
-//  const viewGaps2 = '<div title="Toggle gaps" class="view-gap" onclick="toggleGaps(this)"><x-switch></x-switch></div>';
+  //const viewGaps2 = '<div title="Toggle gaps" class="view-gap" onclick="toggleGaps(this)"><x-switch></x-switch></div>';
 //  const viewGaps2 = '<button title="Toggle gaps" class="view-gap" onclick="toggleGaps(this)"><x-switch></x-switch></button>';
 //  const viewGaps2 = '<span title="Toggle gaps"><x-switch>"toggleGaps(this)" title="Toggle gaps"</x-switch></span>';
   const viewGaps2 = '<x-switch title="Toggle gaps">"toggleGaps(this)"</x-switch>';
@@ -619,6 +619,7 @@ const adjustUrl = (path = '') => {
   if (path.startsWith('//')) return path.replace('//', 'https://drmedia.netlify.app/');
   return path;
 }
+
 const loadHtmlTaskByRef = ref => {
   const key = ref.getAttribute("game") ? '/?game=1&url=' : '/?t=';
   const url = ref.getAttribute("url");
@@ -2691,6 +2692,103 @@ function scrollToHash() {
   if (el) 
     el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
+
+//  == Compare STT with reference ==
+const getSegmentedText = (text, param) => {
+//    text = removePunctuation2(text);
+	  const segmenter = new Intl.Segmenter(param?.lang || 'en', { granularity: param?.granularity || 'word' });
+	  return [...segmenter.segment(text)]
+      .map(entry => entry.segment.trim())
+//      .filter(entry => entry);
+}
+
+const checkStringVsRef = (str, ref, lang) => {
+  const strArr = getSegmentedText(str, {lang: lang || getLangCode()});
+  const refArr = getSegmentedText(ref, {lang: lang || getLangCode()});
+//  return alignTokens(strArr, refArr);
+  return alignTokensWithPunct(strArr, refArr);
+}
+
+function alignTokensWithPunct(strTokens, referenceTokens) {
+  // Edge case with hyphens isn't treated yet
+  const punctuationSet = new Set(`.,!?;:”“'"()[]{}-–—…。？！，、`); // extend as needed
+  const isWord = t => t && !punctuationSet.has(t);
+
+  const refWords = referenceTokens.filter(isWord);
+  const str = strTokens.filter(isWord);
+
+  const ref = refWords.map(s => s.toLowerCase());
+  const hyp = str.map(s => s.toLowerCase());
+
+  const m = ref.length;
+  const n = hyp.length;
+
+  // DP table
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = ref[i - 1] === hyp[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,      // deletion
+        dp[i][j - 1] + 1,      // insertion
+        dp[i - 1][j - 1] + cost // substitution
+      );
+    }
+  }
+
+  // Backtracking
+  let i = m, j = n;
+  let rIdx = referenceTokens.length - 1;
+  const out = [];
+  let match = true;
+
+  while (rIdx >= 0 || i > 0 || j > 0) {
+    const t = referenceTokens[rIdx];
+
+    // Space token
+    if (rIdx >= 0 && t === "") {
+//      out.unshift(" ");
+      rIdx--;
+      continue;
+    }
+
+    // Punctuation token
+    if (rIdx >= 0 && punctuationSet.has(t)) {
+      out.unshift(t);
+      rIdx--;
+      continue;
+    }
+
+    // Word alignment
+    if (i > 0 && j > 0 && ref[i - 1] === hyp[j - 1]) {
+      out.unshift(' ' + refWords[i - 1]);
+      i--; j--; rIdx--;
+    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {
+      out.unshift(" ___"); // deletion
+	  match = false;
+      i--; rIdx--;
+    } else if (j > 0 && dp[i][j] === dp[i][j - 1] + 1) {
+      out.unshift(` <span class="extra-word">${str[j - 1]}</span>`); // insertion
+	  match = false;
+      j--;
+    } else if (i > 0 && j > 0) {
+      out.unshift(` <span class="wrong-word">${str[j - 1]}</span>`); // substitution
+	  match = false;
+      i--; j--; rIdx--;
+    } else {
+      rIdx--; // fallback for remaining punctuation or spaces
+    }
+  }
+
+  const res = out.join("").replace(/^\s/, ''); // remove first space
+console.log('STT checked:', res);
+  return [match, res];
+}
+
+
 /*
 window.onunhandledrejection = event => {
   const error = event.reason;
@@ -2717,6 +2815,8 @@ addEventListener("error", (event) => { // it doesn't catch TypeErrors
 });
 
 */
+
+
 /***  Text handling pathway  ***
 
 handleYTstyleInput OR edited task OR load from file/url -> 
