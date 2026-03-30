@@ -4753,7 +4753,8 @@ tstore.transl = async (s, par) => {
         tip = '<div class="spinner" style="width: 10px; height: 10px; margin: 0 0 .2em;"></div>' + getTranslLinks(s);
         setBtnTip(tip);
 //        res = await gstore.getTranslation(s);
-        const sourceLang = tstore.contextLang || getLangCode();
+//        const sourceLang = tstore.contextLang || getLangCode();
+        const sourceLang = getContextLang(gstore.engagedEl) || getLangCode();
 		if (sourceLang === targetLang) {
 		  tip = '<div class="alarm-bgr">Same source and target language!</div>';
 		  setBtnTip(tip);
