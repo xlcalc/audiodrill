@@ -336,9 +336,14 @@ const checkVoiceInput = transcript => {
     return ttsGame.chunks[n].getAttribute('say');
   }
   
-  const ref = renderStr(getTTSText());
+//  const ref = renderStr(getTTSText());
+  const ref = getTTSText();
   let res = -1;
-  if (transcript === ref) {
+  let match;
+  [match, ttsGame.errorHintNote] = checkStringVsRef(transcript, ref);
+  
+//  if (transcript === ref) {
+  if (match) {
 console.log('Correct 😺');
     informReadResult('good');
     res = 0;
@@ -347,7 +352,7 @@ console.log('Correct 😺');
     if (voiceSearch(transcript)) { res = 1; }
     else {
 console.log('Incorrect 😼');
-      getTextError (transcript, [ref]);
+//      getTextError (transcript, [ref]);
       informReadResult('bad', ttsGame.errorHintNote);
     }
   }
