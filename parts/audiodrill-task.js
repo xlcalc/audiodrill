@@ -688,9 +688,12 @@ const clickChevron = (el, cmd) => {
   else toggleEl(el.nextElementSibling);
 }
 
+gstore.hideOnClickArr = [];
+/*
 function hideOnClickOutside() { 
 // close window on click outside it
-  const idArray = ['infopage', 'topMenu']; 
+//  const idArray = ['infopage', 'topMenu']; // this list could be global and expandable
+  const idArray = []; // this list could be global and expandable
 
   const outsideClickListener = event => {
 	idArray.forEach(id => {
@@ -700,13 +703,63 @@ function hideOnClickOutside() {
         else hideEl(el);
       }
 	})
+
+	gstore.hideOnClickArr.forEach(el => {
+      if (el && !el.contains(event.target))
+	    if (el.init) el.init = false;
+        else hideEl(el);
+	})
   }
 
   if (!window.onclick) window.onclick = e => outsideClickListener(e);
 }
-
 const isVisible = el => !!el && !!( el.offsetWidth || el.offsetHeight || el.getClientRects().length );
+*/
 
+// experimental 2026-04-01
+const dismissManager = (() => {
+  const registry = new Map();
+
+  function add(element, onDismiss, options = {}) {
+    if (!element || registry.has(element)) return;
+
+    const { ignore = [] } = options;
+
+    const pointer = (e) => {
+      const isInside = element.contains(e.target);
+      const isIgnored = ignore.some(el => el?.contains?.(e.target));
+
+      if (!isInside && !isIgnored) {
+        onDismiss?.(e);
+      }
+    };
+
+    const key = (e) => {
+      if (e.key === 'Escape') {
+        onDismiss?.(e);
+      }
+    };
+
+    document.addEventListener('pointerdown', pointer);
+    document.addEventListener('keydown', key);
+
+    registry.set(element, { pointer, key });
+  }
+
+  function remove(element) {
+    const handlers = registry.get(element);
+    if (!handlers) return;
+
+    document.removeEventListener('pointerdown', handlers.pointer);
+    document.removeEventListener('keydown', handlers.key);
+
+    registry.delete(element);
+  }
+
+  return { add, remove, registry };
+})();
+
+//========
 const setInfoPageSizePos = (d={}) => {
   const style = elid('infopage').style;
   elid('infopage-content').style.marginTop = d.marginTop || '';
@@ -734,6 +787,11 @@ const setInfoPageSizePos = (d={}) => {
   style.lineHeight = d.lineHeight || '1.3';
 }
 
+const dismissEl = (el) => {
+  dismissManager.remove(el);
+  hideEl(el);
+}
+
 async function displayInfopage(task, sizePos) {
 //console.log('Infopage task: ', task);
   if (['copyright','contribute','help'].includes(task)) setElHTML('infopage-content', '');
@@ -748,11 +806,13 @@ async function displayInfopage(task, sizePos) {
   iContent.contentEditable = "false";
   const iPage = elid('infopage');
 //  if (['hide', 'SAVE_AND_EXIT'].includes(task)) hideEl(iPage);
-  if (['hide'].includes(task)) hideEl(iPage);
+//  if (['hide'].includes(task)) hideEl(iPage);
+  if (['hide'].includes(task)) dismissEl(iPage);
   else {
 //    hideOnClickOutside(iPage);
     showEl(iPage, 'inline-block');
-	iPage.init = true;
+//	iPage.init = true;
+	dismissManager.add(iPage, () => dismissEl(iPage));
   }
 
   switch (task) {
@@ -828,7 +888,8 @@ placeholder="Enter video/audio URL here">
         handleYTstyleInput(latestText);
       }
       loadElementWithText('', 'infopage-content');
-	  hideEl(iPage);
+//	  hideEl(iPage);
+	  dismissEl(iPage);
       break;
 
     case 'hide':
@@ -890,14 +951,17 @@ Object.defineProperty(players, 'speedCtrlLeft', {
   }
 });
 
+/*
 const infopageActive = () => {
   const e = elid('infopage');
   return !(e.style.display === 'none' || isElHidden(e));
 }
 
 const topMenuActive = () => !isElHidden(elid('topMenu'));
-
+*/
+/*
 const escToCloseWindow = () => {
+
   if (infopageActive()) {
     displayInfopage('hide');
     return true;
@@ -907,17 +971,17 @@ const escToCloseWindow = () => {
 	hideSettings();
 	return true;
   }
-
   if (topMenuActive()) {
     hideTopMenu();
     return true;
   }
   return false;
 }
+*/  
 
 const relayKey = e => {
-  if (e.code === 'Escape' && escToCloseWindow()) return;
-  if (typeof handleKeyEvent !== "undefined") handleKeyEvent(e);
+//  if (e.code === 'Escape' && escToCloseWindow()) return;
+  if (typeof handleKeyEvent === 'function') handleKeyEvent(e);
 }
 
 const keyShiftCapsCheck = e => {
@@ -979,12 +1043,13 @@ window.onblur = () => {
 
 const showTopMenu = () => { 
   showElid('topMenu');
-  elid('topMenu').init = true;
+//  elid('topMenu').init = true;
+  dismissManager.add(elid('topMenu'), hideTopMenu);
 }
 
 const hideTopMenu = cmd => { 
+  dismissManager.remove(elid('topMenu'));
   hideElid('topMenu');
-  
   if (cmd === 'HELP') displayInfopage('help');
 
   if (['SHOW_SETTINGS', 'TTS_READ_LINES'].includes(cmd)) gCallback(cmd);
@@ -1057,8 +1122,10 @@ const hideTip = async () => {
 */
 gstore.tips = {
   init(el) {
-      el.setAttribute('onmouseenter', "showTip(this)");
-      el.setAttribute('onmouseleave', "leaveTipParent(this)");
+//      el.setAttribute('onmouseenter', "showTip(this)");
+//      el.setAttribute('onmouseleave', "leaveTipParent(this)");
+      el.onmouseenter = () => showTip(el);
+      el.onmouseleave = () => leaveTipParent(el);
 //	  el.classList.add('task-tip');
     },
 
@@ -1105,8 +1172,17 @@ const createTip = el => {
 // are tip elements ever removed?
   const tip = document.createElement('div');
 
-  tip.setAttribute('onmouseenter', "hoverTipChild(this)"); // is it needed for arrows?
-  tip.setAttribute('onmouseleave', "leaveTipChild(this)"); // is it needed for arrows?
+//  tip.setAttribute('onmouseenter', "hoverTipChild(this)"); // is it needed for arrows?
+//  tip.setAttribute('onmouseleave', "leaveTipChild(this)"); // is it needed for arrows?
+  tip.onmouseenter = () => hoverTipChild(tip); // is it needed for arrows?
+  if (el.dataset.persistentTip === undefined)
+    tip.onmouseleave = () => leaveTipChild(tip); // is it needed for arrows?
+  else {
+//	tip.init = true;
+//	gstore.hideOnClickArr.push(tip);
+  }
+
+// persistent tips can be implemented: they'd hide on click outside, not on mouseleave
 
   const refEl = el.getAttribute('ref');
   let coords;
@@ -2282,7 +2358,7 @@ const loadCommonItems = () => {
 //  setElHTML('top-menu-settings', gstore.settingsIcon + 'Settings');
   
 
-  hideOnClickOutside();
+//  hideOnClickOutside();
 
   adjustSpeeds(localStorage.getItem('speedFactors') || '1, 0.7');
   setPBR();
