@@ -688,8 +688,8 @@ const clickChevron = (el, cmd) => {
   else toggleEl(el.nextElementSibling);
 }
 
-gstore.hideOnClickArr = [];
 /*
+gstore.hideOnClickArr = [];
 function hideOnClickOutside() { 
 // close window on click outside it
 //  const idArray = ['infopage', 'topMenu']; // this list could be global and expandable
