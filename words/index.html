@@ -1003,7 +1003,7 @@ const closeNotes = () => {
 
 const showNotes = () => {
   gstore.belowRefs = ['NOTES_INFO'];
-  hideElid('howto-info-box', 'play-controls');
+  hideElid('howto-info-box', 'play-controls'); // should hideSettings be used instead?
   showElid('notes-info-box');
   gstore.lastAction = 'NOTES_BOX_SHOWN';
 }
@@ -1056,7 +1056,7 @@ const showRef = (query, quiet, context) => {
   ttsGame.interruptTTSRead = 1;
   gstore.lastAction = 'SHOW_REF';
   showElid('ref-info-box');
-  hideElid('howto-info-box', 'notes-info-box', 'play-controls');
+  hideElid('howto-info-box', 'notes-info-box', 'play-controls'); // should hideSettings be used instead?
   if (window.innerWidth <= 700) hideElid('left-column-2');
   query = query.split('=')[0]; // for vocab explanations A=B
 //console.log('showRef context:', context, query === context);
@@ -2470,15 +2470,18 @@ const showTopSettings = () => { showSettings() }
 
 const showSettings = (hiElid) => {
 //  hideElid('settings-sign');
-  const el = elid('play-controls')
+  const el = elid('play-controls');
   showEl(el);
+  dismissManager.add(el, hideSettings);
   el.init = true;
   if (hiElid) highlightEl(elid(hiElid), 10000);
 //  localStorage.setItem('showSettings', 1);
 }
 
 const hideSettings = () => {
-  hideElid('play-controls');
+  const el = elid('play-controls');
+  dismissManager.remove(el);
+  hideEl(el);
 //  showElid('settings-sign');
 //  localStorage.removeItem('showSettings');
 }
