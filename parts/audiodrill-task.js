@@ -234,7 +234,7 @@ function loadElementWithText(sourceText, eID, cmd) {
 //  else { setElHTML(eID, text); }
   else { writeHtmlIntoEl(text, eID); }
 
-  gstore.tips.initAll(); //experimental 2025-10-12
+//  gstore.tips.initAll(); //experimental 2025-10-12
   
   if (eID === 'infopage-content') 
     if (text.length > 100) activateAccordion(); 
@@ -244,6 +244,8 @@ function loadElementWithText(sourceText, eID, cmd) {
   else parseTTSTag(elid(eID));
 
   parseMarkTag(elid(eID));
+
+  gstore.tips.initAll();
 }
 /*
 const writeHtmlIntoElOld = (html, id) => {
