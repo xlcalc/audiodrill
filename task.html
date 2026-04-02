@@ -3957,7 +3957,7 @@ transcriptText.onclick = async (e) => {
 
     if (s) {
 //console.log('🔹 clicked:', s);
-	  if (e.ctrlKey || e.metaKey) tstore.ttsOverlay.init(gstore.engagedEl);
+	  if (e.ctrlKey || e.metaKey || tstore.ttsOverlay.readMode) tstore.ttsOverlay.init(gstore.engagedEl);
       else handleTextInteraction(s, 'CLICK', e.target);  
     }
   }
