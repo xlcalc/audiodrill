@@ -245,8 +245,8 @@ function loadElementWithText(sourceText, eID, cmd) {
 
   parseMarkTag(elid(eID));
 }
-
-const writeHtmlIntoEl = (html, id) => {
+/*
+const writeHtmlIntoElOld = (html, id) => {
 // adjusts img sources
 // in the future, more adjustments may be added
 
@@ -257,6 +257,16 @@ const writeHtmlIntoEl = (html, id) => {
     img.src = getNewURL(img.getAttribute('src'));
   });
   setElHTML(id, doc.body.innerHTML);
+}
+*/
+const writeHtmlIntoEl = (html, id) => {
+// adjusts img sources
+// in the future, more adjustments may be added
+
+  setElHTML(id, html);
+  document.querySelectorAll('img').forEach(img => {
+    img.src = getNewURL(img.src);
+  });
 }
 
 const parseMarkTag = (el = document) => {
@@ -1130,9 +1140,15 @@ gstore.tips = {
     },
 
   initAll() {
+	this.removeAll();
     const tips = document.querySelectorAll('[tip]');
     tips.forEach(el => { this.init(el) });
-  }
+  },
+  
+  removeAll() {
+	const tips = document.querySelectorAll('.flashcard, .tooltip-text, .tooltip-link, .arrow');
+    tips.forEach(el => { el.remove });
+  },
 
 }
 
