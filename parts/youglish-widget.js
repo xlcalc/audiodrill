@@ -99,8 +99,13 @@ console.log('YG player ready');
   }
 
   const onCaptionConsumed = async e => {
-console.log('Caption consumed, id:', e.id);
-    await ygCallback('SLEEP', 1000); // wait a bit because onCaptionConsumed may fire too early
+//console.log('Caption consumed,', e);
+	const charsBeforeEnd = youglish.caption.split(youglish.query)[1]?.length || 0;
+//console.log('charsBeforeEnd', charsBeforeEnd);
+	const ms = charsBeforeEnd < 10? 1000 : 2000;
+    await ygCallback('SLEEP', ms); // wait a bit because onCaptionConsumed may fire too early
+//	if (charsBeforeEnd < 10) 
+		widget.replay();
     widget.pause();
     await ygCallback('SLEEP', 4000); // pause so that the user could read and think
   
@@ -109,13 +114,14 @@ console.log('Caption consumed, id:', e.id);
     replayOrNext();
   }
 
-/*
+
   const onCaptionChange = async e => {
-console.log('Caption:' ,e.caption);
-console.log('Caption ID:' ,e.id);
+console.log('Caption:', e);
+	youglish.caption = decodeURIComponent(e.caption);
+//console.log('Caption ID:' ,e.id);
 // info on captions could be collected as {video id, caption id, caption text} and shown to the user
   }
-*/
+
 
   const onPlayerStateChange = e => {
   // e.state values are those of YT player
@@ -154,7 +160,7 @@ console.log('Caption ID:' ,e.id);
       'onVideoChange': onVideoChange,
       'onPlayerReady': onPlayerReady,
       'onCaptionConsumed': onCaptionConsumed,
-//      'onCaptionChange': onCaptionChange,
+      'onCaptionChange': onCaptionChange,
       'onPlayerStateChange': onPlayerStateChange
     }          
   });
