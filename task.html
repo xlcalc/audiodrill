@@ -4183,10 +4183,10 @@ transition: opacity 0.25s; opacity: 1;"
     tstore.nodes.forEach(el => el.classList.remove('marked'));
   },
 
-  markSentence(i, cmd) {
-	const el = tstore.nodes[i];
+  //  markSentence(i, cmd) {
+  markSentence(el, cmd) {
+//	const el = tstore.nodes[i];
 //	const el = qsel(`[data-sentence-index="${i}"]`); // alternative approach
-
 	setElClass(el, 'marked', cmd);
   },
   
@@ -4221,16 +4221,20 @@ transition: opacity 0.25s; opacity: 1;"
     }
     
 // !! Using tstore.taskSentences can lead to discrepancy with span data-sentence-index in complex htmls?
-	  this.ttsLine = tstore.taskSentences[this.currentNum]; 
+    this.ttsLine = tstore.taskSentences[this.currentNum];
+    const el = tstore.nodes[this.currentNum];
 // get language, as sentences may be in different divs with different languages
-    this.ttsLang = gstore.getContextLangCode(tstore.nodes[this.currentNum]);
+    this.ttsLang = gstore.getContextLangCode(el);
     tstore.TTSsource = 'sentence';
 
     const speed = speedCtrl.calcSpeed(this.repeatNum);
     ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
-	if (this.isShadowMode()) this.dictDiv.showPrompt(this.ttsLine);
-    this.markSentence(this.currentNum, 1);
+    if (this.isShadowMode()) this.dictDiv.showPrompt(this.ttsLine);
+
+    if (isOutOfView(el, 64)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
+//    this.markSentence(this.currentNum, 1);
+    this.markSentence(el, 1);
   },
   
   ttsEnded() {
@@ -4264,7 +4268,8 @@ transition: opacity 0.25s; opacity: 1;"
     while (i >= 0 && i < tstore.nodes.length) {
       const el = tstore.nodes[i];
       if (!el.closest('.hidden') && el.textContent) {
-        this.markSentence(this.currentNum, 0);
+//        this.markSentence(this.currentNum, 0);
+        this.markSentence(tstore.nodes[this.currentNum], 0);
         this.currentNum = i;
         return i;
       }

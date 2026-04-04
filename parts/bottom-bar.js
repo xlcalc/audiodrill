@@ -339,7 +339,7 @@ border-radius: 4px;
 <p><a href="/demo-embed">Embed in your site</a></p>
 <p><a href="/info/?show=feedback">Contact/Feedback</a></p>
 <p><a href="javascript:void(0)" onclick="displayInfopage('contribute')">Contribute</a></p>
-<p><a href="https://github.com/xlcalc/audiodrill" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>
+<p><a href="https://github.com/xlcalc/audiodrill" target="_blank" rel="noopener noreferrer">GitHub</a></p>
 </div>
 
 <div>

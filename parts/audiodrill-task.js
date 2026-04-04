@@ -2882,6 +2882,13 @@ console.log('STT checked:', res);
   return [match, res];
 }
 
+// =======
+
+function isOutOfView(el, offset = 0) {
+  const rect = el.getBoundingClientRect();
+  return rect.top < offset || rect.bottom > window.innerHeight - offset;
+}
+
 
 /*
 window.onunhandledrejection = event => {
