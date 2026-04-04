@@ -648,11 +648,21 @@ const toggleElements = (elArray, className) => {
 }
 
 const addElementsClass = (elArray, className) => { 
-  elArray.forEach(el => {if (el) el.classList.add(className)});
+//  elArray.forEach(el => {if (el) el.classList.add(className)});
+  elArray.forEach(el => {
+	if (!el) return;
+	if (typeof className === 'object') className.forEach(cl => { el.classList.add(cl) });
+	else el.classList.add(className);
+  });
 }
 
 const removeElementsClass = (elArray, className) => { 
-  elArray.forEach(el => {if (el) el.classList.remove(className)});
+//  elArray.forEach(el => {if (el) el.classList.remove(className)});
+  elArray.forEach(el => {
+	if (!el) return;
+	if (typeof className === 'object') className.forEach(cl => { el.classList.remove(cl) });
+	else el.classList.remove(className);
+  });
 }
 
 const setElementsClass = (elArray, className, cmd) => {

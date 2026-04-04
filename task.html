@@ -2563,9 +2563,10 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
   <!-- TTS Sentence Reader -->
   <div id="tts-sentence-reader" class="rounded block-center">
     <select id="ttsPlayMode" class="font-80pc drop-down darker-hover" style="margin: .1em">
-  	  <option value="sentence" title="Replay the line at multiple speeds
+      <option value="sentence" title="Replay the line at multiple speeds
 (see Replay speed factors in the settings)">Play a line</option>
-	    <option value="SENTENCE_WITH_DICTATE" title="Play the line, then dictate it">Shadow a line</option>
+      <option value="SENTENCE_WITH_DICTATE" title="Play a line, then dictate it">Shadow a line</option>
+      <option value="SHADOW_AND_HIDE" title="Play a hidden line, then dictate it">Shadow, hide</option>
       <option value="all" title="Play the whole text at one speed
 (see Master speed rate in the settings)">Play all text</option>
       <option value="ALL_WITH_REPS" title="Play each line at multiple speeds
@@ -4175,19 +4176,23 @@ transition: opacity 0.25s; opacity: 1;"
   
   shadowLines() {
 	tstore.ttsOverlay.init();
-	tstore.ttsOverlay.setTtsPlayMode(this.shadowModeName);
+	tstore.ttsOverlay.setTtsPlayMode(this.shadowModes[0]);
   },
 
   
   unmarkAll() {
-    tstore.nodes.forEach(el => el.classList.remove('marked'));
+//    tstore.nodes.forEach(el => el.classList.remove('marked'));
+    removeElementsClass(tstore.nodes, ['view-cloze-answers', 'marked']);
   },
 
-  //  markSentence(i, cmd) {
   markSentence(el, cmd) {
 //	const el = tstore.nodes[i];
 //	const el = qsel(`[data-sentence-index="${i}"]`); // alternative approach
-	setElClass(el, 'marked', cmd);
+    setElClass(el, ['view-cloze-answers', 'marked'], 0);
+    if (cmd) {
+      const cl = this?.ttsPlayMode === this.shadowModes[1]? 'view-cloze-answers' : 'marked';
+      setElClass(el, cl, cmd);
+    }
   },
   
   getInitChunkNum(node) {
@@ -4230,7 +4235,9 @@ transition: opacity 0.25s; opacity: 1;"
     const speed = speedCtrl.calcSpeed(this.repeatNum);
     ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
-    if (this.isShadowMode()) this.dictDiv.showPrompt(this.ttsLine);
+//	if (this.isShadowMode()) this.dictDiv.showPrompt(this.ttsLine);
+	if (this.ttsPlayMode === this.shadowModes[0]) this.dictDiv.showPrompt(this.ttsLine);
+	if (this.ttsPlayMode === this.shadowModes[1]) this.dictDiv.showPrompt('<i>Listen...<i>');
 
     if (isOutOfView(el, 64)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 //    this.markSentence(this.currentNum, 1);
@@ -4340,9 +4347,10 @@ transition: opacity 0.25s; opacity: 1;"
     tstore.transl(tstore.taskSentences[this.currentNum], {el: btn});
   },
   
-  shadowModeName: 'SENTENCE_WITH_DICTATE',
+//  shadowModeName: 'SENTENCE_WITH_DICTATE',
+  shadowModes: ['SENTENCE_WITH_DICTATE', 'SHADOW_AND_HIDE'],
 
-  isShadowMode() {return this.ttsPlayMode === this.shadowModeName},
+  isShadowMode() {return this.shadowModes.includes(this.ttsPlayMode)},
 }
 
 function getClickedTextFragment(lang, granularity) {
