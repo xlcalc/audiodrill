@@ -4171,6 +4171,7 @@ transition: opacity 0.25s; opacity: 1;"
     el.onchange = () => { 
       setDDL();
       this.dictDiv.remove();
+      if (this.currentNum) this.markSentence(tstore.nodes[this.currentNum], 1);
     }
   },
   
