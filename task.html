@@ -3553,6 +3553,7 @@ function handleLangSelect(e) {
   tts.manuallyPickedVoice = 'LANG_PICKED';
   listLangVoices();
   setSpecialKeys();
+  setTextDirection(lang);
   
   if (tts.langSelectorClone) {
     tts.langSelectorClone.title = tts.getFullLangName(lang);

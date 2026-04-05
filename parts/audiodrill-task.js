@@ -2486,7 +2486,7 @@ const addLangCtrl = () => {
 </select>
 `;
   setElHTML('lang-ctrl', html);
-  elid('language-select').onchange = handleLangSelect;
+  langListCtrl().onchange = handleLangSelect;
 }
 
 const loadLangList = () => {
