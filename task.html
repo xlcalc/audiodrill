@@ -4189,10 +4189,11 @@ transition: opacity 0.25s; opacity: 1;"
   async markSentence(el, cmd) {
 //	const el = tstore.nodes[i];
 //	const el = qsel(`[data-sentence-index="${i}"]`); // alternative approach
-    setElClass(el, this.markClasses, 0);
+//    setElClass(el, this.markClasses, 0);
+    this.unmarkAll();
     if (cmd) {
-	  const shadowHide = this?.ttsPlayMode === this.shadowModes[1];
-	  if (shadowHide) await blinkElClass(el, 'view-cloze-answers-no-transition', 1, 100);
+      const shadowHide = this?.ttsPlayMode === this.shadowModes[1];
+      if (shadowHide) await blinkElClass(el, 'view-cloze-answers-no-transition', 1, 100);
       const cl = shadowHide ? 'view-cloze-answers' : 'marked';
       setElClass(el, cl, 1);
     }
@@ -4246,6 +4247,15 @@ transition: opacity 0.25s; opacity: 1;"
     this.markSentence(el, 1);
   },
   
+  async playAllWithReps() {
+    if (this.repeatNum +1 < speedCtrl.getAdvanced().length) this.play();
+    else if (this.tryNextSentence() !== -1) {
+	  await sleep(1800); // pause between lines
+	  this.play();
+	}
+  	else this.showPlaying(0);  
+  },
+  
   ttsEnded() {
 //console.log('!!tstore.TTSsource', tstore.TTSsource);  
     if (!this.readMode) return;
@@ -4255,11 +4265,7 @@ transition: opacity 0.25s; opacity: 1;"
       this.dictDiv.showPrompt()
       this.enableSTT();
     }
-    else if (this.ttsPlayMode === 'ALL_WITH_REPS') {
-      if (this.repeatNum +1 < speedCtrl.getAdvanced().length) this.play();
-      else if (this.tryNextSentence() !== -1) this.play();
-  	  else this.showPlaying(0);
-    }
+    else if (this.ttsPlayMode === 'ALL_WITH_REPS') this.playAllWithReps();
     else if (this.ttsPlayMode === 'all' 
 	  && tstore.TTSsource === 'sentence' 
 	  && this.tryNextSentence() !== -1
@@ -4277,8 +4283,7 @@ transition: opacity 0.25s; opacity: 1;"
     while (i >= 0 && i < tstore.nodes.length) {
       const el = tstore.nodes[i];
       if (!el.closest('.hidden') && el.textContent) {
-//        this.markSentence(this.currentNum, 0);
-        this.markSentence(tstore.nodes[this.currentNum], 0);
+//        this.markSentence(tstore.nodes[this.currentNum], 0);
         this.currentNum = i;
         return i;
       }
