@@ -218,7 +218,8 @@ function speak(text = gstore.currentQuery || '', cmd, speed) {
 
 const ttsSpeakLang = (txt, lang, cmd = true, speed) => {
   const voice = lang? getVoice(lang) : tts.spVoice;
-  if (txt && voice) ttsSpeak(voice, txt, cmd, speed);
+  if (!voice) ttsCallBack('LANG_NOT_SUPPORTED', lang);
+  else if (txt) ttsSpeak(voice, txt, cmd, speed);
 }
 
 const speakEl = (el, par) => {

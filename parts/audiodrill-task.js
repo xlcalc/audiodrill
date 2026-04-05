@@ -2229,6 +2229,8 @@ console.log('Debug data:', JSON.stringify(data));
     if (cmd === 'VOICES_CHANGED_EVENT') loadLangList();
   
     if (cmd === 'NO_VOICE') displayAlarmMessage('There is no voice for ' + langListCtrl().value);
+
+    if (cmd === 'LANG_NOT_SUPPORTED') displayAlarmMessage(`Language '${data}' is not supported`);
   }
 }
 
