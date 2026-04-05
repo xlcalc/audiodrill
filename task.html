@@ -3684,7 +3684,9 @@ const addXvars = s => {
 }
 
 const setTextDirection = (lang = 'en') => {
-  wordList.style.direction = transcriptText.style.direction = (['he', 'ar'].includes(lang))? 'rtl' : 'ltr'; // could be done via added/removed class 
+  wordList.style.direction = 
+  tstore.ttsOverlay.dictDiv.el().style.direction = 
+  transcriptText.style.direction = (['he', 'ar'].includes(lang))? 'rtl' : 'ltr'; // could be done via added/removed class 
 }
 
 const handlePairedLines = txt => {
@@ -3986,21 +3988,21 @@ const readTTSChunks = (cmd) => { tstore.ttsOverlay.init(cmd) } // used by {x-tts
 tstore.ttsOverlay = {
   dictDiv: {
     id: 'dictationDiv',
+  	el() { return elid(this.id) },
     boxId: 'dictation-box',
     speakPrompt: '<i>Speak here...</i>',
 
     async clear() {
-      el = elid(this.id);
-      await blinkElClass(el, 'faded', 1, 500);
-      el.textContent = "";
-	  setElClass(el, 'green', 0);
+      await blinkElClass(this.el(), 'faded', 1, 500);
+      this.el().textContent = "";
+  	  setElClass(this.el(), 'green', 0);
 //      el.innerHTML = this.speakPrompt;
     },
 
     async showPrompt(s) {
 	  elid(this.boxId).hidden = false;
 	  await this.clear();
-      elid(this.id).innerHTML = s? s: this.speakPrompt;
+      this.el().innerHTML = s? s: this.speakPrompt;
     },
 
     remove() {
@@ -4027,7 +4029,8 @@ transition: opacity 0.25s; opacity: 1;"
   async insertSTT(text) {
 //    elid(this.dictDiv.boxId).hidden = false;
 
-    const el = elid(this.dictDiv.id);
+//    const el = elid(this.dictDiv.id);
+    const el = this.dictDiv.el();
     if (text && el.innerHTML.includes(this.dictDiv.speakPrompt)) el.innerHTML = '';
     el.focus();
     if (!text) return;
