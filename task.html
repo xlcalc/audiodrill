@@ -1381,7 +1381,11 @@ function extractYouTubeTimestamp(url) {
   return hours * 3600 + minutes * 60 + seconds;
 }
 
-const setMediaInTask = cmd => xAudioBox.hidden = !cmd;
+const setMediaInTask = cmd => {
+  if (cmd && xAudioBox.hidden) hitStopButton();
+  xAudioBox.hidden = !cmd;
+}
+
 
 async function getVideoByURL(url, task) {
   if (!url) return; // checking moved up 2024-07-21
