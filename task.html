@@ -1049,7 +1049,7 @@ tstore.setHtmlPlayerEvents = () => {
   htmlPlayer.onerror = err => {
     const msg = htmlPlayer.error.code === 4 ? "The provided link is not a valid media source" : htmlPlayer.error.message;
 //    adjustMediaInTask();
-	hideMediaInTask();
+    setMediaInTask(0);
     displayAlarmMessage(msg, 5000);
 
     players.mediaState = 'error';
@@ -1381,6 +1381,8 @@ function extractYouTubeTimestamp(url) {
   return hours * 3600 + minutes * 60 + seconds;
 }
 
+const setMediaInTask = cmd => xAudioBox.hidden = !cmd;
+
 async function getVideoByURL(url, task) {
   if (!url) return; // checking moved up 2024-07-21
   url = url.trim();
@@ -1411,7 +1413,7 @@ hidePlayerBox();
   players.isHtml = !YTId;
   setPlayer(players.isHtml);
 
-  if (players.mediaInTask) showEl(xAudioBox);
+  setMediaInTask(players.mediaInTask);
 
   if (YTId) {// YouTube player
 
@@ -1430,7 +1432,6 @@ hidePlayerBox();
   }
   else { //html player
     hidePlayerBox();
-//	if (players.mediaInTask && xAudioBox.childElementCount) showEl(xAudioBox); 
 
     try {
 	  htmlPlayer.src = url.startsWith('blob:')? url : getNewURL(url); // video url may be based on task url
@@ -1465,13 +1466,6 @@ console.log('ERROR loading html video/audio', e);
       showPlayerBox();
 	}
   }
-/*
-  if (players.mediaInTask && xAudioBox.childElementCount) {
-    showEl(xAudioBox);
-	adjustMediaInTask();
-  }
-*/
-//  adjustMediaInTask();
   
   // wait for the video to be ready
 console.log('Loading the media file...'); 
@@ -1485,10 +1479,8 @@ const swapHtmlMedia = async (oldEl, isAudio) => {
   const el = document.createElement(elName);
 //  const ready = waitForEvent(el, 'canplay');
   const ready = waitForEvent(el, 'loadedmetadata');
-
   el.src = oldEl.src;
   await ready;
-//    input.classList.add('cloze');
   oldEl.replaceWith(el);
   return el;
 }
@@ -2545,7 +2537,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
   <!-- Sticky episode navigation and x-audio-box bars -->
   <div id="episode-nav" data-themeable class="hidden episode-nav inherit"></div>
-  <div id="x-audio-box" data-themeable class="hidden x-audio-box">
+  <div id="x-audio-box" data-themeable class="x-audio-box" hidden>
     <span class="action-icon close-x01 gray" style="margin-right:0.15em" onclick="closeXaudio()">&times;</span>
   </div>
 </div> <!--   End of right-column   -->
@@ -3022,17 +3014,15 @@ const setLeftColWidth = lw => { // could be used to resize the video
 //  rightCol.style.flex = rw + "px";
 }
 
-function hideMediaInTask() { hideEl(xAudioBox) }
-
 const adjustMediaInTask = () => {
 //  if (!players.mediaInTask || !xAudioBox.childElementCount) return false;
   if (!players.mediaInTask) return false;
   if (isElHidden(playerBox)) {
-	hideEl(xAudioBox);
-	return false;
+    setMediaInTask(0);
+    return false;
   }
 
-  showEl(xAudioBox);
+  setMediaInTask(1);
 
   if (players.mediaType === 'video') {
     const width = 360;
@@ -3380,7 +3370,7 @@ console.log('movePlayer: players.ytAPI', players.ytAPI);
 
 const closeXaudio = () => {
   playerStop();
-  hideEl(xAudioBox);
+  setMediaInTask(0);
 //  xAudioBox.isReady = false;
 }
 
@@ -4984,7 +4974,7 @@ tstore.STT = {
   destroyToolbar() { displayOverlay('') },
   
   init() {
-	hideEl(xAudioBox);
+    setMediaInTask(0);
     const langCtrlCloneBox = '<div id="lang-ctrl-clone-box" class="inblock"></div>';
     const msg = '<div id="gap-tools-box">' 
 	  + uiblox.specKeys.boxHtml 
