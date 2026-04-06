@@ -4249,11 +4249,14 @@ transition: opacity 0.25s; opacity: 1;"
   },
   
   async playAllWithReps() {
-    if (this.repeatNum +1 < speedCtrl.getAdvanced().length) this.play();
-    else if (this.tryNextSentence() !== -1) {
-	  await sleep(1800); // pause between lines
-	  this.play();
-	}
+    if (this.repeatNum < speedCtrl.getAdvanced().length - 1) {
+      await sleep(800); // pause between repetitions
+      this.play();
+    }
+    else if (this.tryNextSentence()) {
+      await sleep(1800); // pause between lines
+      this.play();
+    }
   	else this.showPlaying(0);  
   },
   
@@ -4269,28 +4272,28 @@ transition: opacity 0.25s; opacity: 1;"
     else if (this.ttsPlayMode === 'ALL_WITH_REPS') this.playAllWithReps();
     else if (this.ttsPlayMode === 'all' 
 	  && tstore.TTSsource === 'sentence' 
-	  && this.tryNextSentence() !== -1
+	  && this.tryNextSentence()
 	  ) this.play();
   	else this.showPlaying(0);
   },
 
   playNext(v) { 
-    if (this.tryNextSentence(v) !== -1) this.play(); 
+    if (this.tryNextSentence(v)) this.play(); 
   },
   
   tryNextSentence(v = 1) {
-    if (!v || !tstore.taskSentences || this.currentNum === -1) return -1;
+    if (!v || !tstore.taskSentences || this.currentNum === -1) return '';
     let i = this.currentNum + v;
     while (i >= 0 && i < tstore.nodes.length) {
       const el = tstore.nodes[i];
       if (!el.closest('.hidden') && el.textContent) {
 //        this.markSentence(tstore.nodes[this.currentNum], 0);
         this.currentNum = i;
-        return i;
+        return el.textContent;
       }
       i += v;
     }
-    return -1;
+    return '';
   },
 
   setClickedPlayBtn(cmd) {
@@ -4301,15 +4304,15 @@ transition: opacity 0.25s; opacity: 1;"
     const btnEl = elid('tts-play-pause-btn');
 //console.log('ttsOverlay btnEl', !!btnEl);
     if (!btnEl) return;
-	  showOrHideEl(elid('tts-pause-btn'), cmd);
-	  showOrHideEl(elid('tts-play-btn'), !cmd);
-	  if (cmd) {
+    showOrHideEl(elid('tts-pause-btn'), cmd);
+    showOrHideEl(elid('tts-play-btn'), !cmd);
+    if (cmd) {
       this.updatePevNextBts();
 	    this.setClickedPlayBtn(0);
 	    btnEl.onclick = () => { this.pause(); }
-	  } else {
-	  btnEl.onclick = () => { this.play(); }
-	  }
+    } else {
+    btnEl.onclick = () => { this.play(); }
+    }
   },
 
   setBtn(id, cmd) {
