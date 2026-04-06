@@ -3987,6 +3987,7 @@ tstore.isIgnoredByTTSOnClick = el => {
 const readTTSChunks = (cmd) => { tstore.ttsOverlay.init(cmd) } // used by {x-tts-read}
 
 tstore.ttsOverlay = {
+  currentNum: 0,
   dictDiv: {
     id: 'dictationDiv',
   	el() { return elid(this.id) },
@@ -4094,13 +4095,13 @@ transition: opacity 0.25s; opacity: 1;"
 // rescanning with wrapTaskSentences() can't be run here b/c it'll add more spans over already existing ones
     closeXaudio();
 
-	this.unmarkAll();
-	this.setReadMode(1);
+    this.unmarkAll();
+    this.setReadMode(1);
  
-  this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
-	if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
-	this.play();
-	this.showCtrls();
+    this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
+    if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
+    this.play();
+    this.showCtrls();
   },
 
   showCtrls() {
@@ -4175,7 +4176,7 @@ transition: opacity 0.25s; opacity: 1;"
     el.onchange = () => { 
       setDDL();
       this.dictDiv.remove();
-      if (this.currentNum) this.markSentence(tstore.nodes[this.currentNum], 1);
+      this.markSentence(tstore.nodes[this.currentNum], 1);
     }
   },
   
