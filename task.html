@@ -1481,6 +1481,7 @@ const swapHtmlMedia = async (oldEl, isAudio) => {
   const elName = isAudio ? 'AUDIO' : 'VIDEO';
   if (oldEl.nodeName === elName) return oldEl;
   const el = document.createElement(elName);
+  setElClass(el, 'x-audio-player', 1);
 //  const ready = waitForEvent(el, 'canplay');
   const ready = waitForEvent(el, 'loadedmetadata');
   el.src = oldEl.src;
