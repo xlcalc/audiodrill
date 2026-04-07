@@ -599,10 +599,8 @@ padding: 0;
 .x-audio-player {
   margin-top: 0.4em !important;
   max-width: 280px;
-/*
   height: 36px !important;
   border-radius: 2em; 
-*/
 }
 
 .player-box-loading {
@@ -1383,10 +1381,10 @@ function extractYouTubeTimestamp(url) {
 }
 
 const setMediaInTask = cmd => {
-  if (cmd && xAudioBox.hidden) hitStopButton();
+//  if (cmd && xAudioBox.hidden) hitStopButton();
+  if (cmd && xAudioBox.hidden) tstore.ttsOverlay.setReadMode(0);
   xAudioBox.hidden = !cmd;
 }
-
 
 async function getVideoByURL(url, task) {
   if (!url) return; // checking moved up 2024-07-21
@@ -1441,19 +1439,18 @@ hidePlayerBox();
     try {
 	  htmlPlayer.src = url.startsWith('blob:')? url : getNewURL(url); // video url may be based on task url
 //      htmlPlayer.load();
-	}
-	catch(e) { // it doesn't seem to catch errors for some reason
+    }
+	  catch(e) { // it doesn't seem to catch errors for some reason
 console.log('ERROR loading html video/audio', e);
 	  return
-	}
+	  }
 
 //    htmlPlayer.oncanplay = async () => {
     htmlPlayer.onloadedmetadata = async () => {
-
       players.mediaState = 'loaded';
       const isAudio = !htmlPlayer.videoWidth;
 //	  const oldPlayer = htmlPlayer;
-	  htmlPlayer = await swapHtmlMedia(htmlPlayer, isAudio);
+	    htmlPlayer = await swapHtmlMedia(htmlPlayer, isAudio);
 /*	  
 	  if (oldPlayer !== htmlPlayer) {
 	    console.log('== New html player! ==');
@@ -1461,15 +1458,16 @@ console.log('ERROR loading html video/audio', e);
 //		await sleep(2000);
 	  }
 */
-	  tstore.setHtmlPlayerEvents();
+	    tstore.setHtmlPlayerEvents();
       htmlPlayer.playbackRate = getPlayerPBR(); //restore PBR since it may be reset to default 1.0 after loading an audio
 //    if (players.mediaType === 'video' || /\.(mp4|webm)$/i.test(url)) { //what about other extensions?
-	  htmlPlayer.controls = isAudio;
-	  players.mediaType = isAudio? 'audio' : 'video';
-	  setElClass(htmlPlayer, 'height-36', isAudio);
-	  setElClass(videoResize, 'hidden', isAudio);
+	    htmlPlayer.controls = isAudio;
+	    players.mediaType = isAudio? 'audio' : 'video';
+//	  setElClass(htmlPlayer, 'height-36', isAudio);
+	    setElClass(el, 'x-audio-player', isAudio);    
+	    setElClass(videoResize, 'hidden', isAudio);
       showPlayerBox();
-	}
+	  }
   }
   
   // wait for the video to be ready
@@ -1482,7 +1480,6 @@ const swapHtmlMedia = async (oldEl, isAudio) => {
   const elName = isAudio ? 'AUDIO' : 'VIDEO';
   if (oldEl.nodeName === elName) return oldEl;
   const el = document.createElement(elName);
-  setElClass(el, 'x-audio-player', 1);
 //  const ready = waitForEvent(el, 'canplay');
   const ready = waitForEvent(el, 'loadedmetadata');
   el.src = oldEl.src;
