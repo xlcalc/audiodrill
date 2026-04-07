@@ -1464,7 +1464,7 @@ console.log('ERROR loading html video/audio', e);
 	    htmlPlayer.controls = isAudio;
 	    players.mediaType = isAudio? 'audio' : 'video';
 //	  setElClass(htmlPlayer, 'height-36', isAudio);
-	    setElClass(el, 'x-audio-player', isAudio);    
+	    setElClass(htmlPlayer, 'x-audio-player', isAudio);    
 	    setElClass(videoResize, 'hidden', isAudio);
       showPlayerBox();
 	  }
