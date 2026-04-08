@@ -1921,6 +1921,11 @@ const highlightText = txt => {
 
   const getTipTag = (tipHtml, txt) => {
 	if (!tipHtml || !txt) return txt;
+	if (tipHtml.startsWith('arrow:')) {
+	  const data = tipHtml.slice(6);
+	  return `<span tip class="task-tip" ref=${data}>${txt}</span>`;
+	}
+
 	const tipClass = (txt === '◦')? 'lookup-tip' : 'task-tip'; // a stopgap for alternative tip classes
 
 	txt = highlightText(txt);
