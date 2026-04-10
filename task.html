@@ -3987,10 +3987,18 @@ tstore.ttsOverlay = {
     boxId: 'dictation-box',
     speakPrompt: '<i>Speak here...</i>',
 
+    setFeedback(s) {
+      const fid = 'stt-feedback';
+      if (!elid(fid)) elAddHTML(this.el(), `<span id=${fid} style="color:hotpink"></span>`);
+      elid(fid).textContent = s;
+    },
+
     async clear() {
+//      this.setFeedback('');
       await blinkElClass(this.el(), 'faded', 1, 500);
-      this.el().textContent = "";
-  	  setElClass(this.el(), 'green', 0);
+//      this.el().textContent = '';
+      this.el().innerHTML = '';
+//  	  setElClass(this.el(), 'green', 0);
 //      el.innerHTML = this.speakPrompt;
     },
 
@@ -4005,7 +4013,7 @@ tstore.ttsOverlay = {
       elid(this.boxId).hidden = true;
       disableVoiceInput();
     },
-
+/*
   set() { // not used since 2026-03-13
 //console.log('dict ID', this.id);
     const dictDiv = `<div class="box-shadow rounded"
@@ -4019,6 +4027,7 @@ transition: opacity 0.25s; opacity: 1;"
     this.remove();
     elid('tts-sentence-reader').insertAdjacentHTML('afterbegin', dictDiv);
   },
+*/
 },
 
   async insertSTT(text) {
@@ -4040,11 +4049,22 @@ transition: opacity 0.25s; opacity: 1;"
     sel.removeAllRanges();
     sel.addRange(range); 
 */
+    this.dictDiv.setFeedback('');
     const curText = el.textContent;
-//    await sleep(2000);
-	const sttOutput = el.innerHTML = checkStringVsRef(curText, this.ttsLine, this.ttsLang)[1]
+console.log('Current STT text', curText);
+//  	const sttOutput = checkStringVsRef(curText, this.ttsLine, this.ttsLang)[1]
+  	const [match, sttOutput] = checkStringVsRef(curText, this.ttsLine, this.ttsLang);
+
+    el.innerHTML = sttOutput
 //      .replace(/(___ ?)+$/g, "");
-      .replace(/(___[ \p{P}]*)+$/u, "");
+      .replace(/(___[ \p{P}]*)+$/u, '');
+
+//    elAddHTML(el, sttOutput);
+
+    el.style.caretColor = match ? 'transparent': '';
+    const feedback = match ? ' ' + gstore.goodJob.getRandomEmoji() : '';
+    this.dictDiv.setFeedback(feedback);
+
     range = document.createRange();
     sel = window.getSelection();
     range.selectNodeContents(el);
@@ -4052,7 +4072,7 @@ transition: opacity 0.25s; opacity: 1;"
     sel.removeAllRanges();
     sel.addRange(range);
 	
-	setElClass(el, 'green', sttOutput === this.ttsLine);
+//	  setElClass(el, 'green', sttOutput === this.ttsLine);
     return;
 /*    
     await sleep(3000);
@@ -5157,7 +5177,12 @@ function printTask() {
   document.body.classList.remove('print-div');
 }
 
-
+gstore.goodJob = {
+  emojis: ['👏','🙌','🎉','👍','👌','✨','🔥','🏆','🥇','🎖️','🏅','💯','🌟','😎','💪', '(๑˃ᴗ˂)ﻭ', '＼(＾▽＾)／', '٩(◕‿◕｡)۶'],
+  getRandomEmoji() {
+    return this.emojis[Math.floor(Math.random() * this.emojis.length)];
+  }
+}
 // ***  Beep  ***
 /* This fn may be needed later
 
