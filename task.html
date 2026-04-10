@@ -3990,7 +3990,7 @@ tstore.ttsOverlay = {
     setFeedback(s) {
       const fid = 'stt-feedback';
       if (!elid(fid)) elAddHTML(this.el(), `<span id=${fid} style="color:hotpink"></span>`);
-      elid(fid).textContent = s;
+      elid(fid).innerHTML = s;
     },
 
     async clear() {
@@ -4062,7 +4062,7 @@ console.log('Current STT text', curText);
 //    elAddHTML(el, sttOutput);
 
     el.style.caretColor = match ? 'transparent': '';
-    const feedback = match ? ' ' + gstore.goodJob.getRandomEmoji() : '';
+    const feedback = match ? '<br>' + gstore.goodJob.getRandomEmoji() : '';
     this.dictDiv.setFeedback(feedback);
 
     range = document.createRange();
