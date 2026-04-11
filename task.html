@@ -548,7 +548,7 @@ padding: 0;
   stroke-width: 1.4;
 }
 
-.episode-nav, .x-audio-box {
+.bottom-control, .x-audio-box {
   z-index: 2; 
 /*
   border: 1px #bbb solid; 
@@ -563,6 +563,7 @@ padding: 0;
   box-shadow: 0 -2px 4px #ccc;
   box-shadow: 0 -0.5px 4px #ddd;
   border-radius: 10px / 90px;
+  margin: 8px auto -8px;
   text-align: center;
 }
 
@@ -571,19 +572,19 @@ padding: 0;
   box-shadow: 0 0 12px #450;
 }
 
+/*
 .epi-nav-bar {
   padding: 0.3em;
   line-height: 1.3em;
   color: #777;
   font-size: larger;
 }
-
+*/
 .x-audio-box {
-  bottom: 1px;
-  margin: 8px auto -8px;
   padding: .3em .8em;
   overflow-x: hidden;
-/*
+  /*
+  bottom: 1px;
   padding: 0 1em;
   width: 80vw;
   width: 90%;
@@ -637,16 +638,22 @@ padding: 0;
 .m-wrap {display: flex}
 
 #tts-overlay-controls {
-  position: fixed;
-  bottom: 0;
+/*  
+position: fixed;
+bottom: 0;
+z-index: 2;
+*/
   padding: 10px;
   background-color: var(--btn-lighgray);
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.82);
+  background: linear-gradient(to bottom, #f5f5f5 0%, #fafafa 30%, #ffffff 45%, #ffffff 50%, #f5f5f5 65%, #e0e0e0 100%);
   width:fit-content;
+/*
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
+  margin: 8px auto -8px;
+*/
 }
 
 #dictation-box {
@@ -668,6 +675,7 @@ padding: 0;
   outline: none;
   transition: opacity 0.25s; 
   opacity: 1;
+  text-align: start;
 }
 
 #tts-sentence-reader { width:fit-content }
@@ -724,7 +732,7 @@ padding: 0;
   .right-column {margin: 0}
 /*  .task-header {position: relative}*/
 
-  .epi-nav-bar {font-size: x-large}
+/*  .epi-nav-bar {font-size: x-large} */
 }
 
 /*
@@ -2539,16 +2547,12 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
   </div> <!--   End of wordlist-box   -->
 
   <!-- Sticky episode navigation and x-audio-box bars -->
-  <div id="episode-nav" data-themeable class="hidden episode-nav inherit"></div>
+  <div id="episode-nav" data-themeable class="hidden bottom-control inherit"></div>
   <div id="x-audio-box" data-themeable class="x-audio-box" hidden>
     <span class="action-icon close-x01 gray" style="margin-right:0.15em" onclick="closeXaudio()">&times;</span>
   </div>
-</div> <!--   End of right-column   -->
-</div> <!--   End of row   -->
-</div> <!--  End of main-page  -->
 
-
-<div id="tts-overlay-controls" hidden data-themeable class="rounded box-shadow">
+<div id="tts-overlay-controls" hidden data-themeable class="bottom-control box-shadow">
   <span class="action-icon close-x01">&times;</span>
   <!-- Dictation (shown only in shadowing mode) -->
   <div id="dictation-box" hidden>
@@ -2570,6 +2574,12 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
   </div>
 
 </div>
+</div> <!--   End of right-column   -->
+</div> <!--   End of row   -->
+</div> <!--  End of main-page  -->
+
+
+
 
 <!--  Footer   -->
 <div id="bottom-bar"></div>
@@ -4051,7 +4061,7 @@ transition: opacity 0.25s; opacity: 1;"
 */
     this.dictDiv.setFeedback('');
     const curText = el.textContent;
-console.log('Current STT text', curText);
+//console.log('Current STT text', curText);
 //  	const sttOutput = checkStringVsRef(curText, this.ttsLine, this.ttsLang)[1]
   	const [match, sttOutput] = checkStringVsRef(curText, this.ttsLine, this.ttsLang);
 
