@@ -4080,7 +4080,11 @@ transition: opacity 0.25s; opacity: 1;"
     sel.addRange(range);
 	
 //	  setElClass(el, 'green', sttOutput === this.ttsLine);
-    if (match) this.shadowNext();
+//    if (match) this.shadowNext();
+    if (match) {
+      this.afterShadowing = true;
+      this.play();
+    }
 /*    
     await sleep(3000);
     // restore original text and put caret at end
@@ -4097,7 +4101,7 @@ transition: opacity 0.25s; opacity: 1;"
   }, 
   
   enableSTT() {
-// simplified for test only. More code like should be added, like in enableVoiceInput()
+// simplified for test only. More code may be added, like in enableVoiceInput()
     tstore.STT.source = 'TTS_LINES';
     this.insertSTT();
 //    this.dictDiv.set();
@@ -4264,8 +4268,7 @@ transition: opacity 0.25s; opacity: 1;"
     const speed = speedCtrl.calcSpeed(this.repeatNum);
     ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
-  	if (this.ttsPlayMode === this.shadowModes[0] || this.ttsPlayMode === this.shadowModes[2]) this.dictDiv.showPrompt(this.ttsLine);
-	  if (this.ttsPlayMode === this.shadowModes[1]) this.dictDiv.showPrompt('<i>Listen...<i>');
+    this.showShadowPrompt();
 
     if (isOutOfView(el, 64)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 
@@ -4293,8 +4296,13 @@ transition: opacity 0.25s; opacity: 1;"
     if (this.isShadowMode()) {
   	  this.showPlaying(0);
 //      this.dictDiv.set();
-      this.dictDiv.showPrompt()
-      this.enableSTT();
+      if (this.afterShadowing) {
+        this.afterShadowing = false;
+        if (this.ttsPlayMode === 'SHADOW_ALL') this.shadowNext();
+      } else {
+        this.dictDiv.showPrompt();
+        this.enableSTT();
+      }
     }
     else if (this.ttsPlayMode === 'ALL_WITH_REPS') this.playAllWithReps();
     else if (this.ttsPlayMode === 'all' 
@@ -4303,6 +4311,12 @@ transition: opacity 0.25s; opacity: 1;"
 //	  ) this.play();
 	  ) this.playNext();
   	else this.showPlaying(0);
+  },
+
+  showShadowPrompt() {
+    if (this.afterShadowing) return;
+    if (this.ttsPlayMode === this.shadowModes[0] || this.ttsPlayMode === this.shadowModes[2]) this.dictDiv.showPrompt(this.ttsLine);
+    if (this.ttsPlayMode === this.shadowModes[1]) this.dictDiv.showPrompt('<i>Listen...<i>');
   },
 
   shadowNext() {
