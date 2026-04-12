@@ -2822,7 +2822,7 @@ const checkStringVsRef = (str, ref, lang) => {
 
 function alignTokensWithPunct(strTokens, referenceTokens) {
   // Edge case with hyphens isn't treated yet
-  const punctuationSet = new Set(`.,!?;:”“'"()[]{}-–—…。？！，、`); // extend as needed
+  const punctuationSet = new Set(`•.,!?;:”“'"()[]{}-–—…。？！，、`); // extend as needed
   const isWord = t => t && !punctuationSet.has(t);
 
   const refWords = referenceTokens.filter(isWord);

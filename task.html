@@ -2564,12 +2564,13 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
     <select id="ttsPlayMode" class="font-80pc drop-down darker-hover" style="margin: .1em">
       <option value="sentence" title="Replay the line at multiple speeds
 (see Replay speed factors in the settings)">Play a line</option>
-      <option value="SENTENCE_WITH_DICTATE" title="Play a line, then dictate it">Shadow a line</option>
-      <option value="SHADOW_AND_HIDE" title="Play a hidden line, then dictate it">Shadow & hide</option>
       <option value="all" title="Play the whole text at one speed
 (see Master speed rate in the settings)">Play all text</option>
       <option value="ALL_WITH_REPS" title="Play each line at multiple speeds
 (see Replay speed factors in the settings)">Play all (reps)</option>
+      <option value="SHADOW_LINE" title="Play a line, then dictate it">Shadow a line</option>
+      <option value="SHADOW_ALL" title="Play and dictate all lines">Shadow all text</option>
+      <option value="SHADOW_AND_HIDE" title="Play a hidden line, then dictate it">Shadow & hide</option>
     </select>
   </div>
 
@@ -4040,10 +4041,7 @@ transition: opacity 0.25s; opacity: 1;"
 */
 },
 
-  async insertSTT(text) {
-//    elid(this.dictDiv.boxId).hidden = false;
-
-//    const el = elid(this.dictDiv.id);
+  insertSTT(text) {
     const el = this.dictDiv.el();
     if (text && el.innerHTML.includes(this.dictDiv.speakPrompt)) el.innerHTML = '';
     el.focus();
@@ -4052,7 +4050,6 @@ transition: opacity 0.25s; opacity: 1;"
     let sel = window.getSelection();
     let range = sel.getRangeAt(0)
     range.deleteContents();
-//    if (text) range.insertNode(document.createTextNode(text + " "));
     range.insertNode(document.createTextNode(' ' + text + ' '));
 /*
     range.collapse(false);
@@ -4083,7 +4080,7 @@ transition: opacity 0.25s; opacity: 1;"
     sel.addRange(range);
 	
 //	  setElClass(el, 'green', sttOutput === this.ttsLine);
-    return;
+    if (match) this.shadowNext();
 /*    
     await sleep(3000);
     // restore original text and put caret at end
@@ -4166,7 +4163,7 @@ transition: opacity 0.25s; opacity: 1;"
 /*
     const prompt = '<select id="ttsPlayMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">'
 	  + '<option value="sentence" title="Replay the line at multiple speeds \r(see Replay speed factors in the settings)">Play a line</option>'
-	  + '<option value="SENTENCE_WITH_DICTATE" title="Play the line and say it">Shadow a line</option>'
+	  + '<option value="SHADOW_LINE" title="Play the line and say it">Shadow a line</option>'
     + '<option value="all" title="Play the whole text at one speed \r(see Master speed rate in the settings)">Play all text</option>'
     + '<option value="ALL_WITH_REPS" title="Play each line at multiple speeds \r(see Replay speed factors in the settings)">Play all (reps)</option>'
     + '</select>';
@@ -4203,9 +4200,9 @@ transition: opacity 0.25s; opacity: 1;"
     }
   },
   
-  shadowLines() {
-	tstore.ttsOverlay.init();
-	tstore.ttsOverlay.setTtsPlayMode(this.shadowModes[0]);
+  shadowLines() { // Can be called from a task
+	  tstore.ttsOverlay.init();
+	  tstore.ttsOverlay.setTtsPlayMode(this.shadowModes[0]);
   },
   
   markClasses: ['view-cloze-answers', 'marked'],
@@ -4267,8 +4264,8 @@ transition: opacity 0.25s; opacity: 1;"
     const speed = speedCtrl.calcSpeed(this.repeatNum);
     ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
-	if (this.ttsPlayMode === this.shadowModes[0]) this.dictDiv.showPrompt(this.ttsLine);
-	if (this.ttsPlayMode === this.shadowModes[1]) this.dictDiv.showPrompt('<i>Listen...<i>');
+  	if (this.ttsPlayMode === this.shadowModes[0] || this.ttsPlayMode === this.shadowModes[2]) this.dictDiv.showPrompt(this.ttsLine);
+	  if (this.ttsPlayMode === this.shadowModes[1]) this.dictDiv.showPrompt('<i>Listen...<i>');
 
     if (isOutOfView(el, 64)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 
@@ -4280,11 +4277,14 @@ transition: opacity 0.25s; opacity: 1;"
       await sleep(800); // pause between repetitions
       this.play();
     }
+    else this.playNext(1, 1800);
+/*    
     else if (this.tryNextSentence()) {
       await sleep(1800); // pause between lines
       this.play();
     }
-  	else this.showPlaying(0);  
+  	else this.showPlaying(0);
+*/
   },
   
   ttsEnded() {
@@ -4299,15 +4299,24 @@ transition: opacity 0.25s; opacity: 1;"
     else if (this.ttsPlayMode === 'ALL_WITH_REPS') this.playAllWithReps();
     else if (this.ttsPlayMode === 'all' 
 	  && tstore.TTSsource === 'sentence' 
-	  && this.tryNextSentence()
-	  ) this.play();
+//	  && this.tryNextSentence()
+//	  ) this.play();
+	  ) this.playNext();
   	else this.showPlaying(0);
   },
 
-  playNext(v) { 
-    if (this.tryNextSentence(v)) this.play(); 
+  shadowNext() {
+    if (this.ttsPlayMode === 'SHADOW_ALL') this.playNext(1, 2400);
   },
-  
+
+  async playNext(v, pause) { 
+    if (this.tryNextSentence(v)) {
+      if (pause) await sleep(pause);
+      this.play(); 
+    }
+    else this.showPlaying(0);
+  },
+
   tryNextSentence(v = 1) {
     if (!v || !tstore.taskSentences || this.currentNum === -1) return '';
     let i = this.currentNum + v;
@@ -4385,7 +4394,7 @@ transition: opacity 0.25s; opacity: 1;"
     tstore.transl(tstore.taskSentences[this.currentNum], {el: btn});
   },
   
-  shadowModes: ['SENTENCE_WITH_DICTATE', 'SHADOW_AND_HIDE'],
+  shadowModes: ['SHADOW_LINE', 'SHADOW_AND_HIDE', 'SHADOW_ALL'],
 
   isShadowMode() {return this.shadowModes.includes(this.ttsPlayMode)},
 }
