@@ -1390,7 +1390,7 @@ function extractYouTubeTimestamp(url) {
 
 const setMediaInTask = cmd => {
 //  if (cmd && xAudioBox.hidden) hitStopButton();
-  if (cmd && xAudioBox.hidden) tstore.ttsOverlay.setReadMode(0);
+  if (cmd && xAudioBox.hidden) tstore.ttsOverlay.setActive(0);
   xAudioBox.hidden = !cmd;
 }
 
@@ -2986,7 +2986,8 @@ const hitStopButton = () => {
 
   imitateBtnClick(playStopBtn);
   
-  if (tstore.ttsOverlay.readMode) tstore.ttsOverlay.setReadMode(0); // experimental 2025-12-31, the logic may change
+//  if (tstore.ttsOverlay.isActive) tstore.ttsOverlay.setActive(0); // experimental 2025-12-31, the logic may change
+  tstore.ttsOverlay.setActive(0);
   
   displayOverlay(''); //needed to Esc autoplay of a loaded mediafile
 }
@@ -3969,7 +3970,7 @@ transcriptText.onclick = async (e) => {
 
     if (s) {
 //console.log('🔹 clicked:', s);
-	  if (e.ctrlKey || e.metaKey || tstore.ttsOverlay.readMode) tstore.ttsOverlay.init(gstore.engagedEl);
+	  if (e.ctrlKey || e.metaKey || tstore.ttsOverlay.isActive()) tstore.ttsOverlay.init(gstore.engagedEl);
       else handleTextInteraction(s, 'CLICK', e.target);  
     }
   }
@@ -4119,6 +4120,8 @@ transition: opacity 0.25s; opacity: 1;"
 
   show(cmd) { this.controlBox().hidden = !cmd },
 
+  isActive() { return !this.controlBox().hidden },
+
   init(cmd) {
     if (!tstore.ttsClickSwitch.isOn || !tstore.taskSentences) return;
 
@@ -4126,7 +4129,7 @@ transition: opacity 0.25s; opacity: 1;"
     closeXaudio();
 
     this.unmarkAll();
-    this.setReadMode(1);
+    this.setActive();
  
     this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
     if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
@@ -4183,7 +4186,7 @@ transition: opacity 0.25s; opacity: 1;"
 */
 //    elid('tts-overlay-controls').hidden = false;
     if (!elid('tts-play-pause-btn')) {
-      this.controlBox().querySelector('.close-x01').onclick = () => { this.setReadMode(0) }
+      this.controlBox().querySelector('.close-x01').onclick = () => { this.setActive(0) }
       elid('tts-sentence-reader').insertAdjacentHTML('beforeend', btnDiv);
     }
 
@@ -4298,7 +4301,7 @@ transition: opacity 0.25s; opacity: 1;"
   
   ttsEnded() {
 //console.log('!!tstore.TTSsource', tstore.TTSsource);  
-    if (!this.readMode) return;
+    if (!this.isActive()) return;
     if (this.isShadowMode()) {
   	  this.showPlaying(0);
 //      this.dictDiv.set();
@@ -4398,14 +4401,13 @@ transition: opacity 0.25s; opacity: 1;"
     this.setBtn('play-next-sentence', nextBtnState);
   },
   
-  setReadMode(cmd) {
-    this.readMode = !!cmd;
-    if (!cmd) {
-      this.show(false);
+  setActive(cmd = true) {
+    if (this.isActive() && !cmd) {
       disableVoiceInput();
-//      elid('tts-overlay-controls').hidden = true;
+      tts.cancel(); 
       this.unmarkAll(); 
     }
+    this.show(cmd);
   },
 
   translate(btn) {
