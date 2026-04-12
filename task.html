@@ -4111,7 +4111,13 @@ transition: opacity 0.25s; opacity: 1;"
 
   repeatNum: 0,
 
-  show(cmd) { elid('tts-overlay-controls').hidden = !cmd },
+  controlBox() {return elid('tts-overlay-controls')},
+
+  isTooLow(el) {
+    return el.getBoundingClientRect().bottom > this.controlBox().getBoundingClientRect().top
+  },
+
+  show(cmd) { this.controlBox().hidden = !cmd },
 
   init(cmd) {
     if (!tstore.ttsClickSwitch.isOn || !tstore.taskSentences) return;
@@ -4125,10 +4131,10 @@ transition: opacity 0.25s; opacity: 1;"
     this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
     if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
     this.play();
-    this.showCtrls();
+    this.initCtrls();
   },
 
-  showCtrls() {
+  initCtrls() {
     const playBtn = '<button id="tts-play-pause-btn" class="font-100pc rnd show-focus grayish no-bgcolor gray-bg-onhover" title="Play/pause"' 
       + 'style="width:32px; height:32px; border: 1px solid var(--color-ddd-555)">'
 //	  + '<div id="tts-play-btn" class="semibold hidden"  style="margin: 2.5px 0 0 2.5px;">&#x25B7;</div>'
@@ -4177,7 +4183,7 @@ transition: opacity 0.25s; opacity: 1;"
 */
 //    elid('tts-overlay-controls').hidden = false;
     if (!elid('tts-play-pause-btn')) {
-      elid('tts-overlay-controls').querySelector('.close-x01').onclick = () => { this.setReadMode(0) }
+      this.controlBox().querySelector('.close-x01').onclick = () => { this.setReadMode(0) }
       elid('tts-sentence-reader').insertAdjacentHTML('beforeend', btnDiv);
     }
 
@@ -4270,7 +4276,7 @@ transition: opacity 0.25s; opacity: 1;"
 
     this.showShadowPrompt();
 
-    if (isOutOfView(el, 64)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
+    if (isOutOfView(el, 64) || this.isTooLow(el)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 
     this.markSentence(el, 1);
   },
