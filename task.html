@@ -3991,8 +3991,11 @@ tstore.isIgnoredByTTSOnClick = el => {
 
 const readTTSChunks = (cmd) => { tstore.ttsOverlay.init(cmd) } // used by {x-tts-read}
 
+// === ttsOverlay ===
 tstore.ttsOverlay = {
   currentNum: 0,
+  repeatNum: 0,
+
   dictDiv: {
     id: 'dictationDiv',
   	el() { return elid(this.id) },
@@ -4110,9 +4113,8 @@ transition: opacity 0.25s; opacity: 1;"
     startSTT();
   },
 
-  repeatNum: 0,
-
   controlBox() {return elid('tts-overlay-controls')},
+  playPauseBtn() {return elid('tts-play-pause-btn')},
 
   isTooLow(el) {
     return el.getBoundingClientRect().bottom > this.controlBox().getBoundingClientRect().top
@@ -4185,13 +4187,13 @@ transition: opacity 0.25s; opacity: 1;"
     displayOverlay({msg: '<div id="tts-sentence-reader" class="rel">' + prompt + btnDiv + '</div>', style: 'width:auto; padding: 4px 1.5em;'});
 */
 //    elid('tts-overlay-controls').hidden = false;
-    if (!elid('tts-play-pause-btn')) {
+    if (!this.playPauseBtn()) {
       this.controlBox().querySelector('.close-x01').onclick = () => { this.setActive(0) }
       elid('tts-sentence-reader').insertAdjacentHTML('beforeend', btnDiv);
     }
 
     this.show(true);
-    elid('tts-play-pause-btn').focus();
+    this.playPauseBtn().focus();
     this.setTtsPlayMode();
   },
   
@@ -4360,17 +4362,17 @@ transition: opacity 0.25s; opacity: 1;"
   },
   
   showPlaying(cmd) {
-    const btnEl = elid('tts-play-pause-btn');
-//console.log('ttsOverlay btnEl', !!btnEl);
-    if (!btnEl) return;
+    const btn = this.playPauseBtn();
+//console.log('ttsOverlay btn', !!btn);
+    if (!btn) return;
     showOrHideEl(elid('tts-pause-btn'), cmd);
     showOrHideEl(elid('tts-play-btn'), !cmd);
     if (cmd) {
       this.updatePevNextBts();
 	    this.setClickedPlayBtn(0);
-	    btnEl.onclick = () => { this.pause(); }
+	    btn.onclick = () => { this.pause(); }
     } else {
-    btnEl.onclick = () => { this.play(); }
+    btn.onclick = () => { this.play(); }
     }
   },
 
@@ -4387,7 +4389,7 @@ transition: opacity 0.25s; opacity: 1;"
 //	  el.classList.add('gray');
       el.style.color = 'var(--color-ccc-444)';
 	    el.setAttribute("disabled", "");
-	    elid('tts-play-pause-btn').focus();
+	    this.playPauseBtn().focus();
 	  }
   },
 
