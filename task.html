@@ -4004,8 +4004,15 @@ tstore.ttsOverlay = {
 
     setFeedback(s) {
       const fid = 'stt-feedback';
-      if (!elid(fid)) elAddHTML(this.el(), `<span id=${fid} style="color:hotpink"></span>`);
-      elid(fid).innerHTML = s;
+      let fel = elid(fid);
+      if (!fel) {
+        elAddHTML(this.el(), `<span id=${fid} style="color:hotpink"></span>`);
+        fel = elid(fid);
+      }
+      fel.style.opacity = '0';
+      fel.style.transition = 'opacity 0.6s ease';
+      fel.innerHTML = s;
+      requestAnimationFrame(() => { fel.style.opacity = '1' });
     },
 
     async clear() {
