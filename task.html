@@ -3361,13 +3361,13 @@ const movePlayer = () => {
 //  const e = elid(eID);
   const e = transcriptText;
   const xaudio = e.getElementsByTagName('x-audio')[0];
-//  const xvideo = e.getElementsByTagName('x-video')[0] || null; // so far no real benefit on wide screens
-  const xvideo = isScreenNarrow() ? e.getElementsByTagName('x-video')[0] : null;
+  const xvideo = e.getElementsByTagName('x-video')[0]; // || null; // so far no real benefit on wide screens
+//  const xvideo = isScreenNarrow() ? e.getElementsByTagName('x-video')[0] : null;
 // if x-video tag is ignored on wide screen, there may be empty lines in the task
 // should it be checked somewhere at parseTaskText fn?
   const controls = elid('settings-box');
 //  hideEl(playerTitle);
-
+/*
   if (xvideo) {
     if (player) {
       player.destroy();
@@ -3376,10 +3376,11 @@ console.log('movePlayer: players.ytAPI', players.ytAPI);
     }
     xvideo.append(playerBox, controls); // should it be restored if another task is loaded?
   }
-  if (xaudio) prepXAudio();
+*/
+  players.mediaInTask = xaudio || xvideo;
+  if (players.mediaInTask) prepXAudio();
   else showEl(videoResize);
 
-  players.mediaInTask = xaudio || xvideo;
   showOrHideEl(elid('left-column'), !players.mediaInTask);
 }
 
