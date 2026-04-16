@@ -3054,11 +3054,11 @@ const adjustMediaInTask = (cmd) => {
   }
 
   setMediaInTask(1);
-
+  
   const audioCtrls = elid('audio-ctrls');
-
+  
   if (players.mediaType === 'video') {
-    showVideoResizer(0);
+    hideEl(videoResize);
 
     xAudioBox.style.width = 'fit-content';
     xAudioBox.style.padding = '10px 10px 0 10px';
@@ -3176,7 +3176,8 @@ const videoResizerReset = () => {
 }
 
 const showVideoResizer = async show => {
-  if (!players.mediaInTask) videoResize.style.display = show? 'flex' : 'none';
+//  if (show && players.mediaInTask) return;
+  videoResize.style.display = show? 'flex' : 'none';
 }
 
 const setPostRecActions = txt => {
