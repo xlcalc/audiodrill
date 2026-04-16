@@ -16,7 +16,7 @@ in popular tools like [Forvo.com](https://forvo.com),
 <x-br></x-br>
 To edit the list, click on ${editBtn}.
 <x-br></x-br>
-To start shadow reading in Chrome or Edge, 
+To start shadow reading in English in Chrome or Edge, 
 click on the ${micBtn} and say 
 "Let's read together."
 `,
