@@ -583,6 +583,7 @@ padding: 0;
 .x-audio-box {
   padding: .3em .8em;
   overflow-x: hidden;
+  overflow-x: clip;
   /*
   bottom: 1px;
   padding: 0 1em;
@@ -1055,7 +1056,7 @@ tstore.setHtmlPlayerEvents = () => {
 
   htmlPlayer.onerror = err => {
     const msg = htmlPlayer.error.code === 4 ? "The provided link is not a valid media source" : htmlPlayer.error.message;
-//    adjustMediaInTask();
+
     setMediaInTask(0);
     displayAlarmMessage(msg, 5000);
 
@@ -1477,11 +1478,13 @@ console.log('ERROR loading html video/audio', e);
       showPlayerBox();
 	  }
   }
-  
+
+  adjustMediaInTask('on');
   // wait for the video to be ready
 console.log('Loading the media file...'); 
   await new Promise(resolve => players.resolveVideoReady = resolve);
 console.log(players.mediaType + ' loaded in getVideoByURL()'); 
+//  adjustMediaInTask();
 }
 
 const swapHtmlMedia = async (oldEl, isAudio) => {
@@ -3029,10 +3032,10 @@ const setLeftColWidth = lw => { // could be used to resize the video
 //  rightCol.style.flex = rw + "px";
 }
 
-const adjustMediaInTask = () => {
+const adjustMediaInTask = (cmd) => {
 //  if (!players.mediaInTask || !xAudioBox.childElementCount) return false;
   if (!players.mediaInTask) return false;
-  if (isElHidden(playerBox)) {
+  if (!cmd && isElHidden(playerBox)) {
     setMediaInTask(0);
     return false;
   }
@@ -3046,6 +3049,10 @@ const adjustMediaInTask = () => {
     xAudioBox.style.width = 'fit-content';
 
 	showVideoResizer(0);
+  } else {
+    ytPlayer.style.width = '';
+    ytPlayer.style.height = '';
+    xAudioBox.style.width = '';
   }
 
   return true;
@@ -3360,14 +3367,15 @@ const changeEpisode = (key, url) => {
 const movePlayer = () => {
 //  const e = elid(eID);
   const e = transcriptText;
-  const xaudio = e.getElementsByTagName('x-audio')[0];
-  const xvideo = e.getElementsByTagName('x-video')[0]; // || null; // so far no real benefit on wide screens
+//  const xaudio = e.getElementsByTagName('x-audio')[0];
+//  const xvideo = e.getElementsByTagName('x-video')[0]; // || null; // so far no real benefit on wide screens
+  const media = e.getElementsByTagName('x-audio')[0] || e.getElementsByTagName('x-video')[0];
 //  const xvideo = isScreenNarrow() ? e.getElementsByTagName('x-video')[0] : null;
 // if x-video tag is ignored on wide screen, there may be empty lines in the task
 // should it be checked somewhere at parseTaskText fn?
+/*
   const controls = elid('settings-box');
 //  hideEl(playerTitle);
-/*
   if (xvideo) {
     if (player) {
       player.destroy();
@@ -3377,8 +3385,11 @@ console.log('movePlayer: players.ytAPI', players.ytAPI);
     xvideo.append(playerBox, controls); // should it be restored if another task is loaded?
   }
 */
-  players.mediaInTask = xaudio || xvideo;
-  if (players.mediaInTask) prepXAudio();
+  players.mediaInTask = media;
+  if (media) {
+    prepXAudio();
+    getVideoByURL(media.getAttribute('src'));
+  }
   else showEl(videoResize);
 
   showOrHideEl(elid('left-column'), !players.mediaInTask);
