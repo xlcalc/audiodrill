@@ -3047,12 +3047,16 @@ const adjustMediaInTask = (cmd) => {
     ytPlayer.style.width = width + 'px';
     ytPlayer.style.height = (width * 9 / 16) + 'px';
     xAudioBox.style.width = 'fit-content';
-
-	showVideoResizer(0);
+    xAudioBox.style.padding = '10px';
+    xAudioBox.style.borderRadius = '6px';
+    
+    showVideoResizer(0);
   } else {
     ytPlayer.style.width = '';
     ytPlayer.style.height = '';
     xAudioBox.style.width = '';
+    xAudioBox.style.padding = '';
+    xAudioBox.style.borderRadius = '10px / 90px';
   }
 
   return true;
