@@ -600,7 +600,7 @@ padding: 0;
 .height-36 {height: 36px !important}
 
 .x-audio-player {
-  margin-top: 0.4em !important;
+/*  margin-top: 0.4em !important;*/
   max-width: 280px;
   height: 36px !important;
   border-radius: 2em; 
@@ -991,6 +991,7 @@ z-index: 2;
   </div>
 </div>
 
+<audio id="html-audio" class="inherit hidden rounded"></audio>
 <video id="html-video" class="inherit hidden rounded"></video>
 </div> <!-- player-box -->
 </div> <!-- player-box-bgr -->
@@ -1331,7 +1332,7 @@ const clozeInputToSpans = () => {
 
 
 function setPlayer(isHtml) {
-  showOrHideEl(htmlPlayer, isHtml);
+  showOrHideEl(htmlPlayer, isHtml); // separate solutions for html-video and html-audio may be needed?
   showOrHideEl(ytPlayer, !isHtml);
 
   const pbrControl = elid('setpbr');
@@ -1447,6 +1448,7 @@ hidePlayerBox();
     hidePlayerBox();
 
     try {
+    htmlPlayer = elid('html-video'); // experimental: 2026-04-16
 	  htmlPlayer.src = url.startsWith('blob:')? url : getNewURL(url); // video url may be based on task url
 //      htmlPlayer.load();
     }
@@ -1460,7 +1462,14 @@ console.log('ERROR loading html video/audio', e);
       players.mediaState = 'loaded';
       const isAudio = !htmlPlayer.videoWidth;
 //	  const oldPlayer = htmlPlayer;
-	    htmlPlayer = await swapHtmlMedia(htmlPlayer, isAudio);
+//	    htmlPlayer = await swapHtmlMedia(htmlPlayer, isAudio);
+      if (isAudio) {
+        const el = elid('html-audio');
+        const ready = waitForEvent(el, 'loadedmetadata');
+        el.src = htmlPlayer.src;
+        await ready;
+        htmlPlayer = elid('html-audio');
+      }
 /*	  
 	  if (oldPlayer !== htmlPlayer) {
 	    console.log('== New html player! ==');
@@ -1473,6 +1482,8 @@ console.log('ERROR loading html video/audio', e);
 //    if (players.mediaType === 'video' || /\.(mp4|webm)$/i.test(url)) { //what about other extensions?
 	    htmlPlayer.controls = isAudio;
 	    players.mediaType = isAudio? 'audio' : 'video';
+      showOrHideEl(elid('html-audio'), isAudio);
+      showOrHideEl(elid('html-video'), !isAudio);
 //	  setElClass(htmlPlayer, 'height-36', isAudio);
 	    setElClass(htmlPlayer, 'x-audio-player', isAudio);    
 	    setElClass(videoResize, 'hidden', isAudio);
@@ -1485,9 +1496,9 @@ console.log('ERROR loading html video/audio', e);
 console.log('Loading the media file...'); 
   await new Promise(resolve => players.resolveVideoReady = resolve);
 console.log(players.mediaType + ' loaded in getVideoByURL()'); 
-//  adjustMediaInTask();
+  adjustMediaInTask(); // for htmlPlayer video
 }
-
+/*
 const swapHtmlMedia = async (oldEl, isAudio) => {
   const elName = isAudio ? 'AUDIO' : 'VIDEO';
   if (oldEl.nodeName === elName) return oldEl;
@@ -1499,6 +1510,7 @@ const swapHtmlMedia = async (oldEl, isAudio) => {
   oldEl.replaceWith(el);
   return el;
 }
+*/
 
 function waitForEvent(el, event) {
   return new Promise(resolve => {
@@ -3049,38 +3061,36 @@ const adjustMediaInTask = (cmd) => {
     showVideoResizer(0);
 
     xAudioBox.style.width = 'fit-content';
-    xAudioBox.style.padding = '10px';
+    xAudioBox.style.padding = '10px 10px 0 10px';
     xAudioBox.style.borderRadius = '6px';
 
+    playerBox.style.width = 'min-content';
+    htmlPlayer.style.marginTop = '0';
+    
     const width = 360;
-    ytPlayer.style.width = width + 'px';
+    htmlPlayer.style.width = ytPlayer.style.width = width + 'px';
+    htmlPlayer.style.height = 'auto';
     ytPlayer.style.height = (width * 9 / 16) + 'px';
     ytPlayer.style.margin = '0 0 4px 0';
 
-    audioCtrls.style.display = 'flex';
-    audioCtrls.style.justifyContent = 'center';
+    audioCtrls.style.marginLeft = '70px';
   } else {
     xAudioBox.style.width = '';
     xAudioBox.style.padding = '';
     xAudioBox.style.borderRadius = '10px / 90px';
-    ytPlayer.style.width = '';
-    ytPlayer.style.height = '';
-    audioCtrls.style.display = 'inline-block';
-    audioCtrls.style.justifyContent = '';
+
+    playerBox.style.width = '100%';
+    htmlPlayer.style.width = ytPlayer.style.width = '';
+    htmlPlayer.style.height = ytPlayer.style.height = '';
+    audioCtrls.style.marginLeft = '';
   }
 
   return true;
 }
 
 const setVideoSize = cmd => {
-//  if (adjustMediaInTask() || players.mediaInTask) return;
   if (players.mediaInTask) return;
-/*  
-  if (players.mediaInTask) {
-    adjustMediaInTask();
-    return;
-  }
-*/
+
   const vctrl = function(n) {
     const ctrls = document.querySelectorAll('.video-size');
     const classes = ['video-smaller', 'video-bigger'];
@@ -3166,7 +3176,7 @@ const videoResizerReset = () => {
 }
 
 const showVideoResizer = async show => {
-  videoResize.style.display = show? 'flex' : 'none';
+  if (!players.mediaInTask) videoResize.style.display = show? 'flex' : 'none';
 }
 
 const setPostRecActions = txt => {
