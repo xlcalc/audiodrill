@@ -590,8 +590,9 @@ padding: 0;
   width: 80vw;
   width: 90%;
   min-height: 64px;
-*/
   max-width: 496px;
+*/
+  max-width: 490px;
   text-align: left;
   background: linear-gradient(to bottom, #f5f5f5 0%, #fafafa 30%, #ffffff 45%, #ffffff 50%, #f5f5f5 65%, #e0e0e0 100%);
 }
@@ -3042,21 +3043,30 @@ const adjustMediaInTask = (cmd) => {
 
   setMediaInTask(1);
 
+  const audioCtrls = elid('audio-ctrls');
+
   if (players.mediaType === 'video') {
-    const width = 360;
-    ytPlayer.style.width = width + 'px';
-    ytPlayer.style.height = (width * 9 / 16) + 'px';
+    showVideoResizer(0);
+
     xAudioBox.style.width = 'fit-content';
     xAudioBox.style.padding = '10px';
     xAudioBox.style.borderRadius = '6px';
-    
-    showVideoResizer(0);
+
+    const width = 360;
+    ytPlayer.style.width = width + 'px';
+    ytPlayer.style.height = (width * 9 / 16) + 'px';
+    ytPlayer.style.margin = '0 0 4px 0';
+
+    audioCtrls.style.display = 'flex';
+    audioCtrls.style.justifyContent = 'center';
   } else {
-    ytPlayer.style.width = '';
-    ytPlayer.style.height = '';
     xAudioBox.style.width = '';
     xAudioBox.style.padding = '';
     xAudioBox.style.borderRadius = '10px / 90px';
+    ytPlayer.style.width = '';
+    ytPlayer.style.height = '';
+    audioCtrls.style.display = 'inline-block';
+    audioCtrls.style.justifyContent = '';
   }
 
   return true;
