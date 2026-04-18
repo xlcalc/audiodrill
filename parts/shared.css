@@ -1019,6 +1019,24 @@ video::-webkit-media-controls-current-time-display*/ { background-color: var(--a
   gap: 1rem 2rem; /* row gap | column gap */
 }
 
+.slashed {
+  position: relative;
+  display: inline-block;
+}
+
+.slashed::after {
+  content: "";
+  position: absolute;
+  top: 48%;
+  left: -8%;
+  width: 110%;
+  height: .5px;
+  background-color: var(--color-white-darkgray);
+/*  border-top: 1.4px solid var(--color-text);*/
+  border-top: 1.4px solid #e11a;
+  transform: rotate(-55deg);	
+}
+
 @media screen and (max-width: 700px) {
 /*  .tts-speak-alt {
 	font-size:100%;

@@ -5093,7 +5093,7 @@ tstore.STT = {
 	  + uiblox.specKeys.boxHtml 
 	  + '<div>'
 	  + langCtrlCloneBox
-	  + '<span id="stt-switch-box" class="padding-03em" style="cursor:default">🗣<x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></span></div></div>';
+	  + '<span id="stt-switch-box" class="padding-03em" style="cursor:default"><span id="stt-switch-icon">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></span></div></div>';
 //    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray); left:auto; right:0; transform: translateX(-10px);';
     const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray)';
     displayOverlay({msg: parseXswitch(msg), style: msgStyle, noCloseBtn: true});
@@ -5117,8 +5117,10 @@ tstore.STT = {
 	const el = elid('stt-switch-box');
 	const state = v? 'ON' : 'OFF';
 	el.title = 'Voice input is ' + state;
-	setElClass(el, 'gray', !v);
-	setElClass(el, 'gray2', v);
+
+	const el2 = elid('stt-switch-icon');
+	setElClass(el2, ['gray', 'slashed'], !v);
+	setElClass(el2, 'gray2', v);
   },
 }
 
