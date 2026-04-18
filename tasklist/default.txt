@@ -1,5 +1,4 @@
-<x-vars video-size=-1 task-title="Audiodrill overview">
-<img src="/img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
+<x-vars video-size=-1 task-title="Audiodrill overview"><div style="line-height:1.8em"><img src="/img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
 ### 1. What this tool is for
 Build your listening and speaking skills in foreign languages. Practice pronunciation, listening comprehension and vocabulary, using real-life videos, audio and texts.
 
@@ -46,5 +45,5 @@ Click the {{arrow:edit-task y-shift=12|<code style='border-right:1px solid; back
 
  * Discover [more activities and voice games](/tasks). 
  * Want to make your own voice game? Check out [this document](https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8/edit#gid=1748845435). 
-
  * Have feedback or suggestions? Leave them [here](/info/?show=feedback).
+</div>
