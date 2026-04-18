@@ -2814,6 +2814,7 @@ const getSegmentedText = (text, param) => {
 }
 
 const checkStringVsRef = (str, ref, lang) => {
+  ref = ref.replaceAll("’", "'");
   const strArr = getSegmentedText(str, {lang: lang || getLangCode()});
   const refArr = getSegmentedText(ref, {lang: lang || getLangCode()});
 //  return alignTokens(strArr, refArr);
