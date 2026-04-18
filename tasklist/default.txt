@@ -15,7 +15,7 @@ Build your listening and speaking skills in foreign languages. Practice pronunci
 
 ### 3. Make learning interactive
 
- * 🎧 Click a word to hear it, or |_Ctrl_| (|_Command_| on Mac) + to hear the sentence. You can also play the full text or shadow the sentence, i.e. listen and dictate.
+ * 🎧 Click a word to hear it. You can also play or shadow (play and repeat) a sentence or the full text. To start, open the playback controls (via ~🗣 Read lines~ in the {{arrow:topMenuBtn x-shift=-45 y-shift=16|system menu}} or |_Ctrl_| + click on a sentence), choose a mode from the dropdown, and press ▷.
  * 🔍 Select a text to hear it, look it up, translate and add to vocabulary.
  * 🔁 Loop audio/video fragments at custom speed: 
  <input type="url" placeholder="Enter URL here" class="inherit" onchange="getVideoFromURLInput(this)"><input type="submit" class="plain-button font-80pc rounded darker-bg-onhover" value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)"> or <label><a title="Open a local audio or video file">open a local file</a><input type="file" id="open-media2" onchange="uploadTaskOrVideoFile(this)" accept="video/{star}, audio/{star}" style="position: fixed; top: -100em"></label>/drag-and-drop.
@@ -23,7 +23,7 @@ Build your listening and speaking skills in foreign languages. Practice pronunci
  * 📚 Dictate or type in [words and phrases](/words) to look up and hear them in context.
  * 📺 Watch [live TV channels](/tasklist/live-tv.txt) or listen to [the radio](/tasklist/live-radio.txt) at slower speed.
  * 🗣️ Play [voice games](/?game=new) (Chrome/Edge desktop).
- * 📖 Practice [shadow reading](?t=/tasklist/shadowing.txt).
+ * 📖 Try out other ways of [shadow reading](?t=/tasklist/shadowing.txt).
 <div id="createTasks"></div>
 
 ### 4. Create your own tasks

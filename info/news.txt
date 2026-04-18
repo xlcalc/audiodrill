@@ -1,10 +1,10 @@
 <div style="width:100%; display: flex; justify-content: center;"><div style="max-width: 600px; font-size: 110%"><color:slategray><h3>What's new?</h3></color>
 
 <color:slategray>4 April 2026</color>
-A new *shadowing mode* was added to the [Tasks page](/?t). It lets you listen to hidden (redacted) sentences and repeat them after the speaker. To start, open the playback control (via ~🗣 Read lines~ in the {{arrow:topMenuBtn x-shift=-45 y-shift=16|system menu}} or |_Ctrl_| + click on a sentence), choose ~Shadow & hide~ from the dropdown list and press ▷ button.
+A new *shadowing mode* was added to the [Tasks page](/?t). It lets you listen to hidden (redacted) sentences and repeat them after the speaker. To start, open the playback controls (via ~🗣 Read lines~ in the {{arrow:topMenuBtn x-shift=-45 y-shift=16|system menu}} or |_Ctrl_| + click on a sentence), choose ~Shadow & hide~ from the dropdown list and press ▷ button.
 
 <color:slategray>20 March 2026</color>
-On the [Tasks page](/?t), you can *shadow sentences* — listen to them and then dictate them yourself. To start, open the playback control (via ~🗣 Read lines~ in the {{arrow:topMenuBtn x-shift=-45 y-shift=16|system menu}} or |_Ctrl_| + click on a sentence), select ~Shadow a line~ from the dropdown list and press the ~Play~ button.
+On the [Tasks page](/?t), you can *shadow sentences* — listen to them and then dictate them yourself. To start, open the playback controls (via ~🗣 Read lines~ in the {{arrow:topMenuBtn x-shift=-45 y-shift=16|system menu}} or |_Ctrl_| + click on a sentence), select ~Shadow a line~ from the dropdown list and press the ~Play~ button.
 
 <color:slategray>12 February 2026</color>
 On the [Words and phrases page](/?w), you can click on the mic and dictate any word or phrase you want to explore.
