@@ -1047,3 +1047,5 @@ video::-webkit-media-controls-current-time-display*/ { background-color: var(--a
   ::-webkit-scrollbar {-webkit-appearance: none; width: 8px}
   .grid2 { grid-template-columns: 1fr }
 }
+
+[hidden] { display: none; }
