@@ -1482,8 +1482,8 @@ console.log('ERROR loading html video/audio', e);
 //    if (players.mediaType === 'video' || /\.(mp4|webm)$/i.test(url)) { //what about other extensions?
 	    htmlPlayer.controls = isAudio;
 	    players.mediaType = isAudio? 'audio' : 'video';
-      showOrHideEl(elid('html-audio'), isAudio);
-      showOrHideEl(elid('html-video'), !isAudio);
+      elid('html-audio').hidden = !isAudio;
+      elid('html-video').hidden = isAudio;
 //	  setElClass(htmlPlayer, 'height-36', isAudio);
 	    setElClass(htmlPlayer, 'x-audio-player', isAudio);    
 	    setElClass(videoResize, 'hidden', isAudio);
@@ -3481,8 +3481,8 @@ const analyzeXvars = () => {
   if (vars && !getV('task-title')) hideElid('task-header');
   else showElid('task-header');
   
-  if (['0', 'off', 'hide'].includes(getV('task-icons'))) hideElid('task-icons');
-  else showElid('task-icons');
+  elid('task-icons').hidden = ['0', 'off', 'hide'].includes(getV('task-icons'));
+
   if (getV('task-title')) setElHTML('task-title', highlightText(getV('task-title')));
   else setElHTML('task-title', 'Audiodrill task');
 //  else showElid('task-header', 'topMenuBtn');
@@ -3567,7 +3567,7 @@ console.log('Set voice to', voiceName);
 
 const setTaskTitle = s => {
   if (s) setElHTML('task-title', highlightText(s));
-  showOrHideEl(elid('task-icons'), !s);
+  elid('task-icons').hidden = s;
 }
 
 const showSettings = () => {
@@ -4186,7 +4186,7 @@ transition: opacity 0.25s; opacity: 1;"
       + 'style="width:32px; height:32px; border: 1px solid var(--color-ddd-555)">'
 //	  + '<div id="tts-play-btn" class="semibold hidden"  style="margin: 2.5px 0 0 2.5px;">&#x25B7;</div>'
 //      + '<div id="tts-play-btn" class="small-padding grayish play-triangle- hidden" style="line-height:1.3em">&#x25B6;</div>'
-      + '<div id="tts-play-btn" class="hidden" style="line-height: 28px; padding-left: 2.6px;">&#x25B6;</div>'
+      + '<div id="tts-play-btn" hidden style="line-height: 28px; padding-left: 2.6px;">&#x25B6;</div>'
 	  + '<div id="tts-pause-btn" style="margin-top: -3px; transform: scaleX(.8);">&#10074;&#10074;</div>'
 	  + '</button>';
 
@@ -4407,8 +4407,8 @@ transition: opacity 0.25s; opacity: 1;"
     const btn = this.playPauseBtn();
 //console.log('ttsOverlay btn', !!btn);
     if (!btn) return;
-    showOrHideEl(elid('tts-pause-btn'), cmd);
-    showOrHideEl(elid('tts-play-btn'), !cmd);
+    elid('tts-pause-btn').hidden = !cmd;
+    elid('tts-play-btn').hidden = cmd;
     if (cmd) {
       this.updatePevNextBts();
 	    this.setClickedPlayBtn(0);
