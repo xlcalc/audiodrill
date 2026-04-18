@@ -985,14 +985,14 @@ z-index: 2;
   tip="resize">
 </div>
 
-<div id="yt-video" class="inherit hidden yt-video rounded">
+<div id="yt-video" hidden class="inherit yt-video rounded">
   <div id="yt-player">
   <!-- YT <iframe> and video player will replace this <div>. -->
   </div>
 </div>
 
-<audio id="html-audio" class="inherit hidden rounded"></audio>
-<video id="html-video" class="inherit hidden rounded"></video>
+<audio id="html-audio" hidden class="inherit rounded"></audio>
+<video id="html-video" hidden class="inherit rounded"></video>
 </div> <!-- player-box -->
 </div> <!-- player-box-bgr -->
 
@@ -1332,8 +1332,8 @@ const clozeInputToSpans = () => {
 
 
 function setPlayer(isHtml) {
-  showOrHideEl(htmlPlayer, isHtml); // separate solutions for html-video and html-audio may be needed?
-  showOrHideEl(ytPlayer, !isHtml);
+  htmlPlayer.hidden = !isHtml;
+  ytPlayer.hidden = isHtml;
 
   const pbrControl = elid('setpbr');
   if (isHtml) pbrControl.min = 0.1;
@@ -1405,7 +1405,7 @@ async function getVideoByURL(url, task) {
 
   displayOverlay('');
 //  if (players.videoWidth === -1) setVideoSize(1);
-  if (isElHidden(elid('left-column'))) setVideoSize(300);
+  if (elid('left-column').hidden) setVideoSize(300);
   
   if (players.flag > 0) {
     playerStop();
@@ -2298,8 +2298,7 @@ async function handleRecMuteCheckbox() {
 //    if (! await testMic()) return;
 
   const playMute = elid('mute-checkbox').checked;
-  const pauseBox = elid('pause-box');
-  showOrHideEl(pauseBox, !playMute);
+  elid('pause-box').hidden = playMute;
 
   players.pauseType = playMute ? 'playmute' : 'pause';
   if (audioRecAllowed2()) { players.pauseType += '+record'; }
@@ -2810,8 +2809,7 @@ window.onload = () => {
 }
 
 const prepareSettings = () => {
-  const leftCol = qsel('.left-column');
-  if (isElHidden(leftCol)) prepareTopSettings('ADD_MORE');
+  if (elid('left-column').hidden) prepareTopSettings('ADD_MORE');
   else {
     restoreLeftColSettings();
     prepareTopSettings();
@@ -3116,14 +3114,14 @@ const setVideoSize = cmd => {
 
   let width = parseInt(cmd);
 
-  const leftCol = qsel('.left-column');
+  const leftCol = elid('left-column');
 //console.log('### Left column width', width);
   if (width === -1 || ['hide', 'hidden', 'off', 'none'].includes(cmd)) {
-    hideEl(leftCol);
+    leftCol.hidden = true;
     return;
   }
 
-  showEl(leftCol);
+  leftCol.hidden = false;
   
   if ([0, 1, 2].includes(width)) width = [400, 640, 800][width]; // legacy values
 
@@ -3417,7 +3415,7 @@ console.log('movePlayer: players.ytAPI', players.ytAPI);
   }
   else showEl(videoResize);
 
-  showOrHideEl(elid('left-column'), !players.mediaInTask);
+  elid('left-column').hidden = players.mediaInTask;
 }
 
 const closeXaudio = () => {
