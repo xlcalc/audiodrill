@@ -1008,9 +1008,12 @@ x-small-caps {font-variant: small-caps}
     text-decoration: line-through;
 }
 
-audio::-webkit-media-controls-panel
-/*, audio::-webkit-media-controls-current-time-display*/ 
-{ background-color: var(--audio-controls-bg); }
+audio { border-radius: 2em }
+
+audio::-webkit-media-controls-panel { background-color: var(--audio-controls-bg) }
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display { text-shadow: none }
 
 .grid2 {
   display: grid;
