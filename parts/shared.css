@@ -1008,10 +1008,9 @@ x-small-caps {font-variant: small-caps}
     text-decoration: line-through;
 }
 
-audio::-webkit-media-controls-panel,
-video::-webkit-media-controls-panel/*,
-audio::-webkit-media-controls-current-time-display,
-video::-webkit-media-controls-current-time-display*/ { background-color: var(--audio-controls-bg); }
+audio::-webkit-media-controls-panel
+/*, audio::-webkit-media-controls-current-time-display*/ 
+{ background-color: var(--audio-controls-bg); }
 
 .grid2 {
   display: grid;
