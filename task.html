@@ -4168,6 +4168,8 @@ transition: opacity 0.25s; opacity: 1;"
     this.initCtrls();
   },
 
+  translBtnId: 'tts-translate-btn',
+
   initCtrls() {
     const playBtn = '<button id="tts-play-pause-btn" class="font-100pc rnd show-focus grayish no-bgcolor gray-bg-onhover" title="Play/pause"' 
       + 'style="width:32px; height:32px; border: 1px solid var(--color-ddd-555)">'
@@ -4187,7 +4189,7 @@ transition: opacity 0.25s; opacity: 1;"
     const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + ←)', dir: 'left'});
     const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + →)', dir: 'right'});
   
-    const translateBtn = `<button id="tts-translate-btn" title="Translate" 
+    const translateBtn = `<button id="${this.translBtnId}" 
       class="${commonBtn} inblock font-85pc" tip-class="tooltip-link"
   	  onclick = "tstore.ttsOverlay.translate(this)">`
 	  + gstore.translateIcon
@@ -4443,8 +4445,13 @@ transition: opacity 0.25s; opacity: 1;"
   },
 
   setTranslation(cmd) {
-    if (tstore.translation.sentences && tstore.nodes)
-      tstore.nodes.forEach((el, i) => { el.title = cmd ? tstore.translation.sentences[i] || '' : '' });
+    elid(this.translBtnId).title = 'Translate';
+    if (tstore.translation.sentences && tstore.nodes) {
+      tstore.nodes.forEach((el, i) => { 
+        el.title = cmd ? tstore.translation.sentences[i] || '' : '' });
+
+      elid(this.translBtnId).title = ' (or hover sentences with translations)';
+    }
   },
 
   translate(btn) {
