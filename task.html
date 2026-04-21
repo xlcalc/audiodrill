@@ -3612,7 +3612,9 @@ tstore.translation = { // experimental: 2026-02-14
 
 // language of translation may be added after the marker, just like for :lang: marker	  
   	  const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
-	    this.sentences = [...segmenter.segment(this.text)] .map(entry => entry.segment.trim()); // trim() removes \s including \n
+	    this.sentences = [...segmenter.segment(this.text)]
+        .map(entry => entry.segment.trim())
+        .filter(s => s); //leave non-empty lines)
 
       return '';
     }).trim();
