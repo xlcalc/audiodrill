@@ -4445,12 +4445,14 @@ transition: opacity 0.25s; opacity: 1;"
   },
 
   setTranslation(cmd) {
-    elid(this.translBtnId).title = 'Translate';
-    if (tstore.translation.sentences && tstore.nodes) {
-      tstore.nodes.forEach((el, i) => { 
-        el.title = cmd ? tstore.translation.sentences[i] || '' : '' });
+    const trBtn = elid(this.translBtnId);
+    if (trBtn) {
+      trBtn.title = 'Translate';
+      if (tstore.translation.sentences && tstore.nodes) trBtn.title += ' (or hover sentences with translations)';
+    }
 
-      elid(this.translBtnId).title = ' (or hover sentences with translations)';
+    if (tstore.translation.sentences && tstore.nodes) {
+      tstore.nodes.forEach((el, i) => { el.title = cmd ? tstore.translation.sentences[i] || '' : '' });
     }
   },
 
