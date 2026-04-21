@@ -2435,6 +2435,12 @@ async function googleTranslateElementInit() {
   );
 
   qsel('body').style=''; // b/c Google Translate widget sets body to relative position
+  qsel('.goog-te-combo').addEventListener('change', () => adjustGoogleTranslateWidget() );
+}
+
+function adjustGoogleTranslateWidget() {
+  console.log('Google Transl widget lang changed');	
+  blinkElClass(elid(':1.container'), 'hidden-on-top', 0, 2000);
 }
 
 const isIOS = () => (/iPad|iPhone|iPod/.test(navigator.platform) 

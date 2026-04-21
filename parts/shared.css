@@ -1051,3 +1051,13 @@ audio::-webkit-media-controls-time-remaining-display { text-shadow: none }
 }
 
 [hidden] { display: none; }
+
+.hidden-on-top {
+  transform: translateY(-90%);
+  transition: transform 0.4s ease 2s;
+}
+
+.hidden-on-top:hover {
+  transform: translateY(0);
+  transition: transform 0.4s ease;
+}
