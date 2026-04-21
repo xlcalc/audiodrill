@@ -4438,6 +4438,12 @@ transition: opacity 0.25s; opacity: 1;"
       this.unmarkAll(); 
     }
     this.show(cmd);
+    this.setTranslation(cmd);
+  },
+
+  setTranslation(cmd) {
+    if (tstore.translation.sentences && tstore.translation.sentences.length === tstore.nodes.length)
+      tstore.nodes.forEach((el, i) => { el.title = cmd ? tstore.translation.sentences[i] : '' });
   },
 
   translate(btn) {
