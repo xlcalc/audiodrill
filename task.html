@@ -4160,12 +4160,12 @@ transition: opacity 0.25s; opacity: 1;"
     closeXaudio();
 
     this.unmarkAll();
-    this.setActive();
- 
+    
     this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
     if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
     this.play();
     this.initCtrls();
+    this.setActive();
   },
 
   translBtnId: 'tts-translate-btn',
