@@ -3604,13 +3604,18 @@ const shareFragment = () => {
 
 tstore.translation = { // experimental: 2026-02-14
   marker: ':transl:',
+
+  init() {
+    this.sentences = [];
+    this.isOn = false;
+  }
   
   extract(txt) {
     const pattern = new RegExp(
       this.marker + '([\\s\\S]*?)(?=' + gstore.vocab.prefix + '|$)'
     );
 
-    this.sentences = [];
+    this.init();
 
     return txt.replace(pattern, (_, captured) => {
       this.text = captured.trim();
@@ -3626,13 +3631,13 @@ tstore.translation = { // experimental: 2026-02-14
   },
 
   set(cmd) {
-    this.state = cmd;	
+    this.isOn = cmd;	
     if (this.sentences && tstore.nodes)
       tstore.nodes.forEach((el, i) => { el.title = cmd ? this.sentences[i] || '' : '' });
   },
   
   toggle(el) { 
-    this.set(!this.state);
+    this.set(!this.isOn);
 	  toggleEl(el, 'green');
   },
   
