@@ -772,6 +772,7 @@ z-index: 2;
   background: transparent; /* or rgba(0, 0, 0, 0.4) for a dim effect */
 }
 
+/*
 #vocabInput {
     position: fixed;
     inset: 0;
@@ -781,7 +782,7 @@ z-index: 2;
     background: rgba(0, 0, 0, 0.4);
     z-index: 100;
 }
-
+*/
 #vocabForm {
     background: #fff;
     padding: 20px;
@@ -840,12 +841,12 @@ z-index: 2;
 
 @media (min-width: 768px) {
   .task-box, #wordlist-box { border: 1px hsl(150, 20%, 92%) solid; }
-
+/*
     #vocabInput {
       align-items: center;
       justify-content: center;
     }
-
+*/
     #vocabForm {
       border-radius: 8px;
       max-width: 400px;
@@ -934,7 +935,7 @@ z-index: 2;
 </div>
 
 <!-- Vocab Input UI -->
-<!-- not used as of Aug 2025 -->
+<!-- not used as of Aug 2025 --
 <div id="vocabInput" class="hidden">
   <div id="vocabBackdrop"></div>
   <div id="vocabForm">
@@ -952,6 +953,7 @@ z-index: 2;
     </div>
   </div>
 </div>
+-->
 
 <div class="main-page">
 
@@ -2929,7 +2931,7 @@ const handleKeyEvent = e => {
     hitStopButton();
     hideElid('top-controls');
     tstore.hideChunkTooltip();
-    hideEl(vocabInput);
+//    hideEl(vocabInput);
     hideEl(qsel('.dropzone')); // trying to fix the rare bug of showing dropzone while selecting text
   }
 
@@ -3608,6 +3610,8 @@ tstore.translation = { // experimental: 2026-02-14
       this.marker + '([\\s\\S]*?)(?=' + gstore.vocab.prefix + '|$)'
     );
 
+    this.sentences = [];
+
     return txt.replace(pattern, (_, captured) => {
       this.text = captured.trim();
 
@@ -3615,10 +3619,31 @@ tstore.translation = { // experimental: 2026-02-14
   	  const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
 	    this.sentences = [...segmenter.segment(this.text)]
         .map(entry => entry.segment.trim())
-        .filter(s => s); //leave non-empty lines)
+        .filter(s => s); //leave non-empty lines
 
       return '';
     }).trim();
+  },
+
+  set(cmd) {
+    this.state = cmd;	
+    if (this.sentences && tstore.nodes)
+      tstore.nodes.forEach((el, i) => { el.title = cmd ? this.sentences[i] || '' : '' });
+  },
+  
+  toggle(el) { 
+    this.set(!this.state);
+	toggleEl(el, 'green');
+  },
+  
+  addBtn() {
+    if (!this.sentences.length) return;
+	
+    const btn = `<div title="Toggle sentence translation on hover" 
+	  class="rel float-right font-80pc action-icon no-tts" 
+	  style="right:10px; width:auto" 
+	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</div>`;
+    elAddHTML(transcriptText, btn, 'afterbegin');
   },
 }
 
@@ -3653,6 +3678,7 @@ const taskTextHandler = txt => {
 const handleTransl = () => {
   addTranslationBtn();
 //  addTranslation(qsel('.original-text'), qsel('.translated-text'));
+  tstore.translation.addBtn();
 }
 
 // addTranslation is experimental fn
@@ -4441,19 +4467,7 @@ transition: opacity 0.25s; opacity: 1;"
       this.unmarkAll(); 
     }
     this.show(cmd);
-    this.setTranslation(cmd);
-  },
-
-  setTranslation(cmd) {
-    const trBtn = elid(this.translBtnId);
-    if (trBtn) {
-      trBtn.title = 'Translate';
-      if (tstore.translation.sentences && tstore.nodes) trBtn.title += ' (or hover sentences with translations)';
-    }
-
-    if (tstore.translation.sentences && tstore.nodes) {
-      tstore.nodes.forEach((el, i) => { el.title = cmd ? tstore.translation.sentences[i] || '' : '' });
-    }
+//    this.setTranslation(cmd);
   },
 
   translate(btn) {
