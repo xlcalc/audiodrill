@@ -3633,16 +3633,16 @@ tstore.translation = { // experimental: 2026-02-14
   
   toggle(el) { 
     this.set(!this.state);
-	toggleEl(el, 'green');
+	  toggleEl(el, 'green');
   },
   
   addBtn() {
     if (!this.sentences.length) return;
 	
-    const btn = `<div title="Toggle sentence translation on hover" 
-	  class="rel float-right font-80pc action-icon no-tts" 
+    const btn = `<button title="Translation on hover" 
+	  class="rel plain-button float-right font-80pc action-icon no-tts" 
 	  style="right:10px; width:auto" 
-	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</div>`;
+	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
   },
 }
@@ -4215,7 +4215,7 @@ transition: opacity 0.25s; opacity: 1;"
     const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + ←)', dir: 'left'});
     const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + →)', dir: 'right'});
   
-    const translateBtn = `<button id="${this.translBtnId}" 
+    const translateBtn = `<button id="${this.translBtnId}" title="Translate sentence"
       class="${commonBtn} inblock font-85pc" tip-class="tooltip-link"
   	  onclick = "tstore.ttsOverlay.translate(this)">`
 	  + gstore.translateIcon
