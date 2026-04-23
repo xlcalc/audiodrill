@@ -17,6 +17,7 @@
   --scroll-track-bgcolor: rgba(200, 200, 200, .3);
   --scroll-thumb-bgcolor: rgba(0, 0, 0, .1);
   --color-white-darkgray: white;
+  --color-overlay-subtle: #0001;
 }
 
 :root.night-mode {
@@ -40,6 +41,7 @@
   --scroll-track-bgcolor: rgba(200, 200, 200, .1);
   --scroll-thumb-bgcolor: #282828;
   --color-white-darkgray: #282828;
+  --color-overlay-subtle: #fff2;
 }
 
 * {outline-color: var(--a-color);}
@@ -99,6 +101,7 @@ a:hover, .a:hover {
 .ddd-bg-onhover:active {background-color: #bbb;}
 .darker-bg-onhover:hover {background-color: rgba(0,0,0,0.1);}
 .darker-bg-onhover:hover {filter: brightness(90%)}
+.hover-overlay-subtle:hover {background-color: var(--color-overlay-subtle)}
 
 /* This doesn't work b/c opened select list has opaque background
 .darker-bg-onhover {background-color: var(--color-darker) !important;}

@@ -3633,7 +3633,10 @@ tstore.translation = { // experimental: 2026-02-14
   set(cmd) {
     this.isOn = cmd;	
     if (this.sentences && tstore.nodes)
-      tstore.nodes.forEach((el, i) => { el.title = cmd ? this.sentences[i] || '' : '' });
+      tstore.nodes.forEach((el, i) => { 
+        el.title = cmd ? this.sentences[i] || '' : '';
+        setElClass(el, 'hover-overlay-subtle', cmd);
+      });
   },
   
   toggle(el) { 
