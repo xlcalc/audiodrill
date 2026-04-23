@@ -3635,7 +3635,7 @@ tstore.translation = { // experimental: 2026-02-14
     if (this.sentences && tstore.nodes)
       tstore.nodes.forEach((el, i) => { 
         el.title = cmd ? this.sentences[i] || '' : '';
-        setElClass(el, 'hover-overlay-subtle', cmd);
+        setElClass(el, 'hover-overlay-s', cmd);
       });
   },
   
@@ -3648,7 +3648,7 @@ tstore.translation = { // experimental: 2026-02-14
     if (!this.sentences.length) return;
 	
     const btn = `<button title="Translation on hover" 
-	  class="rel plain-button float-right font-80pc action-icon no-tts" 
+	  class="rel plain-button float-right font-80pc action-icon plain-button no-tts" 
 	  style="right:10px; width:auto" 
 	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
