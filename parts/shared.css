@@ -620,7 +620,7 @@ left: 0.25em;
 transform: rotate(70deg) scaleY(0.75);
 }
 
-.arrow-flip-x {transform: rotate(135deg)}
+.arrow-flip-x {transform: translateX(-22px) rotate(135deg)}
 
 .flip-y {transform: rotateY(180deg)}
 

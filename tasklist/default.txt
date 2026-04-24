@@ -1,6 +1,6 @@
 <x-vars video-size=-1 task-title="Audiodrill overview"><div style="line-height:1.8em"><img src="/img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
-### 1. What this tool is for
-Build your listening and speaking skills in foreign languages. Practice pronunciation, listening comprehension and vocabulary, using real-life videos, audio and texts.
+### 1. What [this tool](tip: test me) is for
+Build your [listening and speaking](tip: qwer tyu i) skills in foreign languages. Practice pronunciation, listening comprehension and vocabulary, using real-life videos, audio and texts.
 
 
 ### 2. Try these sample activities
@@ -14,11 +14,11 @@ Build your listening and speaking skills in foreign languages. Practice pronunci
 
 ### 3. Make learning interactive
 
- * 🎧 Click a word to hear it. You can also play or shadow (play and repeat) a sentence or the full text. To start, open the playback controls (via ~🗣 Read lines~ in the {{arrow:topMenuBtn x-shift=-45 y-shift=16|system menu}} or |_Ctrl_| + click on a sentence), choose a mode from the dropdown, and press ▷.
+ * 🎧 Click a word to hear it. You can also play or shadow (play and repeat) a sentence or the full text. To start, open the playback controls (via ~🗣 Read lines~ in the {{arrow:topMenuBtn y-shift=16|system menu}} or |_Ctrl_| + click on a sentence), choose a mode from the dropdown, and press ▷.
  * 🔍 Select a text to hear it, look it up, translate and add to vocabulary.
  * 🔁 Loop audio/video fragments at custom speed: 
  <input type="url" placeholder="Enter URL here" class="inherit" onchange="getVideoFromURLInput(this)"><input type="submit" class="plain-button font-80pc rounded darker-bg-onhover" value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)"> or <label><a title="Open a local audio or video file">open a local file</a><input type="file" id="open-media2" onchange="uploadTaskOrVideoFile(this)" accept="video/{star}, audio/{star}" style="position: fixed; top: -100em"></label>/drag-and-drop.
- * ⚙️ Adjust playback and TTS speed in the {{arrow:topMenuBtn x-shift=-45 y-shift=16|settings}}.
+ * ⚙️ Adjust playback and TTS speed in the {{arrow:topMenuBtn y-shift=16|settings}}.
  * 📚 Dictate or type in [words and phrases](/words) to look up and hear them in context.
  * 📺 Watch [live TV channels](/tasklist/live-tv.txt) or listen to [the radio](/tasklist/live-radio.txt) at slower speed.
  * 🗣️ Play [voice games](/?game=new) (Chrome/Edge desktop).
@@ -28,8 +28,8 @@ Build your listening and speaking skills in foreign languages. Practice pronunci
 ### 4. Create your own tasks
 
 ✍️ From your own text:
-Got a text to study? Paste it below (or click <span class="inline no-tts a" onclick="qsel('textarea').value='\#\# A sample task with some interactive features\n\n\#\#\# 1. Gaps: type in your answers or use \=\=voice dictation\=\=\n\*Fill the gaps with the verbs in the present simple tense\*\nThe staff \[\[isn\'t / is not / aren\'t / are not\]\] (\~be \/ not\~) new to handling difficult customers.\nShe often \[\[stops => stop__\]\] at this café on the way home.\n\n\n\#\#\# 2. Drop-down lists\n\*Choose the correct preposition\*\nWe met \[\[at|in|\*\*on\]\] Tuesday \[\[\*\*at|in|on\]\] 9.\n\n\n\#\#\# 3. Text-to-speech\n\*Click on the \=\=speaker icons\=\= and \{\{dictate or type in|enter\}\} the words you hear\*\n<\)\) \[\[debt\]\], <\)\) \[\[yacht\]\], <\)\) \[\[gnome\]\]\n'">here</span> to get an example), then hit *Go!* and start exploring it.
-<div class="flex-wrap no-tts" style="align-items: flex-end"><textarea id="story" class="inherit" style="margin-right: 0.4em; flex: 1 1 75%; min-width: 250px; max-width:700px; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea><button style="height:fit-content; margin-top: 0.4em; padding: 0.5em 1.2em; flex: 0 0 auto" onclick="loadElementWithText(qsel('textarea').value, 'transcriptText')">*Go!*</button></div>
+Got a text to study? Paste it below (or <button class="font-95pc" onclick="qsel('textarea').value='\#\# A sample task with some interactive features\n\n\#\#\# 1. Gaps: type in your answers or use \=\=voice dictation\=\=\n\*Fill the gaps with the verbs in the present simple tense\*\nThe staff \[\[isn\'t / is not / aren\'t / are not\]\] (\~be \/ not\~) new to handling difficult customers.\nShe often \[\[stops => stop__\]\] at this café on the way home.\n\n\n\#\#\# 2. Drop-down lists\n\*Choose the correct preposition\*\nWe met \[\[at|in|\*\*on\]\] Tuesday \[\[\*\*at|in|on\]\] 9.\n\n\n\#\#\# 3. Text-to-speech\n\*Click on the \=\=speaker icons\=\= and \{\{dictate or type in|enter\}\} the words you hear\*\n<\)\) \[\[debt\]\], <\)\) \[\[yacht\]\], <\)\) \[\[gnome\]\]\n'">paste a sample</button>), then click [*Go!*](arrow: go-btn y-shift=20) and start exploring your new task.
+<div class="flex-wrap no-tts" style="align-items: flex-end"><textarea id="story" class="inherit" style="margin-right: 0.4em; flex: 1 1 75%; min-width: 250px; max-width:700px; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea><button id=go-btn style="height:fit-content; margin-top: 0.4em; padding: 0.5em 1.2em; flex: 0 0 auto" onclick="loadElementWithText(qsel('textarea').value, 'transcriptText')">*Go!*</button></div>
 
 <color:silver>▶</color> From a YouTube video:
  * Click the {{arrow:new-task y-shift=14|🗋 icon}} and paste the url of a YouTube video. 

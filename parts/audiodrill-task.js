@@ -1224,8 +1224,8 @@ const createTip = el => {
     const xShift = el.getAttribute('x-shift') || 0;
 //console.log('X-shift', xShift);
 //    tip.style.left = (coords.left + coords.right)/2 -2 + parseInt(xShift) + 'px';
-    const tipX = (coords.right - coords.left)/2 - 10 + parseInt(xShift);
-    tip.style.marginLeft = tipX + 'px';
+//    const tipX = (coords.right - coords.left)/2 - 10 + parseInt(xShift);
+//    tip.style.marginLeft = tipX + 'px';
 
 	setElClass(tip, 'arrow-flip-x', coords.right + 80 > innerWidth);
 //	if (coords.right + 80 > innerWidth) tip.classList.add(coords.right + 80 > innerWidth);
@@ -1926,6 +1926,8 @@ const highlightText = txt => {
 	  return `<span tip class="task-tip" ref=${data}>${txt}</span>`;
 	}
 
+	if (tipHtml.startsWith('tip:')) tipHtml = tipHtml.slice(4).trim();
+
 	const tipClass = (txt === '◦')? 'lookup-tip' : 'task-tip'; // a stopgap for alternative tip classes
 
 	txt = highlightText(txt);
@@ -1944,12 +1946,12 @@ const highlightText = txt => {
 	}
 	return getTipTag(tip, txt);
   }
-
+/*
   const expandTip2 = s => {
 	const parts = getParts(s, 'tip:');
 	return getTipTag(parts[1].trim(), parts[0]);
   }
-
+*/
   const expandWithKey = (s, key) => {
 	const parts = getParts(s, key);
 	let code = parts[1].trim();
@@ -2019,16 +2021,19 @@ const highlightText = txt => {
     const parts = getParts(s);
 	if (!parts[1]) return [s];
 
-    const atext = parts[0];
-	const atag = parts[1];
-
+  const atext = parts[0];
+  const atag = parts[1];
+  if (atag.includes(':')) {
+    const akey = atag.split(':')[0];
 //	if (atag.startsWith('tts:')) return ttsBtn3(s);
 //	if (atag.startsWith('himark:')) return [expandHilight(s)];
-	if (atag.startsWith('say:')) return [s];
-	if (atag.startsWith('tip:')) return [expandTip2(s)];
+	  if (akey === 'say') return [s];
 
-	for (const key of ['color:', 'bcolor:', 'cue:', 'play:', 'stream:']) 
-	  if (atag.startsWith(key)) return [expandWithKey(s, key)];
+    if (['tip', 'arrow'].includes(akey)) return [getTipTag(atag, atext)];
+
+	  for (const key of ['color', 'bcolor', 'cue', 'play', 'stream']) 
+	    if (akey === key) return [expandWithKey(s, key)];
+    }
 
 // [](x-vars: ...) // put x-vars params this way?
 
