@@ -102,7 +102,7 @@ uiblox.topMenuHtml = `
 
 .menu-button:active, #bottomMenu a:active {background-color: #ddd}
 </style>
-<button id="topMenuBtn" data-themeable class="plain-button menu-button darker-bg-onhover" title="Audiodrill menu" onclick="showTopMenu()">
+<button id="topMenuBtn" data-themeable class="plain-button menu-button" title="Audiodrill menu" onclick="showTopMenu()">
 <b>&vellip;</b>
 </button>
 <!--

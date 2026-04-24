@@ -101,8 +101,10 @@ a:hover, .a:hover {
 .ddd-bg-onhover {background-color: var(--btn-lighgray);}
 .ddd-bg-onhover:hover {background-color: #ddd;}
 .ddd-bg-onhover:active {background-color: #bbb;}
+/*
 .darker-bg-onhover:hover {background-color: rgba(0,0,0,0.1);}
 .darker-bg-onhover:hover {filter: brightness(90%)}
+*/
 .hover-overlay-s:hover {background-color: var(--color-overlay-s)}
 
 /* This doesn't work b/c opened select list has opaque background
