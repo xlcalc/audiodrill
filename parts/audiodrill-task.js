@@ -1961,12 +1961,13 @@ const highlightText = txt => {
 // 2025-07-10: experimental: try using cueTagBtn 
 	  if (key === 'play' && !parts[0]) return cueTagBtn({url: playAttr[0], time: playAttr[1], title: 'Play/pause'});
 
-// player-title might be added for streaming
+  	const colors = `<${key}:${code}>${parts[0]}</${key}>`;
 	  const res = {
-  		'color': `<color:${code}>${parts[0]}</color>`,
-	  	'bcolor': `<bcolor:${code}>${parts[0]}</bcolor>`,
+		  'color': colors,
+		  'bcolor': colors,
 		  'cue': `<cue time="${code}" title="Play ${code}">${parts[0]}</cue>`,
   		'play': `<cue url="${playAttr[0]}" time="${playAttr[1]}">${parts[0]}</cue>`,
+  // player-title might be added for streaming
 	  	'stream': `<cue url="${code}">${parts[0]}</cue>`,
 	  };
 	  return res[key];
