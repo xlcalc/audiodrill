@@ -1325,7 +1325,7 @@ const setTipPosition = (tip, parent) => {
     top = coords.bottom + parseFloat(pos.split('bottom:')[1]);
   }
   
-  const isTypicalTooltip = el => ['task-tip', 'tooltip-text', 'tooltip-link', 'flashcard'].some(s => el.classList.contains(s));
+  const isTypicalTooltip = el => ['task-tip', 'tooltip-text', 'tooltip-link', 'flashcard', 'transl-tip'].some(s => el.classList.contains(s));
 
 //  if ((tip.classList.contains('tooltip-text') || tip.classList.contains('tooltip-link') || tip.classList.contains('flashcard')) && top > (scrollY + innerHeight - 170)) {
   if ((isTypicalTooltip(tip)) 
