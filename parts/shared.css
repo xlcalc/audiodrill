@@ -105,6 +105,7 @@ a:hover, .a:hover {
 .darker-bg-onhover:hover {background-color: rgba(0,0,0,0.1);}
 .darker-bg-onhover:hover {filter: brightness(90%)}
 */
+.hover-overlay-s {transition: background-color 0s 0.15s} /* delay when hover ends */
 .hover-overlay-s:hover {background-color: var(--color-overlay-s)}
 
 /* This doesn't work b/c opened select list has opaque background
@@ -232,7 +233,7 @@ box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 20px 0 rgba(0, 0, 0, 0.19);
   background-color: rgba(220,220,225,0.7);
 /*  text-shadow: 1px 1px 2px gainsboro;*/
 }
-.tooltip-text, .flashcard, .tooltip-link {
+.tooltip-text, .flashcard, .tooltip-link, .transl-tip {
 /*  visibility: hidden;*/
   position: absolute;
   padding: 0.5em;
@@ -254,6 +255,14 @@ box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 20px 0 rgba(0, 0, 0, 0.19);
   color: slategray;
   border: dotted 1px #aaa;
   font-size:130%;
+}
+
+.transl-tip {
+  max-width: 500px;
+  background-color: var(--color-white-darkgray);
+  color: var(--color-text);
+  border: dotted 1px #aaa;
+/*  font-size: 100%;*/
 }
 
 .info-point {

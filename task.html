@@ -3634,8 +3634,9 @@ tstore.translation = { // experimental: 2026-02-14
     this.isOn = cmd;	
     if (this.sentences && tstore.nodes)
       tstore.nodes.forEach((el, i) => { 
-        el.title = cmd ? this.sentences[i] || '' : '';
+        el.dataset.transl = cmd ? this.sentences[i] || '' : '';
         setElClass(el, 'hover-overlay-s', cmd);
+        this.setListeners(el);
       });
   },
   
@@ -3647,12 +3648,48 @@ tstore.translation = { // experimental: 2026-02-14
   addBtn() {
     if (!this.sentences.length) return;
 	
-    const btn = `<button title="Translation on hover" 
+    const btn = `<button title="Translation on hover" translate="no" 
 	  class="rel plain-button float-right font-80pc action-icon plain-button no-tts" 
 	  style="right:10px; width:auto" 
 	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
   },
+
+  setListeners(el) {
+      el.onmouseenter = () => this.addTip(el);
+      el.onmouseleave = () => this.removeTip(el);
+  },
+
+  async addTip(el) {
+    const txt = el.dataset.transl;
+    if (!txt) return;
+    el.hovered = 1;
+    await sleep(200);
+    if (!el.hovered) return;
+    document.querySelectorAll('.transl-tip').forEach(el => { el.remove() });
+
+    const tip = document.createElement('div');
+    document.body.append(tip);
+
+    setElClass(tip, ['transl-tip', 'box-shadow'], 1);
+    setTipPosition(tip, el);
+    tip.textContent = txt;
+
+// link parent and child;
+    el.child = tip;
+//    tip.parent = el;
+    return tip;
+  },
+
+  async removeTip(el) {
+    if (!el.dataset.transl) return;
+    el.hovered = 0;
+    await sleep(200);
+    if (el.hovered) return;
+    if (el.child) el.child.remove();
+  },
+  
+//  inspectTips() { return document.querySelectorAll('.transl-tip') },
 }
 
 

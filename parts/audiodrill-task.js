@@ -1159,7 +1159,7 @@ gstore.tips = {
   
   removeAll() {
 	const tips = document.querySelectorAll('.flashcard, .tooltip-text, .tooltip-link, .arrow');
-    tips.forEach(el => { el.remove });
+    tips.forEach(el => { el.remove() });
   },
 
 }
