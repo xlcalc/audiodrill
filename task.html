@@ -3618,10 +3618,14 @@ tstore.translation = { // experimental: 2026-02-14
     this.init();
 
     return txt.replace(pattern, (_, captured) => {
-      this.text = captured.trim();
+      const newLinePos = captured.indexOf('\n');
+      this.tlang = captured.slice(0, newLinePos).trim() || 'en';
+//console.log('Translation lang:', this.tlang);
+//      this.text = captured.trim();
+      this.text = captured.slice(newLinePos).trim();
 
 // language of translation may be added after the marker, just like for :lang: marker	  
-  	  const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
+  	  const segmenter = new Intl.Segmenter(this.tlang, { granularity: 'sentence' });
 	    this.sentences = [...segmenter.segment(this.text)]
         .map(entry => entry.segment.trim())
         .filter(s => s); //leave non-empty lines
@@ -3703,8 +3707,8 @@ const taskTextHandler = txt => {
   if (txt.includes(':lang:')) gstore.langTag = getKeyFromText(txt, ':lang:');
   
   if (gstore.langTag) {
-	storeLangCode(gstore.langTag);
-	setTextDirection(gstore.langTag);
+    storeLangCode(gstore.langTag);
+    setTextDirection(gstore.langTag);
   }
   
   txt += '\n'; // might help fix issues with Hebrew
@@ -3716,8 +3720,8 @@ const taskTextHandler = txt => {
   
   return  handlePairedLines(txt)
     .replace(/:lang:.*\n?/g, '')
-	.replace(/<x-vars[^>]*>/, s=> extractXvars(s))
-	; // so far just a few jobs to handle
+    .replace(/<x-vars[^>]*>/, s=> extractXvars(s))
+    ; // so far just a few jobs to handle
 }
 
 const handleTransl = () => {
@@ -3846,12 +3850,18 @@ const refreshTask = () => {
   loadElementWithText(players.currentTask, 'transcriptText');
 }
 
-const processTaskEl = () => {
+const processTaskEl = async () => {
 //  transcriptText.querySelectorAll('.tooltip').forEach( e => {e.remove();});
 //  gstore.tips.initAll();
   loadingDone(); 
   afterTaskLoaded();
   parseCmdTag('transcriptText');
+
+  if (tstore.translation.sentences.length) {
+    const lang = tstore.translation.tlang.toUpperCase();
+    await sleep(10); // wait till editing window closes;
+    displayMessage(lang + ' translation loaded', 2200);
+  }
 }
 
 const afterTaskLoaded = () => {
