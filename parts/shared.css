@@ -19,6 +19,7 @@
   --color-white-darkgray: white;
   --color-overlay-s: #0001;
   --color-overlay-m: #0002;
+  --color-overlay-green: #0b83;
 }
 
 :root.night-mode {
@@ -44,6 +45,7 @@
   --color-white-darkgray: #282828;
   --color-overlay-s: #fff2;
   --color-overlay-m: #fff3;
+  --color-overlay-green: #0b85;
 }
 
 * {outline-color: var(--a-color);}
@@ -745,6 +747,7 @@ font-s, .font-75pc {font-size: 75%}
   color: #00a500; 
   color: #095 !important; 
 }
+.bg-green {background-color: var(--color-overlay-green) !important}
 .red { color: #e11a !important }
 .lightcoral { color: lightcoral; }
 

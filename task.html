@@ -3646,14 +3646,14 @@ tstore.translation = { // experimental: 2026-02-14
   
   toggle(el) { 
     this.set(!this.isOn);
-	  toggleEl(el, 'green');
+	  toggleEl(el, 'bg-green');
   },
   
   addBtn() {
     if (!this.sentences.length) return;
 	
     const btn = `<button title="Translation on hover" translate="no" 
-	  class="rel plain-button float-right font-80pc action-icon plain-button no-tts" 
+	  class="rel plain-button float-right font-80pc action-icon plain-button gray no-tts" 
 	  style="right:10px; width:auto" 
 	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
