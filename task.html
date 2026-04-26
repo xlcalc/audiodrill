@@ -4912,6 +4912,7 @@ tstore.translLangCtrl = {
   set(lang) {
     const el = elid(this.selectorId);
     el.value = lang || localStorage.getItem('translLangCode') || 'en';
+    localStorage.setItem('translLangCode', el.value);
     const selectedOption = el.options[el.selectedIndex];
     el.title = selectedOption.title || '';
   }
