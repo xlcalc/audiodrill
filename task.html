@@ -3613,6 +3613,8 @@ tstore.translation = { // experimental: 2026-02-14
   marker: ':transl:',
 
   init() {
+    this.previousText = this.text;
+    this.text = '';
     this.sentences = [];
     this.isOn = false;
   },
@@ -3864,7 +3866,8 @@ const processTaskEl = async () => {
   afterTaskLoaded();
   parseCmdTag('transcriptText');
 
-  if (tstore.translation.sentences.length) {
+  if (tstore.translation.sentences.length 
+  && tstore.translation.previousText !== tstore.translation.text) {
     const lang = tstore.translation.tlang.toUpperCase();
     await sleep(10); // wait till editing window closes;
     displayMessage(lang + ' translation loaded', 2200);
