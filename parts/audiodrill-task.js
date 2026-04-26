@@ -2919,6 +2919,7 @@ function isOutOfView(el, offset = 0) {
   return rect.top < offset || rect.bottom > window.innerHeight - offset;
 }
 
+function hideParent(el) { el.parentElement.hidden = true }
 
 /*
 window.onunhandledrejection = event => {

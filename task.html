@@ -959,9 +959,9 @@ z-index: 2;
 
 <div id="top-menu"></div>
 
-<div id="top-controls" data-themeable class="top-controls box-shadow rounded hidden" style="backdrop-filter: blur(10px);background: rgba(255, 255, 255, 0.82);">
+<div id="top-controls" data-themeable hidden class="top-controls box-shadow rounded" style="backdrop-filter: blur(10px);background: rgba(255, 255, 255, 0.82);">
 <div id="top-controls-label" class="flex font-75pc" style="margin: -0.5em 0;"></div>
-<span class="close-x01 action-icon" onclick="hideElid('top-controls')">&times;</span>
+<span class="close-x01 action-icon">&times;</span>
 <div id="top-settings"></div>
 </div>
 
@@ -1027,6 +1027,7 @@ var htmlPlayer = elid('html-video');
 const playerBoxLoading = elid('player-box-loading');
 const playerBox = elid('player-box');
 const videoResize = elid('video-resize');
+const topControls = elid('top-controls');
 
 const tstore = {};
 ontouchstart = (e) => tstore.touchScreen = 1;
@@ -1399,7 +1400,7 @@ const setMediaInTask = cmd => {
 }
 
 async function getVideoByURL(url, task) {
-  if (!url) return; // checking moved up 2024-07-21
+  if (!url || !topControls.hidden) return;
   url = url.trim();
   if (url === players.currentVideoUrl && !players.mediaInTask) return;
   players.currentVideoUrl = url;
@@ -2891,7 +2892,8 @@ const prepareTopSettings = (cmd = '') => {
 const showTopSettings = async (par = '') => {
   tstore.topControlsMayBeHidden = false;
   prepareSettings();
-  showElid('top-controls');
+  topControls.querySelector('.close-x01').onclick = () => { topControls.hidden = true };
+  topControls.hidden = false;
   setElHTML('top-controls-label', gstore.settingsIcon + '&thinsp;Settings');
 //  if (par) highlightEl(elid(par), 10000);
 
@@ -2929,7 +2931,7 @@ const handleKeyEvent = e => {
 
   if (e.key === 'Escape') {
     hitStopButton();
-    hideElid('top-controls');
+    topControls.hidden = true;
     tstore.hideChunkTooltip();
 //    hideEl(vocabInput);
     hideEl(qsel('.dropzone')); // trying to fix the rare bug of showing dropzone while selecting text
@@ -4994,7 +4996,7 @@ document.addEventListener('click', e => {
     && tstore.chunkTooltip.mayBeHidden
 	&& !tstore.doubleClicked) tstore.hideChunkTooltip();
 	
-  if (!elid('top-controls').contains(e.target) && tstore.topControlsMayBeHidden) hideElid('top-controls');
+  if (!topControls.contains(e.target) && tstore.topControlsMayBeHidden) topControls.hidden = true;
 });
 
 elid('share-fragment').onclick = shareFragment;
