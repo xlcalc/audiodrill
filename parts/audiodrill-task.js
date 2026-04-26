@@ -1152,19 +1152,19 @@ gstore.tips = {
     },
 
   initAll() {
-	this.removeAll();
+//	this.removeAll();
     const tips = document.querySelectorAll('[tip]');
     tips.forEach(el => { this.init(el) });
   },
   
+/*
   removeAll() {
-    const tips = document.querySelectorAll('.flashcard, .tooltip-text, .tooltip-link, .arrow');
+	const tips = document.querySelectorAll('.flashcard, .tooltip-text, .tooltip-link, .arrow');
     tips.forEach(el => { 
 //      el.remove();
-      el = null; // added 2026-04-26, to be tested
     });
   },
-
+*/
 }
 
 const showTip = async el => {

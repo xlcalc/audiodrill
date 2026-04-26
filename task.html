@@ -1401,6 +1401,11 @@ const setMediaInTask = cmd => {
 
 async function getVideoByURL(url, task) {
   if (!url || !topControls.hidden) return;
+  if (tstore.noMediaUpdate) {
+    tstore.noMediaUpdate = false;
+    return;
+  }
+
   url = url.trim();
   if (url === players.currentVideoUrl && !players.mediaInTask) return;
   players.currentVideoUrl = url;
@@ -4758,6 +4763,7 @@ const cancelVocabBtn = elid('cancelVocabBtn');
 // Show vocab input UI (mobile-friendly)
 tstore.addToVocabBtn.addEventListener('click', () => {
   hideAllTips();
+  tstore.noMediaUpdate = true;
   const entry = transcriptText.lastSelectionText;
   getWordRef(entry);
 });
