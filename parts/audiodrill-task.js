@@ -1158,8 +1158,11 @@ gstore.tips = {
   },
   
   removeAll() {
-	const tips = document.querySelectorAll('.flashcard, .tooltip-text, .tooltip-link, .arrow');
-    tips.forEach(el => { el.remove() });
+    const tips = document.querySelectorAll('.flashcard, .tooltip-text, .tooltip-link, .arrow');
+    tips.forEach(el => { 
+//      el.remove();
+      el = null; // added 2026-04-26, to be tested
+    });
   },
 
 }
