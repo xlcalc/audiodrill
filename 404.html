@@ -7,6 +7,7 @@
   const match = location.pathname.match(/^\/([mt])\/(.+)/);
   if (match) {
     let [, type, path] = match;
+	  path = path.replace(/s2\/\//, 's2://');
 	  const prefix = path.includes('//') ? '' : '/';
 	  path = prefix + path;
     window.location.assign(`/task.html?${type}=${path}${location.search}`);
