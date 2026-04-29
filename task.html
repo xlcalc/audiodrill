@@ -5353,6 +5353,21 @@ gstore.goodJob = {
     return this.emojis[Math.floor(Math.random() * this.emojis.length)];
   }
 }
+
+const stopWatch = {
+  tstart: 0, r: 0,
+  start(){ this.tstart = Date.now(); return this.tstart; },
+
+  stop(){
+    this.r = Date.now() - this.tstart;
+    return this.r;
+  },
+/*
+  get: () => stopWatch.r,
+  get2() {return this.tstart},
+*/
+}
+
 // ***  Beep  ***
 /* This fn may be needed later
 
@@ -5397,20 +5412,6 @@ const testfn = function() {
     ini: () => a = 0
   }
 }();
-
-const stopWatch = {
-  tstart: 0, r: 0,
-  start(){ this.tstart = Date.now(); return this.tstart; },
-
-  stop(){
-    this.r = Date.now() - this.tstart;
-    return this.r;
-  },
-
-  get: () => stopWatch.r,
-
-  get2() {return this.tstart}
-}
 */
 </script>
 </body>
