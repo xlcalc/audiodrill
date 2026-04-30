@@ -15,7 +15,7 @@ Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream
 `ar`: [Ashams](stream: https://cdna.streamgates.net/Ashams/Live/playlist.m3u8)
 `be`: [Racyja](stream: https://air.racyja.com/racja48)
 `cz`: [CRo 2](stream: https://rozhlas.stream/dvojka_mp3_128.mp3)
-`da`: [DR P1](https://live-icy.gss.dr.dk/A/A03L.mp3)
+`da`: [DR P1](strem: https://live-icy.gss.dr.dk/A/A03L.mp3)
 `de`: [Deutschlandfunk](stream: https://st01.sslstream.dlf.de/dlf/01/low/opus/stream.opus), [rbb24 Inforadio](stream: https://dispatcher.rndfnk.com/rbb/inforadio/live/mp3/low)
 `es`: [RNE (ES)](stream: https://dispatcher.rndfnk.com/crtve/rne1/and/mp3/high), [Noticias MVS (MX)](stream: https://playerservices.streamtheworld.com/api/livestream-redirect/XHMVSFMAAC.aac)
 `fi`: [Radio Suomi](stream: https://icecast.live.yle.fi/radio/YleRS/icecast.audio)
