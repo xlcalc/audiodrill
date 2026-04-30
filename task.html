@@ -1405,7 +1405,6 @@ async function getVideoByURL(url, task) {
     tstore.noMediaUpdate = false;
     return;
   }
-
   url = url.trim();
   if (url === players.currentVideoUrl && !players.mediaInTask) return;
   players.currentVideoUrl = url;
@@ -2586,13 +2585,15 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
     <select id="ttsPlayMode" class="font-80pc drop-down darker-hover" style="margin: .1em">
       <option value="sentence" title="Replay the line at multiple speeds
 (see Replay speed factors in the settings)">Play a line</option>
-      <option value="all" title="Play the whole text at one speed
+      <option value="ALL" title="Play the whole text at one speed
 (see Master speed rate in the settings)">Play all text</option>
       <option value="ALL_WITH_REPS" title="Play each line at multiple speeds
 (see Replay speed factors in the settings)">Play all (reps)</option>
       <option value="SHADOW_LINE" title="Play a line, then dictate it">Shadow a line</option>
       <option value="SHADOW_ALL" title="Play and dictate all lines">Shadow all text</option>
       <option value="SHADOW_AND_HIDE" title="Play a hidden line, then dictate it">Shadow & hide</option>
+<!--      <option id="showTranslOption" hidden value="SHOW_TRANSLATION" title="Click a line to see translation">Show translation</option>
+-->
     </select>
   </div>
 
@@ -2797,7 +2798,7 @@ window.onload = () => {
 
   initVideoResizer();
   
-  gstore.tips.initAll();
+//  gstore.tips.initAll();
 
   adjustPostRecActions('0.7U, 0.7O, U, O');
   
@@ -3651,11 +3652,14 @@ tstore.translation = { // experimental: 2026-02-14
         setElClass(el, 'hover-overlay-s', cmd);
         this.setListeners(el);
       });
+//    if (this.isOn && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+//      tstore.ttsOverlay.initTransl();
+//    }
   },
   
   toggle(el) { 
     this.set(!this.isOn);
-	  toggleEl(el, 'bg-green');
+    toggleEl(el, 'bg-green');
   },
   
   addBtn() {
@@ -3704,7 +3708,6 @@ tstore.translation = { // experimental: 2026-02-14
   
 //  inspectTips() { return document.querySelectorAll('.transl-tip') },
 }
-
 
 const taskTextHandler = txt => {
   txt = tstore.translation.extract(txt);
@@ -3872,6 +3875,7 @@ const processTaskEl = async () => {
     await sleep(10); // wait till editing window closes;
     displayMessage(lang + ' translation loaded', 2200);
   }
+  tstore.ttsOverlay.taskTransl = tstore.translation.sentences;
 }
 
 const afterTaskLoaded = () => {
@@ -4252,21 +4256,24 @@ transition: opacity 0.25s; opacity: 1;"
 
     this.unmarkAll();
     
-    this.currentNum = (typeof cmd === 'object') ? this.getInitChunkNum(cmd) : cmd || 0;
+    const lineClicked = typeof cmd === 'object';
+    this.currentNum = lineClicked ? this.getInitChunkNum(cmd) : cmd || 0;
     if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
     this.play();
+//    if (cmd !== 'DO_NOT_PLAY') this.play(lineClicked);
+//    this.initCtrls(this.silentMode);
     this.initCtrls();
     this.setActive();
   },
 
   translBtnId: 'tts-translate-btn',
 
-  initCtrls() {
+  initCtrls(cmd) {
     const playBtn = '<button id="tts-play-pause-btn" class="font-100pc rnd show-focus grayish no-bgcolor gray-bg-onhover" title="Play/pause"' 
       + 'style="width:32px; height:32px; border: 1px solid var(--color-ddd-555)">'
 //	  + '<div id="tts-play-btn" class="semibold hidden"  style="margin: 2.5px 0 0 2.5px;">&#x25B7;</div>'
 //      + '<div id="tts-play-btn" class="small-padding grayish play-triangle- hidden" style="line-height:1.3em">&#x25B6;</div>'
-      + '<div id="tts-play-btn" hidden style="line-height: 28px; padding-left: 2.6px;">&#x25B6;</div>'
+      + '<div id="tts-play-btn" style="line-height: 28px; padding-left: 2.6px;">&#x25B6;</div>'
 	  + '<div id="tts-pause-btn" style="margin-top: -3px; transform: scaleX(.8);">&#10074;&#10074;</div>'
 	  + '</button>';
 
@@ -4314,6 +4321,10 @@ transition: opacity 0.25s; opacity: 1;"
       elid('tts-sentence-reader').insertAdjacentHTML('beforeend', btnDiv);
     }
 
+//    elid('tts-play-btn').hidden = !cmd;
+//    elid('tts-pause-btn').hidden = cmd;
+    this.showPlaying(!cmd);
+
     this.show(true);
     this.playPauseBtn().focus();
     this.setTtsPlayMode();
@@ -4326,22 +4337,32 @@ transition: opacity 0.25s; opacity: 1;"
       this.ttsPlayMode = el.value;
       const selectedOption = el.options[el.selectedIndex];
       el.title = selectedOption.title || '';
+
+//      this.silentMode = el.value === this.translModes[0];
+//      elid('showTranslOption').hidden = !this.taskTransl.length;
     }
 
 	if (mode) el.value = mode;
     setDDL();
     el.onchange = () => { 
-      setDDL();
       this.dictDiv.remove();
+      setDDL();
       this.markSentence(tstore.nodes[this.currentNum], 1);
     }
   },
   
   shadowLines() { // Can be called from a task
-	  tstore.ttsOverlay.init();
-	  tstore.ttsOverlay.setTtsPlayMode(this.shadowModes[0]);
+    this.init();
+    this.setTtsPlayMode(this.shadowModes[0]);
   },
-  
+/*
+  initTransl() {
+    this.silentMode = true;
+    this.init('DO_NOT_PLAY');
+    this.setTtsPlayMode('SHOW_TRANSLATION');
+    this.dictDiv.showPrompt('<i>Click a line to see translation</i>');
+  },
+*/
   markClasses: ['view-cloze-answers', 'marked'],
   
   unmarkAll() {
@@ -4401,7 +4422,10 @@ transition: opacity 0.25s; opacity: 1;"
     const speed = speedCtrl.calcSpeed(this.repeatNum);
     ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
-    this.showShadowPrompt();
+//    if (this.isTranslMode()) this.dictDiv.showPrompt(this.taskTransl[this.currentNum]);
+//    if (!(cmd && this.isTranslMode())) ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
+
+    this.showText();
 
     if (isOutOfView(el, 64) || this.isTooLow(el)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 
@@ -4438,7 +4462,7 @@ transition: opacity 0.25s; opacity: 1;"
       }
     }
     else if (this.ttsPlayMode === 'ALL_WITH_REPS') this.playAllWithReps();
-    else if (this.ttsPlayMode === 'all' 
+    else if (this.ttsPlayMode === 'ALL' 
 	  && tstore.TTSsource === 'sentence' 
 //	  && this.tryNextSentence()
 //	  ) this.play();
@@ -4446,10 +4470,16 @@ transition: opacity 0.25s; opacity: 1;"
   	else this.showPlaying(0);
   },
 
-  showShadowPrompt() {
+  showText() {
     if (this.afterShadowing) return;
-    if (this.ttsPlayMode === this.shadowModes[0] || this.ttsPlayMode === this.shadowModes[2]) this.dictDiv.showPrompt(this.ttsLine);
+	let msg = '';
+    if ([this.shadowModes[0], this.shadowModes[2]].includes(this.ttsPlayMode)) msg = this.ttsLine;
     if (this.ttsPlayMode === this.shadowModes[1]) this.dictDiv.showPrompt('<i>Listen...<i>');
+    if (this.ttsPlayMode?.startsWith('ALL') && this.canTranslate()) msg = this.taskTransl[this.currentNum];
+	
+	if (msg) this.dictDiv.showPrompt(msg);
+	else this.dictDiv.remove();
+	
   },
 
   shadowNext() {
@@ -4491,8 +4521,8 @@ transition: opacity 0.25s; opacity: 1;"
     elid('tts-play-btn').hidden = cmd;
     if (cmd) {
       this.updatePevNextBts();
-	    this.setClickedPlayBtn(0);
-	    btn.onclick = () => { this.pause(); }
+      this.setClickedPlayBtn(0);
+      btn.onclick = () => { this.pause(); }
     } else {
     btn.onclick = () => { this.play(); }
     }
@@ -4542,8 +4572,12 @@ transition: opacity 0.25s; opacity: 1;"
   },
   
   shadowModes: ['SHADOW_LINE', 'SHADOW_AND_HIDE', 'SHADOW_ALL'],
+//  translModes: ['SHOW_TRANSLATION'],
 
-  isShadowMode() {return this.shadowModes.includes(this.ttsPlayMode)},
+  isShadowMode() { return this.shadowModes.includes(this.ttsPlayMode) },
+  taskTransl: [],
+//  isTranslMode() {return this.translModes.includes(this.ttsPlayMode) && this.taskTransl.length},
+  canTranslate() { return this.taskTransl.length && tstore.translation.isOn },
 }
 
 function getClickedTextFragment(lang, granularity) {
@@ -5354,6 +5388,34 @@ gstore.goodJob = {
   }
 }
 
+function makeDraggable(el) {
+  let offsetX = 0, offsetY = 0, isDown = false;
+  el.style.position = 'fixed';
+  el.style.bottom = '';
+// for xAudioBox, bottom = 0 should be commented out
+
+  el.addEventListener('mousedown', (e) => {
+    isDown = true;
+    offsetX = e.clientX - el.offsetLeft;
+    offsetY = e.clientY - el.offsetTop;
+    el.style.cursor = 'grabbing';
+//	disableBodyScroll(document.body);
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    el.style.left = `${e.clientX - offsetX}px`;
+    el.style.top = `${e.clientY - offsetY}px`;
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDown = false;
+    el.style.cursor = 'default';
+    document.body.style.userSelect = '';
+  });
+}
+
 const stopWatch = {
   tstart: 0, r: 0,
   start(){ this.tstart = Date.now(); return this.tstart; },
@@ -5364,8 +5426,8 @@ const stopWatch = {
   },
 /*
   get: () => stopWatch.r,
-  get2() {return this.tstart},
-*/
+  get2() {return this.tstart}
+*/  
 }
 
 // ***  Beep  ***
