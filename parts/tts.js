@@ -87,8 +87,8 @@ const getLangCode = () => {
   
   return res;
 }
-
-function listLangVoices() {
+/*
+function listLangVoicesOld() {
 //console.log('** listLangVoices called by', listLangVoices.caller);
   let langVoices = tts.getVoices();
 
@@ -111,6 +111,27 @@ function listLangVoices() {
   }
   
   ttsCallBack('TTS_GOT_LANG_VOICES', langVoices);
+}
+*/
+
+function listLangVoices() {
+//console.log('** listLangVoices called by', listLangVoices.caller);
+
+  let lang = tts.langSelector?.value;
+// Most lang codes have 2 chars as per ISO 639-1, like 'en'. 
+// But some lang codes are as per ISO 639-2, like 'fil' for Filipino. 
+// Hope, no lang code is longer than 3 letters.
+  if (!lang || lang.length > 3) lang = getLangCode(); // Get full lang name for words and phrases page. 
+  
+  ttsCallBack('TTS_GOT_LANG_VOICES', getLangVoices(lang));
+}
+
+const getLangVoices = lang => {
+  const voices = tts.getVoices();
+  return lang ? voices
+    .filter(voice => lang === voice.lang.split(/_|-/)[0])
+    .sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name))
+	: voices
 }
 
 async function loadVoices() {
