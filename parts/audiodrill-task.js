@@ -620,9 +620,11 @@ function getNewURL(url, keep = 0) {
 
 const squeezedUrl = (url, keep = 1) => getNewURL(url, keep)
   .replace('https://drmedia.netlify.app/', '//')
-  .replace('https://raw.githubusercontent.com/xlcalc/blog/main/', 's2://');
+//  .replace('https://raw.githubusercontent.com/xlcalc/blog/main/', 's2://');
+  .replace('https://raw.githubusercontent.com/xlcalc/blog/main/', '/2/');
 
-const adjustUrl = (path = '') => {
+/*
+const adjustUrlOld = (path = '') => {
 // for media files
   if (!path) return '';
 //  path = path.replaceAll('?', '&');
@@ -631,6 +633,11 @@ const adjustUrl = (path = '') => {
   if (path.startsWith('//')) return path.replace('//', 'https://drmedia.netlify.app/');
   return path;
 }
+*/
+const adjustUrl = url => (url || '').split(/[&?]/)[0]
+  .replace(/^\/\//, 'https://drmedia.netlify.app/')
+  .replace(/^(s2:\/\/|\/2\/)/, 'https://raw.githubusercontent.com/xlcalc/blog/main/')
+  ;
 
 const loadHtmlTaskByRef = ref => {
   const key = ref.getAttribute("game") ? '/?game=1&url=' : '/?t=';
