@@ -3544,6 +3544,8 @@ const analyzeXvars = () => {
 //  setTaskTitle(getV('task-title')); // so far kept to allow prev/next episode btns in the title
   
   tstore.textToClozeMode = getV('text-cloze') !== null;
+
+  setFontSize(getV('font-size'));
   
   return 1;
 }

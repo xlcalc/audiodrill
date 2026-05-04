@@ -487,7 +487,7 @@ const getPbrHtml = (s='') => {
   <div  class="inblock gray font-90pc">
     <input id="setpbr${s}" title="Player speed" class="gray" 
     type="range" list="pbr-tickmarks" value="${masterPBR}" min="0.1" max="2" step="0.05" 
-    oninput="setPBR(this)" style="width:90px; vertical-align: -35%">
+    oninput="setPBR(this)" style="width:90px; vertical-align: middle">
     <span id="current-pbr${s}" class="font-90pc"></span>x
   </div>
 `
