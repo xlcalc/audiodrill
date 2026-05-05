@@ -1,6 +1,6 @@
 <x-vars video-size=-1 task-title="Audiodrill overview"><div style="line-height:1.8em"><img src="/img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
-### 1. What [this tool](tip: test me) is for
-Build your [listening and speaking](tip: qwer tyu i) skills in foreign languages. Practice pronunciation, listening comprehension and vocabulary, using real-life videos, audio and texts.
+### 1. What this tool is for
+Build your listening and speaking skills in foreign languages. Practice pronunciation, listening comprehension and vocabulary, using real-life videos, audio and texts.
 
 
 ### 2. Try these sample activities
