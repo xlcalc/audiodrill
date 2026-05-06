@@ -10,7 +10,6 @@ const youglish = {
   getSuggestedComponents(lang) { return this.hasAccent(lang)? 8411 : 8408 },
 
   hasAccentPanel(v) { return v % 4 === 3 }, // last two bits are 11
-  
 
   reload(){
 console.log('YG player reloading...');
@@ -71,7 +70,7 @@ console.error('** YouGlish error', e.code);
   function onVideoChange(e) {
 //    youglish.manuallyPaused = false; // it's set in onPlayerStateChange() when e.state changes to 3 (playing)
 console.log('Video change event:', e);
-    if (!youglish.manuallyClosed) youglish.manuallyPaused = false;
+//    if (!youglish.manuallyClosed) youglish.manuallyPaused = false;
     youglish.curTrack = e.trackNumber;
     youglish.views = 1;
     ygCallback('RESET_SPEED');
@@ -99,6 +98,7 @@ console.log('YG player ready');
   }
 
   const onCaptionConsumed = async e => {
+    if (youglish.manuallyPaused) return;
 //console.log('Caption consumed,', e);
 	const charsBeforeEnd = youglish.caption.split(youglish.query)[1]?.length || 0;
 //console.log('charsBeforeEnd', charsBeforeEnd);
@@ -109,19 +109,37 @@ console.log('YG player ready');
     widget.pause();
     await ygCallback('SLEEP', 4000); // pause so that the user could read and think
   
-    if (youglish.manuallyPaused) return;
+//    if (youglish.manuallyPaused) return;
 
     replayOrNext();
   }
 
-
   const onCaptionChange = async e => {
-console.log('Caption:', e);
-	youglish.caption = decodeURIComponent(e.caption);
+//console.log('Caption:', e);
+//	youglish.caption = decodeURIComponent(e.caption);
+	youglish.caption = decodeMixedEncoding(e.caption);
+console.log('Caption decoded:', youglish.caption);
 //console.log('Caption ID:' ,e.id);
 // info on captions could be collected as {video id, caption id, caption text} and shown to the user
   }
 
+  function decodeMixedEncoding(input) {
+  // Step 1: convert %uXXXX → actual Unicode
+    let result = input.replace(/%u([0-9A-Fa-f]{4})/g, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16))
+    );
+
+  // Step 2: safely decode %XX sequences
+    try {
+      result = decodeURIComponent(result);
+    } catch (e) {
+    // fallback if malformed sequences exist
+      result = result.replace(/%([0-9A-Fa-f]{2})/g, (_, hex) =>
+        String.fromCharCode(parseInt(hex, 16))
+      );
+    }
+    return result;
+  }
 
   const onPlayerStateChange = e => {
   // e.state values are those of YT player
@@ -170,7 +188,3 @@ console.log('Caption:', e);
 console.log('Youglish widget ready');
   ygCallback('WIDGET_READY');
 } // end of onYouglishAPIReady() wrapping
-
-
-// *** Possible issues ***
-
