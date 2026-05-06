@@ -176,7 +176,7 @@ const markVocabEntries = (s, vocab, cmd, options = {}) => {
     entry = arr[0].trim(); // using in entry characters like *, <)), etc. will lead to error
     const meaning = (arr[1] || '').trim();
 
-	if (entry.length < 5) entry = '\\b' + entry; // see the comment below
+    if (entry.length < 5 && tts.langCode !=='zh') entry = '\\b' + entry; // see the comment below
 // For short vocab entries, the target word should start exactly as entry.
 // For example, for 'pan' entry, target 'PANned' but ignore 'comPANy'.
 
