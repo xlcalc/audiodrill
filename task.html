@@ -4427,11 +4427,13 @@ transition: opacity 0.25s; opacity: 1;"
 //    if (this.isTranslMode()) this.dictDiv.showPrompt(this.taskTransl[this.currentNum]);
 //    if (!(cmd && this.isTranslMode())) ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
-    this.showText();
+    if (!this.repeatNum) {
+      this.showText();
+      this.markSentence(el, 1);
+    }
 
     if (isOutOfView(el, 64) || this.isTooLow(el)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 
-    this.markSentence(el, 1);
   },
   
   async playAllWithReps() {

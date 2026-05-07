@@ -119,14 +119,31 @@ const copyToClipboard = (txt, msg, msec) => {
   );
 }
 
+const extractTextFromHtmlDoc = html => {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  doc.body.innerHTML = doc.body.innerHTML.replaceAll('</p>', '</p>\n');
+  gstore.docBodyHtml = doc.body.innerHTML;
+  gstore.docBodyText = doc.body.innerText;
+  return gstore.docBodyText.trim();
+}
+
 async function loadElementFromURL(eID, url, altUrl) {
   if (!url || !eID) return 0;
+
+  let cmd = '';
+  if (url.startsWith('https://docs.google.com/document/')) {
+    cmd = 'GOOGLE_DOC';
+    const tab = new URL(url).searchParams.get('tab');
+    url = url.replace(/\/[^/]*$/, '/export?tab=') + tab || '';
+  }
+
   try {
-    const txt = await fetchText(url);
-	if (txt) loadElementWithText(txt, eID);
-	else if (altUrl) { // try again with alternative url
-	  loadElementFromURL(eID, altUrl, '');
-	  return;
+    let txt = await fetchText(url);
+    if (cmd === 'GOOGLE_DOC') txt = extractTextFromHtmlDoc(txt);
+    if (txt) loadElementWithText(txt, eID, cmd);
+    else if (altUrl) { // try again with alternative url
+      loadElementFromURL(eID, altUrl, '');
+    return;
 	}
     else { 
       loadingDone();
@@ -202,7 +219,7 @@ function loadElementWithText(sourceText, eID, cmd) {
     return s;
   }
 
-  let text = (cmd === 'NO_DECODE')? sourceText : decodedText(sourceText);
+  let text = (['NO_DECODE', 'GOOGLE_DOC'].includes(cmd))? sourceText : decodedText(sourceText);
   text = text.replace(/<script|<style|\r/g, '') //sanitize and remove \r
 
   if (eID === 'transcriptText') {
@@ -634,7 +651,8 @@ const adjustUrlOld = (path = '') => {
   return path;
 }
 */
-const adjustUrl = url => (url || '').split(/[&?]/)[0]
+//const adjustUrl = url => (url || '').split(/[&?]/)[0] // commented out 2026-05-07
+const adjustUrl = url => (url || '')
   .replace(/^\/\//, 'https://drmedia.netlify.app/')
   .replace(/^(s2:\/\/|\/2\/)/, 'https://raw.githubusercontent.com/xlcalc/blog/main/')
   ;
