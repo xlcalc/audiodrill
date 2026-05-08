@@ -129,7 +129,7 @@ const extractTextFromHtmlDoc = html => {
 
 async function loadElementFromURL(eID, url, altUrl) {
   if (!url || !eID) return 0;
-
+  
   let cmd = '';
   if (url.startsWith('https://docs.google.com/document/')) {
     cmd = 'GOOGLE_DOC';
@@ -139,11 +139,11 @@ async function loadElementFromURL(eID, url, altUrl) {
 
   try {
     let txt = await fetchText(url);
-    if (cmd === 'GOOGLE_DOC') txt = extractTextFromHtmlDoc(txt);
-    if (txt) loadElementWithText(txt, eID, cmd);
-    else if (altUrl) { // try again with alternative url
-      loadElementFromURL(eID, altUrl, '');
-    return;
+	if (cmd === 'GOOGLE_DOC') txt = extractTextFromHtmlDoc(txt);
+	if (txt) loadElementWithText(txt, eID, cmd);
+	else if (altUrl) { // try again with alternative url
+	  loadElementFromURL(eID, altUrl, '');
+	  return;
 	}
     else { 
       loadingDone();
@@ -380,12 +380,13 @@ function parseTaskText(sourceText, saveTask) {
     .replace(/<\/cue/g, '</a')
     .replace(/<pcue/g, pcuePrefix)
     .replace(/<\/pcue/g, '</p')
-    .replace(/<x-audio>/g, '<x-audio></x-audio>')
-    .replace(/<x-video>/g, '<x-video></x-video>')
-    .replace(/{x-vocab}/g, '<x-vocab></x-vocab>')
-    .replace(/<x-view-gaps>|{x-view-gaps}/g, viewGaps2)
-    .replace(/{x-speed-ctrl}/g, '<x-cmd id="pbr-box" cmd="SHOW_PBR"></x-cmd>')
-    .replace(/{x-rec-ctrl}/g, '<x-switch>setRecSwitch(this.checked)</x-switch>')
+    .replace(/<x-audio>/, '<x-audio></x-audio>')
+    .replace(/<x-video>/, '<x-video></x-video>')
+    .replace(/{x-vocab}/, '<x-vocab></x-vocab>')
+    .replace(/<x-view-gaps>|{x-view-gaps}/, viewGaps2)
+    .replace(/{x-speed-ctrl}/, '<x-cmd id="pbr-box" cmd="SHOW_PBR"></x-cmd>')
+    .replace(/{x-voice-ctrl}/, '<x-cmd id="voice-ctrl-box" cmd="SHOW_VOICE_CTRL"></x-cmd>')
+    .replace(/{x-rec-ctrl}/, '<x-switch>setRecSwitch(this.checked)</x-switch>')
     .replace(/{x-transl}/, '<x-translate></x-translate>')
     .replace(/{x-tts-read}/i, '<button class="cue-button grayish play-triangle" title="TTS read" onclick="readTTSChunks(this)"></button>')
 //    .replace(/<x-switch>/g, xswitchPrefix)
@@ -496,6 +497,29 @@ const runTaskCmd = (el, cmd) => {
     setPBR();
     return 1;
   }
+  if (cmd === 'SHOW_VOICE_CTRL') {
+	el.classList.add('font-85pc');
+    elAddHTML(el, gstore.getVoiceCtrl({ suffix: '-intask' }));
+	elid('tts-select-prompt-intask').textContent = 'Voice:';
+    gstore.copyVoiceList('-intask');
+    return 1;
+  }
+}
+
+gstore.copyVoiceList = suffix => {
+  if (!suffix) return;
+  const id = 'voice-select';
+  const sourceEl = elid(id);
+  const targetEl = elid(id + suffix);
+  if (!sourceEl || !targetEl) return;
+  targetEl.previousElementSibling.replaceWith(sourceEl.previousElementSibling.cloneNode(true));
+//  targetEl.replaceChildren(...sourceEl.options.cloneNode(true))
+//  elAddHTML(targetEl, sourceEl.innerHTML);
+
+  targetEl.hidden = sourceEl.hidden;
+  targetEl.innerHTML = sourceEl.innerHTML;
+  targetEl.value = sourceEl.value;
+  targetEl.title = sourceEl.title;
 }
 
 const getPbrHtml = (s='') => {
@@ -1181,7 +1205,6 @@ gstore.tips = {
     const tips = document.querySelectorAll('[tip]');
     tips.forEach(el => { this.init(el) });
   },
-  
 /*
   removeAll() {
 	const tips = document.querySelectorAll('.flashcard, .tooltip-text, .tooltip-link, .arrow');
@@ -2503,24 +2526,28 @@ const setVoiceList = (par) => {
   voiceSelector.innerHTML = voiceList;
   
 // hide voice test if no voices
-  if (numOfVoices) showElid('voice-test' + n)
-  else hideElid('voice-test' + n);
+  showOrHideEl(elid('voice-test' + n), numOfVoices);
 
 
 // adjust voice tag
   const voiceTag = elid('tts-select-prompt' + n);
   voiceTag.textContent = n? 'Dialogue voice #2:' : 'Voice:';
   if (numOfVoices < 2) {
-    voiceSelector.style.display = 'none';
-    voiceTag.innerHTML += ` <span class="font-75pc" title="${voiceName}">${voiceText}</span>`;
-  } else voiceSelector.style.display = 'initial';
+//    voiceSelector.style.display = 'none';
+//    voiceTag.innerHTML += ` <span class="font-75pc" title="${voiceName}">${voiceText}</span>`;
+    voiceTag.innerHTML += ` <span title="${voiceName}">${voiceText}</span>`;
+  } //else voiceSelector.style.display = 'initial';
 
+  voiceSelector.hidden = numOfVoices < 2;
+  
   if (par.selectVoice) chooseVoice(n); // for words and phrases page
   else { // for tasks page
     tts['spVoice' + n] = par.voices[0];
     voiceSelector.title = par.voices[0].name;
 // no need to set voiceSelector.value b/c it's set to the first voice
   }
+
+  if (!n) gstore.copyVoiceList('-intask');
 }
 
 const addLangCtrl = () => {
@@ -2553,7 +2580,19 @@ const storeLangCode = (v, n='') => {
   localStorage.setItem('langCode' + n, v);
 }
 
-const addVoicesCtrl = (v='') => {
+//gstore.getVoiceCtrl = (v, suffix ='') => `
+gstore.getVoiceCtrl = ({ suffix = '', v = '' } = {}) => `
+<span id="tts-select-prompt${suffix}${v}" title = "Text-to-speech computer voice"></span>
+<select id="voice-select${suffix}${v}" class="drop-down darker-hover" name="voice" 
+  onchange="handleVoiceSelect(this, ${v})">
+</select>
+<button id="voice-test${suffix}${v}" title="Click to hear the voice" class="plain-button font-95pc inline btn-lighgray rounded" 
+onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.speakerIcon}</span>
+</button>
+`;
+
+const addVoicesCtrl = n => {
+/*
   const txt = `
 <span id="tts-select-prompt${v}" title = "Text-to-speech computer voice"></span>
 <select id="voice-select${v}" class="drop-down darker-hover" name="voice" 
@@ -2563,14 +2602,18 @@ const addVoicesCtrl = (v='') => {
 onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.speakerIcon}</span>test
 </button>
 `;
-  setElHTML('tts-select' + v, txt);
+//  setElHTML('tts-select' + v, txt);
+*/
+  setElHTML('tts-select' + n, gstore.getVoiceCtrl({ v: n }));
 }
 
 const handleVoiceSelect = (option, v='', initialized = '') => {
 //  if (!initialized) tts['manuallyPickedVoice' + v] = option.value;
   if (!initialized) tts['manuallyPickedVoice' + v] = 'VOICE_PICKED';
   setVoiceByName(option.value, v);
-  elid('voice-select' + v).title = option.value;
+//console.log('TTS voice option', option);
+  option.title = option.value;
+  sayCtrlVoiceName();
 }
 
 const sayCtrlVoiceName = (n='') => {
