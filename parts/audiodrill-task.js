@@ -493,12 +493,13 @@ const runTaskCmd = (el, cmd) => {
 //console.log(el);  
 //  }
   if (cmd === 'SHOW_PBR' && !qsel('#setpbr2')) {
+	el.classList.add('font-85pc', 'gray2');
     elAddHTML(el, getPbrHtml(2));
     setPBR();
     return 1;
   }
   if (cmd === 'SHOW_VOICE_CTRL') {
-	el.classList.add('font-85pc');
+	el.classList.add('font-80pc', 'gray2');
     elAddHTML(el, gstore.getVoiceCtrl({ suffix: '-intask' }));
 	elid('tts-select-prompt-intask').textContent = 'Voice:';
     gstore.copyVoiceList('-intask');
@@ -2586,7 +2587,7 @@ gstore.getVoiceCtrl = ({ suffix = '', v = '' } = {}) => `
 <select id="voice-select${suffix}${v}" class="drop-down darker-hover" name="voice" 
   onchange="handleVoiceSelect(this, ${v})">
 </select>
-<button id="voice-test${suffix}${v}" title="Click to hear the voice" class="plain-button font-95pc inline btn-lighgray rounded" 
+<button id="voice-test${suffix}${v}" title="Click to hear the voice" class="plain-button padding-01em font-95pc inline btn-lighgray rounded" 
 onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.speakerIcon}</span>
 </button>
 `;
