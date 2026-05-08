@@ -2884,8 +2884,8 @@ const getHashFromUrl = () => window.location.hash
 function scrollToHash() {
   const id = getHashFromUrl();
   const el = elid(id);
-  if (el) 
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  else scrollTo(0, 0);
 }
 
 //  == Compare STT with reference ==
