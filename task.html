@@ -3444,8 +3444,8 @@ const prepXAudio = () => {
   audioCtrls.style.display = 'inline-block';
   playerBox.append(audioCtrls); // should it be restored if another task is loaded?
   
-  const labels = '<div id="ctrl-hops" class="inblock margin-03em"><div class="center gray small-font" style="padding-bottom:0.4em">HOP</div></div>'
-    + '<div id="ctrl-speed" class="inblock"><div class="gray small-font" style="padding-left:3em">SPEED</div></div>';
+  const labels = '<div id="ctrl-hops" class="inblock margin-03em align-top"><div class="center gray" style="padding-bottom:0.4em; font-size: 10px">HOP</div></div>'
+    + '<div id="ctrl-speed" class="inblock"><div class="gray" style="padding-left:3em; font-size: 10px">SPEED</div></div>';
 
   elAddHTML(audioCtrls, labels);
 
