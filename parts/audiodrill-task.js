@@ -385,7 +385,7 @@ function parseTaskText(sourceText, saveTask) {
     .replace(/{x-vocab}/, '<x-vocab></x-vocab>')
     .replace(/<x-view-gaps>|{x-view-gaps}/, viewGaps2)
     .replace(/{x-speed-ctrl}/, '<x-cmd id="pbr-box" cmd="SHOW_PBR"></x-cmd>')
-    .replace(/{x-voice-ctrl}/, '<x-cmd id="voice-ctrl-box" cmd="SHOW_VOICE_CTRL"></x-cmd>')
+    .replace(/{x-voice-ctrl}/, '<x-cmd id="voice-ctrl-box-intask" cmd="SHOW_VOICE_CTRL"></x-cmd>')
     .replace(/{x-rec-ctrl}/, '<x-switch>setRecSwitch(this.checked)</x-switch>')
     .replace(/{x-transl}/, '<x-translate></x-translate>')
     .replace(/{x-tts-read}/i, '<button class="cue-button grayish play-triangle" title="TTS read" onclick="readTTSChunks(this)"></button>')
@@ -500,44 +500,31 @@ const runTaskCmd = (el, cmd) => {
   }
   if (cmd === 'SHOW_VOICE_CTRL') {
 	el.classList.add('font-80pc', 'gray2');
-    elAddHTML(el, gstore.getVoiceCtrl({ suffix: '-intask' }));
-//  	elid('tts-select-prompt-intask').textContent = 'Voice:';
     gstore.copyVoiceList('-intask');
     return 1;
   }
 }
 
+/*
 const copyReplaceNode = (sourceEl, targetEl) => {
   const tempEl = sourceEl.cloneNode(true);
   tempEl.id = targetEl.id;
   targetEl.replaceWith(tempEl);
   return tempEl;
 }
+*/
 
 gstore.copyVoiceList = suffix => {
   if (!suffix) return;
-  const id = 'voice-select';
+
+  const id = 'voice-ctrl-box';
   const sourceEl = elid(id);
   let targetEl = elid(id + suffix);
   if (!sourceEl || !targetEl) return;
 
-  targetEl = copyReplaceNode(sourceEl, targetEl);
-  copyReplaceNode(sourceEl.previousElementSibling, targetEl.previousElementSibling);
-//  targetEl.previousElementSibling.replaceWith(sourceEl.previousElementSibling.cloneNode(true));
-  
-//  const elCopy = sourceEl.cloneNode(true);
-//  elCopy.id = elCopy.id + suffix;
-//  targetEl.replaceWith(elCopy);
-//  targetEl.replaceChildren(...sourceEl.options.cloneNode(true))
-//  elAddHTML(targetEl, sourceEl.innerHTML);
-/*
-  targetEl.hidden = sourceEl.hidden;
   targetEl.innerHTML = sourceEl.innerHTML;
-  targetEl.value = sourceEl.value;
-  targetEl.title = sourceEl.title;
-*/
+  [...targetEl.children].forEach(el => { el.id = el.id + suffix });
 }
-
 
 const getPbrHtml = (s='') => {
   const masterPBR = localStorage.getItem('masterPBR') || 1;
@@ -2597,15 +2584,14 @@ const storeLangCode = (v, n='') => {
   localStorage.setItem('langCode' + n, v);
 }
 
-//gstore.getVoiceCtrl = (v, suffix ='') => `
-gstore.getVoiceCtrl = ({ suffix = '', v = '' } = {}) => `
-<span id="tts-select-prompt${suffix}${v}" title = "Text-to-speech computer voice"></span>
-<select id="voice-select${suffix}${v}" class="drop-down darker-hover" name="voice" 
+gstore.getVoiceCtrl = ({ v = '' } = {}) => `
+<div id="voice-ctrl-box" class="inline"><span id="tts-select-prompt${v}" title = "Text-to-speech computer voice"></span>
+<select id="voice-select${v}" class="drop-down darker-hover" name="voice" 
   onchange="handleVoiceSelect(this, ${v})">
 </select>
-<button id="voice-test${suffix}${v}" title="Click to hear the voice" class="plain-button padding-01em font-95pc inline btn-lighgray rounded" 
+<button id="voice-test${v}" title="Click to hear the voice" class="plain-button padding-01em font-95pc inline btn-lighgray rounded" 
 onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.speakerIcon}</span>
-</button>
+</button></div>
 `;
 
 const addVoicesCtrl = n => {
@@ -2898,6 +2884,7 @@ const getHashFromUrl = () => window.location.hash
     : null;
 
 function scrollToHash() {
+// So far used by tasks only
   const id = getHashFromUrl();
   const el = elid(id);
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
