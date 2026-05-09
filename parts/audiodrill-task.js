@@ -501,27 +501,43 @@ const runTaskCmd = (el, cmd) => {
   if (cmd === 'SHOW_VOICE_CTRL') {
 	el.classList.add('font-80pc', 'gray2');
     elAddHTML(el, gstore.getVoiceCtrl({ suffix: '-intask' }));
-	elid('tts-select-prompt-intask').textContent = 'Voice:';
+//  	elid('tts-select-prompt-intask').textContent = 'Voice:';
     gstore.copyVoiceList('-intask');
     return 1;
   }
+}
+
+const copyReplaceNode = (sourceEl, targetEl) => {
+  const tempEl = sourceEl.cloneNode(true);
+  tempEl.id = targetEl.id;
+  targetEl.replaceWith(tempEl);
+  return tempEl;
 }
 
 gstore.copyVoiceList = suffix => {
   if (!suffix) return;
   const id = 'voice-select';
   const sourceEl = elid(id);
-  const targetEl = elid(id + suffix);
+  let targetEl = elid(id + suffix);
   if (!sourceEl || !targetEl) return;
-  targetEl.previousElementSibling.replaceWith(sourceEl.previousElementSibling.cloneNode(true));
+
+  targetEl = copyReplaceNode(sourceEl, targetEl);
+  copyReplaceNode(sourceEl.previousElementSibling, targetEl.previousElementSibling);
+//  targetEl.previousElementSibling.replaceWith(sourceEl.previousElementSibling.cloneNode(true));
+  
+//  const elCopy = sourceEl.cloneNode(true);
+//  elCopy.id = elCopy.id + suffix;
+//  targetEl.replaceWith(elCopy);
 //  targetEl.replaceChildren(...sourceEl.options.cloneNode(true))
 //  elAddHTML(targetEl, sourceEl.innerHTML);
-
+/*
   targetEl.hidden = sourceEl.hidden;
   targetEl.innerHTML = sourceEl.innerHTML;
   targetEl.value = sourceEl.value;
   targetEl.title = sourceEl.title;
+*/
 }
+
 
 const getPbrHtml = (s='') => {
   const masterPBR = localStorage.getItem('masterPBR') || 1;
