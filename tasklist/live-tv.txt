@@ -23,4 +23,4 @@ Tip: You can read live captions [in Chrome](https://support.google.com/chrome/an
 `pt:` [Euronews](stream: XuZAl-ZPEcA)
 `ru:` [Euronews](stream: lwYzwdBiaho), [DW (DE)](stream: gP7872YRFDk)
 `uk:` [TSN](stream: WY8sDvZdWEA)
-`zh:` [CCTV 4 (CN)](stream: 7j92Myu2wzg), [EBC (TW)](stream: E0zhe2gkXBs), [CTI (TW)](stream: vr3XyVCR4T0), [TVBS (TW)](stream: m_dhMSvUCIc)
+`zh:` [CCTV 4 (CN)](stream: vNVp6bxkL1c), [EBC (TW)](stream: E0zhe2gkXBs), [CTI (TW)](stream: vr3XyVCR4T0), [TVBS (TW)](stream: m_dhMSvUCIc)

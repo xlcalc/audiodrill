@@ -607,12 +607,14 @@ padding: 0;
 }
 
 .player-box-loading {
-  height: 42px;
+/*  height: 42px;*/
   width: 95%;
   display: flex;
-  margin-top: 4px;
+/*  margin-top: 4px;*/
   align-items: center;
 }
+
+#player-box, .player-box-loading {min-height: 44px}
 
 .top-controls {
   text-align: left;
@@ -975,12 +977,12 @@ z-index: 2;
 <div id="player-with-settings">
 <div id="player-title" class="gray2 font-90pc semibold all-small-caps padding-05em" style="letter-spacing:.5px"></div>
 
-<div id="player-box-loading" class="hidden player-box-loading"><b>Loading</b>
+<div id="player-box-loading" hidden class="player-box-loading"><b>Loading</b>
   <div class="spinner"></div>
 </div>
 
 <div id="player-box-bgr">
-<div id="player-box" class="hidden">
+<div id="player-box" hidden>
 
 <div id="video-resize" 
   tip="resize">
@@ -1067,7 +1069,9 @@ tstore.setHtmlPlayerEvents = () => {
     players.mediaState = 'error';
     players.flag = -1;
 // should showPlayerBox() be called here?
-    hideElid('player-box-loading', 'screen-cover');
+//    hideElid('player-box-loading', 'screen-cover');
+    hideElid('screen-cover');
+    playerBoxLoading.hidden = true;
   };
 }
 tstore.setHtmlPlayerEvents();
@@ -1504,19 +1508,6 @@ console.log('Loading the media file...');
 console.log(players.mediaType + ' loaded in getVideoByURL()'); 
   adjustMediaInTask(); // for htmlPlayer video
 }
-/*
-const swapHtmlMedia = async (oldEl, isAudio) => {
-  const elName = isAudio ? 'AUDIO' : 'VIDEO';
-  if (oldEl.nodeName === elName) return oldEl;
-  const el = document.createElement(elName);
-//  const ready = waitForEvent(el, 'canplay');
-  const ready = waitForEvent(el, 'loadedmetadata');
-  el.src = oldEl.src;
-  await ready;
-  oldEl.replaceWith(el);
-  return el;
-}
-*/
 
 function waitForEvent(el, event) {
   return new Promise(resolve => {
@@ -1527,17 +1518,21 @@ function waitForEvent(el, event) {
     el.addEventListener(event, handler);
   });
 }
-
-const hidePlayerBox = () => {
+/*
+const hidePlayerBoxOld = () => {
   hideEl(playerBox);
-//  showSpinner('player-box-loading');
   showEl(playerBoxLoading);
+}
+*/
+const hidePlayerBox = (v=true) => {
+  playerBox.hidden = v;
+  playerBoxLoading.hidden = !v;
 }
 
 const showPlayerBox = () => {
-//  setElHTML('player-box-loading', '');
-  hideEl(playerBoxLoading);
-  showEl(playerBox);
+//  hideEl(playerBoxLoading);
+//  showEl(playerBox);
+  hidePlayerBox(false);
   players.resolveVideoReady();
 }
 
@@ -3045,7 +3040,8 @@ const setLeftColWidth = lw => { // could be used to resize the video
 const adjustMediaInTask = (cmd) => {
 //  if (!players.mediaInTask || !xAudioBox.childElementCount) return false;
   if (!players.mediaInTask) return false;
-  if (!cmd && isElHidden(playerBox)) {
+//  if (!cmd && isElHidden(playerBox)) {
+  if (!cmd && playerBox.hidden) {
     setMediaInTask(0);
     return false;
   }
@@ -3428,7 +3424,8 @@ const prepXAudio = () => {
   hideEl(videoResize);
   if (xAudioBox.isReady) return; // in order not to create additional audioCtrls divs
 
-  playerBox.style.display = 'inline-block';	
+//  playerBox.style.display = 'inline-block';	
+  playerBox.classList.add = 'inblock';	
   playerBox.style.width = '100%';
 //  playerTitle.style.width = '100%';
 //  playerBox.style.margin = '0 1em 0.3em 1em';
@@ -3544,7 +3541,7 @@ const analyzeXvars = () => {
 //  setTaskTitle(getV('task-title')); // so far kept to allow prev/next episode btns in the title
   
   tstore.textToClozeMode = getV('text-cloze') !== null;
-
+  
   setFontSize(getV('font-size'));
   
   return 1;
