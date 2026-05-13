@@ -10,7 +10,9 @@
     path = path.replace(/s2\/\//, 's2://');
     if (!['l', 'txt'].includes(type) && !path.includes('//'))
       path = '/' + path;
-    window.location.assign(`/task.html?${type}=${path}${location.search}`);
+
+    const keys = location.search.replace(/\?/g, '&');
+    window.location.assign(`/task.html?${type}=${path}${keys}`);
   }
 })()
 </script>
