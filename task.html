@@ -2168,14 +2168,20 @@ const analyzeURLParams = async () => {
   let taskText = urlKeys.get('l'); // "l" means load encoded task from url
   if (taskText) {
     taskText = taskText.replace(/ /g, '+'); 
-    loadElementWithText(taskText, 'transcriptText');
+//    loadElementWithText(taskText, 'transcriptText');
   } else taskText = urlKeys.get('txt'); // "txt" means load unencoded text from url
   if (taskText) {
+    const arr = taskText.split('/');
+	if (arr[1] && [2, 3].includes(arr[0].length)) { // language can go before '/'
+      setLanguage(arr[0], true);
+      storeLangCode(arr[0]);
+      taskText = arr[1];
+	}
     taskText = taskText.replace(/--/g, '{hyphen}')
-	  .replace(/-/g, ' ')
+      .replace(/-/g, ' ')
       .replace(/{hyphen}/g, '-')
-	  .replace(/\\n/g, '<br>')
-	  ;
+      .replace(/\\n/g, '<br>')
+    ;
     loadElementWithText(taskText, 'transcriptText');
   }
 
