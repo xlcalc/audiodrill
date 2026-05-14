@@ -2176,7 +2176,7 @@ const analyzeURLParams = async () => {
 	if (arr[1] && [2, 3].includes(arr[0].length)) { // language can go before '/'
       setLanguage(arr[0], true);
       storeLangCode(arr[0]);
-      taskText = arr[1];
+      taskText = taskText.slice(arr[0].length+1);
 	}
     taskText = taskText.replace(/--/g, '{hyphen}')
       .replace(/-/g, ' ')
