@@ -213,6 +213,7 @@ z-index: 2;
 position: sticky;
 top: 0;
 height: 1.2em;
+height: auto;
 margin-bottom: -0.45em;
 background-color: white;
 border-bottom: 1px gainsboro solid; 
@@ -1739,7 +1740,7 @@ const getNextSibling = (elem, selector) => {
 }
 
 const replayFragment = async (firstCue, isTTS = false) => {
-  displayMessage('');
+  displayOverlay('');
   await sleep (300);
 /*
   if (doubleClicked()) { // avoid playing lines if they are double clicked.
@@ -2179,10 +2180,10 @@ const analyzeURLParams = async () => {
       taskText = taskText.slice(arr[0].length+1);
 	}
     taskText = taskText.replace(/--/g, '{hyphen}')
-      .replace(/-/g, ' ')
+	  .replace(/-/g, ' ')
       .replace(/{hyphen}/g, '-')
-      .replace(/\\n|\/n/g, '\n')
-    ;
+	  .replace(/\\n|\/n/g, '\n')
+	  ;
     loadElementWithText(taskText, 'transcriptText');
   }
 
@@ -2549,7 +2550,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
 
   <div class="inblock padding-03em" style="max-width: 90%">
-    <span id="task-title">Audiodrill task </span>
+    <span id="task-title">Click on words to hear</span>
   </div> <!--   End of task title + episode prev/next   -->
   
   </div> <!--   End of task-header   -->
@@ -3474,17 +3475,22 @@ const analyzeXvars = () => {
   if (!e) return;
 
   const vars = e.getElementsByTagName('x-vars')[0]; 
-  const getV = s => vars ? vars.getAttribute(s) : '';
+//  const getV = s => vars ? vars.getAttribute(s) : '';
+  const getV = s => vars.getAttribute(s);
 
   gstore.xVarsMark = getV('mark');
   gstore.xVarsMarkHue = getV('mark-hue');
   
-  elid('task-header').hidden = (vars && !getV('task-title'));
+  let taskTitle = getV('task-title');
+  
+  elid('task-header').hidden = !taskTitle;
+  
+  setElHTML('task-title', highlightText(taskTitle));
     
   elid('task-icons').hidden = ['0', 'off', 'hide'].includes(getV('task-icons'));
 
-  if (getV('task-title')) setElHTML('task-title', highlightText(getV('task-title')));
-  else setElHTML('task-title', 'Audiodrill task');
+//  if (getV('task-title')) setElHTML('task-title', highlightText(getV('task-title')));
+//  else setElHTML('task-title', 'Audiodrill task');
 
   setVideoSize(getUrlKey('video-size') || getV('video-size') || localStorage.getItem('videoWidth') || 1);
 
@@ -3566,10 +3572,12 @@ console.log('Set voice to', voiceName);
   }
 }
 
+/*
 const setTaskTitle = s => {
   if (s) setElHTML('task-title', highlightText(s));
   elid('task-icons').hidden = s;
 }
+*/
 
 const showSettings = () => {
   hideElid('settings-sign');
