@@ -2179,10 +2179,11 @@ const analyzeURLParams = async () => {
       storeLangCode(arr[0]);
       taskText = taskText.slice(arr[0].length+1);
 	}
-    taskText = taskText.replace(/--/g, '{hyphen}')
+    taskText = '<))' + taskText
+	  .replace(/--/g, '{hyphen}')
 	  .replace(/-/g, ' ')
       .replace(/{hyphen}/g, '-')
-	  .replace(/\\n|\/n/g, '\n')
+	  .replace(/\\n|\/n/g, '\n<))')
 	  ;
     loadElementWithText(taskText, 'transcriptText');
   }
