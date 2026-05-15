@@ -4073,6 +4073,7 @@ document.addEventListener('selectionchange', () => {
 // Handle word click (if no selection)
 transcriptText.onclick = async (e) => {
   await sleep(200); // for double click
+  
   const sel = window.getSelection();
 
   const text = sel.toString().trim();
@@ -4094,9 +4095,9 @@ transcriptText.onclick = async (e) => {
     ? document.caretRangeFromPoint(e.clientX, e.clientY)
     : null;
 
-  if (range) {
+  if (range) { 
     const lang = getContextLang(e.target);
-	gstore.clickedWord = getClickedTextFragment(lang, 'word');
+	gstore.clickedWord = getClickedTextFragment(range, lang, 'word');
 	const s = gstore.clickedWord;
 
     if (s) {
@@ -4596,20 +4597,21 @@ transition: opacity 0.25s; opacity: 1;"
   canTranslate() { return this.taskTransl.length && tstore.translation.isOn },
 }
 
-function getClickedTextFragment(lang, granularity) {
-  const selection = window.getSelection();
+function getClickedTextFragment(range, lang, granularity) {
+//  const selection = window.getSelection();
 //  if (!selection.rangeCount) return; // checked in the calling fn
-  const range = selection.getRangeAt(0);
+//  const range = selection.getRangeAt(0);
   let clickedOffset = range.startOffset;
 //  const container = range.startContainer;
-  const node = range.commonAncestorContainer; // typically, it's a text node
+//  const node = range.commonAncestorContainer; // typically, it's a text node
+  const node = range.startContainer; // typically, it's a text node
   gstore.debugClickedNode = node;
 //console.log('Node clicked', node);
 
   
 //  const isInsideTranscript = (node) => node === transcriptText || transcriptText.contains(node);
   const checkedNode = node => node && transcriptText.contains(node) ? node : null;
-  const isBoundaryNode = node => node && /^(H|BR|P)/.test(node.tagName) ? node : null;
+  const isBoundaryNode = node => node && /^(H|BR|P|BUTTON)/.test(node.tagName) ? node : null;
 // maybe need to add more boundaries like button? or div? We'll see...
 
   let parentText = node.textContent;
@@ -4671,8 +4673,10 @@ function getClickedTextFragment(lang, granularity) {
 	  
       if (!nextNode) break;
 */
-      if (nextNode.textContent) {
-		let chunk = nextNode.textContent;
+//      if (nextNode.textContent) {
+      if (nextNode.innerText) { // experimental: 2026-05-15
+//		let chunk = nextNode.textContent;
+		let chunk = nextNode.innerText;
 //	    if (lastNodeName === 'BR' && !/[.!?。？！]\s*$/.test(chunk)) chunk += '. ';
         if (!chunk.trim()) chunk = ' '; // collapse spaces and \n into one space
 	    parentText = chunk + parentText;
