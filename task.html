@@ -3250,17 +3250,16 @@ const handleYTstyleInput = txt => {
 const processYTtranscript = txt =>{
 // maybe processTimeStamps fn should be called first?
   const marker = 'video/audio:';
-// x-vars Logic is going to change 7 Nov 2024. 
-// <x-vars> tag will no longer be part of transcriptText element.
-//  const marker2 = '<x-vars ';
-//  if (!txt.includes(marker) && !txt.includes(marker2)) return txt;
-  if (!txt.includes(marker) && !tstore.xvarsBox) return txt;
+  if (!txt.includes(marker) 
+  && !tstore.xvarsBox 
+  && !txt.includes('<x-video') 
+  && !txt.includes('<x-audio')
+  ) return txt;
 
   const lines = txt.split('\n');
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     if (line.includes(marker)) {
-//      lines[i] = handleMediaTag(line); // has to be adapted with new <x-vars> logic
       lines[i] = '';
       tstore.startmedia = handleMediaTag(line); // adapted with new <x-vars> logic
     } 
