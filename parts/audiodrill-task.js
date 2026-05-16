@@ -2518,6 +2518,10 @@ const isIOS = () => (/iPad|iPhone|iPod/.test(navigator.platform)
   || /iPad|iPhone|iPod/.test(navigator.userAgent)) && !window.MSStream;
 
 const setVoiceList = (par) => {
+  const n = par.speakerN || '';
+  const voiceSelector = elid('voice-select' + n);
+  if (!voiceSelector) return;
+
   const numOfVoices = par.voices.length;
   let voiceList = '',
       voiceText = '---',
@@ -2535,8 +2539,6 @@ const setVoiceList = (par) => {
     voiceList += `<option value="${voiceName}" title="${voiceName}">${voiceText}</option>`;
   }
   
-  const n = par.speakerN || '';
-  const voiceSelector = elid('voice-select' + n);
   voiceSelector.innerHTML = voiceList;
   
 // hide voice test if no voices
