@@ -2480,7 +2480,7 @@ async function googleTranslateElementInit() {
   const elName = 'google_translate_el';
   if (isIOS() && window.innerWidth < 400) {
 // On iOS, Google Translate widget seems to load at the top of the screen by itself.
-// On a narrow screen, the widget it doesn't fit, so there's no colse button. 
+// On a narrow screen, the widget it doesn't fit, so there's no close button. 
 // So as a temp measure, translation feature is turned off on iOS with a narrow screen.
 // Maybe the same problem can be seen on Android and other systems too.
 	hideEl(elid(elName).parentNode);
@@ -2497,9 +2497,18 @@ async function googleTranslateElementInit() {
 
   qsel('body').style=''; // b/c Google Translate widget sets body to relative position
   qsel('.goog-te-combo').addEventListener('change', () => adjustGoogleTranslateWidget() );
+  
+  for (let i=0; i<20; i++) { // hide the Google Translate bar on start
+	const el = elid(':1.container');
+	if (el) {
+      el.hidden = true;
+      break;
+    } else await sleep (200);
+  }
 }
 
 function adjustGoogleTranslateWidget() {
+  elid(':1.container').hidden = false;
   console.log('Google Transl widget lang changed');	
   blinkElClass(elid(':1.container'), 'hidden-on-top', 0, 2000);
 }
@@ -2586,8 +2595,7 @@ const storeLangCode = (v, n='') => {
 
 gstore.getVoiceCtrl = ({ v = '' } = {}) => `
 <div id="voice-ctrl-box" class="inline"><span id="tts-select-prompt${v}" title = "Text-to-speech computer voice"></span>
-<select id="voice-select${v}" class="drop-down darker-hover" name="voice" 
-  onchange="handleVoiceSelect(this, ${v})">
+<select id="voice-select${v}" class="drop-down darker-hover" name="voice">
 </select>
 <button id="voice-test${v}" title="Click to hear the voice" class="plain-button padding-01em font-95pc inline btn-lighgray rounded" 
 onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.speakerIcon}</span>
@@ -2608,15 +2616,21 @@ onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.sp
 //  setElHTML('tts-select' + v, txt);
 */
   setElHTML('tts-select' + n, gstore.getVoiceCtrl({ v: n }));
+  elid('tts-select' + n).onchange = function(e) {
+ //   if (!e.isTrusted) return;
+    handleVoiceSelect(e.target, n);
+  };
 }
 
 const handleVoiceSelect = (option, v='', initialized = '') => {
-//  if (!initialized) tts['manuallyPickedVoice' + v] = option.value;
-  if (!initialized) tts['manuallyPickedVoice' + v] = 'VOICE_PICKED';
-  setVoiceByName(option.value, v);
 //console.log('TTS voice option', option);
+//  if (!initialized) tts['manuallyPickedVoice' + v] = option.value;
+  setVoiceByName(option.value, v);
   option.title = option.value;
-  sayCtrlVoiceName();
+  if (!initialized) {
+    tts['manuallyPickedVoice' + v] = 'VOICE_PICKED';
+    sayCtrlVoiceName();
+  }
 }
 
 const sayCtrlVoiceName = (n='') => {
