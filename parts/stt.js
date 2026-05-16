@@ -7,9 +7,8 @@ const loadSTT = (cmd) => {
   if ('SpeechRecognition' in window) {recognition = new SpeechRecognition(); }
   else if ('webkitSpeechRecognition' in window) {recognition = new webkitSpeechRecognition(); }
   else {
-console.log ('speech recognition API not supported');
-//    recognition = 'STT not supported';
-	recognition.supported = false;
+console.warn ('Speech recognition API not supported');
+    recognition = {supported: false, allowed: false};
     return 0;
   }
   recognition.supported = true;
