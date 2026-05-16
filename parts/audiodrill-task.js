@@ -2472,6 +2472,7 @@ console.log('langListCtrl', !!langListCtrl());
   
   loadLangList();
   addVoicesCtrl('');
+  loadVoices(); // for Firefox browser
   googleTranslateElementInit();
   gstore.tips.initAll(); //experimental 2025-10-12
 }
