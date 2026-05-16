@@ -2187,9 +2187,9 @@ const highlightText = txt => {
 //.replace(/\n##font-size:(\s?.*)##\x20(.*)(\n|$$)/g, (s, p1, p2) => toStyle(p1, p2)) // why $$ in regex?
   .replace(/\n##font-size:(\s?.*)##\x20(.*)(\n|$)/g, (s, p1, p2) => toStyle(p1, p2))
 //  .replace(/\r?\n#+\x20.*\r?\n/g, s => toHeader(s))
-  .replace(/\n#+\x20.*\n/g, s => toHeader(s))
-  .replace(/\n\x20\*./g, s => '\n\&thinsp;&bull;&thinsp;' + s[3]) // bullet point
-  .replace(/\n\x20\S/g, s => '\n&emsp;' + s[2]) // indent
+  .replace(/(^|\n)#+\x20.*($|\n)/g, s => toHeader(s))
+  .replace(/(^|\n)\x20\*./g, s => '\n\&thinsp;&bull;&thinsp;' + s[3]) // bullet point
+  .replace(/(^|\n)\x20\S/g, s => '\n&emsp;' + s[2]) // indent
 // <hr> as in https://www.markdownguide.org/basic-syntax/#horizontal-rules
   .replace(/\n\n(-|_|\*){3,}\n\n/g, '<hr>')
   .replace(/<br><br>(-|_|\*){3,}<br><br>/g, '<hr>')

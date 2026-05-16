@@ -3711,7 +3711,8 @@ tstore.translation = { // experimental: 2026-02-14
 
     setElClass(tip, ['transl-tip', 'box-shadow'], 1);
     setTipPosition(tip, el);
-    tip.textContent = txt;
+//    tip.textContent = txt;
+    elAddHTML(tip, txt);
 
 // link parent and child;
     el.child = tip;
