@@ -135,6 +135,7 @@ console.log('StartSTT FAILED:', err);
 }
 
 const setSTTLang = ttsVoice => {
+  if (!recognition) return;
 // This fn is  used in embed and words\index.html, 
 // while task.html can do without it b/c recognition.lang is set in StartSTT anyway
   recognition.lang = (ttsVoice && ttsVoice?.lang) ? ttsVoice.lang : 'en-UK';
