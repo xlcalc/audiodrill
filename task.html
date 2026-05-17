@@ -2174,18 +2174,18 @@ const analyzeURLParams = async () => {
   } 
   else {
     taskText = urlKeys.get('txt'); // "txt" means load unencoded text from url
-	textType = 'txt';
+    textType = 'txt';
   }
 
   if (taskText) {
     setVideoSize(280);
     const arr = taskText.split('/');
-	if (arr[1] && [2, 3].includes(arr[0].length)) { // language can go before '/'
+    if (arr[1] && [2, 3].includes(arr[0].length)) { // language can go before '/'
       setLanguage(arr[0], true);
       storeLangCode(arr[0]);
       taskText = taskText.slice(arr[0].length+1);
-	}
-	if (textType === 'txt') {
+    }
+    if (textType === 'txt') {
       taskText = '<))' + taskText
       .replace(/--/g, '{hyphen}')
       .replace(/-/g, ' ')
@@ -2193,7 +2193,7 @@ const analyzeURLParams = async () => {
 //	  .replace(/\\n|\/n/g, '\n<))')
       .replace(/~~/g, '\n<))')
       ;
-	}
+    }
     loadElementWithText(taskText, 'transcriptText');
   }
 
@@ -2222,12 +2222,12 @@ const analyzeURLParams = async () => {
 // added 2025-07-22, tested for YouTube only
     if (!players.isHtml) {
       const timeStamp = extractYouTubeTimestamp(location.search) || '';
-	  if (timeStamp) {
+      if (timeStamp) {
         elid('ReplayFrom').value = timeStamp;
-	    StartFrom = timeStamp;
-	  }
-	  if (StartFrom) player.seekTo(StartFrom);
-	}
+        StartFrom = timeStamp;
+      }
+      if (StartFrom) player.seekTo(StartFrom);
+    }
   }
 
   if (!taskText && !mediaFile && !loadTaskFromURLParam(urlKeys)) { 
