@@ -2165,12 +2165,18 @@ const analyzeURLParams = async () => {
 
 //  loadWordList(urlKeys.get('v'));
 
+  let textType = '';
   let taskText = urlKeys.get('l'); // "l" means load encoded task from url
   if (taskText) {
+    textType = 'l';
     taskText = taskText.replace(/ /g, '+'); 
 //    loadElementWithText(taskText, 'transcriptText');
   } 
-  else taskText = urlKeys.get('txt'); // "txt" means load unencoded text from url
+  else {
+    taskText = urlKeys.get('txt'); // "txt" means load unencoded text from url
+	textType = 'txt';
+  }
+
   if (taskText) {
     setVideoSize(280);
     const arr = taskText.split('/');
@@ -2179,13 +2185,15 @@ const analyzeURLParams = async () => {
       storeLangCode(arr[0]);
       taskText = taskText.slice(arr[0].length+1);
 	}
-    taskText = '<))' + taskText
-    .replace(/--/g, '{hyphen}')
-    .replace(/-/g, ' ')
+	if (textType === 'txt') {
+      taskText = '<))' + taskText
+      .replace(/--/g, '{hyphen}')
+      .replace(/-/g, ' ')
       .replace(/{hyphen}/g, '-')
 //	  .replace(/\\n|\/n/g, '\n<))')
-    .replace(/~~/g, '\n<))')
-    ;
+      .replace(/~~/g, '\n<))')
+      ;
+	}
     loadElementWithText(taskText, 'transcriptText');
   }
 
