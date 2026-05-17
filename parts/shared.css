@@ -1032,7 +1032,10 @@ x-small-caps {font-variant: small-caps}
     text-decoration: line-through;
 }
 
-audio { border-radius: 2em }
+audio { 
+  border-radius: 2em;
+  overflow: auto; /* for Firefox*/
+}
 
 audio::-webkit-media-controls-panel { background-color: var(--audio-controls-bg) }
 

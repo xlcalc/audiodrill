@@ -192,12 +192,12 @@ input[type=url]:focus {
   border: 0; 
   border-radius: 6px;
 }
-
+/*
 #wordlist-box {
   margin-top: 0.65em;
   position: relative;
 }
-
+*/
 .box-header {
 /*
   padding-left: 0.2em; padding-bottom: 0.2em; 
@@ -1443,8 +1443,7 @@ hidePlayerBox();
   if (YTId) {// YouTube player
 
 // YT subs can't be loaded the old way after Nov 2021
-//    if (task === 'LOAD_SUBS') fetchYTSubsLanguages(YTId);
-    if (task === 'LOAD_SUBS') fetchYTSubs(YTId);
+//    if (task === 'LOAD_SUBS') fetchYTSubs(YTId);
 
 //    if (players.videoID !== YTId) { // if video isn't the same, load it
     players.videoID = '';
@@ -2164,7 +2163,7 @@ const analyzeURLParams = async () => {
   const tlang = urlKeys.get('tlang');
   tstore.translLangCtrl.set(tlang);
 
-  loadWordList(urlKeys.get('v'));
+//  loadWordList(urlKeys.get('v'));
 
   let taskText = urlKeys.get('l'); // "l" means load encoded task from url
   if (taskText) {
@@ -2319,12 +2318,11 @@ async function handleRecMuteCheckbox() {
   players.pauseType = playMute ? 'playmute' : 'pause';
   if (audioRecAllowed2()) { players.pauseType += '+record'; }
 }
-
+/*
 function copyWords() {
-//  copyToClipboard(wordList.list, 'Word list copied to clipboard');
   copyToClipboard(wordList.textContent, 'Word list copied to clipboard');
 }
-
+*/
 const linkToTask = () => {
   copyToClipboard('https://audiodrill.com?l=' + encode64(players.currentTask), linkCopiedMsg);
 }
@@ -2566,7 +2564,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
     <div id="transcriptText" data-themeable class="task-body rounded"></div>
   </div> <!--   End of taskBox   -->
 
-<!-- wordlist-box no longer needed? -->
+<!-- wordlist-box no longer needed
   <div id="wordlist-box" class="hidden">
     <div class="box-header">&emsp;Word list to explore
       <span class="action-icon float-left" id="drill-wordlist" title="Explore with Audiodrill words and phrases">➪</span>
@@ -2575,7 +2573,8 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
     </div>
     <div id="wordlist" class="rounded" style="outline: none"></div>
 	<div class="flex-center"><button class="btn-darker" onclick=openTTSRead()>Go to TTS Reader</button></div>
-  </div> <!--   End of wordlist-box   -->
+  </div>
+End of wordlist-box   -->
 
   <!-- Sticky episode navigation and x-audio-box bars -->
   <div id="episode-nav" data-themeable class="hidden bottom-control inherit"></div>
@@ -2625,17 +2624,16 @@ tstore.playerTitle.displayMsg = s => tstore.playerTitle.innerHTML = highlightTex
 
 const playStopBtn = elid('playstop-button');
 const transcriptText = elid('transcriptText');
-const wordList = elid('wordlist');
-wordList.list = []; // may not be needed since 07 Dec 2022, when wordList.textContent was added
-wordList.contentEditable = 'true';
+//const wordList = elid('wordlist');
+//wordList.contentEditable = 'true';
 
+/*
 const addChunkToWordList = txt => {
   return; // 2025-08-09 disabled b/c of new vocab mode
-//  if (!txt || wordList.list.includes(txt)) return;
+//  if (!txt) return;
   const s = txt.trim();
   if (!s || wordList.textContent.includes(s)) return;
   showElid('wordlist-box');
-//  wordList.list.push(txt);
   if (wordList.textContent) wordList.textContent += ', ' + s;
   else wordList.textContent = s;
 //console.log('wordList.textContent', wordList.textContent);
@@ -2654,9 +2652,8 @@ const loadWordList = txt => {
   for (const chunk of list) addChunkToWordList(chunk);
 }
 
-//const parseWordList = eID => {
+
 const parseWordList = () => {
-//  if (!wordList.list) return;
   if (!wordList.textContent) return;
   
 //  let htxt = elid(eID).innerHTML,
@@ -2673,10 +2670,9 @@ const parseWordList = () => {
 //  setElHTML(eID, htxt);
   transcriptText.innerHTML = htxt;
 }
-
+*/
 /* Wordlist is deprecated since h2 2025
 
-//transcriptText.ondblclick = () => addToWordList();
 transcriptText.onmouseup = () => addToWordList();
 transcriptText.touchend = () => addToWordList();
 */
@@ -2690,20 +2686,21 @@ document.onclick = () => {
   tstore.doubleClicked = false;
 //console.log('SINGLE CLICK');
 }
-
+/*
 elid('drill-wordlist').onclick = () => {
-//  window.open("/words/?w=" + wordList.list.join(','));
   window.open('/words/?w=' + wordList.textContent + getLangForUrl());
 }
+*/
 
 const getLangForUrl = () => players.ttsLang ? '&lang=' + players.ttsLang.slice(0,2) : '';
 
+/*
 elid('clear-wordlist').onclick = () => {
   hideElid('wordlist-box');
-  wordList.list = [];
   wordList.textContent = '';
 //  wordList.innerHTML = '<i>The list is empty. Select words or phrases in the task list to add them here.</i>';
 }
+*/
 
 const loadVoiceList = voicesArr => {
   setVoiceList({voices: voicesArr, selectVoice: false, speakerN: ''});
@@ -2790,8 +2787,7 @@ tstore.nightModeSwitch = new ToggleSwitch({id: 'night-mode-switch',
   });
 
 window.onload = () => {
-  if (!loadSTT('NO_AUDIO_RECORDER')) // it can work with audioRecorder as well, but so far recording is not needed 
-    console.warn('STT not supported'); 
+  loadSTT('NO_AUDIO_RECORDER') // it can work with audioRecorder as well, but so far recording is not needed 
 
   if (localStorage.getItem('showSettings')) showSettings();
   else hideSettings();
@@ -3820,7 +3816,7 @@ const addXvars = s => {
 }
 
 const setTextDirection = (lang = 'en') => {
-  wordList.style.direction = 
+//  wordList.style.direction = 
   tstore.ttsOverlay.dictDiv.el().style.direction = 
   transcriptText.style.direction = (['he', 'ar'].includes(lang))? 'rtl' : 'ltr'; // could be done via added/removed class 
 }
@@ -3903,7 +3899,7 @@ const afterTaskLoaded = () => {
   players.looperInUse = false;
   players.loopStopRequested = true; // maybe it should be set even earlier?
   
-  parseWordList();
+//  parseWordList();
   movePlayer();
 
   if (qsel('x-vocab') && elid('vocab-section')) qsel('x-vocab').appendChild(elid('vocab-section'));
@@ -3951,7 +3947,7 @@ const callTTSRead = (s = players.currentTask) => {
 const openTTSRead = () => {
 //console.log('Vocab', '\n:vocab:\n' + wordList.textContent.replace(/,\s?/g, '\n'));
   const vocabLabel = (players.currentTask.includes(':vocab:'))? '\n' : '\n:vocab:\n';
-  const txt = players.currentTask + vocabLabel + wordList.textContent.replace(/,\s?/g, '\n');
+  const txt = players.currentTask + vocabLabel;// + wordList.textContent.replace(/,\s?/g, '\n');
   callTTSRead(txt);
 }
 
@@ -5077,7 +5073,7 @@ elid('new-task').onclick = () => displayInfopage('EDIT_YT_STYLE');
 elid('download-task').onclick = tstore.downloadTask;
 elid('print-task').onclick = printTask;
 elid('share-link').onclick = linkToTask;
-elid('copy-words').onclick = copyWords;
+//elid('copy-words').onclick = copyWords;
 elid('mute-checkbox').onchange = handleRecMuteCheckbox;
 
 handleDraggingNew(qsel('body'), qsel('.dropzone'));
@@ -5379,6 +5375,7 @@ const setSpecialKeys = () => shiftCapsCallback(gstore.upperCase);
 // ***   End STT  ***
 // --------------------------
 
+/*
 const fetchYTSubs = async id => {
 // as of 2 Feb 2026, https://youtubetranscripts.app/api/transcript does not give reliable results
 return;
@@ -5392,7 +5389,7 @@ return;
         body: { videoId: id }
       }),
     });
-	
+
   if (!res.ok) {
 console.warn('Fetch proxy failed: ' + res.status);
     return '';
@@ -5401,7 +5398,7 @@ console.warn('Fetch proxy failed: ' + res.status);
   const data = await res.json();
 console.log(data, data.body);
 }
-
+*/
 function printTask() {
   document.body.classList.add('print-div');
   window.print();

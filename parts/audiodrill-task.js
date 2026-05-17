@@ -2557,7 +2557,7 @@ const setVoiceList = (par) => {
   voiceSelector.hidden = numOfVoices < 2;
   
   if (par.selectVoice) chooseVoice(n); // for words and phrases page
-  else { // for tasks page
+  else if (par.voices[0]) { // for tasks page
     tts['spVoice' + n] = par.voices[0];
     voiceSelector.title = par.voices[0].name;
 // no need to set voiceSelector.value b/c it's set to the first voice
