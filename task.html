@@ -2555,10 +2555,16 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
     <div id="download-task" class="action-icon height12 font-75pc"><div 
 	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">↓</div></div>
 	
-    <div id="share-link" class="action-icon share-icon height12" title="Share task">
-	</div>
+  <div id="share-link" class="action-icon share-icon height12" title="Share task">
+  </div>
 
-   <span id="task-header-opt" class="float-left half-padding"></span>
+  <span class="padding-03em"></span>
+
+  <div id="tts-lines-btn" class="float-right action-icon share-icon height12" title="Read lines">🗣
+  </div>
+
+  <span class="padding-03em"></span>
+
   </div> <!--   End of task icons   -->
 
 
@@ -3690,10 +3696,11 @@ tstore.translation = { // experimental: 2026-02-14
     if (!this.sentences.length) return;
 	
     const btn = `<button title="Translation on hover" translate="no" 
-	  class="rel plain-button float-right font-80pc action-icon plain-button gray no-tts" 
+	  class="rel plain-button float-right font-80pc action-icon plain-button gray bg-green no-tts" 
 	  style="right:10px; width:auto" 
 	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
+    this.set(true); // turn on immediately
   },
 
   setListeners(el) {
@@ -5081,6 +5088,7 @@ elid('new-task').onclick = () => displayInfopage('EDIT_YT_STYLE');
 elid('download-task').onclick = tstore.downloadTask;
 elid('print-task').onclick = printTask;
 elid('share-link').onclick = linkToTask;
+elid('tts-lines-btn').onclick = () => tstore.ttsOverlay.init();
 //elid('copy-words').onclick = copyWords;
 elid('mute-checkbox').onchange = handleRecMuteCheckbox;
 
