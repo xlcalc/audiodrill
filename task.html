@@ -3926,11 +3926,11 @@ const afterTaskLoaded = () => {
   const tag = elid('startmedia'); // legacy tag to load video for this task
   if (tag) getVideoByURL(tag.getAttribute('url'), 'NEW_TASK');
   parseTTSTag(transcriptText); // run before prepareCloze
-  handleTransl();
   prepareSettings();
   emulateCueClick();
-
+  
   tstore.sentences.init(transcriptText);
+  handleTransl();
   handleVocab();
   
   if (tstore.textToClozeMode) clozeInputToSpans();
