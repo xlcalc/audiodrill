@@ -2530,8 +2530,8 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
   <div id="task-header" data-themeable class="task-header box-header flex">
 
-  <div id="task-icons" class="flex">
-	<div class="action-icon new-task-icon height12" 
+  <div id="task-icons" class="flex height12">
+	<div class="action-icon new-task-icon" 
       id="new-task" title="New task">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="12">
         <polygon points="22,10 22,90 78,90 78,30 58,10" />
@@ -2549,21 +2549,21 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
      <span style="border-right:1px solid;">Aa</span>
    </div>
 
-    <div id="print-task" class="action-icon share-icon height12" title="Print task">
+    <div id="print-task" class="action-icon share-icon" title="Print task">
 	</div>
 
-    <div id="download-task" class="action-icon height12 font-75pc"><div 
+    <div id="download-task" class="action-icon font-75pc"><div 
 	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">↓</div></div>
 	
-  <div id="share-link" class="action-icon share-icon height12" title="Share task">
-  </div>
+    <div id="share-link" class="action-icon share-icon" title="Share task">
+	</div>
 
-  <span class="padding-03em"></span>
+    <span class="padding-03em"></span>
 
-  <div id="tts-lines-btn" class="float-right action-icon share-icon height12" title="Read lines">🗣
-  </div>
+    <div id="tts-lines-btn" class="action-icon" title="Read lines">🗣
+	</div>
 
-  <span class="padding-03em"></span>
+    <span class="padding-03em"></span>
 
   </div> <!--   End of task icons   -->
 
@@ -3642,15 +3642,17 @@ const shareFragment = () => {
 
 tstore.translation = { // experimental: 2026-02-14
   marker: ':transl:',
+  tsectionNum: -1,
 
   init() {
     this.previousText = this.text;
     this.text = '';
     this.sentences = [];
     this.isOn = false;
+	if (this.tsectionNum === -1) this.tsectionNum = gstore.taskParts.sections.length - 1; // logic will change as more sections are added
   },
-  
-  extract(txt) {
+/*
+  extractOld(txt) {
     const pattern = new RegExp(
       this.marker + '([\\s\\S]*?)(?=' + gstore.vocab.prefix + '|$)'
     );
@@ -3673,6 +3675,24 @@ tstore.translation = { // experimental: 2026-02-14
       return '';
     }).trim();
   },
+*/
+  extract() {
+    this.init();
+
+    this.text = gstore.taskParts.sections[this.tsectionNum];
+	if (!this.text) return null;
+    this.text = this.text.replaceAll('<hr>', '').replace(/<x-.*?>/, '');
+
+    this.tlang = gstore.taskParts.languages[this.tsectionNum] || 'en'; // 
+//console.log('Translation lang:', this.tlang);
+
+  	const segmenter = new Intl.Segmenter(this.tlang, { granularity: 'sentence' });
+    this.sentences = [...segmenter.segment(this.text)]
+      .map(entry => entry.segment.trim())
+      .filter(s => s); //leave non-empty lines
+
+    return this.sentences.length;
+  },
 
   set(cmd) {
     this.isOn = cmd;	
@@ -3691,17 +3711,33 @@ tstore.translation = { // experimental: 2026-02-14
     this.set(!this.isOn);
     toggleEl(el, 'bg-green');
   },
-  
+
+  changeTask() {
+// Logic will change as more sections are handled;
+    const newTask = gstore.taskParts.currSectionNum ? 0 : 1;
+    this.setTask(newTask);
+  },
+
+  setTask(n) {
+    players.currentTask = gstore.taskParts.getTask(n);
+    this.tsectionNum = n ? 0 : 1; // logic will change as more sections are added
+    refreshTask();
+  },
+
   addBtn() {
-    if (!this.sentences.length) return;
+   if (!this.extract()) return;
 	
-    const btn = `<button title="Translation on hover" translate="no" 
-	  class="rel plain-button float-right font-80pc action-icon plain-button gray bg-green no-tts" 
+    const btn = `<div class="flex float-right font-80pc"><button title="Translation on hover" translate="no" 
+	  class="rel plain-button action-icon plain-button gray bg-green no-tts" 
 	  style="right:10px; width:auto" 
-	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button>`;
+	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button>
+	  <button title="Toggle original" translate="no" 
+	  class="rel plain-button action-icon plain-button gray no-tts" 
+	  style="right:10px; width:auto" 
+	  onclick="tstore.translation.changeTask()">⇄</button></div>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
     this.set(true); // turn on immediately
-  },
+   },
 
   setListeners(el) {
       el.onmouseenter = () => this.addTip(el);
@@ -3742,12 +3778,12 @@ tstore.translation = { // experimental: 2026-02-14
 }
 
 const taskTextHandler = txt => {
-  txt = tstore.translation.extract(txt);
+//  txt = tstore.translation.extract(txt);
+
+// Is this order OK?
+  gstore.langTag = gstore.taskParts.getCurrSectionLang() || detectLang(gstore.vocab.getBeforeVocab(txt));
 
   const getKeyFromText = (s, key) => s.split(key)[1] .split(/\n/)[0] .trim();
-
-//  gstore.langTag = detectLang(txt);
-  gstore.langTag = detectLang(gstore.vocab.getBeforeVocab(txt));
   if (txt.includes(':lang:')) gstore.langTag = getKeyFromText(txt, ':lang:');
   
   if (gstore.langTag) {
@@ -3919,8 +3955,8 @@ const afterTaskLoaded = () => {
 
   if (qsel('x-vocab') && elid('vocab-section')) qsel('x-vocab').appendChild(elid('vocab-section'));
 
-  tstore.contextLang = getContextLang(transcriptText);
-  setLanguage(getContextLang(transcriptText), true);
+  tstore.contextLang = getContextLang(transcriptText) || gstore.langTag;
+  setLanguage(tstore.contextLang, true);
 
   const o = analyzeXvars(); // o is assigned just to wait for analyzeXvars to finish. Does it wait?
   const tag = elid('startmedia'); // legacy tag to load video for this task
@@ -3928,7 +3964,7 @@ const afterTaskLoaded = () => {
   parseTTSTag(transcriptText); // run before prepareCloze
   prepareSettings();
   emulateCueClick();
-  
+
   tstore.sentences.init(transcriptText);
   handleTransl();
   handleVocab();
@@ -5025,7 +5061,7 @@ tstore.transl = async (s, par) => {
 //  let tip = '<div class="spinner" style="width: 10px; height: 10px; margin: 0 0 .2em;"></div> click to use Google Translate';
 
   const targetLang = localStorage.getItem('translLangCode') || 'en';
-  
+
   let res = gstore.vocab.getMeaning(s);
   if (!res) {
     if  (!gstore.translations[s]) gstore.translations[s] = {};
@@ -5468,6 +5504,51 @@ const stopWatch = {
   get: () => stopWatch.r,
   get2() {return this.tstart}
 */  
+}
+
+// ==  Experimental sections  ==
+gstore.taskParts = {
+  header: '',
+  sections: [],
+  languages: [],
+
+  currSectionNum: 0,
+  getCurrSectionLang() { return this.languages[this.currSectionNum] },
+
+  getSection(text, sectionNum = 0) {
+    this.header = '';
+    this.sections = [];
+    this.languages = [];
+
+    const parts = text.split(':section:');
+
+    // Header = before first tag
+    this.header = parts.shift();
+
+    // Parse sections
+    for (const part of parts) {
+      const lines = part.split('\n');
+
+      let lang = null;
+	  const len = lines[0].trim().length;
+
+      if (len >= 2 && len <= 3) lang = lines.shift().trim();
+
+      this.languages.push(lang);
+      this.sections.push(lines.join('\n').trim());
+    }
+    return this.getTask(sectionNum);
+  },
+  
+  getTask(i) {
+    if (i < 0) i = 0;
+    if (i > this.sections.length -1) i = this.sections.length -1;
+    this.currSectionNum = i;
+  // Return header + first section
+    return [this.header, this.sections[i]]
+      .filter(Boolean)
+      .join('');  
+  }
 }
 
 // ***  Beep  ***

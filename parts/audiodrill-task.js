@@ -140,6 +140,9 @@ async function loadElementFromURL(eID, url, altUrl) {
   try {
     let txt = await fetchText(url);
 	if (cmd === 'GOOGLE_DOC') txt = extractTextFromHtmlDoc(txt);
+// Sections can be analysed and just one section  to be shown via loadElementWithText
+    if (eID === 'transcriptText') txt = gstore.taskParts.getSection(txt);
+
 	if (txt) loadElementWithText(txt, eID, cmd);
 	else if (altUrl) { // try again with alternative url
 	  loadElementFromURL(eID, altUrl, '');
