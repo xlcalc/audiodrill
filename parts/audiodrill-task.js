@@ -2291,6 +2291,11 @@ console.log('Debug data:', JSON.stringify(data));
 
   if (cmd === 'TTS_STARTED') afterTTSStarted();
   if (cmd === 'TTS_ENDED') afterTTSEnded();
+
+  if (cmd === 'LANG_NOT_SUPPORTED') {
+    displayAlarmMessage(`${data.toUpperCase()} language is not supported`);
+    gCallback(cmd);
+  }
   
   if (langListCtrl()) {
     if (cmd === 'TTS_GOT_LANG_VOICES') loadVoiceList(data); 
@@ -2298,8 +2303,6 @@ console.log('Debug data:', JSON.stringify(data));
     if (cmd === 'VOICES_CHANGED_EVENT') loadLangList();
   
     if (cmd === 'NO_VOICE') displayAlarmMessage('There is no voice for ' + langListCtrl().value);
-
-    if (cmd === 'LANG_NOT_SUPPORTED') displayAlarmMessage(`Language '${data}' is not supported`);
   }
 }
 

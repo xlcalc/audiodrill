@@ -2274,6 +2274,7 @@ const gCallback = cmd => {
   if (cmd === 'TTS_STARTED') tstore.ttsOverlay.showPlaying(1);
 //  if (cmd === 'TTS_ENDED') tstore.ttsOverlay.showPlaying(0);
   if (cmd === 'TTS_ENDED') tstore.ttsOverlay.ttsEnded();
+  if (cmd === 'LANG_NOT_SUPPORTED') tstore.ttsOverlay.setActive(0);
   
   if (cmd === 'DIR_INFO_LOADED' && isEpiNavPossible()) {
     episodeBar.show();
