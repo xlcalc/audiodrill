@@ -4490,6 +4490,8 @@ transition: opacity 0.25s; opacity: 1;"
     const el = tstore.nodes[this.currentNum];
 // get language, as sentences may be in different divs with different languages
     this.ttsLang = gstore.getContextLangCode(el);
+    if (!getVoice(this.ttsLang)) return;
+
     tstore.TTSsource = 'sentence';
 
     const speed = speedCtrl.calcSpeed(this.repeatNum);
