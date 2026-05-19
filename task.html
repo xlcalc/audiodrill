@@ -3679,18 +3679,21 @@ tstore.translation = { // experimental: 2026-02-14
   extract() {
     this.init();
 
-    this.text = gstore.taskParts.sections[this.tsectionNum];
-	if (!this.text) return null;
-    this.text = this.text.replaceAll('<hr>', '').replace(/<x-.*?>/, '');
+    let txt = gstore.taskParts.sections[this.tsectionNum]
+	if (!txt) return null;
+
+    txt = highlightText(txt).replaceAll('<hr>', '<hr>\n');
+    txt = getTextFromHTML(txt);
 
     this.tlang = gstore.taskParts.languages[this.tsectionNum] || 'en'; // 
 //console.log('Translation lang:', this.tlang);
 
   	const segmenter = new Intl.Segmenter(this.tlang, { granularity: 'sentence' });
-    this.sentences = [...segmenter.segment(this.text)]
+    this.sentences = [...segmenter.segment(txt)]
       .map(entry => entry.segment.trim())
       .filter(s => s); //leave non-empty lines
 
+    this.text = txt;
     return this.sentences.length;
   },
 
