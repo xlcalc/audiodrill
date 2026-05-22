@@ -119,36 +119,50 @@ const copyToClipboard = (txt, msg, msec) => {
   );
 }
 
-const extractTextFromHtmlDoc = html => {
+const extractFromGoogleDoc = html => {
   const doc = new DOMParser().parseFromString(html, "text/html");
-  doc.body.innerHTML = doc.body.innerHTML.replaceAll('</p>', '</p>\n');
+  gstore.docStyleHtml = '';
+  gstore.docBodyHtml = '';
+  gstore.docBodyText = '';
+
+// This logic may change
+  gstore.docHasSections = html.includes(':section:');
+  if (gstore.docHasSections) {
+    doc.body.innerHTML = doc.body.innerHTML.replaceAll('</p>', '</p>\n');
+    gstore.docBodyText = doc.body.innerText;
+    return gstore.docBodyText.trim();
+  }
+
+  gstore.docStyleHtml = doc.head.querySelector('style')?.outerHTML;
   gstore.docBodyHtml = doc.body.innerHTML;
-  gstore.docBodyText = doc.body.innerText;
-  return gstore.docBodyText.trim();
+  return gstore.docBodyHtml;
 }
 
 async function loadElementFromURL(eID, url, altUrl) {
   if (!url || !eID) return 0;
   
   let cmd = '';
+  gstore.fromGoogleDoc = false;
   if (url.startsWith('https://docs.google.com/document/')) {
     cmd = 'GOOGLE_DOC';
+    gstore.fromGoogleDoc = true;
     const tab = new URL(url).searchParams.get('tab');
     url = url.replace(/\/[^/]*$/, '/export?tab=') + tab || '';
   }
 
   try {
     let txt = await fetchText(url);
-	if (cmd === 'GOOGLE_DOC') txt = extractTextFromHtmlDoc(txt);
+    if (!txt && altUrl) { // try again with alternative url
+      loadElementFromURL(eID, altUrl, '');
+      return;
+    }
+
+	if (gstore.fromGoogleDoc) txt = extractFromGoogleDoc(txt);
 // Sections can be analysed and just one section  to be shown via loadElementWithText
-    if (eID === 'transcriptText') txt = gstore.taskParts.getSection(txt);
+    if (eID === 'transcriptText' && gstore.docHasSections) txt = gstore.taskParts.getSection(txt);
 
 	if (txt) loadElementWithText(txt, eID, cmd);
-	else if (altUrl) { // try again with alternative url
-	  loadElementFromURL(eID, altUrl, '');
-	  return;
-	}
-    else { 
+	else { 
       loadingDone();
       displayAlarmMessage('Page not found');
     }
@@ -236,7 +250,10 @@ function loadElementWithText(sourceText, eID, cmd) {
 
   text = highlightText(text);
 
-  if (eID === 'transcriptText') { text = parseTaskText(text, true); }
+  if (eID === 'transcriptText') { 
+    text = parseTaskText(text, true);
+	if (gstore.fromGoogleDoc) text = `${gstore.docStyleHtml}<div>${text}</div>`;
+  }
   if (eID ==='latest-news') { text = parseTaskText(text); }
   if (eID === gstore.notes.id || eID === 'main-container') { 
     text = parseTextFile(text); 

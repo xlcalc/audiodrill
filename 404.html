@@ -7,11 +7,12 @@
   const match = location.pathname.match(/^\/(txt|[lmt])\/(.+)/);
   if (match) {
     let [, type, path] = match;
-    path = path.replace(/s2\/\//, 's2://');
-    if (!['l', 'txt'].includes(type) && !path.includes('//'))
+	path = path.replace(/s2\/\//, 's2://');
+	if (!['l', 'txt'].includes(type) && !path.includes('//'))
       path = '/' + path;
 
-    const keys = location.search.replace(/\?/g, '&');
+	let keys = location.search;
+	if (type !== 'm') keys = keys.replace(/\?/g, '&');
     window.location.assign(`/task.html?${type}=${path}${keys}`);
   }
 })()

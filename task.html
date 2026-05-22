@@ -2154,7 +2154,7 @@ const analyzeURLParams = async () => {
   const urlKeys = new URLSearchParams(location.search);
   gstore.calledFromWords = urlKeys.get('from-words') !== null;
 
-  setVideoSize(urlKeys.get('video-size') || localStorage.getItem('videoWidth') || 1);
+  setVideoSize(urlKeys.get('video-size') || localStorage.getItem('videoWidth') || -1);
 
   const lang = urlKeys.get('lang') || localStorage.getItem('langCode') || 'en';
   setLanguage(lang, true);
@@ -3435,7 +3435,7 @@ console.log('movePlayer: players.ytAPI', players.ytAPI);
   }
   else showEl(videoResize);
 
-  elid('left-column').hidden = players.mediaInTask;
+  elid('left-column').hidden = elid('left-column').hidden || players.mediaInTask;
 }
 
 const closeXaudio = () => {
@@ -3683,7 +3683,7 @@ tstore.translation = { // experimental: 2026-02-14
     let txt = gstore.taskParts.sections[this.tsectionNum]
 	if (!txt) return null;
 
-    txt = highlightText(txt).replaceAll('<hr>', '<hr>\n');
+    txt = highlightText(txt).replaceAll('<hr>', '<hr>\n').replace(/<\/h\d>/g, s => s + '\n');
     txt = getTextFromHTML(txt);
 
     this.tlang = gstore.taskParts.languages[this.tsectionNum] || 'en'; // 
@@ -4321,6 +4321,14 @@ transition: opacity 0.25s; opacity: 1;"
 
   isActive() { return !this.controlBox().hidden },
 
+  hasVoice(n) {
+    const el = tstore.nodes[n];
+    this.ttsLang = gstore.getContextLangCode(el);
+    const voice = getVoice(this.ttsLang);
+    if (!voice) displayAlarmMessage(`${this.ttsLang.toUpperCase()} language is not supported`);
+    return voice;
+  },
+
   init(cmd) {
     if (!tstore.ttsClickSwitch.isOn || !tstore.taskSentences) return;
 
@@ -4332,6 +4340,8 @@ transition: opacity 0.25s; opacity: 1;"
     const lineClicked = typeof cmd === 'object';
     this.currentNum = lineClicked ? this.getInitChunkNum(cmd) : cmd || 0;
     if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
+
+    if (!this.hasVoice(this.currentNum)) return;
     this.play();
 //    if (cmd !== 'DO_NOT_PLAY') this.play(lineClicked);
 //    this.initCtrls(this.silentMode);
@@ -4470,8 +4480,10 @@ transition: opacity 0.25s; opacity: 1;"
   },
 
   play() {
+    tstore.TTSsource = 'sentence';
     disableVoiceInput();
 //    this.dictDiv.clear();
+    if (!this.hasVoice(this.currentNum)) return;
 
     this.setClickedPlayBtn(1);
 
@@ -4484,22 +4496,15 @@ transition: opacity 0.25s; opacity: 1;"
       this.prevNum = this.currentNum;
       this.repeatNum = 0;
     }
-    
-// !! Using tstore.taskSentences can lead to discrepancy with span data-sentence-index in complex htmls?
+
     this.ttsLine = tstore.taskSentences[this.currentNum];
-    const el = tstore.nodes[this.currentNum];
-// get language, as sentences may be in different divs with different languages
-    this.ttsLang = gstore.getContextLangCode(el);
-    if (!getVoice(this.ttsLang)) return;
-
-    tstore.TTSsource = 'sentence';
-
     const speed = speedCtrl.calcSpeed(this.repeatNum);
     ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
 //    if (this.isTranslMode()) this.dictDiv.showPrompt(this.taskTransl[this.currentNum]);
 //    if (!(cmd && this.isTranslMode())) ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
+    const el = tstore.nodes[this.currentNum];
     if (!this.repeatNum) {
       this.showText();
       this.markSentence(el, 1);
