@@ -4261,9 +4261,12 @@ transition: opacity 0.25s; opacity: 1;"
     const curText = el.textContent;
 //console.log('Current STT text', curText);
 //  	const sttOutput = checkStringVsRef(curText, this.ttsLine, this.ttsLang)[1]
-  	const [match, sttOutput] = checkStringVsRef(curText, this.ttsLine, this.ttsLang);
+  	let [match, sttOutput] = checkStringVsRef(curText, this.ttsLine, this.ttsLang);
 
-    el.innerHTML = sttOutput
+    if (this.ttsLang = 'zh') sttOutput = sttOutput.replace(/\s/g, '');
+
+    el.innerHTML = match ? this.ttsLine
+	  : sttOutput
 //      .replace(/(___ ?)+$/g, "");
       .replace(/(___[ \p{P}]*)+$/u, '');
 
@@ -4473,6 +4476,20 @@ transition: opacity 0.25s; opacity: 1;"
     return index;
   },
 
+  tweakedTTSLine(s) {
+    const specialLangs = ['ru', 'ar', 'he', 'ja', 'ko', 'zh'];
+    if (!specialLangs.includes(detectLang(s))) return s;
+    const passed = [];
+    const strParts = s.split(/[\s\u00A0]+/); // split at 1+ spaces and &nbsp;'s
+    for (const part of strParts) {
+      if (!specialLangs.includes(detectLang(part))) break;
+
+      passed.push(part);
+    }
+
+    return passed.join(' ');
+  },
+
   pause() { 
     tts.cancel();
     tts.pause();
@@ -4498,6 +4515,8 @@ transition: opacity 0.25s; opacity: 1;"
     }
 
     this.ttsLine = tstore.taskSentences[this.currentNum];
+    this.ttsLine = this.tweakedTTSLine(this.ttsLine);
+	
     const speed = speedCtrl.calcSpeed(this.repeatNum);
     ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
@@ -5157,8 +5176,10 @@ function setNightMode(cmd) {
 tstore.sentences = {
   init(el) {
 //return
-    el.innerHTML = this.wrap(el);
-//	  tstore.nodes = document.querySelectorAll('[data-sentence-index]');
+    const pArr = el.querySelectorAll('p');
+	if (pArr.length) pArr.forEach(p => p.innerHTML = this.wrap(p))
+    else el.innerHTML = this.wrap(el);
+
     tstore.nodes = [...document.querySelectorAll('[data-sentence]')]
       .map((el, i) => (el.removeAttribute('data-sentence'), el))
       .filter(el => !el.closest('.no-tts'))
