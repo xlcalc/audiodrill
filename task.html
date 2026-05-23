@@ -3767,6 +3767,21 @@ tstore.translation = { // experimental: 2026-02-14
 // link parent and child;
     el.child = tip;
 //    tip.parent = el;
+
+// Shrink to tip's content to avoid a blank field on the right
+    const range = document.createRange();
+    let max = 0;
+
+    for (const node of tip.childNodes) {
+      range.selectNodeContents(node);
+
+      for (const rect of range.getClientRects()) {
+        max = Math.max(max, rect.width);
+      }
+    }
+
+    tip.style.width = Math.ceil(max) + "px";
+
     return tip;
   },
 
@@ -4372,7 +4387,8 @@ transition: opacity 0.25s; opacity: 1;"
 
     const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + ←)', dir: 'left'});
     const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + →)', dir: 'right'});
-  
+    const pbr = getPbrHtml(2);
+
     const translateBtn = `<button id="${this.translBtnId}" title="Translate sentence"
       class="${commonBtn} inblock font-85pc" tip-class="tooltip-link"
   	  onclick = "tstore.ttsOverlay.translate(this)">`
@@ -4388,27 +4404,15 @@ transition: opacity 0.25s; opacity: 1;"
       : '';
 
     const btnDiv = '<div class="inblock v-align-middle"><div class="flex-center">'
-    + prevBtn + playBtn + nextBtn + translateBtn + settingsBtn
+    + prevBtn + playBtn + nextBtn + pbr + translateBtn + settingsBtn
     + '</div></div>';
-/*
-    const prompt = '<select id="ttsPlayMode" class="gray2 font-80pc drop-down dark-hover" style="margin: .1em">'
-	  + '<option value="sentence" title="Replay the line at multiple speeds \r(see Replay speed factors in the settings)">Play a line</option>'
-	  + '<option value="SHADOW_LINE" title="Play the line and say it">Shadow a line</option>'
-    + '<option value="all" title="Play the whole text at one speed \r(see Master speed rate in the settings)">Play all text</option>'
-    + '<option value="ALL_WITH_REPS" title="Play each line at multiple speeds \r(see Replay speed factors in the settings)">Play all (reps)</option>'
-    + '</select>';
 
-    
-    displayOverlay({msg: '<div id="tts-sentence-reader" class="rel">' + prompt + btnDiv + '</div>', style: 'width:auto; padding: 4px 1.5em;'});
-*/
-//    elid('tts-overlay-controls').hidden = false;
     if (!this.playPauseBtn()) {
       this.controlBox().querySelector('.close-x01').onclick = () => { this.setActive(0) }
       elid('tts-sentence-reader').insertAdjacentHTML('beforeend', btnDiv);
+	  setPBR();
     }
 
-//    elid('tts-play-btn').hidden = !cmd;
-//    elid('tts-pause-btn').hidden = cmd;
     this.showPlaying(!cmd);
 
     this.show(true);
@@ -4423,9 +4427,6 @@ transition: opacity 0.25s; opacity: 1;"
       this.ttsPlayMode = el.value;
       const selectedOption = el.options[el.selectedIndex];
       el.title = selectedOption.title || '';
-
-//      this.silentMode = el.value === this.translModes[0];
-//      elid('showTranslOption').hidden = !this.taskTransl.length;
     }
 
 	if (mode) el.value = mode;
@@ -4441,14 +4442,7 @@ transition: opacity 0.25s; opacity: 1;"
     this.init();
     this.setTtsPlayMode(this.shadowModes[0]);
   },
-/*
-  initTransl() {
-    this.silentMode = true;
-    this.init('DO_NOT_PLAY');
-    this.setTtsPlayMode('SHOW_TRANSLATION');
-    this.dictDiv.showPrompt('<i>Click a line to see translation</i>');
-  },
-*/
+
   markClasses: ['view-cloze-answers', 'marked'],
   
   unmarkAll() {
@@ -4456,9 +4450,6 @@ transition: opacity 0.25s; opacity: 1;"
   },
 
   async markSentence(el, cmd) {
-//	const el = tstore.nodes[i];
-//	const el = qsel(`[data-sentence-index="${i}"]`); // alternative approach
-//    setElClass(el, this.markClasses, 0);
     this.unmarkAll();
     if (cmd) {
       const shadowHide = this?.ttsPlayMode === this.shadowModes[1];
@@ -4565,8 +4556,6 @@ transition: opacity 0.25s; opacity: 1;"
     else if (this.ttsPlayMode === 'ALL_WITH_REPS') this.playAllWithReps();
     else if (this.ttsPlayMode === 'ALL' 
 	  && tstore.TTSsource === 'sentence' 
-//	  && this.tryNextSentence()
-//	  ) this.play();
 	  ) this.playNext();
   	else this.showPlaying(0);
   },
@@ -4601,7 +4590,6 @@ transition: opacity 0.25s; opacity: 1;"
     while (i >= 0 && i < tstore.nodes.length) {
       const el = tstore.nodes[i];
       if (!el.closest('.hidden') && el.textContent) {
-//        this.markSentence(tstore.nodes[this.currentNum], 0);
         this.currentNum = i;
         return el.textContent;
       }
@@ -4663,7 +4651,6 @@ transition: opacity 0.25s; opacity: 1;"
       this.unmarkAll(); 
     }
     this.show(cmd);
-//    this.setTranslation(cmd);
   },
 
   translate(btn) {
@@ -5243,8 +5230,8 @@ tstore.sentences = {
     .replaceAll('<x-br></x-br>', '<div style="display: block; height: .4em;"></div>')
     .replaceAll('<x-br-l></x-br-l>', '<div style="display: block; height: .7em;"></div>')
     .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
-	  .replaceAll('<br>', '\n')
-	  .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
+    .replaceAll('<br>', '\n')
+    .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
     .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
     .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
     .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))
@@ -5459,30 +5446,6 @@ const setSpecialKeys = () => shiftCapsCallback(gstore.upperCase);
 // ***   End STT  ***
 // --------------------------
 
-/*
-const fetchYTSubs = async id => {
-// as of 2 Feb 2026, https://youtubetranscripts.app/api/transcript does not give reliable results
-return;
-  const res = await fetch(
-    'https://serfxlcalc.netlify.app/.netlify/functions/proxy',
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        url: 'https://youtubetranscripts.app/api/transcript',
-        body: { videoId: id }
-      }),
-    });
-
-  if (!res.ok) {
-console.warn('Fetch proxy failed: ' + res.status);
-    return '';
-  }
-
-  const data = await res.json();
-console.log(data, data.body);
-}
-*/
 function printTask() {
   document.body.classList.add('print-div');
   window.print();
@@ -5573,15 +5536,17 @@ gstore.taskParts = {
   },
   
   getTask(i) {
-    if (i < 0) i = 0;
-    if (i > this.sections.length -1) i = this.sections.length -1;
-    this.currSectionNum = i;
+//    if (i < 0) i = 0;
+//    if (i > this.sections.length -1) i = this.sections.length -1;
+    this.currSectionNum = i = clamp(i, 0, this.sections.length -1);
   // Return header + first section
     return [this.header, this.sections[i]]
       .filter(Boolean)
       .join('');  
   }
 }
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 // ***  Beep  ***
 /* This fn may be needed later

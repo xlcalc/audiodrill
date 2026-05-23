@@ -1,3 +1,27 @@
+/*
+const fetchYTSubs = async id => {
+// as of 2 Feb 2026, https://youtubetranscripts.app/api/transcript does not give reliable results
+return;
+  const res = await fetch(
+    'https://serfxlcalc.netlify.app/.netlify/functions/proxy',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: 'https://youtubetranscripts.app/api/transcript',
+        body: { videoId: id }
+      }),
+    });
+
+  if (!res.ok) {
+console.warn('Fetch proxy failed: ' + res.status);
+    return '';
+  }
+
+  const data = await res.json();
+console.log(data, data.body);
+}
+*/
 
 /*
 //transcriptText.onclick = async (e) => {
