@@ -126,7 +126,7 @@ const extractFromGoogleDoc = html => {
   gstore.docBodyText = '';
 
 // This logic may change
-  gstore.docHasSections = html.includes(':section:');
+//  gstore.docHasSections = html.includes(':section:');
   if (gstore.docHasSections) {
     doc.body.innerHTML = doc.body.innerHTML.replaceAll('</p>', '</p>\n');
     gstore.docBodyText = doc.body.innerText;
@@ -157,6 +157,7 @@ async function loadElementFromURL(eID, url, altUrl) {
       return;
     }
 
+    gstore.docHasSections = txt.includes(':section:');
 	if (gstore.fromGoogleDoc) txt = extractFromGoogleDoc(txt);
 // Sections can be analysed and just one section  to be shown via loadElementWithText
     if (eID === 'transcriptText' && gstore.docHasSections) txt = gstore.taskParts.getSection(txt);
