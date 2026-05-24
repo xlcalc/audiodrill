@@ -3875,7 +3875,7 @@ const addTranslationBtn = () => {
 const extractXvars = s => {
   if (s) {
     tstore.xvarsBox = document.createElement('div');
-    tstore.xvarsBox.innerHTML = s;
+    tstore.xvarsBox.innerHTML = s.replace('&lt;', '<').replace('&gt;', '>');
   }
   return '';
 }
