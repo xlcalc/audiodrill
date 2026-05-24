@@ -4442,8 +4442,8 @@ transition: opacity 0.25s; opacity: 1;"
     }
   },
   
-  shadowLines() { // Can be called from a task
-    this.init();
+  shadowLines(i) { // Can be called from a task
+    this.init(i);
     this.setTtsPlayMode(this.shadowModes[0]);
   },
 
