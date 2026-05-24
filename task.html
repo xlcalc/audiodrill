@@ -4366,8 +4366,6 @@ transition: opacity 0.25s; opacity: 1;"
 
     if (!this.hasVoice(this.currentNum)) return;
     this.play();
-//    if (cmd !== 'DO_NOT_PLAY') this.play(lineClicked);
-//    this.initCtrls(this.silentMode);
     this.initCtrls();
     this.setActive();
   },
@@ -4418,6 +4416,7 @@ transition: opacity 0.25s; opacity: 1;"
 	  setPBR();
     }
 
+    displayOverlay('');
     this.showPlaying(!cmd);
 
     this.show(true);
