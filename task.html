@@ -3823,7 +3823,7 @@ const taskTextHandler = txt => {
   
   return  handlePairedLines(txt)
     .replace(/:lang:.*\n?/g, '')
-    .replace(/<x-vars[^>]*>/, s=> extractXvars(s))
+    .replace(/<x-vars[^>]*>|&lt;x-vars[^>]*&gt;/, s=> extractXvars(s))
     ; // so far just a few jobs to handle
 }
 
