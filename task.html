@@ -4283,7 +4283,7 @@ transition: opacity 0.25s; opacity: 1;"
 //  	const sttOutput = checkStringVsRef(curText, this.ttsLine, this.ttsLang)[1]
   	let [match, sttOutput] = checkStringVsRef(curText, this.ttsLine, this.ttsLang);
 
-    if (this.ttsLang = 'zh') sttOutput = sttOutput.replace(/\s/g, '');
+    if (this.ttsLang === 'zh') sttOutput = sttOutput.replace(/\s/g, '');
 
     el.innerHTML = match ? this.ttsLine
 	  : sttOutput
