@@ -1416,7 +1416,7 @@ async function getVideoByURL(url, task) {
 
   displayOverlay('');
 //  if (players.videoWidth === -1) setVideoSize(1);
-  if (elid('left-column').hidden) setVideoSize(300);
+  if (leftCol.hidden) setVideoSize(400);
   
   if (players.flag > 0) {
     playerStop();
@@ -1604,9 +1604,9 @@ async function onPlayerStateChange(e) {
   const states = ['unstarted', 'ended', 'playing', 'paused', 'buffering', '', 'cued'];
   player.state = e.data;
 console.log('player.state changed to ', player.state, ':', states[player.state+1]);
-  if (players.autoPlay === 1 && player.state === 5) {
-    players.autoPlay = 2;
-  }
+//  if (players.autoPlay === 1 && player.state === 5) {
+//    players.autoPlay = 2;
+//  }
   if ([0, 2, 5].includes(player.state)) { players.flag = 0; }
   if (player.state === 1) { players.flag = 1; }
   if (player.state === 5) showPlayerBox(); // added 2023-08-04 
@@ -2154,7 +2154,8 @@ const analyzeURLParams = async () => {
   const urlKeys = new URLSearchParams(location.search);
   gstore.calledFromWords = urlKeys.get('from-words') !== null;
 
-  setVideoSize(urlKeys.get('video-size') || localStorage.getItem('videoWidth') || -1);
+//  setVideoSize(urlKeys.get('video-size') || localStorage.getItem('videoWidth') || -1);
+  setVideoSize(urlKeys.get('video-size'));
 
   const lang = urlKeys.get('lang') || localStorage.getItem('langCode') || 'en';
   setLanguage(lang, true);
@@ -2213,8 +2214,8 @@ const analyzeURLParams = async () => {
 
   const mediaFile = urlKeys.get('m');
   if (mediaFile) {
-    players.autoPlay = urlHasKey('noauto')? 0 : 1; // maybe it should be 0 by default?
-
+//    players.autoPlay = urlHasKey('noauto')? 0 : 1; // maybe it should be 0 by default?
+    setVideoSize(players.maxWidth);
 //    getVideoByURL(mediaFile, 'LOAD_SUBS'); 
     await getVideoByURL(mediaFile, 'LOAD_SUBS'); 
     loadingDone();
@@ -2639,6 +2640,7 @@ tstore.playerTitle.displayMsg = s => tstore.playerTitle.innerHTML = highlightTex
 
 const playStopBtn = elid('playstop-button');
 const transcriptText = elid('transcriptText');
+const leftCol = elid('left-column');
 //const wordList = elid('wordlist');
 //wordList.contentEditable = 'true';
 
@@ -2838,7 +2840,7 @@ window.onload = () => {
 }
 
 const prepareSettings = () => {
-  if (elid('left-column').hidden) prepareTopSettings('ADD_MORE');
+  if (leftCol.hidden) prepareTopSettings('ADD_MORE');
   else {
     restoreLeftColSettings();
     prepareTopSettings();
@@ -3108,7 +3110,8 @@ const adjustMediaInTask = (cmd) => {
 }
 
 const setVideoSize = cmd => {
-  if (players.mediaInTask) return;
+  if (!cmd || players.mediaInTask) return;
+  players.isVideoSizeSet = true;
 
   const vctrl = function(n) {
     const ctrls = document.querySelectorAll('.video-size');
@@ -3133,16 +3136,17 @@ const setVideoSize = cmd => {
 	else vctrl.disable(1);
   }
 
-  let width = parseInt(cmd);
 
-  const leftCol = elid('left-column');
+//  const leftCol = elid('left-column');
 //console.log('### Left column width', width);
-  if (width === -1 || ['hide', 'hidden', 'off', 'none'].includes(cmd)) {
+//  if (width === -1 || ['hide', 'hidden', 'off', 'none'].includes(cmd)) {
+  if ([-1, '-1', 'hide', 'hidden', 'off', 'none'].includes(cmd)) {
     leftCol.hidden = true;
     return;
   }
 
   leftCol.hidden = false;
+  let width = parseInt(cmd);
   
   if ([0, 1, 2].includes(width)) width = [400, 640, 800][width]; // legacy values
 
@@ -3435,7 +3439,7 @@ console.log('movePlayer: players.ytAPI', players.ytAPI);
   }
   else showEl(videoResize);
 
-  elid('left-column').hidden = elid('left-column').hidden || players.mediaInTask;
+  leftCol.hidden = leftCol.hidden || players.mediaInTask;
 }
 
 const closeXaudio = () => {
@@ -3993,6 +3997,7 @@ const afterTaskLoaded = () => {
 
   setupVoiceInputForTextareas();
   scrollToHash();
+  if (!players.isVideoSizeSet) setVideoSize(-1);
 }
 
 const emulateCueClick = () => {
