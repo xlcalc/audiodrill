@@ -4295,33 +4295,14 @@ transition: opacity 0.25s; opacity: 1;"
     el.style.caretColor = match ? 'transparent': '';
     const feedback = match ? '<br>' + gstore.goodJob.getRandomEmoji() : '';
     this.dictDiv.setFeedback(feedback);
+    putCaretAtStart(el, false);  // move caret to end
 
-    range = document.createRange();
-    sel = window.getSelection();
-    range.selectNodeContents(el);
-    range.collapse(false);   // move caret to end
-    sel.removeAllRanges();
-    sel.addRange(range);
-	
 //	  setElClass(el, 'green', sttOutput === this.ttsLine);
 //    if (match) this.shadowNext();
     if (match) {
       this.afterShadowing = true;
       this.play();
     }
-/*    
-    await sleep(3000);
-    // restore original text and put caret at end
-    el.textContent = curText;
-
-    range = document.createRange();
-    sel = window.getSelection();
-    range.selectNodeContents(el);
-    range.collapse(false);   // move caret to end
-    sel.removeAllRanges();
-    sel.addRange(range);
-//    el.focus();
-*/
   }, 
   
   enableSTT() {
@@ -4938,16 +4919,8 @@ tstore.editVocabOn = (el) => {
 	  .replace(/\n /g, '\n\u00A0'); // b/c browsers will trim the leading space
   el.contentEditable = 'true';
   el.style.backgroundColor = 'hsl(150, 30%, 95%)';
-  
-  // Put caret at the end (or start) of the content
-  const selection = window.getSelection();
-  const range = document.createRange();
 
-  range.selectNodeContents(el);
-  range.collapse(true); // true = start, false = end
-
-  selection.removeAllRanges();
-  selection.addRange(range);
+  putCaretAtStart(el, true);
 }
 
 tstore.editVocabOff = (el) => {
@@ -5551,6 +5524,18 @@ gstore.taskParts = {
 }
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+const putCaretAtStart = (el, cmd) => {
+// Put caret at the start or end of the content
+  const selection = window.getSelection();
+  const range = document.createRange();
+
+  range.selectNodeContents(el);
+  range.collapse(cmd); // true = start, false = end
+
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
 
 // ***  Beep  ***
 /* This fn may be needed later
