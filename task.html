@@ -4187,8 +4187,7 @@ transcriptText.onclick = async (e) => {
 };
 
 tstore.isIgnoredByTTSOnClick = el => {
-//  const blacklistedTags = ['BUTTON', 'INPUT', 'SELECT', 'A', 'LABEL'];
-  const blacklistedTags = ['BUTTON', 'INPUT', 'A'];
+  const blacklistedTags = ['BUTTON', 'INPUT', 'SELECT', 'A', 'LABEL'];
   const blacklistedClasses = ['vocab-header', 'no-tts'];
   while (el) {
     if (blacklistedTags.includes(el.tagName) 
