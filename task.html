@@ -3823,7 +3823,7 @@ const taskTextHandler = txt => {
   
   return  handlePairedLines(txt)
     .replace(/:lang:.*\n?/g, '')
-    .replace(/<x-vars[^>]*>|&lt;x-vars[^>]*&gt;/, s=> extractXvars(s))
+    .replace(/<x-vars[^>]*>/, s=> extractXvars(s))
     ; // so far just a few jobs to handle
 }
 
@@ -4187,7 +4187,8 @@ transcriptText.onclick = async (e) => {
 };
 
 tstore.isIgnoredByTTSOnClick = el => {
-  const blacklistedTags = ['BUTTON', 'INPUT', 'SELECT', 'A', 'LABEL'];
+//  const blacklistedTags = ['BUTTON', 'INPUT', 'SELECT', 'A', 'LABEL'];
+  const blacklistedTags = ['BUTTON', 'INPUT', 'A'];
   const blacklistedClasses = ['vocab-header', 'no-tts'];
   while (el) {
     if (blacklistedTags.includes(el.tagName) 
@@ -5149,10 +5150,11 @@ tstore.sentences = {
       .filter(el => !el.closest('.no-tts'))
       .map((el, i) => (el.dataset.sentenceIndex = i, el));
 
-    tstore.taskSentences = tstore.nodes.map(el => this
-      .getTextWithAlts(el)
-	    .replace(/\(.*?\)/g, '') //remove comments in brackets
-	  );
+    tstore.taskSentences = tstore.nodes
+      .map(el => this
+        .getTextWithAlts(el)
+        .replace(/\(.*?\)/g, '') //remove comments in brackets
+      );
   },
 
   wrap(el) {
@@ -5171,7 +5173,8 @@ tstore.sentences = {
 // but here all extracted in one go. This can result in errors for nested tags.
 // If such errors occur, they should be extracted in reverse order.
 // Or maybe the buffer structure could be revised, e.g., into array: buffer[{tag: value}, {tag: value}, ...] ???
-      .replace(/<x-(label|button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
+//      .replace(/<x-(label|button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
+      .replace(/<x-(button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
 	    .replace('<x-vocab-header>', this.buffer.vocabHeader)
 	    ;
   },
@@ -5209,7 +5212,7 @@ tstore.sentences = {
     .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
     .replaceAll('<br>', '\n')
     .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
-    .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
+//    .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
     .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
     .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))
     .replace(/([\s>])(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
@@ -5234,9 +5237,24 @@ tstore.sentences = {
     clone.querySelectorAll('.cloze').forEach(input => {
       const text = document.createTextNode(
         (input.getAttribute('alt') || '')
-        .split('=>')[0]  // to be tested: added 2026-03-05
+        .split('=>')[0]
       );
       input.replaceWith(text);
+    });
+
+//to be tested: added 2026-05-27
+
+    clone.querySelectorAll('.dropdown-label').forEach(label => {
+      let res = '';
+	  const ddList = label.children[0];
+      for (const option of ddList.options) {
+        if (option.value.startsWith('**')) {
+          if (res) res += '/';
+          res += option.textContent; 
+        }
+      }
+      const text = document.createTextNode(res);
+      label.replaceWith(text);
     });
 
   return clone.textContent;
