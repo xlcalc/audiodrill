@@ -5194,7 +5194,8 @@ tstore.sentences = {
 // Put the trailing spaces outside <span>
 //	    s = s.replace(/^(\s*)(.*?)(\s*)$/, '$1' + `<span data-sentence-index="${index}">` + '$2</span>$3');
 //	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence-index="${index}">` + '$2</span>$3');
-	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence>` + '$2</span>$3');
+//	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence>` + '$2</span>$3');
+        s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<div class="inline" data-sentence>` + '$2</div>$3');
 //console.log(s);
 //	      index++;
 	    }

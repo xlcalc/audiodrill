@@ -257,7 +257,8 @@ border-radius: 4px;
   color: inherit;
 }
 
-#bottomMenu h4, p {
+#bottomMenu h4, 
+#bottomMenu p {
   margin: 0 0 0.8em 0;
 }
 
