@@ -1095,8 +1095,10 @@ const makeTestForm = txt => { //updated 2021-07-23 handle '|' symbol
   const replaceAffixes = txt => {
     const ddprefix = /<<<|\[\[/g, 
       ddsuffix = />>>|\]\]/g, 
-      ddprefixNew = '<label class="dropdown-label"><select class="dropdown padding-03em" onclick="checkDropDownList(this)" onchange="checkDropDownList(this)" onmousedown="onclickDropDownList(this)" onfocus="checkDropDownList(this)">',
-      ddsuffixNew = '</select></label>',
+//      ddprefixNew = '<label class="dropdown-label"><select class="dropdown padding-03em" onclick="checkDropDownList(this)" onchange="checkDropDownList(this)" onmousedown="onclickDropDownList(this)" onfocus="checkDropDownList(this)">',
+      ddprefixNew = '<span class="dropdown-label"><select class="dropdown padding-03em" onclick="checkDropDownList(this)" onchange="checkDropDownList(this)" onmousedown="onclickDropDownList(this)" onfocus="checkDropDownList(this)">',
+//      ddsuffixNew = '</select></label>',
+      ddsuffixNew = '</select></span>',
 
       clprefix = /<</g,
       clsuffix = />>/g,
