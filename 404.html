@@ -2,17 +2,23 @@
 <html lang="en">
 <head>
 <script>
-(() => { // redirect if starts with /m/
-//console.log('pathname: ', location.pathname);
-  const match = location.pathname.match(/^\/(txt|[lmt])\/(.+)/);
+(() => {
+console.log('pathname: ', location.pathname);
+  if (['/t', '/m', '/txt'].includes(location.pathname))
+    window.location.assign('/task.html');
+  if (['/w', '/w/'].includes(location.pathname))
+    window.location.assign('/words/');
+  const match = location.pathname.match(/^\/(txt|[lmt])\/(.*)/);
   if (match) {
     let [, type, path] = match;
+console.log('path: ', path);
 	path = path.replace(/s2\/\//, 's2://');
-	if (!['l', 'txt'].includes(type) && !path.includes('//'))
+	if (!['l', 'txt'].includes(type) && path && !path.includes('//'))
       path = '/' + path;
 
 	let keys = location.search;
 	if (type !== 'm') keys = keys.replace(/\?/g, '&');
+console.log('keys: ', keys);
     window.location.assign(`/task.html?${type}=${path}${keys}`);
   }
 })()
