@@ -4150,27 +4150,24 @@ document.addEventListener('selectionchange', () => {
   }, 800);
 });
 
-// Handle word click (if no selection)
 transcriptText.onclick = async (e) => {
+// Handles word or sentence click (if no selection)
+// onmousedown event might be more reliable
   await sleep(200); // for double click
 
-  gstore.engagedEl = e.target.closest('[data-sentence-index]'); // added 2026-05-28
-  if (!gstore.engagedEl) return;
-
+  gstore.engagedEl = e.target.closest('[data-sentence-index]'); // added 2026-05-28 to handle clicks outside sentences
   const sel = window.getSelection();
-
   const text = sel.toString().trim();
 
 // Skip click if 
-  if (tstore.isIgnoredByTTSOnClick(e.target)
-    || text.length //there's current selection  
+  if (!gstore.engagedEl
     || transcriptText.selectionInProgress // selection may still be in progress (drag or double-click)
     || transcriptText.justHandledSelection 
+    || tstore.isIgnoredByTTSOnClick(e.target)
+    || text.length //there's current selection  
 	|| !sel.rangeCount
   ) return;
 
-//  tstore.STT.destroyToolbar();
-  
 //  gstore.engagedEl = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode; 
 
 // Safe to assume this was a true click on a word
@@ -4187,7 +4184,7 @@ transcriptText.onclick = async (e) => {
     if (e.ctrlKey || e.metaKey || tstore.ttsOverlay.isActive()) tstore.ttsOverlay.init(gstore.engagedEl);
     else handleTextInteraction(s, 'CLICK', e.target);
   }
-};
+}
 
 tstore.isIgnoredByTTSOnClick = el => {
   const blacklistedTags = ['BUTTON', 'INPUT', 'SELECT', 'A', 'LABEL'];
