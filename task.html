@@ -4153,7 +4153,10 @@ document.addEventListener('selectionchange', () => {
 // Handle word click (if no selection)
 transcriptText.onclick = async (e) => {
   await sleep(200); // for double click
-  
+
+  gstore.engagedEl = e.target.closest('[data-sentence-index]'); // added 2026-05-28
+  if (!gstore.engagedEl) return;
+
   const sel = window.getSelection();
 
   const text = sel.toString().trim();
@@ -4168,7 +4171,7 @@ transcriptText.onclick = async (e) => {
 
 //  tstore.STT.destroyToolbar();
   
-  gstore.engagedEl = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode; 
+//  gstore.engagedEl = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode; 
 
 // Safe to assume this was a true click on a word
   const range = document.caretRangeFromPoint
@@ -4180,11 +4183,9 @@ transcriptText.onclick = async (e) => {
 	gstore.clickedWord = getClickedTextFragment(range, lang, 'word');
 	const s = gstore.clickedWord;
 
-    if (s) {
 //console.log('🔹 clicked:', s);
-	  if (e.ctrlKey || e.metaKey || tstore.ttsOverlay.isActive()) tstore.ttsOverlay.init(gstore.engagedEl);
-      else handleTextInteraction(s, 'CLICK', e.target);  
-    }
+    if (e.ctrlKey || e.metaKey || tstore.ttsOverlay.isActive()) tstore.ttsOverlay.init(gstore.engagedEl);
+    else handleTextInteraction(s, 'CLICK', e.target);
   }
 };
 
@@ -4502,9 +4503,9 @@ transition: opacity 0.25s; opacity: 1;"
 //    if (!(cmd && this.isTranslMode())) ttsSpeakLang(this.ttsLine, this.ttsLang, 'DONT_WAIT', speed);
 
     const el = tstore.nodes[this.currentNum];
+    this.markSentence(el, 1);
     if (!this.repeatNum) {
       this.showText();
-      this.markSentence(el, 1);
     }
 
     if (isOutOfView(el, 64) || this.isTooLow(el)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
