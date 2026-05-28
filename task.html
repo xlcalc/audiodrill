@@ -5172,8 +5172,8 @@ tstore.sentences = {
 // but here all extracted in one go. This can result in errors for nested tags.
 // If such errors occur, they should be extracted in reverse order.
 // Or maybe the buffer structure could be revised, e.g., into array: buffer[{tag: value}, {tag: value}, ...] ???
-//      .replace(/<x-(label|button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
-      .replace(/<x-(button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
+      .replace(/<x-(label|button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
+//      .replace(/<x-(button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
 	    .replace('<x-vocab-header>', this.buffer.vocabHeader)
 	    ;
   },
@@ -5212,7 +5212,7 @@ tstore.sentences = {
     .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
     .replaceAll('<br>', '\n')
     .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
-//    .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
+    .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
     .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
     .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))
     .replace(/([\s>])(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
