@@ -3691,13 +3691,17 @@ tstore.translation = { // experimental: 2026-02-14
 
     txt = highlightText(txt).replaceAll('<hr>', '<hr>\n').replace(/<\/h\d>/g, s => s + '\n');
     txt = getTextFromHTML(txt);
-
-    this.tlang = gstore.taskParts.languages[this.tsectionNum] || 'en'; // 
+	
+    this.tlang = gstore.taskParts.languages[this.tsectionNum] || 'en';
 //console.log('Translation lang:', this.tlang);
 
+    const s = txt.replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3') // for direct speech
+    .replace(/!([”"'])( )+([a-z])/g, '%21$1$2$3')
+	;
+
   	const segmenter = new Intl.Segmenter(this.tlang, { granularity: 'sentence' });
-    this.sentences = [...segmenter.segment(txt)]
-      .map(entry => entry.segment.trim())
+    this.sentences = [...segmenter.segment(s)]
+      .map(entry => entry.segment.trim().replaceAll('%21', '!').replaceAll('%3F', '?'))
       .filter(s => s); //leave non-empty lines
 
     this.text = txt;
