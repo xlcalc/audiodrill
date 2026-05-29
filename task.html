@@ -4155,7 +4155,11 @@ transcriptText.onclick = async (e) => {
 // onmousedown event might be more reliable
   await sleep(200); // for double click
 
-  gstore.engagedEl = e.target.closest('[data-sentence-index]'); // added 2026-05-28 to handle clicks outside sentences
+// added 2026-05-28 to handle clicks outside sentences
+  const sentenceEl = e.target.closest('[data-sentence-index]'); 
+  const gapInput = e.target.closest('input');
+  gstore.engagedEl = gapInput || sentenceEl;
+  
   const sel = window.getSelection();
   const text = sel.toString().trim();
 
