@@ -5156,7 +5156,7 @@ tstore.sentences = {
     tstore.taskSentences = tstore.nodes
       .map(el => this
         .getTextWithAlts(el)
-        .replace(/\(.*?\)/g, '') //remove comments in brackets
+        .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before
       );
   },
 
