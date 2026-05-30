@@ -5140,8 +5140,8 @@ function setNightMode(cmd) {
 tstore.sentences = {
   init(el) {
 //return
-    const pArr = el.querySelectorAll('p');
-	if (pArr.length) pArr.forEach(p => p.innerHTML = this.wrap(p))
+    const nodes = el.querySelectorAll('h1, h2, h3, h4, h5, h6, p');
+    if (gstore.fromGoogleDoc && nodes.length) nodes.forEach(node => node.innerHTML = this.wrap(node))
     else el.innerHTML = this.wrap(el);
 
     tstore.nodes = [...document.querySelectorAll('[data-sentence]')]
