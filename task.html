@@ -4528,13 +4528,6 @@ transition: opacity 0.25s; opacity: 1;"
       this.play();
     }
     else this.playNext(1, 1800);
-/*    
-    else if (this.tryNextSentence()) {
-      await sleep(1800); // pause between lines
-      this.play();
-    }
-  	else this.showPlaying(0);
-*/
   },
   
   ttsEnded() {
@@ -4567,7 +4560,6 @@ transition: opacity 0.25s; opacity: 1;"
 	
 	if (msg) this.dictDiv.showPrompt(msg);
 	else this.dictDiv.remove();
-	
   },
 
   shadowNext() {
@@ -4667,9 +4659,6 @@ transition: opacity 0.25s; opacity: 1;"
 }
 
 function getClickedTextFragment(range, lang, granularity) {
-//  const selection = window.getSelection();
-//  if (!selection.rangeCount) return; // checked in the calling fn
-//  const range = selection.getRangeAt(0);
   let clickedOffset = range.startOffset;
 //  const container = range.startContainer;
 //  const node = range.commonAncestorContainer; // typically, it's a text node
@@ -4758,12 +4747,9 @@ function getClickedTextFragment(range, lang, granularity) {
     } // end while
   }
 
-
-  // Create a text segmenter
   const segmenter = new Intl.Segmenter(lang, { granularity: granularity });
   const segments = [...segmenter.segment(parentText.trim())];
 
-//  tstore.segments = segments;
 /*
   // Find the result containing the offset
   const res = segments.find(seg => 
@@ -4773,15 +4759,9 @@ function getClickedTextFragment(range, lang, granularity) {
   const currentIndex = segments.findIndex(seg =>
     seg.index <= clickedOffset && clickedOffset < seg.index + seg.segment.length
   );
-//  tstore.firstSegmentIndex = currentIndex;
 
   const currentSentence = segments[currentIndex]?.segment;
-//  const nextSentence = segments[currentIndex + 1]?.segment;
-// could be used if user wants to listen to next sentence(s)
 
-//  gstore.currentSentence = currentSentence?.trim();
-
-//Bug: after <)) the order is broken
   return currentSentence?.trim();
 }
 
@@ -5188,10 +5168,6 @@ tstore.sentences = {
   	  .replaceAll('<x-dot>', '.')
       .replaceAll('\n', '<br>')
 
-// In getSentences(), the tags below are added to buffer in a specific order, 
-// but here all extracted in one go. This can result in errors for nested tags.
-// If such errors occur, they should be extracted in reverse order.
-// Or maybe the buffer structure could be revised, e.g., into array: buffer[{tag: value}, {tag: value}, ...] ???
       .replace(/<x-(label|button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
 //      .replace(/<x-(button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
 	    .replace('<x-vocab-header>', this.buffer.vocabHeader)
@@ -5211,11 +5187,11 @@ tstore.sentences = {
   	  s = s.replaceAll('<x-dummy>\n', '');
 //console.log('Line', index, ':', s ,'$end');
       if (getTextFromHTML(s).trim()) {
-// Put the trailing spaces outside <span>
-//	    s = s.replace(/^(\s*)(.*?)(\s*)$/, '$1' + `<span data-sentence-index="${index}">` + '$2</span>$3');
-//	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence-index="${index}">` + '$2</span>$3');
+// Put the trailing spaces outside wrapping
 //	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence>` + '$2</span>$3');
         s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<div class="inline" data-sentence>` + '$2</div>$3');
+// Wrapping in div intead of span to prevent mixing with other </span> tags. 
+// But it can mix with </div> tags. Maybe in the future use custom tags, like x-div?
 //console.log(s);
 //	      index++;
 	    }
@@ -5469,38 +5445,10 @@ function printTask() {
 }
 
 gstore.goodJob = {
-  emojis: ['⼕ㄖㄖ㇄!!', 'ᎶᎧᎧᗪ!', '✅', '👏','🙌','🎉','👍','👌','✨','🔥','🏆','🥇','🎖️','🏅','💯','🌟','😎','💪', '◝(⁀ᗢ⁀)◜', 'ヽ(＾▽＾)ﾉ', '٩(◕‿◕｡)۶', '◝(ᵔᵕᵔ)◜'],
+  emojis: ['⼕ㄖㄖ㇄!!', 'ᎶᎧᎧᗪ!', '✅', '👏','🙌','🎉','👍','👌','✨','🔥','🏆','🥇','🎖️','🏅','💯','🌟','😎','💪', '◝(⁀ᗢ⁀)◜', 'ヽ(＾▽＾)ﾉ', '(*‿*)', '٩(◕‿◕｡)۶', '◝(ᵔᵕᵔ)◜'],
   getRandomEmoji() {
     return this.emojis[Math.floor(Math.random() * this.emojis.length)];
   }
-}
-
-function makeDraggable(el) {
-  let offsetX = 0, offsetY = 0, isDown = false;
-  el.style.position = 'fixed';
-  el.style.bottom = '';
-// for xAudioBox, bottom = 0 should be commented out
-
-  el.addEventListener('mousedown', (e) => {
-    isDown = true;
-    offsetX = e.clientX - el.offsetLeft;
-    offsetY = e.clientY - el.offsetTop;
-    el.style.cursor = 'grabbing';
-//	disableBodyScroll(document.body);
-    document.body.style.userSelect = 'none';
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    el.style.left = `${e.clientX - offsetX}px`;
-    el.style.top = `${e.clientY - offsetY}px`;
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDown = false;
-    el.style.cursor = 'default';
-    document.body.style.userSelect = '';
-  });
 }
 
 const stopWatch = {
@@ -5575,52 +5523,6 @@ const putCaretAtStart = (el, cmd) => {
   selection.removeAllRanges();
   selection.addRange(range);
 }
-
-// ***  Beep  ***
-/* This fn may be needed later
-
-const ctx = new AudioContext();
-
-const playBeep = ({
-  frequency = 880,
-  duration = .4,
-  attack = .1,
-  release = .1,
-  volume = .2,
-  type = 'sine'
-} = {}) => {
-  const osc = ctx.createOscillator();
-  osc.type = type;
-  osc.frequency.value = frequency;
-
-  const gain = ctx.createGain();
-  osc.connect(gain); 
-  gain.connect(ctx.destination);
-
-  const now = ctx.currentTime;
-
-  // Envelope
-  gain.gain.setValueAtTime(0, now);
-  gain.gain.exponentialRampToValueAtTime(volume, now + attack);
-  gain.gain.setValueAtTime(volume, now + duration - release);
-  gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
-  
-  osc.start(now);
-  osc.stop(now + duration);
-}
-*/
-// ***   End Beep  ***
-// --------------------------
-
-/* ** test structures  **
-const testfn = function() {
-  let a = 0;
-  return {
-    add: v => a += v,
-    ini: () => a = 0
-  }
-}();
-*/
 </script>
 </body>
 </html>
