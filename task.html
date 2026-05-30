@@ -2813,8 +2813,8 @@ window.onload = () => {
   
   tstore.ttsClickSwitch.load();
   tstore.dicSwitch.load();
-  tstore.translLangCtrl.load();
   loadCommonItems();
+  tstore.translLangCtrl.load();
 
   gstore.defaultDocTitle = 'Play video fragments to boost listening and pronunciation skills';
   setDocTitle(gstore.defaultDocTitle);  
@@ -3617,9 +3617,13 @@ const getActivityKey = () => '/?t=';
 
 function handleLangSelect(e) {
 //console.log('Lang set:', e.target.value);
-  tts.langSelector.value = e.target.value;
-  
+//  tts.langSelector.value = e.target.value; // Is it needed? Is it called without setting langSelector?
+
   const lang = getLangCode();
+  if (lang === localStorage.getItem('translLangCode')) {
+// flip languages
+    tstore.translLangCtrl.set(localStorage.getItem('langCode'));
+  }
   storeLangCode(lang);
   tts.langSelector.title = tts.getFullLangName(lang);
   tts.manuallyPickedVoice = 'LANG_PICKED';
@@ -3693,6 +3697,7 @@ tstore.translation = { // experimental: 2026-02-14
     txt = getTextFromHTML(txt);
 	
     this.tlang = gstore.taskParts.languages[this.tsectionNum] || 'en';
+    tstore.translLangCtrl.set(this.lang);
 //console.log('Translation lang:', this.tlang);
 
     const s = txt.replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3') // for direct speech
@@ -3706,6 +3711,11 @@ tstore.translation = { // experimental: 2026-02-14
 
     this.text = txt;
     return this.sentences.length;
+  },
+
+  setListeners(el) {
+      el.onmouseenter = () => this.addTip(el);
+      el.onmouseleave = () => this.removeTip(el);
   },
 
   set(cmd) {
@@ -3752,11 +3762,6 @@ tstore.translation = { // experimental: 2026-02-14
     elAddHTML(transcriptText, btn, 'afterbegin');
     this.set(true); // turn on immediately
    },
-
-  setListeners(el) {
-      el.onmouseenter = () => this.addTip(el);
-      el.onmouseleave = () => this.removeTip(el);
-  },
 
   async addTip(el) {
     const txt = el.dataset.transl;
@@ -5001,11 +5006,13 @@ tstore.translLangCtrl = {
   selectorId: 'tr-language-select',
 
   load() {
-//    const langList = ['de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'pt', 'ru', 'zh'];
-    const langList = {de: 'German', en: 'English', es: 'Spanish', 
-	  fr: 'French', it: 'Italian', nl: 'Dutch', pl: 'Polish', 
-	  pt: 'Portuguese', ru: 'Russian', zh: 'Chinese'
-	  };
+// Translation languages should not be the same as TTS b/c TTS languages may be limited
+    const langList = {ar: 'Arabic', be: 'Belarusian', bg: 'Bulgarian', cs: 'Czech', da: 'Danish', de: 'German', el: 'Greek', en: 'English', 
+      es: 'Spanish', fa: 'Persian', fi: 'Finnish', fr: 'French', he: 'Hebrew', hi: 'Hindi', hr: 'Croatian', it: 'Italian',
+      id: 'Indonesian', ja: 'Japanese', ko: 'Korean', nl: 'Dutch', pl: 'Polish', 
+      pt: 'Portuguese', ro: 'Romanian', ru: 'Russian', sk: 'Slovak', sv: 'Swedish', th: 'Thai', tr: 'Turkish', 
+      uk: 'Ukrainian', vi: 'Vietnamese', zh: 'Chinese'
+    }
 
     let ddl = '';
     for (const lang in langList)
@@ -5031,6 +5038,11 @@ tstore.translLangCtrl = {
   set(lang) {
     const el = elid(this.selectorId);
     el.value = lang || localStorage.getItem('translLangCode') || 'en';
+    if (el.value === tts.langSelector?.value) {
+//choose a translation language other than TTS 
+      el.value = el.value !== 'es' ? 'es'
+        : [...el.options] .find(option => option.value !== el.value) ?.value || 'en';
+    }
     localStorage.setItem('translLangCode', el.value);
     const selectedOption = el.options[el.selectedIndex];
     el.title = selectedOption.title || '';

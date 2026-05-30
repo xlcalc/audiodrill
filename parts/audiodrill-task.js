@@ -2790,13 +2790,14 @@ const getTranslationLinks = (txt) => {
 	;
 //console.log('=== text to translate ===', txt);
 
-  const transl4Deepl = transl.replace(/%2F|\//g, '%5C%2F'); // '/' should be escaped
+  const transl4Deepl = transl.replace(/%2F|\//g, '%5C%2F'); // escape '/'
   const lang = getLangCode() || 'en';
+  const tlang = localStorage.getItem('translLangCode') || 'en';
   const trLines = [
     `Translate with `,
-	`[Google](https://translate.google.com/?sl=auto&tl=en&text=${transl}&op=translate), `,
-	`[Bing](https://bing.com/translator?to=en&text=${transl}), `,
-	`[Deepl](https://deepl.com/translator#${lang}/en/${transl4Deepl})`
+	`[Google](https://translate.google.com/?sl=auto&tl=${tlang}&text=${transl}&op=translate), `,
+	`[Bing](https://bing.com/translator?to=${tlang}&text=${transl}), `,
+	`[Deepl](https://deepl.com/translator#${lang}/${tlang}/${transl4Deepl})`
   ];
   
   return highlightText(trLines.join(''));
@@ -2902,7 +2903,7 @@ console.log('Transl problem', res);
     throw new Error('Translation API reported error');
   }
 
-console.log(res.matches.map(entry => entry.translation));
+console.log(res.matches.map(entry => entry.translation + ` (${entry.quality})`));
   return res.matches
     .filter(entry => entry.translation && Number(entry.quality)) // filter out entries that are empty or have '0' quality
 // perhaps the entry with highest quality (converted to integer) should be returned

@@ -264,6 +264,7 @@ box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 20px 0 rgba(0, 0, 0, 0.19);
   background-color: var(--color-white-darkgray);
   color: var(--color-text);
   border: dotted 1px #aaa;
+  z-index: 4; /* lower than other tips */
 /*  font-size: 100%;*/
 }
 
