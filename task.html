@@ -4176,6 +4176,7 @@ transcriptText.onclick = async (e) => {
 
 // Skip click if 
   if (!gstore.engagedEl
+    || textArea
     || transcriptText.selectionInProgress // selection may still be in progress (drag or double-click)
     || transcriptText.justHandledSelection 
     || tstore.isIgnoredByTTSOnClick(e.target)
