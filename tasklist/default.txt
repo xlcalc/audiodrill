@@ -1,4 +1,6 @@
-<x-vars video-size=-1><div style="line-height:1.5em">
+<x-vars video-size=-1>
+:lang:en
+<div style="line-height:1.5em">
 ### Turn a text into language practice
 
 <textarea id="story" class="inherit" style="margin-right: 0.4em; width:90%; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea>
@@ -10,7 +12,7 @@
 
 
 
-How else can I use this tool?</spam> <x-p>
+How else can I use Audiodrill? <x-p>
 
 <div style="line-height:1.8em"><img src="/img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
 ### 1. What this tool is for
@@ -57,4 +59,4 @@ Click the {{arrow:edit-task y-shift=12|<code style='border-right:1px solid; back
  * Discover [more activities and voice games](/tasks). 
  * Want to make your own voice game? Check out [this document](https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8/edit#gid=1748845435). 
  * Have feedback or suggestions? Leave them [here](/info/?show=feedback).
-</div></x-p>
+</div></x-p></small>

@@ -3619,7 +3619,8 @@ function handleLangSelect(e) {
 //console.log('Lang set:', e.target.value);
 //  tts.langSelector.value = e.target.value; // Is it needed? Is it called without setting langSelector?
 
-  const lang = getLangCode();
+  const lang = tts.langSelector.value = e.target.value;
+//  const lang = getLangCode();
   if (lang === localStorage.getItem('translLangCode')) {
 // flip languages
     tstore.translLangCtrl.set(localStorage.getItem('langCode'));
@@ -3632,8 +3633,8 @@ function handleLangSelect(e) {
   setTextDirection(lang);
   
   if (tts.langSelectorClone) {
-    tts.langSelectorClone.title = tts.getFullLangName(lang);
     tts.langSelectorClone.value = e.target.value;
+    tts.langSelectorClone.title = tts.getFullLangName(lang);
   }
 }
 
