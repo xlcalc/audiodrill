@@ -1,13 +1,16 @@
-<x-vars video-size=-1 task-title="Click any word to hear"><div style="line-height:1.5em">
+<x-vars video-size=-1><div style="line-height:1.5em">
 ### Turn a text into language practice
-Bring your own text. Listen to words and sentences, repeat after the speaker, translate selected chunks, and build your vocabulary. 
+
 <textarea id="story" class="inherit" style="margin-right: 0.4em; width:90%; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea>
-<button id=go-btn class="btn-darker3 no-tts font-100pc" style="margin-top: 0.4em; border: 1px solid #999; background-color: floralwhite; color: inherit; padding: .5em 1.5em; border-radius: 6px" onclick="loadElementWithText(qsel('textarea').value, 'transcriptText')">😺 Make this text interactive</button>
+<button id=go-btn class="btn-darker no-tts font-100pc" style="margin-top: 0.2em; border: 1px solid #999; background-color: floralwhite; color: inherit; padding: .5em 1.5em; border-radius: 6px" onclick="makeTaskFromUserText()"><img src=/icon.png width=24px style="vertical-align: text-bottom"><img src=/icon.png width=24px style="vertical-align: text-bottom">  Start practicing</button>
 
 
-No text handy? <button class="plain-button rounded ptr font-100pc" style=" text-decoration: underline dotted #aaa;" onclick="qsel('textarea').value='\{x-voice-ctrl\}  \{x-speed-ctrl\}<hr>\n\#\# A sample task with some interactive features\n\n\#\#\# 1. Gaps: type in your answers or use \=\=voice dictation\=\=\n\*Fill the gaps with the verbs in the present simple tense\*\nThe staff \[\[isn\'t / is not / aren\'t / are not\]\] (\~be \/ not\~) new to handling difficult customers.\nShe often \[\[stops => stop__\]\] at this café on the way home.\n\n\n\#\#\# 2. Drop-down lists\n\*Choose the correct preposition\*\nWe met \[\[at|in|\*\*on\]\] Tuesday \[\[\*\*at|in|on\]\] 9.\n\n\n\#\#\# 3. Text-to-speech\n\*Click on the \=\=speaker icons\=\= and \{\{dictate or type in|enter\}\} the words you hear\*\n<\)\) \[\[debt\]\], <\)\) \[\[yacht\]\], <\)\) \[\[gnome\]\]\n'">Try a sample.</button>
+<small>No text handy? <button class="plain-button rounded ptr font-100pc" style=" text-decoration: underline dotted #aaa;" onclick="qsel('textarea').value='Shadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.'">Try a sample.</button>
 
-How can I practice with this tool? Read more <x-p>
+
+
+
+How else can I use this tool?</spam> <x-p>
 
 <div style="line-height:1.8em"><img src="/img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
 ### 1. What this tool is for
@@ -55,3 +58,11 @@ Click the {{arrow:edit-task y-shift=12|<code style='border-right:1px solid; back
  * Want to make your own voice game? Check out [this document](https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8/edit#gid=1748845435). 
  * Have feedback or suggestions? Leave them [here](/info/?show=feedback).
 </div></x-p>
+
+
+
+
+
+
+
+

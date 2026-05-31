@@ -5523,6 +5523,33 @@ const putCaretAtStart = (el, cmd) => {
   selection.removeAllRanges();
   selection.addRange(range);
 }
+
+function makeTaskFromUserText() {
+  const userText = qsel('textarea').value;
+  const howTo = 
+`
+<hr>
+~How can I practice with this text?~ <x-p>
+
+*Listen and speak* <x-p>
+
+ *Click on any word to hear it, or 
+
+ *<button class="plain-button rounded ptr font-100pc" style="padding: 0; text-decoration: underline dotted #aaa;" onclick="tstore.ttsOverlay.shadowLines()">Listen and repeat the lines</button>
+
+ *Adjust the speed {x-speed-ctrl}
+
+For more options, check out the setting in the main menu.
+</x-p>
+
+*Explore the language* <x-p>
+Select a text chunk and try out each button of a pop-up tooltip. 
+You'll be able to hear the chunk, look it up, translate and add to vocabulary.
+</x-p></x-p><div style="height:100px"></div>
+`;
+  loadElementWithText(userText + howTo, 'transcriptText');
+}
+
 </script>
 </body>
 </html>
