@@ -1,6 +1,6 @@
 <x-vars video-size=-1 task-title="Click any word to hear"><div style="line-height:1.5em">
 ### Turn a text into language practice
-Bring your own text. Listen to words and sentences, translate selected chunks, build your vocabulary, and improve  pronunciation and fluency through shadowing. 
+Bring your own text. Listen to words and sentences, repeat after the speaker, translate selected chunks, and build your vocabulary. 
 <textarea id="story" class="inherit" style="margin-right: 0.4em; width:90%; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea>
 <button id=go-btn class="btn-darker3 no-tts font-100pc" style="margin-top: 0.4em; border: 1px solid #999; background-color: floralwhite; color: inherit; padding: .5em 1.5em; border-radius: 6px" onclick="loadElementWithText(qsel('textarea').value, 'transcriptText')">😺 Make this text interactive</button>
 
