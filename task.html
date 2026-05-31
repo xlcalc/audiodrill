@@ -5211,7 +5211,7 @@ tstore.sentences = {
     .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
     .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
     .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))
-    .replace(/([\s>])(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
+    .replace(/(\n\s?)(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
     .replace(/<div[^>]*>/g, s => toBuffer('div', s))
     .replace(/(<\/?)(h[1-6]|div)([^>]*>)/g, '<x-dummy>\n$1$2$3<x-dummy>\n')
     .replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3')
