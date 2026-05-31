@@ -547,6 +547,10 @@ gstore.copyVoiceList = suffix => {
 
   targetEl.innerHTML = sourceEl.innerHTML;
   [...targetEl.children].forEach(el => { el.id = el.id + suffix });
+
+  elid('voice-select' + suffix).onchange = function(e) {
+    handleVoiceSelect(e.target);
+  }
 }
 
 const getPbrHtml = (s='') => {
@@ -2649,8 +2653,9 @@ onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.sp
 //  setElHTML('tts-select' + v, txt);
 */
   setElHTML('tts-select' + n, gstore.getVoiceCtrl({ v: n }));
-  elid('tts-select' + n).onchange = function(e) {
- //   if (!e.isTrusted) return;
+//  elid('tts-select' + n).onchange = function(e) {
+  elid('voice-select' + n).onchange = function(e) {
+//   if (!e.isTrusted) return;
     handleVoiceSelect(e.target, n);
   };
 }
@@ -2659,11 +2664,14 @@ const handleVoiceSelect = (option, v='', initialized = '') => {
 //console.log('TTS voice option', option);
 //  if (!initialized) tts['manuallyPickedVoice' + v] = option.value;
   setVoiceByName(option.value, v);
-  option.title = option.value;
+//  option.title = option.value;
   if (!initialized) {
     tts['manuallyPickedVoice' + v] = 'VOICE_PICKED';
     sayCtrlVoiceName();
   }
+// sync controls
+  const ctrls = document.querySelectorAll('[id^="voice-select"]');
+  ctrls.forEach(ctrl => { ctrl.title = ctrl.value = option.value });
 }
 
 const sayCtrlVoiceName = (n='') => {
