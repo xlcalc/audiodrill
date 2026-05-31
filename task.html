@@ -4167,8 +4167,9 @@ transcriptText.onclick = async (e) => {
 
 // added 2026-05-28 to handle clicks outside sentences
   const sentenceEl = e.target.closest('[data-sentence-index]'); 
+  const textArea = e.target.closest('textarea');
   const gapInput = e.target.closest('input');
-  gstore.engagedEl = gapInput || sentenceEl;
+  gstore.engagedEl = textArea || gapInput || sentenceEl;
   
   const sel = window.getSelection();
   const text = sel.toString().trim();
@@ -5348,9 +5349,9 @@ const setupVoiceInputForTextareas = () => {
 
   textareas.forEach(el => {
     el.onfocus = () => {
-	  gstore.engagedEl = el;
-    tstore.STT.source = 'TEXT_AREA';
-	  enableVoiceInput();
+      gstore.engagedEl = el;
+      tstore.STT.source = 'TEXT_AREA';
+      enableVoiceInput();
 	}
     el.onblur = () => disableVoiceInput();
   });
