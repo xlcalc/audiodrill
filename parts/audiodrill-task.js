@@ -522,7 +522,8 @@ const runTaskCmd = (el, cmd) => {
     return 1;
   }
   if (cmd === 'SHOW_VOICE_CTRL') {
-	el.classList.add('font-80pc', 'gray2');
+//	el.classList.add('font-80pc', 'gray2');
+	el.classList.add('gray2');
     gstore.copyVoiceList('-intask');
     return 1;
   }

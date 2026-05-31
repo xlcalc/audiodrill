@@ -5529,23 +5529,29 @@ function makeTaskFromUserText() {
   const howTo = 
 `
 <hr>
+<div class="gray2">
 ~How can I practice with this text?~ <x-p>
 
-*Listen and speak* <x-p>
+*Listen and speak*<x-p>
 
  *Click on any word to hear it, or 
 
  *<button class="plain-button rounded ptr font-100pc" style="padding: 0; text-decoration: underline dotted #aaa;" onclick="tstore.ttsOverlay.shadowLines()">Listen and repeat the lines</button>
 
- *Adjust the speed {x-speed-ctrl}
-
-For more options, check out the setting in the main menu.
+${gstore.settingsIcon} Settings<x-p>
+<small>Playback speed {x-speed-ctrl}
+<x-br>
+{x-voice-ctrl}
+<x-br>
+For more settings, check the {{arrow:topMenuBtn y-shift=16|main menu}}.</small>
 </x-p>
 
-*Explore the language* <x-p>
+</x-p>
+
+*Explore the language*<x-p>
 Select a text chunk and try out each button of a pop-up tooltip. 
 You'll be able to hear the chunk, look it up, translate and add to vocabulary.
-</x-p></x-p><div style="height:100px"></div>
+</x-p></x-p></div>
 `;
   loadElementWithText(userText + howTo, 'transcriptText');
 }
