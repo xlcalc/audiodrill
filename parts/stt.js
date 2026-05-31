@@ -114,8 +114,9 @@ console.log('StartSTT quits: STT not allowed');
 
 //  recognition.lang = tts.spVoice ? tts.spVoice.lang.replace('_', '-') : 'en-UK';
 //  recognition.lang = getLangCode(); // introduced 2026-02-09
-  recognition.lang = gstore.getContextLangCode(); // changed 2026-02-28
-  if (recognition.lang === 'he') recognition.lang = 'he-IL'; // otherwise Edge doesn't recognize
+  recognition.lang = tts.spVoice.lang || gstore.getContextLangCode(); // changed 2026-02-28
+//  if (recognition.lang === 'he') recognition.lang = 'he-IL'; // otherwise Edge doesn't recognize
+
 //  recognition.interimResults = true; // doesn't work well: it can stop after recognizing just a part of a word
 console.log('Recognition of', recognition.lang, 'starts...'); 
 //  setSTTLang(tts.spVoice);
