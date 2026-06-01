@@ -4358,12 +4358,12 @@ transition: opacity 0.25s; opacity: 1;"
     this.unmarkAll();
     
     const lineClicked = typeof cmd === 'object';
-    this.currentNum = lineClicked ? this.getInitChunkNum(cmd) : cmd || 0;
+    this.currentNum = lineClicked ? this.getInitChunkNum(cmd) : Number(cmd) || 0;
     if (this.currentNum < 0 || this.currentNum >= tstore.nodes.length) this.currentNum = 0;
 
     if (!this.hasVoice(this.currentNum)) return;
-    this.play();
-    this.initCtrls();
+    if (cmd !== 'NO_PLAYING') this.play();
+    this.initCtrls(cmd);
     this.setActive();
   },
 
@@ -5534,27 +5534,32 @@ function makeTaskFromUserText() {
     displayAlarmMessage('Enter the text first');
     return;
   }
+  const plainBtn = 'class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa;" ';
+  const card = 'class="box-shadow" style="padding: .5em 1em; background-color: floralwhite"';
   const howTo = 
 `
-<div class="gray2 no-tts font-80pc">
-<hr>
-<button class="plain-button rounded ptr font-100pc" style="padding: .5em; border: 1px solid #aaa;" onclick="tstore.ttsOverlay.shadowLines()">Play and repeat</button>
 
-~More ways to practice~ <x-p>
+<hr><div class="no-tts font-80pc" style="color: darkslategray; max-width: 400px">~How do I practice?~ <x-p>
+<div ${card}>Start with listening and repeating after the speaker:
+ *Tap any word to hear, or
+ *Use a <button ${plainBtn} onclick="tstore.ttsOverlay.init()">player</button> to play sentences
+ *Try out different player modes, e.g. <button ${plainBtn} onclick="tstore.ttsOverlay.shadowLines()">shadowing</button> (listening and repeating) sentences
+</div>
 
-Click any word to hear and repeat
-
-Explore the language<x-p>
-Select a text chunk and try out each button of a pop-up tooltip. 
-You'll be able to hear the chunk, look it up, translate and add to vocabulary.
-</x-p>
+Explore new vocabulary <x-p>
+<div ${card}>Select any word or phrase to open extra tools:
+ *Listen to pronunciation
+ *Look it up
+ *See translation
+ *Save it to your vocabulary
+</div></x-p>
 
 ${gstore.settingsIcon} Settings<x-p>
-<div style="padding: .5em 1em; background-color: floralwhite">Playback speed {x-speed-ctrl}
+<div ${card}>Playback speed {x-speed-ctrl}
 <x-br>
 {x-voice-ctrl}
 <x-br>
-<button class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa;" onclick="showTopSettings()">More settings</button></div>
+<button ${plainBtn} onclick="showTopSettings()">More settings</button></div>
 </x-p></x-p></div>
 `;
   loadElementWithText(userText + howTo, 'transcriptText');

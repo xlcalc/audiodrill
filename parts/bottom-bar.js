@@ -119,7 +119,7 @@ uiblox.topMenuHtml = `
     <a href="/words/?tts-read">TTS reader</a>
     <a href="/info/?show=resources">Resources</a>
     <a href="" style="border-bottom: 1px solid" onclick="hideTopMenu('HELP');event.preventDefault();">Help</a>
-    <a id="top-menu-read-lines" href="" title="" onclick="hideTopMenu('TTS_READ_LINES');event.preventDefault();">🗣 Read lines</a>
+    <a id="top-menu-read-lines" href="" title="" onclick="hideTopMenu('TTS_READ_LINES');event.preventDefault();">🗣 Play lines</a>
     <a id="top-menu-settings" href="" title="Ctrl + ," onclick="hideTopMenu('SHOW_SETTINGS');event.preventDefault();">⚙ Settings</a>
   </div>
 </div>
