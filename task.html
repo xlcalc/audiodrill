@@ -4165,18 +4165,18 @@ transcriptText.onclick = async (e) => {
 // onmousedown event might be more reliable
   await sleep(200); // for double click
 
+  if (e.target.closest('textarea')) return; // added 2026-06-01
+
 // added 2026-05-28 to handle clicks outside sentences
   const sentenceEl = e.target.closest('[data-sentence-index]'); 
-  const textArea = e.target.closest('textarea');
   const gapInput = e.target.closest('input');
-  gstore.engagedEl = textArea || gapInput || sentenceEl;
+  gstore.engagedEl = gapInput || sentenceEl;
   
   const sel = window.getSelection();
   const text = sel.toString().trim();
 
 // Skip click if 
   if (!gstore.engagedEl
-    || textArea
     || transcriptText.selectionInProgress // selection may still be in progress (drag or double-click)
     || transcriptText.justHandledSelection 
     || tstore.isIgnoredByTTSOnClick(e.target)
@@ -5171,10 +5171,10 @@ tstore.sentences = {
   	  .replaceAll('<x-dot>', '.')
       .replaceAll('\n', '<br>')
 
-      .replace(/<x-(label|button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
+      .replace(/<x-(label|button|div|style|xtag)>/g, (s, key) => this.buffer[key].shift()) 
 //      .replace(/<x-(button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
-	    .replace('<x-vocab-header>', this.buffer.vocabHeader)
-	    ;
+      .replace('<x-vocab-header>', this.buffer.vocabHeader)
+      ;
   },
   
   getSentences(el) {
@@ -5206,11 +5206,12 @@ tstore.sentences = {
 
     this.source = el.innerHTML
   	.replace(this.buffer.vocabHeader, '<x-vocab-header>')
-    .replaceAll('<x-br></x-br>', '<div style="display: block; height: .4em;"></div>')
-    .replaceAll('<x-br-l></x-br-l>', '<div style="display: block; height: .7em;"></div>')
+//    .replaceAll('<x-br></x-br>', '<div style="display: block; height: .4em;"></div>')
+//    .replaceAll('<x-br-l></x-br-l>', '<div style="display: block; height: .7em;"></div>')
     .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
     .replaceAll('<br>', '\n')
     .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
+    .replace(/<x-.*?<\/x-.*?>/g, s => toBuffer('xtag', s))
     .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
     .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
     .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))
@@ -5529,31 +5530,31 @@ const putCaretAtStart = (el, cmd) => {
 
 function makeTaskFromUserText() {
   const userText = qsel('textarea').value;
+  if (!userText) {
+    displayAlarmMessage('Enter the text first');
+    return;
+  }
   const howTo = 
 `
+<div class="gray2 no-tts font-80pc">
 <hr>
-<div class="gray2">
-~How can I practice with this text?~ <x-p>
+<button class="plain-button rounded ptr font-100pc" style="padding: .5em; border: 1px solid #aaa;" onclick="tstore.ttsOverlay.shadowLines()">Play and repeat</button>
 
-*Listen and speak*<x-p>
+~More ways to practice~ <x-p>
 
- *Click on any word to hear it, or 
+Click any word to hear and repeat
 
- *<button class="plain-button rounded ptr font-100pc" style="padding: 0; text-decoration: underline dotted #aaa;" onclick="tstore.ttsOverlay.shadowLines()">Listen and repeat the lines</button>
+Explore the language<x-p>
+Select a text chunk and try out each button of a pop-up tooltip. 
+You'll be able to hear the chunk, look it up, translate and add to vocabulary.
+</x-p>
 
 ${gstore.settingsIcon} Settings<x-p>
-<small>Playback speed {x-speed-ctrl}
+<div style="padding: .5em 1em; background-color: floralwhite">Playback speed {x-speed-ctrl}
 <x-br>
 {x-voice-ctrl}
 <x-br>
-For more settings, check the {{arrow:topMenuBtn y-shift=16|main menu}}.</small>
-</x-p>
-
-</x-p>
-
-*Explore the language*<x-p>
-Select a text chunk and try out each button of a pop-up tooltip. 
-You'll be able to hear the chunk, look it up, translate and add to vocabulary.
+<button class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa;" onclick="showTopSettings()">More settings</button></div>
 </x-p></x-p></div>
 `;
   loadElementWithText(userText + howTo, 'transcriptText');

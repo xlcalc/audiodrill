@@ -548,10 +548,11 @@ gstore.copyVoiceList = suffix => {
 
   targetEl.innerHTML = sourceEl.innerHTML;
   [...targetEl.children].forEach(el => { el.id = el.id + suffix });
-
+/*
   elid('voice-select' + suffix).onchange = function(e) {
     handleVoiceSelect(e.target);
   }
+*/
 }
 
 const getPbrHtml = (s='') => {
@@ -2581,7 +2582,7 @@ const setVoiceList = (par) => {
 
 
 // adjust voice tag
-  const voiceTag = elid('tts-select-prompt' + n);
+  const voiceTag = elid('voice-select-prompt' + n);
   voiceTag.textContent = n? 'Dialogue voice #2:' : 'Voice:';
   if (numOfVoices < 2) {
 //    voiceSelector.style.display = 'none';
@@ -2632,7 +2633,7 @@ const storeLangCode = (v, n='') => {
 }
 
 gstore.getVoiceCtrl = ({ v = '' } = {}) => `
-<div id="voice-ctrl-box" class="inline"><span id="tts-select-prompt${v}" title = "Text-to-speech computer voice"></span>
+<div id="voice-ctrl-box" class="inline"><span id="voice-select-prompt${v}" title = "Text-to-speech computer voice"></span>
 <select id="voice-select${v}" class="drop-down darker-hover" name="voice">
 </select>
 <button id="voice-test${v}" title="Click to hear the voice" class="plain-button padding-01em font-95pc inline btn-lighgray rounded" 
