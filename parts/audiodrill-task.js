@@ -252,9 +252,12 @@ function loadElementWithText(sourceText, eID, cmd) {
 
   text = highlightText(text);
 
-  if (eID === 'transcriptText') { 
+  if (eID === 'transcriptText' || eID === 'temporaryEl') { 
     text = parseTaskText(text, true);
 	if (gstore.fromGoogleDoc) text = `${gstore.docStyleHtml}<div>${text}</div>`;
+  }
+  if (eID === 'practiceTips') { 
+    text = parseTaskText(text, true);
   }
   if (eID ==='latest-news') { text = parseTaskText(text); }
   if (eID === gstore.notes.id || eID === 'main-container') { 
@@ -404,6 +407,7 @@ function parseTaskText(sourceText, saveTask) {
     .replace(/<\/pcue/g, '</p')
     .replace(/<x-audio.*?>/, s => s +'</x-audio>')
     .replace(/<x-video.*?>/, s => s +'</x-video>')
+    .replace(/{x-cmd(.*?)}/, '<x-cmd$1></x-cmd>')
 //    .replace(/<x-video>/, '<x-video></x-video>')
     .replace(/{x-vocab}/, '<x-vocab></x-vocab>')
     .replace(/<x-view-gaps>|{x-view-gaps}/, viewGaps2)
@@ -523,10 +527,25 @@ const runTaskCmd = (el, cmd) => {
   }
   if (cmd === 'SHOW_VOICE_CTRL') {
 //	el.classList.add('font-80pc', 'gray2');
-//    el.classList.add('gray2');
+//	el.classList.add('gray2');
     gstore.copyVoiceList('-intask');
     return 1;
   }
+
+  if (cmd.startsWith('LOAD')) {
+	el.id = 'temporaryEl';
+	el.hidden = true;
+
+    const s = cmd.slice(4).trim();
+    const html = getObjectByPath(s);
+	if (!html) return 2;
+	loadElementWithText(html, el.id, 'NO_DECODE');
+
+    el.id = '';
+	el.hidden = false;
+    return 1;
+  }
+
 }
 
 /*
@@ -3054,6 +3073,19 @@ function isOutOfView(el, offset = 0) {
 
 function hideParent(el) { el.parentElement.hidden = true }
 
+function getObjectByPath(path, root = window) {
+  pathArr = path.split('.');
+  if (pathArr.length > 1) {
+    root = pathArr[0] === 'tstore' ? { tstore } : { gstore };
+  }
+
+  const value = pathArr.reduce(
+    (obj, key) => obj?.[key],
+    root
+  );
+
+  return typeof value === 'function' ? value() : value;
+}
 /*
 window.onunhandledrejection = event => {
   const error = event.reason;

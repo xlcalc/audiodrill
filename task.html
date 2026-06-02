@@ -181,7 +181,8 @@ input[type=url]:focus {
   max-width: 90vw;
 }
 
-#transcriptText {min-height: 100vh}
+/*#transcriptText {min-height: 100vh}*/
+.task-box {min-height: 100vh}
 
 .task-box, #wordlist-box {
 /*
@@ -2580,6 +2581,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
   <div id="taskBox" data-themeable class="task-box">
     <div id="transcriptText" data-themeable class="task-body rounded"></div>
+    <div id="practiceTips" data-themeable class="task-body rounded"></div>
   </div> <!--   End of taskBox   -->
 
 <!-- wordlist-box no longer needed
@@ -3515,7 +3517,8 @@ const analyzeXvars = () => {
 //  if (getV('task-title')) setElHTML('task-title', highlightText(getV('task-title')));
 //  else setElHTML('task-title', 'Audiodrill task');
 
-  setVideoSize(getUrlKey('video-size') || getV('video-size') || localStorage.getItem('videoWidth') || 1);
+//  setVideoSize(getUrlKey('video-size') || getV('video-size') || localStorage.getItem('videoWidth') || 1);
+  setVideoSize(getUrlKey('video-size') || getV('video-size'));
 
   elid('rep-num').value = getUrlKey('r') || getV('r') || elid('rep-num').value;
   adjustRepNum();
@@ -3547,6 +3550,8 @@ const analyzeXvars = () => {
 
   if (getV('show-settings') !== null) showSettings();
   if (getV('hide-settings') !== null) hideSettings();
+
+  if (getV('practice-tips') !== null) showPracticeTips('<br>');
 //console.log('show-settings', getV('show-settings'));
 
   if (getV('style')) transcriptText.style = getV('style');
@@ -3694,13 +3699,13 @@ tstore.translation = { // experimental: 2026-02-14
     let txt = gstore.taskParts.sections[this.tsectionNum]
 	if (!txt) return null;
 
-    txt = highlightText(txt).replaceAll('<hr>', '<hr>\n').replace(/<\/h\d>/g, s => s + '\n');
-    txt = getTextFromHTML(txt);
-	
+//    txt = highlightText(txt).replaceAll('<hr>', '<hr>\n').replace(/<\/h\d>/g, s => s + '\n');
+//    txt = getTextFromHTML(txt);
+
     this.tlang = gstore.taskParts.languages[this.tsectionNum] || 'en';
     tstore.translLangCtrl.set(this.lang);
 //console.log('Translation lang:', this.tlang);
-
+/*
     const s = txt.replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3') // for direct speech
     .replace(/!([”"'])( )+([a-z])/g, '%21$1$2$3')
 	;
@@ -3709,8 +3714,18 @@ tstore.translation = { // experimental: 2026-02-14
     this.sentences = [...segmenter.segment(s)]
       .map(entry => entry.segment.trim().replaceAll('%21', '!').replaceAll('%3F', '?'))
       .filter(s => s); //leave non-empty lines
+*/
+    const el = document.createElement('div');
+	el.id = 'temporaryEl';
+	el.hidden = true;
+	document.body.appendChild(el);
+	loadElementWithText(txt, el.id, 'NO_DECODE');
+//	el.innerHTML = txt;
+    [this.nodes, this.sentences] = tstore.sentences.init(el, this.tlang);
+//    this.sentences = tstore.sentences.getSentences(txt, this.tlang, false)
 
     this.text = txt;
+	el.remove();
     return this.sentences.length;
   },
 
@@ -4000,7 +4015,7 @@ const afterTaskLoaded = () => {
   prepareSettings();
   emulateCueClick();
 
-  tstore.sentences.init(transcriptText);
+  [tstore.nodes, tstore.taskSentences] = tstore.sentences.init(transcriptText);
   handleTransl();
   handleVocab();
   
@@ -5141,26 +5156,30 @@ function setNightMode(cmd) {
 // experimental 2026-01-02
 //   ***  Handle TTS sentences  ***
 tstore.sentences = {
-  init(el) {
+  init(el, lang) {
 //return
     const nodes = el.querySelectorAll('h1, h2, h3, h4, h5, h6, p');
-    if (gstore.fromGoogleDoc && gstore.docBodyHtml && nodes.length) nodes.forEach(node => node.innerHTML = this.wrap(node))
-    else el.innerHTML = this.wrap(el);
+    if (gstore.fromGoogleDoc && gstore.docBodyHtml && nodes.length) nodes.forEach(node => node.innerHTML = this.wrap(node, lang))
+    else el.innerHTML = this.wrap(el, lang);
 
-    tstore.nodes = [...document.querySelectorAll('[data-sentence]')]
+//    tstore.nodes = [...document.querySelectorAll('[data-sentence]')]
+    const resNodes = [...el.querySelectorAll('[data-sentence]')]
       .map((el, i) => (el.removeAttribute('data-sentence'), el))
       .filter(el => !el.closest('.no-tts'))
       .map((el, i) => (el.dataset.sentenceIndex = i, el));
 
-    tstore.taskSentences = tstore.nodes
+//    tstore.taskSentences = tstore.nodes
+    const resSentences = resNodes
       .map(el => this
         .getTextWithAlts(el)
         .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before
       );
+    return [resNodes, resSentences];
   },
 
-  wrap(el) {
-    const arr = this.getSentences(el);
+  wrap(el, lang) {
+    if (!lang) lang = getContextLang(el);
+    const arr = this.getSentences(el.innerHTML, lang);
   	this.arr = arr; // for debugging
 //console.log(arr);
 //return arr;
@@ -5177,7 +5196,7 @@ tstore.sentences = {
       ;
   },
   
-  getSentences(el) {
+  getSentences(html, lang, wrap = true) {
     const toBuffer = (key, s) => {
   	  this.buffer[key] ??= [];
 	    this.buffer[key].push(s);
@@ -5186,10 +5205,10 @@ tstore.sentences = {
 	
 //    let index = 0;
   
-    const getWrappedLine = s => {
-  	  s = s.replaceAll('<x-dummy>\n', '');
+    const getWrappedLine = (s, wrap) => {
+//  	  s = s.replaceAll('<x-dummy>\n', '');
 //console.log('Line', index, ':', s ,'$end');
-      if (getTextFromHTML(s).trim()) {
+      if (wrap && getTextFromHTML(s).trim()) {
 // Put the trailing spaces outside wrapping
 //	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence>` + '$2</span>$3');
         s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<div class="inline" data-sentence>` + '$2</div>$3');
@@ -5204,7 +5223,7 @@ tstore.sentences = {
     this.buffer = {};
 	  this.buffer.vocabHeader = qsel('.vocab-header')?.innerHTML || '<x-empty>';
 
-    this.source = el.innerHTML
+    this.source = html
   	.replace(this.buffer.vocabHeader, '<x-vocab-header>')
 //    .replaceAll('<x-br></x-br>', '<div style="display: block; height: .4em;"></div>')
 //    .replaceAll('<x-br-l></x-br-l>', '<div style="display: block; height: .7em;"></div>')
@@ -5224,23 +5243,24 @@ tstore.sentences = {
 
 // What with <img> tags?
 
-    const lang = getContextLang(el);
+//    const lang = getContextLang(el);
 //console.log('Language of the element:', lang);
 
     const segmenter = new Intl.Segmenter(lang, { granularity: 'sentence' });
     return [...segmenter.segment(this.source)]
-      .map((entry) => getWrappedLine(entry.segment.replaceAll('%21', '!').replaceAll('%3F', '?')))
+      .map((entry) => getWrappedLine(entry.segment
+        .replaceAll('%21', '!').replaceAll('%3F', '?').replaceAll('<x-dummy>\n', ''), wrap))
 //	  .filter(s => s) //leave non-empty lines
   },
-  
+
   getTextWithAlts(el) {
     const clone = el.cloneNode(true);
     clone.querySelectorAll('.cloze').forEach(input => {
       const text = document.createTextNode(
         (input.getAttribute('alt') || '')
         .split('=>')[0] .trim()
-      );
 
+      );
       input.replaceWith(text);
     });
 
@@ -5529,18 +5549,11 @@ const putCaretAtStart = (el, cmd) => {
   selection.addRange(range);
 }
 
-function makeTaskFromUserText() {
-  const userText = qsel('textarea').value;
-  if (!userText) {
-    displayAlarmMessage('Enter the text first');
-    return;
-  }
+tstore.howToPractice = () => {
   const plainBtn = 'class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa;" ';
   const card = 'class="box-shadow" style="padding: .5em 1em; background-color: floralwhite"';
-  const howTo = 
-`
 
-<hr><div class="no-tts font-80pc" style="color: darkslategray; max-width: 400px">~How do I practice?~ <x-p>
+return `<div class="no-tts font-80pc" style="color: darkslategray; max-width: 400px">~Practice tips~ <x-p>
 <div ${card}>Start with listening and repeating after the speaker:
  *Tap any word to hear, or
  *Use a <button ${plainBtn} onclick="tstore.ttsOverlay.init()">player</button> to play sentences
@@ -5561,9 +5574,26 @@ ${gstore.settingsIcon} Settings<x-p>
 {x-voice-ctrl}
 <x-br>
 <button ${plainBtn} onclick="showTopSettings()">More settings</button></div>
-</x-p></x-p></div>
-`;
-  loadElementWithText(userText + howTo, 'transcriptText');
+</x-p></x-p></div>`;
+}
+
+function makeTaskFromUserText() {
+//console.log('> makeTaskFromUserText');
+  const userText = qsel('textarea')?.value;
+  if (!userText) {
+    displayAlarmMessage('Enter the text first');
+    return;
+  }
+  const separator = 
+`
+
+<hr>`;
+  loadElementWithText(userText, 'transcriptText');
+  showPracticeTips(separator);
+}
+
+function showPracticeTips(prefix = '') {
+  loadElementWithText(prefix + tstore.howToPractice(), 'practiceTips');
 }
 
 </script>
