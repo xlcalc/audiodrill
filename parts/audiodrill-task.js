@@ -3086,6 +3086,13 @@ function getObjectByPath(path, root = window) {
 
   return typeof value === 'function' ? value() : value;
 }
+
+const getTextFromHTML = s => { // transforms html to text
+  const div = document.createElement('div');
+  div.innerHTML = s || '';
+  return div.innerText;
+}
+
 /*
 window.onunhandledrejection = event => {
   const error = event.reason;

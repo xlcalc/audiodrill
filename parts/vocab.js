@@ -14,10 +14,29 @@ gstore.vocab = {
   
   build(){ return this.init() + gstore.vocabArr.join('\n') + '\n' },
   
-  getBeforeVocab(s) { return (s && s.includes(this.prefix))? s.substring(0, s.indexOf(this.prefix)) : s },
-  getVocab(s) { return (s && s.includes(this.prefix))? s.substring(s.indexOf(this.prefix)) : '' },
-  getVocabEntries(s) { return (s && s.includes(this.prefix))? s.substring(s.indexOf(this.prefix) + this.prefix.length) : '' },
+  getBeforeVocab(s) { 
+//    return (s && s.includes(this.prefix))? s.substring(0, s.indexOf(this.prefix)) : s 
+    parts = s?.split(this.prefix);
+    return parts[1] ? parts[0].replace(/>$/, '></span></p>') : s;
+  },
   
+  getVocab(s) {
+//	  return (s && s.includes(this.prefix))? s.substring(s.indexOf(this.prefix)) : '' 
+    parts = s?.split(this.prefix);
+    return parts[1] ? this.prefix + this.processVocabEntries(parts[1]) : s;
+  },
+
+  getVocabEntries(s) { 
+//  return (s && s.includes(this.prefix))? s.substring(s.indexOf(this.prefix) + this.prefix.length) : '' 
+    parts = s?.split(this.prefix);
+    return this.processVocabEntries(parts[1]) || s;
+
+  },
+  
+  processVocabEntries(s) { 
+    return getTextFromHTML(s.replaceAll('</p><p', '</p>\n<p')).replace(/^\/span><\/p>/, '') 
+  },
+
 //  isEmpty() { return (!gstore.vocabArr || !!gstore.vocabArr.length) }, // may be not needed?
 
   twinEntries: (query) =>
