@@ -452,7 +452,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .screen-shade {
   position: fixed;
-/*  height: 100vh; */
+  height: 100vh; 
   width: 100vw;
   top: 0;
   left: 0;
@@ -460,10 +460,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--btn-lighgray);
   color: #bdc;
   font-size: 40px;
-  opacity: 0.92;
+/*  opacity: 0.92;*/
   text-align: center;
-  padding: 5em 0;
-  z-index: 3;
+/*  padding: 5em 0;*/
+  z-index: 3; 
 /*  display: none;  testing measure */
 }
 
@@ -3737,10 +3737,12 @@ tstore.translation = { // experimental: 2026-02-14
   set(cmd) {
     this.isOn = cmd;	
     if (this.sentences && tstore.nodes)
-      tstore.nodes.forEach((el, i) => { 
-        el.dataset.transl = cmd ? this.sentences[i] || '' : '';
-        setElClass(el, 'hover-overlay-s', cmd);
-        this.setListeners(el);
+      tstore.nodes.forEach((el, i) => {
+        if (this.sentences[i]) {
+          el.dataset.transl = cmd ? this.sentences[i] : '';
+          setElClass(el, 'hover-overlay-s', cmd);
+          this.setListeners(el);
+        }
       });
 //    if (this.isOn && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
 //      tstore.ttsOverlay.initTransl();
@@ -5221,7 +5223,7 @@ tstore.sentences = {
     }
 
     this.buffer = {};
-	  this.buffer.vocabHeader = qsel('.vocab-header')?.innerHTML || '<x-empty>';
+    this.buffer.vocabHeader = qsel('.vocab-header')?.innerHTML || '<x-empty>';
 
     this.source = html
   	.replace(this.buffer.vocabHeader, '<x-vocab-header>')

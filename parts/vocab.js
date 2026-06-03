@@ -107,7 +107,7 @@ gstore.vocab = {
   },
 
 // ===
-  tag: '<RENDER_VOCAB_PREFIX>',
+  tag: '<RENDER_VOCAB_PREFIX>', // is it needed?
 
   render(s, options = {}) {
 	this.exists = false; 
@@ -176,7 +176,7 @@ const markVocabEntries = (s, vocab, cmd, options = {}) => {
     entry = arr[0].trim(); // using in entry characters like *, <)), etc. will lead to error
     const meaning = (arr[1] || '').trim();
 
-    if (entry.length < 5 && tts.langCode !=='zh') entry = '\\b' + entry; // see the comment below
+	if (entry.length < 5 && tts.langCode !=='zh') entry = '\\b' + entry; // see the comment below
 // For short vocab entries, the target word should start exactly as entry.
 // For example, for 'pan' entry, target 'PANned' but ignore 'comPANy'.
 
@@ -235,11 +235,12 @@ acro can take care of hyphenated words
   }
 
   
-// markVocabEntries action starts here:
+// === markVocabEntries action starts here: ===
 
 //  const vocabArr = vocab.filter(el => el.trim());
 // remove examples (starting with space) and empty lines.
-  const vocabArr = vocab.filter(el => !el.startsWith(' ') && el.trim());
+//  const vocabArr = vocab.filter(el => !el.startsWith(' ') && el.trim());
+  const vocabArr = vocab.filter(el => !/^\s/.test(el) && el.trim());
   if (!vocabArr.length) return s;
 
   cmd = cmd || 0;
@@ -271,7 +272,8 @@ acro can take care of hyphenated words
   const vbreak = tasksPageActive() ? vbreakDiv() : ''; 
 	
   for (const entry of vocab) {
-    if (entry.startsWith(' ')) {
+//    if (entry.startsWith(' ')) {
+    if ((/^[ \u00A0]/.test(entry))) {
 	  vocabText += ' ' + (options.examplePrefix || '') 
 	  + entry.trim()
       + (options.exampleSuffix || '');
@@ -292,9 +294,3 @@ acro can take care of hyphenated words
 //console.log('vocab text', vocabText);  
   return bodyText + vocabText + '</div>';
 }
-
-/*
-Bug: in tasks, the same chunk can be added to vocab several times. This doesn't happen in ttsread
-(For tasks page,) vocab could also include examples of usage in sentences. How not to create mess with entries?
-For example, start the example line with space, so that it be ignored when vocab entries are processed.
-*/
