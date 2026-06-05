@@ -3410,10 +3410,21 @@ const changeEpisode = (key, url) => {
 
   if (isIndexFile(url)) episodeBar.hide();
   else episodeBar.show();
-  const href = location.origin + key + url;
-  history.pushState({'pushed': href}, "", href); 
+//  const href = location.origin + key + url;
+//  history.pushState({'pushed': href}, "", href); 
+  historyPush(key, url);
 // the state is not currently used, but it should not be null, 
 // so that popstate event could happen on browsing history
+}
+
+const openTaskByUrl = (url, newDir) => {
+  historyPush(getActivityKey(), url);
+  loadHtmlTaskByURL(url, newDir);
+}
+
+const historyPush = (key, url) => {
+  const href = location.origin + key + url;
+  history.pushState({'pushed': href}, "", href); 
 }
 
 //const movePlayer = eID => {
