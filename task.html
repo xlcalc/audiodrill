@@ -5577,23 +5577,34 @@ ${gstore.settingsIcon} Settings{{{
 }}}</div>`;
 }
 
+tstore.backToTaButton = '<button class="plain-button rounded ptr font-75pc" style="color:gray; text-decoration: underline dotted #aaa;" onclick="tstore.toEditingTA()">< back</button>';
+
 function makeTaskFromUserText() {
 //console.log('> makeTaskFromUserText');
-  const userText = qsel('textarea')?.value;
-  if (!userText) {
+  tstore.taContent = qsel('textarea')?.value;
+  if (!tstore.taContent) {
     displayAlarmMessage('Enter the text first');
     return;
   }
-  const separator = `
 
-<hr>`;
-  loadElementWithText(userText, 'transcriptText');
+  tstore.previousTask = transcriptText.innerHTML;
+  players.previousTask = players.currentTask;
+  tstore.taContent
+  loadElementWithText(tstore.backToTaButton + '\n' + tstore.taContent, 'transcriptText');
+
+  const separator = '\n\n<hr>';
   showPracticeTips(separator);
 }
 
 function showPracticeTips(prefix = '') {
   loadElementWithText(prefix + tstore.howToPractice(), 'practiceTips');
   parseCmdTag('practiceTips');
+}
+
+tstore.toEditingTA = () => {
+  players.currentTask = players.previousTask;
+  transcriptText.innerHTML = tstore.previousTask;
+  qsel('textarea').value = tstore.taContent;
 }
 
 </script>
