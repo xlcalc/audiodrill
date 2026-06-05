@@ -3990,7 +3990,6 @@ const processTaskEl = async () => {
   loadingDone(); 
   afterTaskLoaded();
   parseCmdTag('transcriptText');
-  parseCmdTag('practiceTips');
 
   if (tstore.translation.sentences.length 
   && tstore.translation.previousText !== tstore.translation.text) {
@@ -5592,6 +5591,7 @@ function makeTaskFromUserText() {
 
 function showPracticeTips(prefix = '') {
   loadElementWithText(prefix + tstore.howToPractice(), 'practiceTips');
+  parseCmdTag('practiceTips');
 }
 
 </script>
