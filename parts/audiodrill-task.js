@@ -245,11 +245,11 @@ function loadElementWithText(sourceText, eID, cmd) {
 //	text = text.replace(/\r/g, '');
 	players.currentTask = text;
 
-// x-vars could be extracted here and removed from the text. Perhaps in taskTextHandler fn?
-// This allows links within x-vars, e.g., for player-title
+// x-vars are extracted here and removed from the text
 	text = taskTextHandler(text);
   }
 
+  text = text.replace(/\{\{\{/g, '<x-p>') .replace(/\}\}\}/g, '</x-p>');
   text = highlightText(text);
 
   if (eID === 'transcriptText' || eID === 'temporaryEl') { 
@@ -485,8 +485,8 @@ gstore.freeChevron = (id, title, style, cmd = "clickChevron(this,'X-P')") => {
   
 const parseXTag = txt => {
 //  return txt.replace(/<x-p(.*?)>/g, (s, p1) => prefix(p1)) .replace(/<\/x-p>/g, '</span>'); // to add atributes to <x-p>, highlighting <h*> should be fixed as well.
-//  txt = txt.replace(/<x-p>(<br>)?/g, prefix) .replace(/<\/x-p>(<br>)?/g, '</span>');
-  txt = txt.replace(/<x-p\s*(title="[^"]*")?\s*>(\s*<br>)?/g, (match, title) => gstore.xpPrefix(title))
+  txt = txt
+    .replace(/<x-p\s*(title="[^"]*")?\s*>(\s*<br>)?/g, (match, title) => gstore.xpPrefix(title))
     .replace(/<\/x-p>(<br>)?/g, '</div>');
   return txt;
 //  return txt.replace(/<x-p>|\[\+\]\{/g, prefix) .replace(/<\/x-p>/g, '</span>');
@@ -918,11 +918,11 @@ const dismissEl = (el) => {
   hideEl(el);
 }
 
-async function displayInfopage(task, sizePos) {
+async function displayInfopage(task, param) {
 //console.log('Infopage task: ', task);
   if (['copyright','contribute','help'].includes(task)) setElHTML('infopage-content', '');
 
-  setInfoPageSizePos(sizePos);
+  setInfoPageSizePos(param);
   infopageSaveBox('HIDE');
   const iContent = elid('infopage-content');
 //save innerText as it may be altered if display set to 'none'
@@ -2099,6 +2099,25 @@ const highlightText = txt => {
       .replace(/\(.*?\)/g, '') //remove comments in brackets
 
   const ttsLineBtn = s => {
+    let say = '';
+    if (/\[|<<|\]\(say:/.test(s)) {
+	  say = 'say="' + getTextToSay(s) + '"'
+//      s = s.replace(/\[.*?\]\(say:.*?\)/g, s => s.split('](say:')[0].slice(1)); 
+      s = s.replace(/\[(.*?)\]\(say:.*?\)/g, (match, p1) => p1); 
+    }
+    return `<tts pos="before" ${say}>${s}</tts>`;
+  }
+
+  const ttsBtn = (match, show, s, lang = '') => {
+    const say = getTextToSay(s);
+	let pos = '';
+    if (show) pos = 'pos="before"';
+    else s = '';
+
+    return `<tts ${pos} say="${say}" lang="${lang}">${s}</tts>`;
+  }
+/*
+  const ttsLineBtnOld = s => {
     s = s.slice(3); // remove <))
 	let say = '';
     if (/\[\[|<<|\]\(say:/.test(s)) {
@@ -2109,7 +2128,7 @@ const highlightText = txt => {
     return `<tts pos="before" ${say}>${s}</tts>`;
   }
 
-  const ttsBtn = s => {
+  const ttsBtnOld = s => {
     if (s.startsWith('<))')) {
 //      return '<tts pos=before>' + s.slice(4, -1) + '</tts>'; 
       s = s.slice(3, -1).replace(/\[|\]/g, '');
@@ -2122,7 +2141,7 @@ const highlightText = txt => {
   }
 
 //  const ttsBtn3 = s => '<tts pos="before">' + s.split('](')[0].slice(1) + '</tts>'; 
-
+*/
   const getParts = (s, splitter = '') => s.slice(1, -1).split('](' + splitter);
 
   const expandLink = s => { 
@@ -2234,7 +2253,7 @@ const highlightText = txt => {
 
 // Special chars are protected by escaping them, e.g. '\\)' or '\\|' or '\\.'
 // Choose the chars to escape inside the char class [...] wisely
-  .replace(/\\([*|(),\.~])/g, (match, p1) => `___ESCAPED_${p1.charCodeAt(0)}___`)
+  .replace(/\\([*|(),\.~`^])/g, (match, p1) => `___ESCAPED_${p1.charCodeAt(0)}___`)
 
 //.replace(/\n##font-size:(\s?.*)##\x20(.*)(\n|$$)/g, (s, p1, p2) => toStyle(p1, p2)) // why $$ in regex?
   .replace(/\n##font-size:(\s?.*)##\x20(.*)(\n|$)/g, (s, p1, p2) => toStyle(p1, p2))
@@ -2281,13 +2300,16 @@ const highlightText = txt => {
 //  .replace(/[{]{2,}([^\|]+?)\|([^\|]+?)[}]{2,}/g, (match, p1, p2) => expandTip(p1, p2)) // tips as {{tip|text}}
 
   .replace(/{{([^]+?)}}/g, (match, p) => expandDblBraces(match, p))
+  .replace(/\<\)(\))?\s*\[([^\[]+)\](?:\(lang:\s*([^)]+)\))?/g, (_, show, s, lang) => ttsBtn(_, show, s, lang)) // tts for <))[text]... or <)[text]... but not <)) [[text]
   .replace(/\[[^\[]*?\]\(.*?\)?\)/g, s => expandLink(s)[0])
 
 // the order of the two lines to handle tts changed 2024-05-17. Should monitor for side effects.
 //  .replace(/\<\)\)?\s*?\[.*?\]/g, s => ttsBtn(s)) // tts for <))[text]... or <)[text]...
-  .replace(/\<\)\)?\s*?\[([^\[]+\])/g, s => ttsBtn(s)) // tts for <))[text]... or <)[text]... but not <)) [[text]
+//  .replace(/\<\)\)?\s*?\[([^\[]+\])/g, s => ttsBtn(s)) // tts for <))[text]... or <)[text]... but not <)) [[text]
+//  .replace(/\<\)(\))?\s*\[([^\[]+)\](?:\(lang:\s*([^)]+)\))?/g, (_, show, s, lang) => ttsBtn(_, show, s, lang)) // tts for <))[text]... or <)[text]... but not <)) [[text]
 //  .replace(/<\)\).*?(?=\n|\r|<br>|$|<\)\)?|<x-br)/g, s => ttsLineBtn(s)) 
-  .replace(/<\)\).*?(?=\n|<br>|$|<\)\)?|<x-br)/g, s => ttsLineBtn(s)) 
+//  .replace(/<\)\).*?(?=\n|<br>|$|<\)\)?|<x-br)/g, s => ttsLineBtn(s)) 
+  .replace(/<\)\)(.*?)(?=\n|<br>|$|<\)\)?|<x-br)/g, (_, p1) => ttsLineBtn(p1)) 
   // tts for text before any of these tockens:
   // \n, \r, <br>, [end of line], <), <)), <x-br
 

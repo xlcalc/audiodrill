@@ -1115,7 +1115,9 @@ const makeTestForm = txt => { //updated 2021-07-23 handle '|' symbol
         const suffix = dd ? ddsuffixNew : clsuffixNew;
         return prefix + content + suffix;
       })
-	  .replace(ddprefix, ddprefixNew) .replace(ddsuffix, ddsuffixNew) // obsolete b/c of the combined check above
+      .replace(ddprefix, ddprefixNew) .replace(ddsuffix, ddsuffixNew) // obsolete b/c of the combined check above
+      .replaceAll('\\[', '[')
+      .replaceAll('\\]', ']')
   }
 
   const addOptions = txt =>  // for dropdown list
@@ -2581,7 +2583,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
   <div id="taskBox" data-themeable class="task-box">
     <div id="transcriptText" data-themeable class="task-body rounded"></div>
-    <div id="practiceTips" data-themeable class="task-body rounded"></div>
+    <div id="practiceTips" data-themeable class="task-body rounded" style="min-height:0"></div>
   </div> <!--   End of taskBox   -->
 
 <!-- wordlist-box no longer needed
@@ -5549,28 +5551,28 @@ tstore.howToPractice = () => {
   const plainBtn = 'class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa;" ';
   const card = 'class="box-shadow" style="padding: .5em 1em; background-color: floralwhite"';
 
-return `<div class="no-tts font-80pc" style="color: darkslategray; max-width: 400px">~Practice tips~ <x-p>
+return `<div class="no-tts font-80pc" style="color: darkslategray; max-width: 400px">~Practice tips~{{{
 <div ${card}>Start with listening and repeating after the speaker:
  *Tap any word to hear, or
  *Use a <button ${plainBtn} onclick="tstore.ttsOverlay.init()">player</button> to play sentences
  *Try out different player modes, e.g. <button ${plainBtn} onclick="tstore.ttsOverlay.shadowLines()">shadowing</button> (listening and repeating) sentences
 </div>
 
-Explore new vocabulary <x-p>
+Explore new vocabulary{{{
 <div ${card}>Select any word or phrase to open extra tools:
  *Listen to pronunciation
  *Look it up
  *See translation
  *Save it to your vocabulary
-</div></x-p>
+</div>}}}
 
-${gstore.settingsIcon} Settings<x-p>
+${gstore.settingsIcon} Settings{{{
 <div ${card}>Playback speed {x-speed-ctrl}
 <x-br>
 {x-voice-ctrl}
 <x-br>
 <button ${plainBtn} onclick="showTopSettings()">More settings</button></div>
-</x-p></x-p></div>`;
+}}} }}}</div>`;
 }
 
 function makeTaskFromUserText() {
@@ -5580,8 +5582,7 @@ function makeTaskFromUserText() {
     displayAlarmMessage('Enter the text first');
     return;
   }
-  const separator = 
-`
+  const separator = `
 
 <hr>`;
   loadElementWithText(userText, 'transcriptText');
