@@ -230,7 +230,7 @@ Use `\{\{img: URL [left/center/right] \}\}` to embed images.
 
 The result looks like this:
 
-<x-copy>{{img: https://www.un.org/en/img/splash/un-logo.png center}}</x-copy>
+{{img: https://www.un.org/en/img/splash/un-logo.png center}}
 
 }}}
 
