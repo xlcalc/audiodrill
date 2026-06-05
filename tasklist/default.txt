@@ -43,7 +43,7 @@ With Audiodrill, you can build your reading, listening and speaking skills in fo
 
 ### 4. Create your own tasks
 
-✍️ From your own text - do it at the top of this page.
+✍️ From your own text - do it at the top of this page. If you want to use rich content such as formatted text, gaps, images, audio, and video, see <button class="plain-button rounded ptr font-100pc" style=" text-decoration: underline dotted #aaa;" onclick="loadHtmlTaskByURL('/info/task-markup.txt', false)">this guide.</button>
 <color:silver>▶</color> From a YouTube video:
  * Click the {{arrow:new-task y-shift=14|🗋 icon}} and paste the url of a YouTube video. 
  * Copy/paste lines with timestamps from the video transcript. 

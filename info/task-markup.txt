@@ -1,0 +1,233 @@
+<x-vars lang=en>
+## Formatting & Interactive Features
+
+The examples below show how to create richer learning activities with simple markup.
+
+
+#### Bold {{{
+
+Add `*` before and after the text to set it in bold.
+
+
+ `This is a \*bold\* move.`
+
+
+
+The result looks like this:
+
+This is a *bold* move.
+
+<hr>
+}}}
+
+
+#### Italic {{{
+
+Add `~` before and after the text to set it in italic.
+
+
+ `This is \~funny\~.`
+
+
+
+The result looks like this:
+
+This is ~funny~.
+
+<hr>
+}}}
+
+
+#### Monospace {{{
+
+Add ``` before and after the text to set it in monospace.
+
+
+ `What does \`break the ice\` mean?`
+
+
+
+The result looks like this:
+
+What does `break the ice` mean?
+
+<hr>}}}
+
+
+#### Small caps {{{
+
+Add `^^` before and after the text to set it in small caps.
+
+
+ `A sign on the door read \^\^open\^\^.`
+
+
+
+The result looks like this:
+
+A sign on the door read ^^open^^.
+
+<hr>}}}
+
+
+#### Highlighted text {{{
+
+Add `==` before and after the text to set it in small caps.
+
+
+ `This is an \==urgent\== matter.`
+
+
+
+The result looks like this:
+
+This is an ==urgent== matter.
+
+<hr>}}}
+
+
+
+#### Headings {{{
+
+To create headings of levels 1–6, put one to six number signs `#` at the start of a line, followed by a space and the heading name. Also put blank lines before and after a heading.
+
+`\##### Heading level 5`
+
+`\###### Heading level 6`
+
+
+
+The result looks like this:
+
+##### Heading level 5
+
+###### Heading level 6
+
+<hr>}}}
+
+
+#### Collapsible blocks {{{
+
+Add `\{\{\{` after a heading and close the section with `\}\}\}` to create a collapsible block.
+
+ `More details \{\{\{`
+ `This content can be collapsed.`
+ `\}\}\}`
+
+
+
+The result looks like this:
+
+More details {{{
+This content can be collapsed.
+}}}
+
+<hr>}}}
+
+
+#### Gaps {{{
+
+Gaps are wrapped in two square brackets and can be blank: `\[\[answer\]\]` or with a hint: `\[\[answer => hint\]\]`.
+
+ `The speed \[\[of\]\] light in vacuum is \[\[constant => con\]\].`
+
+
+
+The result looks like this:
+
+The speed [[of]] light in vacuum is [[constant => con]].
+
+<hr>}}}
+
+
+#### Dropdown lists {{{
+
+Use `\[\[option 1|**correct option|option 3\]\]` to create a dropdown list. Mark the correct answer with `**`.
+
+ `What have you \[\[do|does|did|**done|doing\]\]?`
+
+
+
+The result looks like this:
+
+What have you [[do|does|did|**done|doing]]?
+
+<hr>}}}
+
+
+#### Speaker buttons {{{
+
+Add `<\)\)` before a sentence, so that learners could hear it.
+
+
+ `<\)\)I'm learning English now. <\)\)I try to practice for about 15 minutes every day.`
+
+
+
+The result looks like this:
+
+<))I'm learning English now. <))I try to practice for about 15 minutes every day.
+
+
+
+Use `<\)\)[text]` to pronounce only that word or phrase instead of the full sentence. This way you can highlight vocabulary or grammar patterns. By default, audio is generated in the task language. To use a different language or accent, add a language code after the text.
+
+
+ In French, <\))[café] sounds as <\))[café]\(lang: fr-FR)
+
+
+
+The result looks like this:
+
+In French, <))[café] sounds as <))[café](lang: fr-FR)
+
+
+
+With `<\)[text]`, you can hide the text and show only the play button. This is useful, e.g., in listening and spelling tests.
+
+
+ `<\)[theatre]\(lang: en-GB) \[\[theatre\]\] (British spelling)`
+ `<\)[theater]\(lang: en-US) \[\[theater\]\] (US spelling)`
+
+
+
+The result looks like this:
+
+<)[theatre](lang: en-GB) [[theatre]] (British spelling)
+<)[theater](lang: en-US) [[theater]] (US spelling)
+
+<hr>}}}
+
+
+### Embedded audio & video {{{
+
+Use `\{\{audio: URL\}\}` and `\{\{video: URL\}\}` to embed audio/video.
+
+ `\{\{audio: https://media-ssl.musicradio.com/LBCNewsUK\}\}`
+
+ `\{\{video: https://youtu.be/J8EWSLZ36s0\}\}`
+
+
+
+The result looks like this:
+
+{{audio: https://media-ssl.musicradio.com/LBCNewsUK}}
+
+{{video: https://youtu.be/J8EWSLZ36s0}}
+
+<hr>}}}
+
+
+### Embedded images {{{
+
+Use `\{\{img: URL [left/center/right] \}\}` to embed images.
+
+ `\{\{img: https://www.un.org/en/img/splash/un-logo.png center\}\}`
+
+
+
+The result looks like this:
+
+{{img: https://www.un.org/en/img/splash/un-logo.png center}}
+
+}}}
