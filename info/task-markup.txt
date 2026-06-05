@@ -112,9 +112,9 @@ The result looks like this:
 
 Add `\{\{\{` after a heading and close the section with `\}\}\}` to create a collapsible block.
 
- `More details \{\{\{`
- `This content can be collapsed.`
- `\}\}\}`
+<x-copy>`More details \{\{\{`
+`This content can be collapsed.`
+`\}\}\}`</x-copy>
 
 
 
@@ -131,7 +131,7 @@ This content can be collapsed.
 
 Gaps are wrapped in two square brackets and can be blank: `\[\[answer\]\]` or with a hint: `\[\[answer => hint\]\]`.
 
- `The speed \[\[of\]\] light in vacuum is \[\[constant => con\]\].`
+<x-copy>`The speed \[\[of\]\] light in vacuum is \[\[constant => con\]\].`</x-copy>
 
 
 
@@ -146,7 +146,7 @@ The speed [[of]] light in vacuum is [[constant => con]].
 
 Use `\[\[option 1|**correct option|option 3\]\]` to create a dropdown list. Mark the correct answer with `**`.
 
- `What have you \[\[do|does|did|**done|doing\]\]?`
+<x-copy>`What have you \[\[do|does|did|**done|doing\]\]?`</x-copy>
 
 
 
@@ -159,10 +159,10 @@ What have you [[do|does|did|**done|doing]]?
 
 #### Speaker buttons {{{
 
-Add `<\)\)` before a sentence, so that learners could hear it.
+Add `<\)\)` before a sentence, so that learners could hear it. Text in brackets is not played.
 
 
- `<\)\)I'm learning English now. <\)\)I try to practice for about 15 minutes every day.`
+<x-copy>`<\)\)I'm learning English now. <\)\)I try to practice for 15 minutes (or so) every day.`</x-copy>
 
 
 
@@ -175,7 +175,7 @@ The result looks like this:
 Use `<\)\)[text]` to pronounce only that word or phrase instead of the full sentence. This way you can highlight vocabulary or grammar patterns. By default, audio is generated in the task language. To use a different language or accent, add a language code after the text.
 
 
- In French, <\))[café] sounds as <\))[café]\(lang: fr-FR)
+<x-copy>`In French, <\))[café] sounds as <\))[café]\(lang: fr-FR)`</x-copy>
 
 
 
@@ -188,8 +188,8 @@ In French, <))[café] sounds as <))[café](lang: fr-FR)
 With `<\)[text]`, you can hide the text and show only the play button. This is useful, e.g., in listening and spelling tests.
 
 
- `<\)[theatre]\(lang: en-GB) \[\[theatre\]\] (British spelling)`
- `<\)[theater]\(lang: en-US) \[\[theater\]\] (US spelling)`
+<x-copy>`<\)[theatre]\(lang: en-GB) \[\[theatre\]\] (British spelling)`
+`<\)[theater]\(lang: en-US) \[\[theater\]\] (US spelling)`</x-copy>
 
 
 
@@ -205,9 +205,9 @@ The result looks like this:
 
 Use `\{\{audio: URL\}\}` and `\{\{video: URL\}\}` to embed audio/video.
 
- `\{\{audio: https://media-ssl.musicradio.com/LBCNewsUK\}\}`
+<x-copy>`\{\{audio: https://media-ssl.musicradio.com/LBCNewsUK\}\}`
 
- `\{\{video: https://youtu.be/J8EWSLZ36s0\}\}`
+`\{\{video: https://youtu.be/J8EWSLZ36s0\}\}`</x-copy>
 
 
 
@@ -224,7 +224,7 @@ The result looks like this:
 
 Use `\{\{img: URL [left/center/right] \}\}` to embed images.
 
- `\{\{img: https://www.un.org/en/img/splash/un-logo.png center\}\}`
+<x-copy>`\{\{img: https://www.un.org/en/img/splash/un-logo.png center\}\}`</x-copy>
 
 
 
@@ -233,3 +233,4 @@ The result looks like this:
 {{img: https://www.un.org/en/img/splash/un-logo.png center}}
 
 }}}
+

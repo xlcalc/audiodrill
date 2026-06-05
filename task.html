@@ -5234,7 +5234,8 @@ tstore.sentences = {
     .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
     .replaceAll('<br>', '\n')
     .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
-    .replace(/<x-.*?<\/x-.*?>/g, s => toBuffer('xtag', s))
+//    .replace(/<x-.*?<\/x-.*?>/g, s => toBuffer('xtag', s))
+    .replace(/<(x-[\w-]+)\b[^>]*>[\s\S]*?<\/\1>/g, s => toBuffer('xtag', s))
     .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
     .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
     .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))

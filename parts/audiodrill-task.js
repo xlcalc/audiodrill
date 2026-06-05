@@ -519,6 +519,19 @@ const runTaskCmd = (el, cmd) => {
 //  if (cmd === 'PAIRED-LINES') {
 //console.log(el);  
 //  }
+  if (cmd === 'COPY2TA') {
+    el.classList.add('inblock',  'margin-1em', 'hover-overlay-s');
+	el.title = 'Click to copy to clipboard';
+    el.onclick = () => {
+      let txt = ''
+      const tags = el.getElementsByTagName('code');
+      for (const tag of tags) txt += tag.textContent + '\n';
+console.log(txt);
+      copyToClipboard(txt, 'Copied to clipboard', 3000);
+	  scrollTo(0, 0);
+    }
+  }
+
   if (cmd === 'SHOW_PBR' && !qsel('#setpbr2')) {
 	el.classList.add('font-85pc', 'gray2');
     elAddHTML(el, getPbrHtml(2));
@@ -599,12 +612,15 @@ oninput="setFontSize(this)" step="0.5" min="8" max="40" value="${fontSize}" />
 }
 
 const parseCmdTag = eID => {
-  const tags = elid(eID).getElementsByTagName("x-cmd");
+  let tags = elid(eID).getElementsByTagName('x-cmd');
   for (const tag of tags) {
 	const el = tag.id ? elid(tag.id) : tag;
     const cmd = tag.getAttribute('cmd');
     runTaskCmd(el, cmd);
   }
+
+  tags = elid(eID).getElementsByTagName('x-copy');
+  for (const tag of tags) runTaskCmd(tag, 'COPY2TA');
 }
 
 /*
