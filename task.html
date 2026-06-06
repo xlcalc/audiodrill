@@ -5602,10 +5602,10 @@ function makeTaskFromUserText() {
 
   tstore.previousTask = transcriptText.innerHTML;
   players.previousTask = players.currentTask;
-  tstore.taContent
+  tstore.previousPracticeTips = elid('practiceTips').innerHTML;
   loadElementWithText(tstore.backToTaButton + '\n' + tstore.taContent, 'transcriptText');
 
-  const separator = '\n\n<hr>';
+  const separator = '<hr>';
   showPracticeTips(separator);
 }
 
@@ -5618,6 +5618,7 @@ tstore.toEditingTA = () => {
   players.currentTask = players.previousTask;
   transcriptText.innerHTML = tstore.previousTask;
   qsel('textarea').value = tstore.taContent;
+  elid('practiceTips').innerHTML = tstore.previousPracticeTips;
 }
 
 </script>
