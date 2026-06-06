@@ -7,7 +7,7 @@
 <button id=go-btn class="btn-darker no-tts font-100pc" style="margin-top: 0.2em; border: 1px solid #999; background-color: floralwhite; color: inherit; padding: .5em 1.5em; border-radius: 6px" onclick="makeTaskFromUserText()"><img src=/icon.png width=22px style="vertical-align: text-bottom">  Start practicing</button>
 
 
-<small>No text handy? [Try a sample](btn: qsel('textarea').value='Shadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.')
+<small>No text handy? [Try a sample](btn: qsel('textarea').value='Shadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.')</small>
 
 
 
