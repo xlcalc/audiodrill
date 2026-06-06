@@ -1,12 +1,11 @@
 <x-vars lang=en>
-## Formatting & Interactive Features
-
-The examples below show how to create richer learning activities with simple markup. Paste them into the text area and create your task.
 <textarea id="story" class="inherit" style="margin-right: 0.4em; width:90%; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea>
-<button id=go-btn class="btn-darker no-tts font-100pc" style="margin-top: 0.2em; border: 1px solid #999; background-color: floralwhite; color: inherit; padding: .5em 1.5em; border-radius: 6px" onclick="makeTaskFromUserText()"><img src=/icon.png width=22px style="vertical-align: text-bottom">  Create a task!  </button>
+<button id=go-btn class="btn-darker no-tts font-80pc" style="margin-top: 0.2em; border: 1px solid #999; background-color: floralwhite; color: inherit; padding: .5em 1.5em; border-radius: 6px" onclick="makeTaskFromUserText()"><img src=/icon.png width=22px style="vertical-align: text-bottom">  Create a task!  </button>
 
 
-#### Bold {{{
+<small>Explore how to add formatting and media to your learning activities with simple markup</small>
+<div class="font-75pc">[bold](btn: formatTip('bold'))  [italic](btn: formatTip('italic'))  [monospace](btn: formatTip('monospace'))  [small caps](btn: formatTip('smallcaps'))  [highlight](btn: formatTip('highlight'))  [headings](btn: formatTip('headings'))  [collapsible block](btn: formatTip('collapsible'))  [gap](btn: formatTip('gap'))  [dropdown](btn: formatTip('dropdown'))  [speaker](btn: formatTip('speaker'))  [audio/video](btn: formatTip('avideo'))  [image](btn: formatTip('image'))
+</div><div style="background-color: floralwhite"><div id="format-bold" hidden>
 
 Add `*` before and after the text to set it in bold.
 
@@ -19,11 +18,7 @@ The result looks like this:
 
 This is a *bold* move.
 
-<hr>
-}}}
-
-
-#### Italic {{{
+</div><div id="format-italic" hidden>
 
 Add `~` before and after the text to set it in italic.
 
@@ -36,11 +31,7 @@ The result looks like this:
 
 This is ~funny~.
 
-<hr>
-}}}
-
-
-#### Monospace {{{
+</div><div id="format-monospace" hidden>
 
 Add ``` before and after the text to set it in monospace.
 
@@ -53,10 +44,7 @@ The result looks like this:
 
 What does `break the ice` mean?
 
-<hr>}}}
-
-
-#### Small caps {{{
+</div><div id="format-smallcaps" hidden>
 
 Add `^^` before and after the text to set it in small caps.
 
@@ -69,10 +57,7 @@ The result looks like this:
 
 A sign on the door read ^^open^^.
 
-<hr>}}}
-
-
-#### Highlighted text {{{
+</div><div id="format-highlight" hidden>
 
 Add `==` before and after the text to set it in small caps.
 
@@ -85,11 +70,7 @@ The result looks like this:
 
 This is an ==urgent== matter.
 
-<hr>}}}
-
-
-
-#### Headings {{{
+</div><div id="format-headings" hidden>
 
 To create headings of levels 1–6, put one to six number signs `#` at the start of a line, followed by a space and the heading name. Also put blank lines before and after a heading.
 
@@ -105,10 +86,7 @@ The result looks like this:
 
 ###### Heading level 6
 
-<hr>}}}
-
-
-#### Collapsible blocks {{{
+</div><div id="format-collapsible" hidden>
 
 Add `\{\{\{` after a heading and close the section with `\}\}\}` to create a collapsible block.
 
@@ -124,10 +102,7 @@ More details {{{
 This content can be collapsed.
 }}}
 
-<hr>}}}
-
-
-#### Gaps {{{
+</div><div id="format-gap" hidden>
 
 Gaps are wrapped in two square brackets and can be blank: `\[\[answer\]\]` or with a hint: `\[\[answer => hint\]\]`.
 
@@ -139,10 +114,7 @@ The result looks like this:
 
 The speed [[of]] light in vacuum is [[constant => con]].
 
-<hr>}}}
-
-
-#### Dropdown lists {{{
+</div><div id="format-dropdown" hidden>
 
 Use `\[\[option 1|**correct option|option 3\]\]` to create a dropdown list. Mark the correct answer with `**`.
 
@@ -154,10 +126,7 @@ The result looks like this:
 
 What have you [[do|does|did|**done|doing]]?
 
-<hr>}}}
-
-
-#### Speaker buttons {{{
+</div><div id="format-speaker" hidden>
 
 Add `<\)\)` before a sentence, so that learners could hear it. Text in brackets is not played.
 
@@ -198,10 +167,7 @@ The result looks like this:
 <)[theatre](lang: en-GB) [[theatre]] (British spelling)
 <)[theater](lang: en-US) [[theater]] (US spelling)
 
-<hr>}}}
-
-
-#### Embedded audio & video {{{
+</div><div id="format-avideo" hidden>
 
 Use `\{\{audio: URL\}\}` and `\{\{video: URL\}\}` to embed audio/video.
 
@@ -217,10 +183,7 @@ The result looks like this:
 
 {{video: https://youtu.be/J8EWSLZ36s0}}
 
-<hr>}}}
-
-
-#### Embedded images {{{
+</div><div id="format-image" hidden>
 
 Use `\{\{img: URL [left/center/right] \}\}` to embed images.
 
@@ -232,5 +195,4 @@ The result looks like this:
 
 {{img: https://www.un.org/en/img/splash/un-logo.png center}}
 
-}}}
-
+</div></div>

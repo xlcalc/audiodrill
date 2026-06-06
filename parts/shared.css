@@ -749,6 +749,8 @@ font-s, .font-75pc {font-size: 75%}
   color: #00a500; 
   color: #095 !important; 
 }
+
+.bg-ddd {background-color: #ddd !important}
 .bg-green {background-color: var(--color-overlay-green) !important}
 .red { color: #e11a !important }
 .lightcoral { color: lightcoral; }

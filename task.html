@@ -5621,6 +5621,24 @@ tstore.toEditingTA = () => {
   elid('practiceTips').innerHTML = tstore.previousPracticeTips;
 }
 
+const showOneEl = (prefix, key, caller) => {
+  const btns = transcriptText.querySelectorAll('button[onclick]');
+  btns.forEach(el => {
+    const caller = el.getAttribute('onclick')?.includes(key);
+    setElClass(el, 'bg-ddd', caller);
+  });
+
+  const elements = transcriptText.querySelectorAll(`[id^="${prefix}"]`);
+  elements.forEach(el => {
+    el.hidden = el.id !== prefix + key;
+  });
+}
+
+const formatTip = (key) => {
+  showOneEl('format-', key);
+}
+
+
 </script>
 </body>
 </html>
