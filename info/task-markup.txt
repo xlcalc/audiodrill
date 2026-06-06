@@ -173,7 +173,7 @@ Use `\{\{audio: URL\}\}` and `\{\{video: URL\}\}` to embed audio/video.
 
 <x-copy>`\{\{audio: https://media-ssl.musicradio.com/LBCNewsUK\}\}`
 
-`\{\{video: https://youtu.be/J8EWSLZ36s0\}\}`</x-copy>
+&#8202;`\{\{video: https://youtu.be/J8EWSLZ36s0\}\}`</x-copy>
 
 
 
