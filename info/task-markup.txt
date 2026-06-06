@@ -106,13 +106,13 @@ This content can be collapsed.
 
 Gaps are wrapped in two square brackets and can be blank: `\[\[answer\]\]` or with a hint: `\[\[answer => hint\]\]`.
 
-<x-copy>`The speed \[\[of\]\] light in vacuum is \[\[constant => con\]\].`</x-copy>
+<x-copy>`The speed \[\[of\]\] light in vacuum is \[\[constant => con__\]\].`</x-copy>
 
 
 
 The result looks like this:
 
-The speed [[of]] light in vacuum is [[constant => con]].
+The speed [[of]] light in vacuum is [[constant => con__]].
 
 </div><div id="format-dropdown" hidden>
 
