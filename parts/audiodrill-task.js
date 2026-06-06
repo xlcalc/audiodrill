@@ -2074,6 +2074,15 @@ const highlightText = txt => {
 	return getTipTag(parts[1].trim(), parts[0]);
   }
 */
+
+  const expandBtn = (txt, code) => {
+//    const match = code.match(/style\s*=\s*(['"])(.*?)\1/i);
+    const match = code.match(/(.*?)\s+style\s*=\s*(['"])(.*?)\2/i);
+    const fn = match ? match[1] : code;
+    const style = match ? match[3] + ';' : '';
+    return `<button  onclick="${fn}" class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa; ${style}">${txt}</button>`
+  }
+
   const expandWithKey = (s, key) => {
     const parts = getParts(s, key + ':');
     const txt = parts[0];
@@ -2163,19 +2172,19 @@ const highlightText = txt => {
   const expandLink = s => { 
   // links as described at https://www.markdownguide.org/basic-syntax/#adding-titles
     const parts = getParts(s);
-	if (!parts[1]) return [s];
+    if (!parts[1]) return [s];
 
-  const atext = parts[0];
-  const atag = parts[1];
-  if (atag.includes(':')) {
-	const akey = atag.split(':')[0];
+    const atext = parts[0];
+    const atag = parts[1];
+    if (atag.includes(':')) {
+      const akey = atag.split(':')[0];
 //	if (atag.startsWith('tts:')) return ttsBtn3(s);
 //	if (atag.startsWith('himark:')) return [expandHilight(s)];
-    if (akey === 'say') return [s];
-    if (['tip', 'arrow'].includes(akey)) return [getTipTag(atag, atext)];
+      if (akey === 'say') return [s];
+      if (['tip', 'arrow'].includes(akey)) return [getTipTag(atag, atext)];
 
-	  for (const key of ['color', 'bcolor', 'cue', 'play', 'stream', 'tts']) 
-	    if (akey === key) return [expandWithKey(s, key)];
+      for (const key of ['color', 'bcolor', 'cue', 'play', 'stream', 'tts']) 
+        if (akey === key) return [expandWithKey(s, key)];
     }
 
 // [](x-vars: ...) // put x-vars params this way?
@@ -2317,6 +2326,11 @@ const highlightText = txt => {
 
   .replace(/{{([^]+?)}}/g, (match, p) => expandDblBraces(match, p))
   .replace(/\<\)(\))?\s*\[([^\[]+)\](?:\(lang:\s*([^)]+)\))?/g, (_, show, s, lang) => ttsBtn(_, show, s, lang)) // tts for <))[text]... or <)[text]... but not <)) [[text]
+
+// In the future, this regex may be used insted of current for expandLink
+// So far, it's just for [text](btn: code)
+//  .replace(/\[([^\]]*)\]\(((?:[^()]|\([^()]*\))*)\)/g, (_, txt, code) => expandBtn(txt, code)) 
+  .replace(/\[([^\]]*)\]\(btn:\s*((?:[^()]|\([^()]*\))*)\)/g, (_, txt, code) => expandBtn(txt, code)) 
   .replace(/\[[^\[]*?\]\(.*?\)?\)/g, s => expandLink(s)[0])
 
 // the order of the two lines to handle tts changed 2024-05-17. Should monitor for side effects.

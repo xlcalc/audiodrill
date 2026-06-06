@@ -7,7 +7,7 @@
 <button id=go-btn class="btn-darker no-tts font-100pc" style="margin-top: 0.2em; border: 1px solid #999; background-color: floralwhite; color: inherit; padding: .5em 1.5em; border-radius: 6px" onclick="makeTaskFromUserText()"><img src=/icon.png width=22px style="vertical-align: text-bottom">  Start practicing</button>
 
 
-<small>No text handy? <button class="plain-button rounded ptr font-100pc" style=" text-decoration: underline dotted #aaa;" onclick="qsel('textarea').value='Shadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.'">Try a sample</button>
+<small>No text handy? [Try a sample](btn: qsel('textarea').value='Shadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.')
 
 
 
@@ -41,9 +41,10 @@ With Audiodrill, you can build your reading, listening and speaking skills in fo
  * 📖 Try out other ways of [shadow reading](?t=/tasklist/shadowing.txt).
 <div id="createTasks"></div>
 
+
 ### 4. Create your own tasks
 
-✍️ From your own text - do it at the top of this page. If you want to use rich content such as formatted text, gaps, images, audio, and video, see <button class="plain-button rounded ptr font-100pc" style=" text-decoration: underline dotted #aaa;" onclick="openTaskByUrl('/info/task-markup.txt', false)">this guide.</button>
+✍️ From your own text - do it at the top of this page. If you want to use rich content such as formatted text, gaps, images, audio, and video, see [this guide.](btn: openTaskByUrl('/info/task-markup.txt', false))
 <color:silver>▶</color> From a YouTube video:
  * Click the {{arrow:new-task y-shift=14|🗋 icon}} and paste the url of a YouTube video. 
  * Copy/paste lines with timestamps from the video transcript. 

@@ -5560,14 +5560,14 @@ const putCaretAtStart = (el, cmd) => {
 }
 
 tstore.howToPractice = () => {
-  const plainBtn = 'class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa;" ';
+//  const plainBtn = 'class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa;" ';
   const card = 'class="box-shadow" style="padding: .5em 1em; background-color: floralwhite"';
 
 return `<div class="no-tts font-80pc" style="color: darkslategray; max-width: 400px">~Practice tips~{{{
 <div ${card}>Start with listening and repeating after the speaker:
  *Tap any word to hear, or
- *Use a <button ${plainBtn} onclick="tstore.ttsOverlay.init()">player</button> to play sentences
- *Try out different player modes, e.g. <button ${plainBtn} onclick="tstore.ttsOverlay.shadowLines()">shadowing</button> (listening and repeating) sentences
+ *Use a [player](btn: tstore.ttsOverlay.init()) to play sentences
+ *Try out different player modes, e.g. [shadowing](btn: tstore.ttsOverlay.shadowLines())(listening and repeating) sentences
 </div>
 
 Explore new vocabulary{{{
@@ -5584,12 +5584,13 @@ ${gstore.settingsIcon} Settings{{{
 <x-br>
 {x-voice-ctrl}
 <x-br>
-<button ${plainBtn} onclick="showTopSettings()">More settings</button></div>
+[More settings](btn: showTopSettings())</div>
 }}}
 }}}</div>`;
 }
 
-tstore.backToTaButton = '<button class="plain-button rounded ptr font-75pc" style="color:gray; text-decoration: underline dotted #aaa;" onclick="tstore.toEditingTA()">< back</button>';
+//tstore.backToTaButton = '<button class="plain-button rounded ptr font-75pc" style="color:gray; text-decoration: underline dotted #aaa;" onclick="tstore.toEditingTA()">< back</button>';
+tstore.backToTaButton = '[< back](btn: tstore.toEditingTA() style="font-size: 75%")';
 
 function makeTaskFromUserText() {
 //console.log('> makeTaskFromUserText');
