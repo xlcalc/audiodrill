@@ -6,8 +6,8 @@
 console.log('pathname: ', location.pathname);
 console.log('location ', location);
 
-if (location.pathname.startsWith('https://docs.google.com/document/')) 
-  window.location.assign('/task.html?t=' + location.pathname);
+if (location.pathname.startsWith('/https://docs.google.com/document/')) 
+  window.location.assign('/task.html?t=' + location.pathname + location.search);
 
   if (['/t', '/m', '/txt'].includes(location.pathname))
     window.location.assign('/task.html');
