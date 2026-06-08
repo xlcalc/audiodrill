@@ -3,18 +3,21 @@
 <head>
 <script>
 (() => {
-//console.log('pathname: ', location.pathname);
 console.log('location ', location);
+  const lpath = location.pathname;
+  if (lpath.startsWith('/https://docs.google.com/document/')) {
+    window.location.assign('/task.html?t=' + lpath.slice(1) + location.search);
+  }
 
-if (location.pathname.startsWith('/https://docs.google.com/document/')) {
-  window.location.assign('/task.html?t=' + location.pathname.slice(1) + location.search);
-}
+  if (lpath.startsWith('/https://youtu.be/') || lpath.startsWith('/https://youtube.com/')) {
+    window.location.assign('/task.html?m=' + lpath.slice(1) + location.search);
+  }
 
-  if (['/t', '/m', '/txt'].includes(location.pathname))
+  if (['/t', '/m', '/txt'].includes(lpath))
     window.location.assign('/task.html');
-  if (['/w', '/w/'].includes(location.pathname))
+  if (['/w', '/w/'].includes(lpath))
     window.location.assign('/words/');
-  const match = location.pathname.match(/^\/(txt|[lmt])\/(.*)/);
+  const match = lpath.match(/^\/(txt|[lmt])\/(.*)/);
   if (match) {
     let [, type, path] = match;
 console.log('path: ', path);

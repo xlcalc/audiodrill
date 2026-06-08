@@ -2278,6 +2278,8 @@ const highlightText = txt => {
 
 // Special chars are protected by escaping them, e.g. '\\)' or '\\|' or '\\.'
 // Choose the chars to escape inside the char class [...] wisely
+  .replace(/\\</g, '&lt;')
+  .replace(/\\>/g, '&gt;')
   .replace(/\\([*|(){},\.~`^#=])/g, (match, p1) => `___ESCAPED_${p1.charCodeAt(0)}___`)
 
 //.replace(/\n##font-size:(\s?.*)##\x20(.*)(\n|$$)/g, (s, p1, p2) => toStyle(p1, p2)) // why $$ in regex?

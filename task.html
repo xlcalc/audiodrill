@@ -574,14 +574,14 @@ padding: 0;
   box-shadow: 0 0 12px #450;
 }
 
-/*
 .epi-nav-bar {
-  padding: 0.3em;
+  padding: 0.1em;
+  font-size: 110%;
+/*
   line-height: 1.3em;
   color: #777;
-  font-size: larger;
-}
 */
+}
 .x-audio-box {
   padding: .3em .8em;
   overflow-x: hidden;
@@ -2237,7 +2237,7 @@ const analyzeURLParams = async () => {
   }
 
   if (!taskText && !mediaFile && !loadTaskFromURLParam(urlKeys)) { 
-    loadHtmlTaskByURL('/tasklist/default.txt', false); 
+    loadHtmlTaskByURL('/tasklist/default.txt'); 
   }
 }
 
@@ -2247,11 +2247,11 @@ const loadTaskFromURLParam = urlKeys => {
     const tab = urlKeys.get('tab');
     if (tab) r = r + '?tab=' + tab;
   }
-  if (r) loadHtmlTaskByURL(r);
+  if (r) loadHtmlTaskByURL(r, true);
   return r;
 }
 
-const loadHtmlTaskByURL = async (url, newDir = true) => {
+const loadHtmlTaskByURL = async (url, newDir = false) => {
   gstore.taskUrl = getNewURL(url, 1);
   const id = 'transcriptText';
   showSpinner(id);
@@ -3406,7 +3406,7 @@ const copyTime = el => {
 
 const changeEpisode = (key, url) => {
   if (!url) return;
-  loadHtmlTaskByURL(url, 0); // check for a new dir may be added in the future?
+  loadHtmlTaskByURL(url); // check for a new dir may be added in the future?
 
   if (isIndexFile(url)) episodeBar.hide();
   else episodeBar.show();
