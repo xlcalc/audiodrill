@@ -4,6 +4,9 @@
 <script>
 (() => {
 console.log('pathname: ', location.pathname);
+if (location.pathname.startsWith('https://docs.google.com/document/')) 
+  window.location.assign('/task.html?t=' + location.pathname);
+
   if (['/t', '/m', '/txt'].includes(location.pathname))
     window.location.assign('/task.html');
   if (['/w', '/w/'].includes(location.pathname))
