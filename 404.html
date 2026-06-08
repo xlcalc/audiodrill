@@ -10,6 +10,7 @@ console.log('location ', location);
   }
 
   if (lpath.startsWith('/https://youtu.be/') || lpath.startsWith('/https://youtube.com/')) {
+console.log('lpath', lpath);
     window.location.assign('/task.html?m=' + lpath.slice(1) + location.search);
   }
 
