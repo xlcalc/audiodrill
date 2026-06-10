@@ -4,12 +4,12 @@
 <script>
 (() => {
 console.log('location ', location);
-  const lpath = location.pathname;
+  const lpath = location.pathname.replace('%3A', ':');
   if (lpath.startsWith('/https://docs.google.com/document/')) {
     window.location.assign('/task.html?t=' + lpath.slice(1) + location.search);
   }
 
-  if (/^\/https(?::|%3A)\/\/(youtu\.be|(?:www\.)?youtube\.com)\//.test(lpath)) {
+  if (/^\/https:\/\/(youtu\.be|(?:www\.)?youtube\.com)\//.test(lpath)) {
 console.log('lpath', lpath);
     window.location.assign('/task.html?m=' + lpath.slice(1) + location.search);
   }
