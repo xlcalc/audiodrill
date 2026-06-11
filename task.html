@@ -3774,9 +3774,8 @@ tstore.translation = { // experimental: 2026-02-14
   },
 
   setTask(n) {
-    players.currentTask = gstore.taskParts.getTask(n);
     this.tsectionNum = n ? 0 : 1; // logic will change as more sections are added
-    refreshTask();
+    refreshTask(gstore.taskParts.getTask(n));
   },
 
   addBtn() {
@@ -3986,13 +3985,13 @@ const vocabCallback = (cmd, param) => {
   }
 */
   if (cmd === 'VOCAB_ENTRY_ADDED') {
-    players.currentTask = param;
-	refreshTask();
+//    players.currentTask = param;
+	refreshTask(param);
   }
 }
 
-const refreshTask = () => {
-  loadElementWithText(players.currentTask, 'transcriptText');
+const refreshTask = s => {
+  loadElementWithText(s || players.currentTask, 'transcriptText');
 }
 
 const processTaskEl = async () => {
@@ -4950,13 +4949,13 @@ tstore.editVocabOn = (el) => {
 }
 
 tstore.editVocabOff = (el) => {
-  players.currentTask = gstore.vocab.getBeforeVocab(players.currentTask);
+  let txt = gstore.vocab.getBeforeVocab(players.currentTask);
   const vocabText = el.innerText.replace(/\u00A0/g, ' ') // replace &nbsp; with normal space
     .trim();
   if (vocabText) 
-    players.currentTask += gstore.vocab.prefix + '\n' +  vocabText;
+    txt += gstore.vocab.prefix + '\n' +  vocabText;
 //console.log('End of editing: currentTask', players.currentTask);
-  refreshTask();
+  refreshTask(txt);
 }
 
 const handleVocab = () => {
@@ -5504,12 +5503,13 @@ const stopWatch = {
 gstore.taskParts = {
   header: '',
   sections: [],
+//  vocab: [],
   languages: [],
-
   currSectionNum: 0,
+
   getCurrSectionLang() { return this.languages[this.currSectionNum] },
 
-  getSection(text, sectionNum = 0) {
+  getSection(text = '', sectionNum = 0) {
     this.header = '';
     this.sections = [];
     this.languages = [];
@@ -5523,26 +5523,43 @@ gstore.taskParts = {
     for (const part of parts) {
       const lines = part.split('\n');
 
-      let lang = null;
+//      let lang = null;
 	  const len = lines[0].trim().length;
-
-      if (len >= 2 && len <= 3) lang = lines.shift().trim();
+      const lang = (len >= 2 && len <= 3) ? lines.shift().trim() : null;
 
       this.languages.push(lang);
       this.sections.push(lines.join('\n').trim());
     }
+
+// Same structure for text without :section:
+    if (!parts.length) {
+      this.sections[0] = this.header;
+      this.header = '';
+    }
+/*
+    this.sections.forEach((section, i) => {
+// Should vocab.js fns be used instead?
+      this.vocab[i] = section.split(':vocab:')[1]?.trim() || '';
+    });
+*/
     return this.getTask(sectionNum);
   },
   
-  getTask(i) {
-//    if (i < 0) i = 0;
-//    if (i > this.sections.length -1) i = this.sections.length -1;
-    this.currSectionNum = i = clamp(i, 0, this.sections.length -1);
-  // Return header + first section
-    return [this.header, this.sections[i]]
+  getCurrTask() {
+// In the future it might include :section: [lang]
+    return [this.header, this.sections[this.currSectionNum]]
       .filter(Boolean)
       .join('');  
-  }
+  },
+
+  getTask(i) {
+    this.currSectionNum = i = clamp(i, 0, this.sections.length -1);
+
+    return getCurrTask();
+  },
+
+// fn of setting a task with text (after editing or in refreshTask() ) is problematic b/c text combines the header and section
+// while here they are stored separately
 }
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));

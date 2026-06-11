@@ -160,7 +160,8 @@ async function loadElementFromURL(eID, url, altUrl) {
     gstore.docHasSections = txt.includes(':section:');
 	if (gstore.fromGoogleDoc) txt = extractFromGoogleDoc(txt);
 // Sections can be analysed and just one section  to be shown via loadElementWithText
-    if (eID === 'transcriptText' && gstore.docHasSections) txt = gstore.taskParts.getSection(txt);
+//    if (eID === 'transcriptText' && gstore.docHasSections) txt = gstore.taskParts.getSection(txt);
+    if (eID === 'transcriptText') txt = gstore.taskParts.getSection(txt, 0);
 
 	if (txt) loadElementWithText(txt, eID, cmd);
 	else { 
@@ -212,6 +213,11 @@ function uploadTextFile(evt, fnName, param) {
 
 function loadElementWithText(sourceText, eID, cmd) {
   displayOverlayClose();
+  if (!sourceText || !eID) {
+    console.warn('sourceText', sourceText, '; eID', eID);
+    return;
+  }
+
   const parseWlist = txt => {
 // issues tbc:
 // commas and hypens in flashcards
@@ -580,11 +586,11 @@ gstore.copyVoiceList = suffix => {
 
   targetEl.innerHTML = sourceEl.innerHTML;
   [...targetEl.children].forEach(el => { el.id = el.id + suffix });
-/*
+
   elid('voice-select' + suffix).onchange = function(e) {
     handleVoiceSelect(e.target);
   }
-*/
+
 }
 
 const getPbrHtml = (s='') => {
@@ -2265,7 +2271,7 @@ const highlightText = txt => {
   }
 
 
-  const simpleATag = url => `<a href=${url} target="_blank">${url}</a>`;
+  const simpleATag = (prefix, url) => `<a href=${prefix + url} target="_blank">${url}</a>`;
 
   const toStyle = (style, txt) => `\n<div style="line-height:1.4em;font-size:${style}">${txt}</div>`;
 
@@ -2319,7 +2325,9 @@ const highlightText = txt => {
   .replace(/{star}/g, '*') // insert *
 
 // {x-vars .*?} can be added 
-  .replace(/\<https?:\/\/.*?\>/g, s => simpleATag(s.slice(1, -1))) // hyperlink as <https?://...>  
+//  .replace(/\<https?:\/\/.*?\>/g, s => simpleATag(s.slice(1, -1))) // hyperlink as <https?://...>  
+  .replace(/<(https?:\/\/.*?)>/g, (_, url) => simpleATag('', url)) // hyperlink as <https?://...>  
+  .replace(/<(www\..*?)>/g, (_, url) => simpleATag('https://', url)) // hyperlink as <https?://...>  
 
 //  .replace(/[{]{2,}[^\|]+?\|[^\|]+?[}]{2,}/g, s => expandTip(s)) // tips as {{tip|text}}
 //  .replace(/{{\s*audio\s*:\s*([^]+?\s*)}}/g, (match, p1) => expandAudio(p1)) // video as {{video:url}}
@@ -2345,9 +2353,9 @@ const highlightText = txt => {
   // tts for text before any of these tockens:
   // \n, \r, <br>, [end of line], <), <)), <x-br
 
-  .replace(/\${gstore\.(\w+)}/g, (match, p1) => gstore[p1] || '') // insert gstore const
+  .replace(/\${gstore\.(\w+)}/g, (_, p1) => gstore[p1] || '') // insert gstore const
 // Protected chars are restored
-  .replace(/___ESCAPED_(\d+)___/g, (match, p1) => String.fromCharCode(p1))
+  .replace(/___ESCAPED_(\d+)___/g, (_, p1) => String.fromCharCode(p1))
 
   .trimStart() // remove the leading \n if any
   ;
@@ -2379,7 +2387,6 @@ const fetchDirInfo = async () => {
 	  else console.log('Dir.info file not found');
   } catch(e) {
       console.error('Dir.info fetch error', e);
-//	  gstore.dirInfo = 'ERROR';
 	  gstore.dirInfo = ''; // b/c later it's checked: if (!gstore.dirInfo)...
   }
 }
@@ -2500,13 +2507,10 @@ const getEpisodeNavigation = (dirInfo, url) => {
 //      || (wordsPageActive() && ttsGame.loadStatus !== 'loaded') // why is this test needed?
 	  ) return ''; 
 
-/*
-  const atagOld = (btn, href, note) => `[<div class="inline-flex padding-03em rounded btn-lighgray">${btn}</div>]`
-    + `(${actKey}${href} class="no-text-deco" title="To the ${note}")`;
-*/
+
   const active = (btn, href, note) => {
-    const key = getActivityKey();
-	return `<div class="inline-flex padding-03em rounded acolor btn-lighgray" 
+  const key = getActivityKey();
+  return `<div class="inline-flex padding-03em rounded acolor btn-lighgray" 
 	  onclick="changeEpisode('${key}', '${href}')" 
 	  title="To the ${note}">${btn}</div>`;
   }
@@ -2637,11 +2641,8 @@ const setVoiceList = (par) => {
 	  voiceName = 'TTS voice is not avaiable for this language';
 	  
   for (const [i, voice] of par.voices.entries()) {
-//	if (par.shortNames) {
       const lang = voice.lang.split(/_|-/); // split with minus or underline
       voiceText = (lang[1] || lang[0]).slice(0, 2);
-//	} 
-//	else voiceText = voice.lang;
 	
 	if (numOfVoices > 1) voiceText += ' (' + (i + 1) + ')';
 	voiceName = voice.name
@@ -2715,22 +2716,8 @@ onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.sp
 `;
 
 const addVoicesCtrl = n => {
-/*
-  const txt = `
-<span id="tts-select-prompt${v}" title = "Text-to-speech computer voice"></span>
-<select id="voice-select${v}" class="drop-down darker-hover" name="voice" 
-  onchange="handleVoiceSelect(this, ${v})">
-</select>
-<button id="voice-test${v}" title="Click to hear the voice" class="plain-button font-95pc inline btn-lighgray rounded" 
-onclick="sayCtrlVoiceName(${v})"><span style="vertical-align:0.05em">${gstore.speakerIcon}</span>test
-</button>
-`;
-//  setElHTML('tts-select' + v, txt);
-*/
   setElHTML('tts-select' + n, gstore.getVoiceCtrl({ v: n }));
-//  elid('tts-select' + n).onchange = function(e) {
   elid('voice-select' + n).onchange = function(e) {
-//   if (!e.isTrusted) return;
     handleVoiceSelect(e.target, n);
   };
 }

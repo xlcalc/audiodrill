@@ -22,8 +22,10 @@ console.log('lpath', lpath);
   if (match) {
     let [, type, path] = match;
 console.log('path: ', path);
-	path = path.replace(/s2\/\//, 's2://');
-	if (!['l', 'txt'].includes(type) && path && !path.includes('//'))
+//	path = path.replace(/s2\/\//, 's2://');
+	path = path.replace('s2//', 's2://');
+//	if (!['l', 'txt'].includes(type) && path && !path.includes('//'))
+	if (type === 't' && path && !path.includes('//'))
       path = '/' + path;
 
 	let keys = location.search;

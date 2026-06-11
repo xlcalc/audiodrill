@@ -547,6 +547,7 @@ onclick="popFilmWindow('${wrstore.query}&language=es'); return false;">PlayPhras
 <<wsjp.pl/szukaj/podstawowe/wyniki?szukaj=${wrstore.query}'>WSJP</a>
 <br>
 <<google.com/search?q=definicja+${wrstore.query}'>Przegląd od Google AI</a> ∙ 
+<<baltoslav.eu/ipa/index.php?mova=en&j=pl&t=${wrstore.query}'>IPA</a> ∙ 
 <<synonim.net/synonim/${wrstore.query}'>Synonimy</a> ∙ Cytaty:
 <<pl.bab.la/zdania/polski/${wrstore.query}'>Bab.la</a>,
 <<sjp.pwn.pl/korpus/szukaj/${wrstore.query}'>korpus PWN</a>
