@@ -213,7 +213,7 @@ function uploadTextFile(evt, fnName, param) {
 
 function loadElementWithText(sourceText, eID, cmd) {
   displayOverlayClose();
-  if (!sourceText || !eID) {
+  if (!eID) {
     console.warn('sourceText', sourceText, '; eID', eID);
     return;
   }
