@@ -5555,7 +5555,7 @@ gstore.taskParts = {
   getTask(i) {
     this.currSectionNum = i = clamp(i, 0, this.sections.length -1);
 
-    return getCurrTask();
+    return this.getCurrTask();
   },
 
 // fn of setting a task with text (after editing or in refreshTask() ) is problematic b/c text combines the header and section
