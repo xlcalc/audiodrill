@@ -2245,17 +2245,19 @@ const loadTaskFromURLParam = urlKeys => {
   let r = urlKeys.get('tasklist') || urlKeys.get('t');
   if (r?.startsWith('https://docs.google.com/document/')) {
     const tab = urlKeys.get('tab');
-    if (tab) r = r + '?tab=' + tab;
+    if (tab) r += '?tab=' + tab;
   }
-  if (r) loadHtmlTaskByURL(r, true);
-  return r;
+
+  if (!r) return r;
+  return loadHtmlTaskByURL(r, true); // async process
 }
 
 const loadHtmlTaskByURL = async (url, newDir = false) => {
-  gstore.taskUrl = getNewURL(url, 1);
+  if (!url) return url;
   const id = 'transcriptText';
   showSpinner(id);
   elid(id).url = url;
+  gstore.taskUrl = getNewURL(url, 1);
   
   if (newDir) {
     episodeBar.hide();
@@ -2264,6 +2266,7 @@ const loadHtmlTaskByURL = async (url, newDir = false) => {
 // allow url without .txt ending via altUrl  
   const altUrl = gstore.taskUrl.endsWith('.txt') ? '' : gstore.taskUrl + '.txt';
   loadElementFromURL(id, gstore.taskUrl, altUrl);
+  return gstore.taskUrl;
 }
 
 /*
@@ -3405,8 +3408,7 @@ const copyTime = el => {
 }
 
 const changeEpisode = (key, url) => {
-  if (!url) return;
-  loadHtmlTaskByURL(url); // check for a new dir may be added in the future?
+  if (!loadHtmlTaskByURL(url)) return; // check for a new dir may be added in the future?
 
   if (isIndexFile(url)) episodeBar.hide();
   else episodeBar.show();
@@ -3862,6 +3864,7 @@ const taskTextHandler = txt => {
   if (gstore.calledFromWords) txt = gstore.vocab.renderTag(txt, 'TTS Reader');
   else txt = gstore.vocab.renderTag(txt, 'EMPTY_VOCAB_HEADER');
   
+  extractXvars(null);
   return  handlePairedLines(txt)
     .replace(/:lang:.*\n?/g, '')
     .replace(/<x-vars[^>]*>/, s=> extractXvars(s))
@@ -3917,7 +3920,7 @@ const extractXvars = s => {
   if (s) {
     tstore.xvarsBox = document.createElement('div');
     tstore.xvarsBox.innerHTML = s.replace('&lt;', '<').replace('&gt;', '>');
-  }
+  } else tstore.xvarsBox = s;
   return '';
 }
 
@@ -5578,7 +5581,7 @@ const putCaretAtStart = (el, cmd) => {
 
 tstore.howToPractice = () => {
 //  const plainBtn = 'class="plain-button rounded ptr font-100pc" style="padding: .1em; text-decoration: underline dotted #aaa;" ';
-  const card = 'class="box-shadow" style="padding: .5em 1em; background-color: floralwhite"';
+  const card = 'data-themeable class="box-shadow" style="padding: .5em 1em; background-color: floralwhite"';
 
 return `<div class="no-tts font-80pc" style="color: darkslategray; max-width: 400px">~Practice tips~{{{
 <div ${card}>Start with listening and repeating after the speaker:
@@ -5636,6 +5639,7 @@ tstore.toEditingTA = () => {
   transcriptText.innerHTML = tstore.previousTask;
   qsel('textarea').value = tstore.taContent;
   elid('practiceTips').innerHTML = tstore.previousPracticeTips;
+// should tstore.xvarsBox be restored too?
 }
 
 const showOneEl = (prefix, key, caller) => {

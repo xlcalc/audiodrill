@@ -70,7 +70,7 @@ console.error('** YouGlish error', e.code);
   function onVideoChange(e) {
 //    youglish.manuallyPaused = false; // it's set in onPlayerStateChange() when e.state changes to 3 (playing)
 console.log('Video change event:', e);
-//    if (!youglish.manuallyClosed) youglish.manuallyPaused = false;
+
     youglish.curTrack = e.trackNumber;
     youglish.views = 1;
     ygCallback('RESET_SPEED');
@@ -83,6 +83,7 @@ console.log('YG player ready');
   }
 
   const replayOrNext = () => {
+    if (youglish.manuallyPaused || youglish.manuallyClosed) return;
 // To avoid early replay, should be bounced if user manually moves to the next clip
 // To check it, the clip number should be compared with the previous one
     if (youglish.views < ygCallback('GET_REPLAY_NUMBER')) {
@@ -105,7 +106,7 @@ console.log('YG player ready');
 	const ms = charsBeforeEnd < 10? 1000 : 2000;
     await ygCallback('SLEEP', ms); // wait a bit because onCaptionConsumed may fire too early
 //	if (charsBeforeEnd < 10) 
-		widget.replay();
+    if (!youglish.manuallyPaused && !youglish.manuallyClosed) widget.replay();
     widget.pause();
     await ygCallback('SLEEP', 4000); // pause so that the user could read and think
   

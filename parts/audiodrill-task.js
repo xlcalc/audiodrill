@@ -452,8 +452,7 @@ function parseTaskText(sourceText, saveTask) {
 const applyDirInfo = s => {
   if (!gstore.dirInfo) return s;
   const xvars = getDirInfoKey('x-vars:');
-//  if (xvars && !isIndexFile(gstore.taskUrl)) s = s.replace('<x-vars ', '<x-vars ' + xvars + ' '); // adding xvars in the end of the tag may be preferred
-  if (xvars && !isIndexFile(gstore.taskUrl)) addXvars(xvars); // changed 2024-11-06
+  if (xvars && !isIndexFile(gstore.taskUrl)) addXvars(xvars);
 // if this is a dir index, applying xvars may not be needed?
   
 // other common lines may be added
@@ -461,8 +460,6 @@ const applyDirInfo = s => {
     const res = getDirInfoKey(s.slice(1, -1) + ':');
     return res? highlightText(res) : s;
   }
-//  const txt1 = getDirInfoKey('txt1:');
-//  if (txt1) s = s.replace(':txt1:', highlightText(txt1)); // adding several txt vars via replace regexp \${txt\d} may be preferred
   s = s.replace(/{txt\d?\d}/g, s => getTextVar(s)); 
 
   return s;

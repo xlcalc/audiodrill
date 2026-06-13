@@ -79,6 +79,7 @@ uiblox.topMenuHtml = `
   padding: 0.1em;
   padding: 0.6em;
   color: #687;
+  color: var(--a-color);
   cursor: pointer;
   line-height:1.2em;
   line-height: 1em;
