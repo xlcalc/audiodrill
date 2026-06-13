@@ -2979,7 +2979,33 @@ console.log(res.matches.map(entry => entry.translation + ` (${entry.quality})`))
 	[0]; // first value is usually the most accurate
 }
 
-const getYouTubeId = url => {
+function getYouTubeId(input) {
+  // Bare video ID
+  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) {
+    return input;
+  }
+
+  try {
+    const u = new URL(input);
+
+    if (u.hostname === 'youtu.be') {
+      return u.pathname.slice(1);
+    }
+
+    if (
+      u.hostname === 'youtube.com' ||
+      u.hostname === 'www.youtube.com'
+    ) {
+      return u.searchParams.get('v');
+    }
+  } catch {
+    // Not a valid URL
+  }
+
+  return null;
+}
+
+const getYouTubeIdOld = url => {
   let res = null;
   if (!url.match(/[^0-9-_a-zA-Z]/) && (url.length === 11)) // url looks like YT ID?
     res = url;
