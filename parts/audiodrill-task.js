@@ -98,6 +98,7 @@ const displayMessage = async (txt, msec = 2700) => {
 }
 
 const displayAlarmMessage = (txt, msec = 2700) => {
+  console.warn('Alarm msg:', txt);
   displayOverlay(txt, msec, 'ALARM');
 }
 
