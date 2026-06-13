@@ -5257,6 +5257,10 @@ tstore.sentences = {
     .replace(/(<\/?)(h[1-6]|div)([^>]*>)/g, '<x-dummy>\n$1$2$3<x-dummy>\n')
     .replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3')
     .replace(/!([”"'])( )+([a-z])/g, '%21$1$2$3')
+
+// Segmenter doesn't recognize a new sentence if it starts with <input> or <span> el
+    .replace(/<input /g, '<INPUT ') 
+    .replace(/<span /g, '<SPAN ') // maybe <span> should also be replace
 	;
 
 // What with <img> tags?
@@ -5267,7 +5271,7 @@ tstore.sentences = {
     const segmenter = new Intl.Segmenter(lang, { granularity: 'sentence' });
     return [...segmenter.segment(this.source)]
       .map((entry) => getWrappedLine(entry.segment
-        .replaceAll('%21', '!').replaceAll('%3F', '?').replaceAll('<x-dummy>\n', ''), wrap))
+        .replaceAll('%21', '!') .replaceAll('%3F', '?') .replaceAll('<x-dummy>\n', ''), wrap))
 //	  .filter(s => s) //leave non-empty lines
   },
 
