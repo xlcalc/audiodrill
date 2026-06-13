@@ -2985,6 +2985,8 @@ function getYouTubeId(input) {
     return input;
   }
 
+  input = input.replaceAll('%3F', '?'); // more replacements may be needed later
+
   try {
     const u = new URL(input);
 
