@@ -927,7 +927,7 @@ z-index: 2;
 </div>
 
 <!--
-<div id="mic" class="flex hidden" title="Start dictating (Chrome or Edge only)">
+<div id="mic" class="flex hidden" title="Start dictating (Chrome only)">
 </div>
 -->
 
@@ -5495,7 +5495,7 @@ const disableVoiceInput = () => {
 }
 
 const sttCallback = (cmd) => {
-  if (cmd === 'STT_NOT_SUPPORTED') displayAlarmMessage('The browser does not support speech recognition. Try Edge or Chrome.', 3500);
+  if (cmd === 'STT_NOT_SUPPORTED') displayAlarmMessage('The browser does not support speech recognition. Try Chrome.', 3500);
 }
 
 const onSpecKeyClick = (event, el) => {

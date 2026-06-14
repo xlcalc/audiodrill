@@ -56,7 +56,7 @@ const toggleMic = async () => { // used in words/index and embed
   setElClass(mic, 'mic-on', mic.isOff); // now mic appearance is defined by mic.isOff state
   mic.isOff = !mic.isOff;
   if (mic.isOff) {
-    mic.title = 'Dictate words or phrases (Chrome or Edge only)';
+    mic.title = 'Dictate words or phrases (Chrome only)';
     recognition.allowed = false;
     sttCallback('MIC_TURNED_OFF');
   } else {

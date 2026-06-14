@@ -227,10 +227,11 @@ console.log(`TTS paused after ${event.elapsedTime}ms`);
 console.log(`TTS resumed after ${event.elapsedTime}ms`);
   }
 
-  utterance.onerror = (event) => {
-console.log(`TTS ERROR ${event.error}`);
-  }
 */
+  utterance.onerror = (event) => {
+console.warn(`TTS ERROR ${event.error}`);
+    displayAlarmMessage('Try selecting a different voice in Settings');
+  }
 }
 
 function speak(text = gstore.currentQuery || '', cmd, speed) {
