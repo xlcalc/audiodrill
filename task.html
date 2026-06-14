@@ -2236,9 +2236,41 @@ const analyzeURLParams = async () => {
     }
   }
 
+  const fromDir = urlKeys.get('u');
+  if (fromDir) {
+    taskText = await loadTaskByDir(fromDir);
+  } 
+
   if (!taskText && !mediaFile && !loadTaskFromURLParam(urlKeys)) { 
     loadHtmlTaskByURL('/tasklist/default.txt'); 
   }
+}
+
+const loadTaskByDir = async key => {
+  let r = await getUrlFromDirFile(key);
+  if (r) return loadHtmlTaskByURL(r, true); // async process
+
+//  displayAlarmMessage("Can't find " + key);
+  await displayOverlay("Can't find " + key, 2500, 'ALARM');
+  return r;
+}
+
+const getUrlFromDirFile = async key => {
+  const dir = 'https://docs.google.com/document/d/1ivaaIiKzDlBJLgKYOoQbnitypuFwPtJ0kspHiitn6fE/export?tab=t.0'
+  try {
+    const html = await fetchText(dir, false);
+	if (getTextFromHTML) {
+      const txt = getTextFromHTML(html);
+      const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`\\[${escapedKey}\\]\\(([^)]*)\\)`);
+      const match = txt.match(regex);
+      return match?.[1];
+    } else console.log('Dir file not found');
+
+  } catch(e) {
+      console.error('Dir file fetch error', e);
+  }
+  return null;
 }
 
 const loadTaskFromURLParam = urlKeys => {
@@ -2257,7 +2289,7 @@ const loadHtmlTaskByURL = async (url, newDir = false) => {
   const id = 'transcriptText';
   showSpinner(id);
   elid(id).url = url;
-  gstore.taskUrl = getNewURL(url, 1);
+  gstore.taskUrl = getNewURL(url, true);
   
   if (newDir) {
     episodeBar.hide();

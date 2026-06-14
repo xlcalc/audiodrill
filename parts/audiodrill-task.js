@@ -82,7 +82,7 @@ async function displayOverlay(par = '', msec, cmd) {
 
     case 'ALARM':
 	  overlay.classList.add('alarm-bgr');
-      displayOverlay(msg, msec, 'CLEAR_AFTER');
+      await displayOverlay(msg, msec, 'CLEAR_AFTER');
       break;
 
     default:
@@ -721,7 +721,7 @@ const getRelatedURL = (url, newURL) => {
 const getPathFromUrl = url => url.substring(url.lastIndexOf('/')+1, 0);
 const getFnameFromUrl = url => url.substring(url.lastIndexOf('/')+1);
 
-function getNewURL(url, keep = 0) {
+function getNewURL(url, keep = false) {
 //  if (!this.url) this.url = ''; //saved url
 //  const newURL = getRelatedURL(this.url, adjustUrl(url));
   const newURL = getRelatedURL(adjustUrl(gstore.keptUrl), adjustUrl(url));
@@ -734,7 +734,7 @@ function getNewURL(url, keep = 0) {
 //const adjustUrl = url => (url && url.startsWith("//")) ? url.replace("//", urlBase) : url;
 //const squeezedUrl = (url, keep = 1) => getNewURL(url, keep).replace(urlBase, '//');
 
-const squeezedUrl = (url, keep = 1) => getNewURL(url, keep)
+const squeezedUrl = (url, keep = true) => getNewURL(url, keep)
   .replace('https://drmedia.netlify.app/', '//')
 //  .replace('https://raw.githubusercontent.com/xlcalc/blog/main/', 's2://');
   .replace('https://raw.githubusercontent.com/xlcalc/blog/main/', '/2/');
@@ -2211,7 +2211,7 @@ const highlightText = txt => {
 
     if (url.endsWith('.txt') && !url.includes('?t=') && !url.includes('url=')) // for task filenames
 	// use compact url instead of getNewURL
-      url = getActivityKey() + squeezedUrl(url, 0); // what if url starts with / or ../ ?
+      url = getActivityKey() + squeezedUrl(url, true); // what if url starts with / or ../ ?
 
     return [`<a href=${url} ${attributes} ${target}>${atext}</a>`, url];
   }
@@ -2365,8 +2365,8 @@ const showSpinner = eID => {
   setElHTML(eID, spinner);
 }
 
-const fetchText = async url => {
-  const response = await fetch(getNewURL(url, 1));
+const fetchText = async (url, keep = true) => {
+  const response = await fetch(getNewURL(url, keep));
 
   if (!response.ok) {
 //    throw new Error('File loading error: ' + response.status);
@@ -3005,18 +3005,6 @@ function getYouTubeId(input) {
   }
 
   return null;
-}
-
-const getYouTubeIdOld = url => {
-  let res = null;
-  if (!url.match(/[^0-9-_a-zA-Z]/) && (url.length === 11)) // url looks like YT ID?
-    res = url;
-  else { // check full url
-    const rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
-    const YTIdInfo = url.replace(/youtube\.com\/(shorts|live)\//, 'youtu.be\/') .match(rx);
-    if (YTIdInfo !== null) res = YTIdInfo[1];
-  }
-  return res;
 }
 
 gstore.getContextLangCode = (el) => ((el || gstore.engagedEl) && typeof getContextLang !== "undefined")
