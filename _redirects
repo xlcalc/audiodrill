@@ -20,7 +20,7 @@
 /rpl     /?t=/tasklist/live-radio.txt&stream=https://radiostream.pl/tuba10-2.mp3
 /tasks   https://docs.google.com/spreadsheets/d/1EtMSKg7AadwYDGtymTAcbpIDBssFcA4q6FRIHDerqi8
 /tv   /?t=/tasklist/live-tv.txt
-/u/*   /?shorturl=:splat
+/u/*   /?u=:splat
 /voa /?t=//en/voa.txt
 /voa1 /?t=//en/voa1/voa1-index.txt
 /voa2 /?t=//en/voa2/voa2-index.txt
