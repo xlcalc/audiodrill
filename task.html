@@ -3715,7 +3715,8 @@ tstore.translation = { // experimental: 2026-02-14
     this.text = '';
     this.sentences = [];
     this.isOn = false;
-	if (this.tsectionNum === -1) this.tsectionNum = gstore.taskParts.sections.length - 1; // logic will change as more sections are added
+    if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
+// logic will change as more sections are added
   },
 /*
   extractOld(txt) {
