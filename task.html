@@ -2248,7 +2248,7 @@ const analyzeURLParams = async () => {
 
 const loadTaskByDir = async key => {
   let r = await getUrlFromDirFile(key);
-  if (r) return loadHtmlTaskByURL(r, true); // async process
+  if (r) return loadHtmlTaskByURL(r); // async process
 
 //  displayAlarmMessage("Can't find " + key);
   await displayOverlay("Can't find " + key, 2500, 'ALARM');
@@ -2274,14 +2274,16 @@ const getUrlFromDirFile = async key => {
 }
 
 const loadTaskFromURLParam = urlKeys => {
+  let newDir = true;
   let r = urlKeys.get('tasklist') || urlKeys.get('t');
   if (r?.startsWith('https://docs.google.com/document/')) {
+    newDir = false;
     const tab = urlKeys.get('tab');
     if (tab) r += '?tab=' + tab;
   }
 
   if (!r) return r;
-  return loadHtmlTaskByURL(r, true); // async process
+  return loadHtmlTaskByURL(r, newDir); // async process
 }
 
 const loadHtmlTaskByURL = async (url, newDir = false) => {
@@ -5360,14 +5362,17 @@ tstore.STT = {
 
   destroyToolbar() { displayOverlay('') },
   
-  init() {
+  init(cmd = 1) {
     setMediaInTask(0);
     const langCtrlCloneBox = '<div id="lang-ctrl-clone-box" class="inblock"></div>';
+    const sttSwitch = cmd 
+      ? '<span id="stt-switch-box" class="padding-03em" style="cursor:default"><span id="stt-switch-icon">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></span></div></div>'
+      : '';
     const msg = '<div id="gap-tools-box">' 
 	  + uiblox.specKeys.boxHtml 
 	  + '<div>'
 	  + langCtrlCloneBox
-	  + '<span id="stt-switch-box" class="padding-03em" style="cursor:default"><span id="stt-switch-icon">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></span></div></div>';
+	  + sttSwitch;
 //    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray); left:auto; right:0; transform: translateX(-10px);';
     const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray)';
     displayOverlay({msg: parseXswitch(msg), style: msgStyle, noCloseBtn: true});
@@ -5446,7 +5451,10 @@ const enableVoiceInput = async () => {
  
   
 //console.log('✔️ Enable Voice Input: STT allowed?', sttAllowed());
-  if (!recognition.supported) return;
+  if (!recognition.supported) {
+    tstore.STT.init(0);
+    return;
+  }
 
   let micPermission = await getNavigatorMicPermission();
 
