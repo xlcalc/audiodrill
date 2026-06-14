@@ -44,11 +44,14 @@
 .cloze {
   line-height: 1.1em;
   border: 1px gainsboro dotted;
-  border-bottom-color: darkslategray;
+/*  border-bottom-color: darkslategray;*/
   outline: none;
   color: #269;
   color: var(--a-color);
+  box-shadow: rgb(150, 150, 150) 0px 1px 1px;
 }
+
+.cloze::placeholder { color: #888 }
 
 .cloze:focus {
   border-bottom: 2px #469 solid;
@@ -1180,7 +1183,7 @@ const getTextWidth = (el, s = '') => {
 const adjustGapWidth = (gap, s = '') => {
   const txt = s || gap.value || gap.placeholder || '_____'; // the latter is for an empty field
 //console.log('Adjust gap width for', txt);
-  const newWidth = getTextWidth(gap, txt);
+  const newWidth = getTextWidth(gap, txt) + 2;
   const oldWidth = parseFloat(gap.style.width);
   if (!s || newWidth > oldWidth) gap.style.width = newWidth + 'px';
   // else don't shrink while typing
@@ -3707,7 +3710,7 @@ const shareFragment = () => {
 
 
 tstore.translation = { // experimental: 2026-02-14
-  marker: ':transl:',
+//  marker: ':transl:',
   tsectionNum: -1,
 
   init() {
@@ -4488,7 +4491,7 @@ transition: opacity 0.25s; opacity: 1;"
     this.playPauseBtn().focus();
     this.setTtsPlayMode();
   },
-  
+
   setTtsPlayMode(mode) {
     const el = elid('ttsPlayMode');
 
