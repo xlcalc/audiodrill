@@ -228,10 +228,10 @@ console.log(`TTS resumed after ${event.elapsedTime}ms`);
   }
 
 */
-  utterance.onerror = (event) => {
+  utterance.onerror = e => {
     if (e.error === 'canceled' || e.error === 'interrupted') return;
 
-console.warn(`TTS ERROR ${event.error}`);
+console.warn(`TTS ERROR ${e.error}`);
     displayAlarmMessage('Try selecting a different voice in Settings');
   }
 }
