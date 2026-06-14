@@ -4063,7 +4063,7 @@ const afterTaskLoaded = () => {
   const tag = elid('startmedia'); // legacy tag to load video for this task
   if (tag) getVideoByURL(tag.getAttribute('url'), 'NEW_TASK');
   parseTTSTag(transcriptText); // run before prepareCloze
-  prepareSettings();
+//  prepareSettings();
   emulateCueClick();
 
   [tstore.nodes, tstore.taskSentences] = tstore.sentences.init(transcriptText);
@@ -4076,6 +4076,7 @@ const afterTaskLoaded = () => {
   setupVoiceInputForTextareas();
   scrollToHash();
   if (!players.isVideoSizeSet) setVideoSize(-1);
+  prepareSettings();
 }
 
 const emulateCueClick = () => {
