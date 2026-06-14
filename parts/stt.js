@@ -66,7 +66,7 @@ const toggleMic = async () => { // used in words/index and embed
 }
 
 const sttAllowed = () => {
-  if (!recognition.allowed) return false;
+  if (!recognition.supported || !recognition.allowed) return false;
   if (recognition.useAudioRecorder && audioRecorder.startBanned()) {
 console.log('audioRecorder startBanned');
 	return false;

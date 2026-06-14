@@ -4490,13 +4490,18 @@ transition: opacity 0.25s; opacity: 1;"
   setTtsPlayMode(mode) {
     const el = elid('ttsPlayMode');
 
+    this.shadowModes.forEach(mode => {
+      const option = el.querySelector(`option[value="${mode}"]`);
+      option.hidden = !recognition.supported;
+    });
+
     const setDDL = () => {
       this.ttsPlayMode = el.value;
       const selectedOption = el.options[el.selectedIndex];
       el.title = selectedOption.title || '';
     }
 
-	if (mode) el.value = mode;
+	if (mode && (recognition.supported || !this.shadowModes.include(mode))) el.value = mode;
     setDDL();
     el.onchange = () => { 
       this.dictDiv.remove();
