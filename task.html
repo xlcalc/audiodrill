@@ -1254,12 +1254,17 @@ const toggleGaps = el => {
   if (tstore.textToClozeMode) {
 //    if (el.checked && document.querySelectorAll('span[data-cloze]').length) clozeSpansToInput();
     if (el.checked) clozeSpansToInput();
-	else clozeInputToSpans();
+	else {
+      clozeInputToSpans();
+      tstore.STT.destroyToolbar();
+    }
   }
   else {
     if (!tstore.touchScreen && el.checked) displayMessage('Hover the mouse to see the answer', 2000);
     viewTestAnswers(el.checked);
+    if (!el.checked) tstore.STT.destroyToolbar();
   }
+  
 }
 
 const viewTestAnswers = cmd => {
@@ -3783,8 +3788,26 @@ tstore.translation = { // experimental: 2026-02-14
   },
 
   setListeners(el) {
-      el.onmouseenter = () => this.addTip(el);
-      el.onmouseleave = () => this.removeTip(el);
+      el.onmouseenter = () => {
+        this.addTip(el);
+      }
+
+//      el.onmouseleave = () => this.removeTip(el);
+	  el.onmouseleave = e => {
+        const rects = [...el.getClientRects()];
+
+        const stillInside = rects.some(r =>
+          e.clientX >= r.left &&
+          e.clientX <= r.right &&
+          e.clientY >= r.top - 4 &&
+          e.clientY <= r.bottom + 4 
+        );
+
+        if (stillInside) return;
+//console.log('Leave sentence', el.textContent.slice(0, 7));
+
+        this.removeTip(el);
+      }
   },
 
   set(cmd) {
@@ -3793,7 +3816,7 @@ tstore.translation = { // experimental: 2026-02-14
       tstore.nodes.forEach((el, i) => {
         if (this.sentences[i]) {
           el.dataset.transl = cmd ? this.sentences[i] : '';
-          setElClass(el, 'hover-overlay-s', cmd);
+//          setElClass(el, 'hover-overlay-s', cmd);
           this.setListeners(el);
         }
       });
@@ -3833,12 +3856,20 @@ tstore.translation = { // experimental: 2026-02-14
     this.set(true); // turn on immediately
    },
 
+  clearNodesStyle() {
+    tstore.nodes.forEach((el) => { el.style.backgroundColor = '' })	  
+  },
+
   async addTip(el) {
     const txt = el.dataset.transl;
     if (!txt) return;
     el.hovered = 1;
     await sleep(200);
     if (!el.hovered) return;
+
+	this.clearNodesStyle();
+    el.style.backgroundColor = 'var(--color-overlay-s)';
+
     document.querySelectorAll('.transl-tip').forEach(el => { el.remove() });
 
     const tip = document.createElement('div');
@@ -3876,6 +3907,7 @@ tstore.translation = { // experimental: 2026-02-14
     await sleep(200);
     if (el.hovered) return;
     if (el.child) el.child.remove();
+    el.style.backgroundColor = '';
   },
   
 //  inspectTips() { return document.querySelectorAll('.transl-tip') },
@@ -5229,7 +5261,6 @@ tstore.sentences = {
       .filter(el => !el.closest('.no-tts'))
       .map((el, i) => (el.dataset.sentenceIndex = i, el));
 
-//    tstore.taskSentences = tstore.nodes
     const resSentences = resNodes
       .map(el => this
         .getTextWithAlts(el)
