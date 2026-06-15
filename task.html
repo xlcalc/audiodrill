@@ -1264,7 +1264,6 @@ const toggleGaps = el => {
     viewTestAnswers(el.checked);
     if (!el.checked) tstore.STT.destroyToolbar();
   }
-  
 }
 
 const viewTestAnswers = cmd => {
@@ -3788,27 +3787,28 @@ tstore.translation = { // experimental: 2026-02-14
   },
 
   setListeners(el) {
-      el.onmouseenter = () => {
-        this.addTip(el);
-      }
+    el.onmouseenter = () => { this.addTip(el) }
 
-//      el.onmouseleave = () => this.removeTip(el);
-	  el.onmouseleave = e => {
+    el.onmouseleave = e => {
+      const check = e => {
         const rects = [...el.getClientRects()];
 
-        const stillInside = rects.some(r =>
+        const near = rects.some(r =>
           e.clientX >= r.left &&
           e.clientX <= r.right &&
           e.clientY >= r.top - 4 &&
-          e.clientY <= r.bottom + 4 
+          e.clientY <= r.bottom + 4
         );
 
-        if (stillInside) return;
-//console.log('Leave sentence', el.textContent.slice(0, 7));
-
-        this.removeTip(el);
+        if (!near) {
+          document.removeEventListener("mousemove", check);
+          this.removeTip(el);
+        }
       }
-  },
+   
+      document.addEventListener("mousemove", check);
+    }
+  }, // end setListeners()
 
   set(cmd) {
     this.isOn = cmd;	
@@ -3856,18 +3856,19 @@ tstore.translation = { // experimental: 2026-02-14
     this.set(true); // turn on immediately
    },
 
+/*
   clearNodesStyle() {
     tstore.nodes.forEach((el) => { el.style.backgroundColor = '' })	  
   },
-
+*/
   async addTip(el) {
     const txt = el.dataset.transl;
     if (!txt) return;
     el.hovered = 1;
-    await sleep(200);
-    if (!el.hovered) return;
+//    await sleep(200);
+//    if (!el.hovered) return;
 
-	this.clearNodesStyle();
+//	this.clearNodesStyle();
     el.style.backgroundColor = 'var(--color-overlay-s)';
 
     document.querySelectorAll('.transl-tip').forEach(el => { el.remove() });
@@ -3877,7 +3878,7 @@ tstore.translation = { // experimental: 2026-02-14
 
     setElClass(tip, ['transl-tip', 'box-shadow'], 1);
     setTipPosition(tip, el);
-//    tip.textContent = txt;
+
     elAddHTML(tip, txt);
 
 // link parent and child;
@@ -3904,8 +3905,8 @@ tstore.translation = { // experimental: 2026-02-14
   async removeTip(el) {
     if (!el.dataset.transl) return;
     el.hovered = 0;
-    await sleep(200);
-    if (el.hovered) return;
+//    await sleep(200);
+//    if (el.hovered) return;
     if (el.child) el.child.remove();
     el.style.backgroundColor = '';
   },
@@ -4057,10 +4058,7 @@ const vocabCallback = (cmd, param) => {
 //console.log(param)
   }
 */
-  if (cmd === 'VOCAB_ENTRY_ADDED') {
-//    players.currentTask = param;
-	refreshTask(param);
-  }
+  if (cmd === 'VOCAB_ENTRY_ADDED') refreshTask(param);
 }
 
 const refreshTask = s => {
@@ -5743,7 +5741,6 @@ const showOneEl = (prefix, key, caller) => {
 const formatTip = (key) => {
   showOneEl('format-', key);
 }
-
 
 </script>
 </body>
