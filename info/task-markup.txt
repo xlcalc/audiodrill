@@ -4,7 +4,7 @@
 
 
 <small>Explore how to add formatting and media to your learning activities with simple markup</small>
-<div class="font-75pc">[bold](btn: formatTip('bold'))  [italic](btn: formatTip('italic'))  [monospace](btn: formatTip('monospace'))  [small caps](btn: formatTip('smallcaps'))  [highlight](btn: formatTip('highlight'))  [headings](btn: formatTip('headings'))  [collapsible block](btn: formatTip('collapsible'))  [gap](btn: formatTip('gap'))  [dropdown](btn: formatTip('dropdown'))  [speaker](btn: formatTip('speaker'))  [audio/video](btn: formatTip('avideo'))  [image](btn: formatTip('image'))
+<div class="font-75pc">[bold](btn: formatTip('bold'))  [italic](btn: formatTip('italic'))  [monospace](btn: formatTip('monospace'))  [small caps](btn: formatTip('smallcaps'))  [highlight](btn: formatTip('highlight'))  [headings](btn: formatTip('headings'))  [collapsible block](btn: formatTip('collapsible'))  [link](btn: formatTip('link'))  [gap](btn: formatTip('gap'))  [dropdown](btn: formatTip('dropdown'))  [speaker](btn: formatTip('speaker'))  [audio/video](btn: formatTip('avideo'))  [image](btn: formatTip('image'))
 </div><div style="background-color: floralwhite"><div id="format-bold" hidden>
 
 Add `*` before and after the text to set it in bold.
@@ -101,6 +101,18 @@ The result looks like this:
 More details {{{
 This content can be collapsed.
 }}}
+
+</div><div id="format-link" hidden>
+
+Links are wrapped in square brackets followed by the URL in parentheses: `\[text\]\(URL\)`.
+
+<x-copy>`See \[hung vs. hanged\]\(https://m-w.com/grammar/hung-or-hanged\) for details.`</x-copy>
+
+
+
+The result looks like this:
+
+See [hung vs. hanged](https://m-w.com/grammar/hung-or-hanged) for details.
 
 </div><div id="format-gap" hidden>
 
