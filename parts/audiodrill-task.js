@@ -54,6 +54,7 @@ const displayOverlayClose = () => {
 }
 
 async function displayOverlay(par = '', msec, cmd) {
+  loadingDone();
   const overlay = qsel('.overlay');
   const closeBtn = '<div class="close-x rnd gray2 gray-onhover gray-bg-onhover" onclick="displayOverlayClose()">&times;</div>';
 
