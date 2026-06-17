@@ -2268,7 +2268,7 @@ const getUrlFromDirFile = async key => {
     const html = await fetchText(dir, false);
 	if (getTextFromHTML) {
       const txt = getTextFromHTML(html);
-      const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/ig, '\\$&');
       const regex = new RegExp(`\\[${escapedKey}\\]\\(([^)]*)\\)`);
       const match = txt.match(regex);
       return match?.[1];
