@@ -2218,7 +2218,7 @@ const highlightText = txt => {
   }
 
   const expandDblBraces = (match, p) => {
-	const s = p.trim();
+	const s = p.replace(/\u00A0/g, ' ') .trim();
 	const tipArr = s.split('|');
 	if (tipArr[1]) return expandTip(tipArr[0].trim(), tipArr[1].trim());
 
