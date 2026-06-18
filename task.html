@@ -4062,7 +4062,11 @@ const vocabCallback = (cmd, param) => {
 }
 
 const refreshTask = s => {
-  loadElementWithText(s || players.currentTask, 'transcriptText');
+  const txt = s || players.currentTask;
+// task should be reflected to taskParts
+  gstore.taskParts.setCurrTask(txt);
+  
+  loadElementWithText(txt, 'transcriptText');
 }
 
 const processTaskEl = async () => {
@@ -5596,6 +5600,7 @@ gstore.taskParts = {
   getCurrSectionLang() { return this.languages[this.currSectionNum] },
 
   getSection(text = '', sectionNum = 0) {
+    this.sourceText = text;
     this.header = '';
     this.sections = [];
     this.languages = [];
@@ -5644,8 +5649,12 @@ gstore.taskParts = {
     return this.getCurrTask();
   },
 
-// fn of setting a task with text (after editing or in refreshTask() ) is problematic b/c text combines the header and section
-// while here they are stored separately
+  setCurrTask(text) { // added 2026-06-18
+// called by refreshTask(), text doesn't contain sections
+
+	  this.sections[this.currSectionNum] = text.slice(this.header.length);
+  },
+
 }
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));

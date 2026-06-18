@@ -126,7 +126,6 @@ gstore.vocab = {
   },
 
 // ===
-  tag: '<RENDER_VOCAB_PREFIX>', // is it needed?
 
   render(s, options = {}) {
 	this.exists = false; 
@@ -154,6 +153,8 @@ gstore.vocab = {
     return markVocabEntries(s, gstore.vocabArr, gstore.vocabMode || '', options)
       .replace(this.prefix, this.tag);
   },
+
+  tag: '<RENDER_VOCAB_PREFIX>', 
 
   renderTag(s, cmd)  {
 	const optionalHeaderDiv = gstore.vocab.optionalHeaderDiv || '';

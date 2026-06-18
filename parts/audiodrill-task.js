@@ -995,7 +995,10 @@ async function displayInfopage(task, param) {
       infopageSaveBox('SHOW');
       iContent.contentEditable = "true";
       iContent.focus();
-      iContent.innerText = players.currentTask || '';
+//      iContent.innerText = players.currentTask || '';
+// Changed to getting full task with all sections
+      iContent.innerText = gstore.taskParts.sourceText || '';
+
 // line breaks characters may be changed compared to players.currentTask
       iContent.initialText = iContent.innerText;
       iContent.initialHTML = iContent.innerHTML;
@@ -1027,13 +1030,17 @@ placeholder="Enter video/audio URL here">
 		iContent.innerHTML = latestHTML.replace(/<b>|<\/b>/g, '*')
 		  .replace(/<i>|<\/i>/g, '~'); //  keep formatting changes made with Ctrl+B, Ctrl+I
 		
-        loadElementWithText(iContent.innerText, 'transcriptText');
-//        loadElementWithText(latestText, 'transcriptText');
-//        loadElementWithText(latestHTML, 'transcriptText');
+//        loadElementWithText(iContent.innerText, 'transcriptText');
+// Full task with all sections is stored, not one section as before 2026-06-18
+// Not clear what to do with <style> in case of Google Doc
+        const txt = gstore.taskParts.getSection(iContent.innerText, 0);
+        loadElementWithText(txt, 'transcriptText'); // dont' use refreshTask
       }
+
       if (iContent.lastTask === 'EDIT_YT_STYLE' && iContent.initialHTML !== latestHTML) {
         handleYTstyleInput(latestText);
       }
+
       loadElementWithText('', 'infopage-content');
 //	  hideEl(iPage);
 	  dismissEl(iPage);
