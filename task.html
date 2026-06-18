@@ -5074,7 +5074,8 @@ const handleVocab = () => {
 
 tstore.downloadTask = () => {
   const origUrl = squeezedUrl(gstore.keptUrl);
-  const text = `original-url=${origUrl}\n` + players.currentTask;
+//  const text = `original-url=${origUrl}\n` + players.currentTask;
+  const text = `original-url=${origUrl}\n` + gstore.taskParts.sourceText;
   const blob = new Blob([text], { type: "text/plain" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
