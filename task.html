@@ -3930,7 +3930,7 @@ const taskTextHandler = txt => {
   
   txt += '\n'; // might help fix issues with Hebrew
   if (typeof gstore.vocabMode === 'undefined') gstore.vocabMode = gstore.calledFromWords? 4 : 1;
-  const editableVocabDiv = gstore.vocabMode === 4? false : true;
+  const editableVocabDiv = gstore.vocabMode !== 4;
   txt = gstore.vocab.render(txt, {addDiv: editableVocabDiv, prefix: '<))[*', suffix: '*]', examplePrefix: '<))~', exampleSuffix: '~'});
   if (gstore.calledFromWords) txt = gstore.vocab.renderTag(txt, 'TTS Reader');
   else txt = gstore.vocab.renderTag(txt, 'EMPTY_VOCAB_HEADER');
@@ -5617,10 +5617,11 @@ gstore.taskParts = {
 
 //      let lang = null;
 	  const len = lines[0].trim().length;
-      const lang = (len >= 2 && len <= 3) ? lines.shift().trim() : null;
+      const lang = (len >= 2 && len <= 3) ? lines.shift().trim() : '';
 
       this.languages.push(lang);
-      this.sections.push(lines.join('\n').trim());
+//      this.sections.push(lines.join('\n').trim());
+      this.sections.push(lines.join('\n'));
     }
 
 // Same structure for text without :section:
@@ -5652,8 +5653,11 @@ gstore.taskParts = {
 
   setCurrTask(text) { // added 2026-06-18
 // called by refreshTask(), text doesn't contain sections
-
-	  this.sections[this.currSectionNum] = text.slice(this.header.length);
+	this.sections[this.currSectionNum] = text.slice(this.header.length);
+// this.sourceText should be updated too
+    if (this.sections.length < 2) this.sourceText = this.header + (this.sections[0] || '');
+    else this.sourceText = this.header 
+	  + this.sections.map((s, i) => ':section: ' + this.languages[i] + '\n' + s).join('');
   },
 
 }
