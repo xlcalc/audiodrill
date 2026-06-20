@@ -2888,7 +2888,7 @@ window.onload = () => {
 
   setNightMode('default');
 
-  if (window.frameElement) setEmbeddedStyle();
+//  setEmbeddedStyle();
 }
 
 const prepareSettings = () => {
@@ -5756,15 +5756,6 @@ const showOneEl = (prefix, key, caller) => {
 
 const formatTip = (key) => {
   showOneEl('format-', key);
-}
-
-const setEmbeddedStyle = () => {
-  hideElid('bottom-bar', 'topMenuBtn');
-
-  const el = elid('footer-attribution');
-  el.classList.add('small-font')
-  el.innerHTML = highlightText('Powered by&nbsp;[Audiodrill](https://www.audiodrill.com)');
-  elid('bottom-bar').after(el);
 }
 
 </script>

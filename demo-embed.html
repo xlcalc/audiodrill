@@ -32,11 +32,11 @@
 <script src="https://translate.google.com/translate_a/element.js"></script>
 
 <div style="margin-left: 1em;">
-<div style="font-size:140%; margin: 0.4em 0;">Demo: embed Audiodrill voice games in your site</div>
+<div style="font-size:140%; margin: 0.4em 0;">Demo: embed Audiodrill task in your site</div>
 <div>Play with the editable code below and click the button to embed it and see the result. <br> 
-You can enter the url of any other Audiodrill game or your own one. <br>
-For example, replace <code>pr-perfect1.txt</code> with <code>say-tell1.txt</code>.<br>
-<i>Please note that voice recognition works only in Chrome on the computer.</i></div>
+You can try another task, e.g. in iframe src change <code>embed-demo1</code> to <code>embed-demo2</code> <br>
+
+<i>Please note that voice recognition works reliably only in Chrome.</i></div>
 <br>
 <div class="bold-text">The iframe code example:</div>
 
@@ -59,8 +59,9 @@ For example, replace <code>pr-perfect1.txt</code> with <code>say-tell1.txt</code
 <div id="frame-div" style="width:600px; height:350px">
 <iframe></iframe>
 </div>
-<br>
-<a onclick="showScript()">Check out the script</a> for this activity and then <a href="/new-game">try and make yours!</a>
+<!-- <br>
+<a onclick="showScript()">Check out the script</a> for this activity and then <a href="/new-game">try and make yours!</a> 
+-->
 <br><br>
 <b>Please share your <a href="https://audiodrill.com/info/?show=feedback">feedback</a>.
 It will help us to further develop this free tool.</b>
@@ -91,7 +92,7 @@ function analyzeURL() {
   const {hostname, pathname, search, hash} = window.location;
   const param = hostname 
   + pathname.replace(/\/demo-embed\/?/, '/') 
-  + (search || 't/2/pl/a1/czerwony-kapturek3') 
+  + (search || 'u/embed-demo1') 
   + hash;
   initIframe(param);
 }

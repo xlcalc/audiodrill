@@ -2594,6 +2594,7 @@ console.log('langListCtrl', !!langListCtrl());
   listLangVoices(); // for Firefox browser
   googleTranslateElementInit();
   gstore.tips.initAll(); //experimental 2025-10-12
+  setEmbeddedStyle();
 }
 
 async function googleTranslateElementInit() {
@@ -3154,6 +3155,18 @@ const getTextFromHTML = s => { // transforms html to text
   const div = document.createElement('div');
   div.innerHTML = s || '';
   return div.innerText;
+}
+
+const setEmbeddedStyle = () => {
+  if (window.frameElement) {
+    hideElid('bottomMenu', 'topMenuBtn');
+
+    const el = elid('footer-attribution');
+    el.classList.add('small-font', 'right');
+    el.classList.remove('flex-center');
+    el.innerHTML = highlightText('~Powered by&nbsp;[Audiodrill](https://www.audiodrill.com)~');
+//    elid('bottom-bar').after(el);
+  }
 }
 
 /*
