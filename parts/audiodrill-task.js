@@ -3162,7 +3162,7 @@ const setEmbeddedStyle = () => {
     hideElid('bottomMenu', 'topMenuBtn');
 
     const el = elid('footer-attribution');
-    el.classList.add('small-font', 'right');
+    el.classList.add('small-font', 'float-right');
     el.classList.remove('flex-center');
     el.innerHTML = highlightText('~Powered by&nbsp;[Audiodrill](https://www.audiodrill.com)~');
 //    elid('bottom-bar').after(el);
