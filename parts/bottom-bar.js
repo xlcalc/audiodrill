@@ -337,7 +337,7 @@ border-radius: 4px;
 <div>
 <h4>About</h4>
 <p><a href="/info/?show=copyright">Open license</a></p>
-<p><a href="/info/?show=privacy-notice">Privacy notice</a></p>
+<p><a href="/info/?show=privacy-notice">Privacy</a></p>
 <p><a href="/demo-embed">Embed in your site</a></p>
 <p><a href="/info/?show=feedback">Contact/Feedback</a></p>
 <p><a href="javascript:void(0)" onclick="displayInfopage('contribute')">Contribute</a></p>
@@ -349,7 +349,7 @@ border-radius: 4px;
 <div id="google_translate_el" style="line-height: normal; padding-bottom: 0.7em"></div>
 </div>
 </div>
-<div class="flex-center font-80pc" style="padding: 0.25em">
+<div id="footer-attribution" class="flex-center font-80pc" style="padding: 0.25em">
 Copyright 2019-2026 Audiodrill
 </div>
 `;

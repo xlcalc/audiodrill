@@ -81,21 +81,29 @@ document.addEventListener('DOMContentLoaded', event => {
 const frameDiv = elid("frame-div");
 
 function analyzeURL() {
-  const urlKeys = new URLSearchParams(location.search),
+/*  const urlKeys = new URLSearchParams(location.search),
     game = urlKeys.get("game") || "1"; 
   let url = urlKeys.get("url") || "//en/game/pr-perfect1.txt"; 
   if (game.length > 10) url = ""; // game content is in the game key
 
   initIframe(game, url);
+*/
+  const {hostname, pathname, search, hash} = window.location;
+  const param = hostname 
+  + pathname.replace(/\/demo-embed\/?/, '/') 
+  + (search || 't/2/pl/a1/czerwony-kapturek3') 
+  + hash;
+  initIframe(param);
 }
 
-const initIframe = (game, url) => {
+//const initIframe = (game, url) => {
+const initIframe = (path) => {
   const divStyle = "width:600px; height:350px;";
   elid("div-code").textContent = divStyle;
   frameDiv.style = divStyle;
 
   const iframeParam = `
-src="https://audiodrill.com/embed?game=${game}&url=${url}" allow="microphone *"
+src="https://${path}" allow="microphone *"
 style="border:1px dotted gray"`;
   elid("frame-code").textContent = iframeParam;
 }

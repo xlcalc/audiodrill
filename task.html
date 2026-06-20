@@ -2887,6 +2887,8 @@ window.onload = () => {
   elid('share-fragment').innerHTML = uiblox.shareIcon('0 0 24 24', 24);
 
   setNightMode('default');
+
+  if (window.frameElement) setEmbeddedStyle();
 }
 
 const prepareSettings = () => {
@@ -5754,6 +5756,15 @@ const showOneEl = (prefix, key, caller) => {
 
 const formatTip = (key) => {
   showOneEl('format-', key);
+}
+
+const setEmbeddedStyle = () => {
+  hideElid('bottom-bar', 'topMenuBtn');
+
+  const el = elid('footer-attribution');
+  el.classList.add('small-font')
+  el.innerHTML = highlightText('Powered by&nbsp;[Audiodrill](https://www.audiodrill.com)');
+  elid('bottom-bar').after(el);
 }
 
 </script>
