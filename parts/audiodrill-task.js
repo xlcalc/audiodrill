@@ -129,7 +129,7 @@ const extractFromGoogleDoc = html => {
 
 // This logic may change
 //  gstore.docHasSections = html.includes(':section:');
-  if (gstore.docHasSections) {
+  if (html.includes(':section:')) {
     doc.body.innerHTML = doc.body.innerHTML.replaceAll('</p>', '</p>\n');
     gstore.docBodyText = doc.body.innerText;
     return gstore.docBodyText.trim();
@@ -159,7 +159,7 @@ async function loadElementFromURL(eID, url, altUrl) {
       return;
     }
 
-    gstore.docHasSections = txt.includes(':section:');
+//    gstore.docHasSections = txt.includes(':section:');
 	if (gstore.fromGoogleDoc) txt = extractFromGoogleDoc(txt);
 // Sections can be analysed and just one section  to be shown via loadElementWithText
 //    if (eID === 'transcriptText' && gstore.docHasSections) txt = gstore.taskParts.getSection(txt);
@@ -193,7 +193,7 @@ function uploadTextFile(evt, fnName, param) {
   if (evt.target.files) file = evt.target.files[0];
   if (evt.dataTransfer && evt.dataTransfer.files) file = evt.dataTransfer.files[0];
   if (!file) return;
-  
+
   const reader = new FileReader();
   reader.onload = () => {
     try {
@@ -206,7 +206,8 @@ function uploadTextFile(evt, fnName, param) {
 		
 		text = text.replace(/^.*\n/, ''); // remove the first line
 	  }
-	  window[fnName](text, param); 
+      if (param === 'transcriptText') text = gstore.taskParts.getSection(text, 0);  
+	  window[fnName](text, param);
 	} 
     catch(ex) { alert('ex when trying to load file = ' + ex); }
   };
