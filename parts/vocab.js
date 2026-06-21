@@ -193,7 +193,9 @@ gstore.vocab = {
 const markVocabEntries = (s, vocab, cmd, options = {}) => {
   const maskVocabEntry = (s, entry, i) => {
     const arr = entry.split('=');
-    entry = arr[0].trim(); // using in entry characters like *, <)), etc. will lead to error
+//    entry = arr[0].trim(); // using in entry characters like *, <)), etc. will lead to error
+    entry = arr[0] .replace(/\([^()]*\)/g, '') .trim(); // using in entry characters like *, <)), etc. will lead to error
+
     const meaning = (arr[1] || '').trim();
 
 	if (entry.length < 5 && tts.langCode !=='zh') entry = '\\b' + entry; // see the comment below
