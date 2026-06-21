@@ -151,6 +151,7 @@ async function loadElementFromURL(eID, url, altUrl) {
     const tab = new URL(url).searchParams.get('tab');
     url = url.replace(/\/[^/]*$/, '/export?tab=') + tab || '';
   }
+// Shared Google Sheets can also viewd as html with /htmlview instead of /edit
 
   try {
     let txt = await fetchText(url);
