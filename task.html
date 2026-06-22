@@ -3804,11 +3804,13 @@ tstore.translation = { // experimental: 2026-02-14
 
         if (!near) {
           document.removeEventListener("mousemove", check);
+          ocument.removeEventListener("scroll", check, true);
           this.removeTip(el);
         }
       }
    
       document.addEventListener("mousemove", check);
+      document.addEventListener("scroll", check, true);
     }
   }, // end setListeners()
 
