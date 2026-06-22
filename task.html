@@ -3791,27 +3791,36 @@ tstore.translation = { // experimental: 2026-02-14
   setListeners(el) {
     el.onmouseenter = () => { this.addTip(el) }
 
-    el.onmouseleave = e => {
-      const check = e => {
+    el.onmouseleave = () => {
+      let mouseX = window.event?.clientX;
+      let mouseY = window.event?.clientY;
+
+      const check = () => {
         const rects = [...el.getClientRects()];
 
         const near = rects.some(r =>
-          e.clientX >= r.left &&
-          e.clientX <= r.right &&
-          e.clientY >= r.top - 4 &&
-          e.clientY <= r.bottom + 4
+          mouseX >= r.left &&
+          mouseX <= r.right &&
+          mouseY >= r.top - 4 &&
+          mouseY <= r.bottom + 4
         );
 
         if (!near) {
-          document.removeEventListener("mousemove", check);
+          document.removeEventListener("mousemove", onMove);
           document.removeEventListener("scroll", check, true);
           this.removeTip(el);
         }
-      }
-   
-      document.addEventListener("mousemove", check);
+      };
+
+      const onMove = e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        check();
+      };
+
+      document.addEventListener("mousemove", onMove);
       document.addEventListener("scroll", check, true);
-    }
+    };
   }, // end setListeners()
 
   set(cmd) {
