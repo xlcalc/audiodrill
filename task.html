@@ -5758,6 +5758,15 @@ const formatTip = (key) => {
   showOneEl('format-', key);
 }
 
+async function getYoutubeTitle(videoUrl) {
+  const endpoint =
+    `https://www.youtube.com/oembed?url=${encodeURIComponent(videoUrl)}&format=json`;
+
+  const response = await fetch(endpoint);
+  const data = await response.json();
+console.log(data);
+  return data.title;
+}
 </script>
 </body>
 </html>
