@@ -3874,7 +3874,7 @@ tstore.translation = { // experimental: 2026-02-14
   },
 */
   async addTip(el) {
-    const txt = el.dataset.transl;
+    const txt = el?.dataset?.transl;
     if (!txt) return;
     el.hovered = 1;
 //    await sleep(200);
@@ -3891,6 +3891,7 @@ tstore.translation = { // experimental: 2026-02-14
     setElClass(tip, ['transl-tip', 'box-shadow'], 1);
     setTipPosition(tip, el);
 
+    txt = txt.replaceAll(' // ', '<br>') // temporary measure?
     elAddHTML(tip, txt);
 
 // link parent and child;
