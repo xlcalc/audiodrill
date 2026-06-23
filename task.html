@@ -3874,7 +3874,7 @@ tstore.translation = { // experimental: 2026-02-14
   },
 */
   async addTip(el) {
-    const txt = el?.dataset?.transl;
+    let txt = el?.dataset?.transl;
     if (!txt) return;
     el.hovered = 1;
 //    await sleep(200);
