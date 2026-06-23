@@ -5296,7 +5296,6 @@ tstore.sentences = {
       .replaceAll('\uE000', '?')
   	  .replaceAll('<x-dot>', '.')
       .replaceAll('\n', '<br>')
-      .replaceAll('~~', '<br>') //soft lew line
 
       .replace(/<x-(label|button|div|style|xtag)>/g, (s, key) => this.buffer[key].shift()) 
 //      .replace(/<x-(button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
