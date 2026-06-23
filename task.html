@@ -1049,8 +1049,7 @@ tstore.addToVocabBtn = elid('add-to-vocab-btn');
 
 players.flag = -1;
 players.minWidth = 240;
-//players.maxWidth = 850;
-players.maxWidth = 1080;
+
 playerBox.onmousemove = () => { videoResizerReset(); };
 playerBox.onmouseleave = () => { showVideoResizer(0); };
 videoResize.onmouseenter = () => { players.mouseOverVideoResize = true; };
@@ -2227,7 +2226,7 @@ const analyzeURLParams = async () => {
   const mediaFile = urlKeys.get('m');
   if (mediaFile) {
 //    players.autoPlay = urlHasKey('noauto')? 0 : 1; // maybe it should be 0 by default?
-    setVideoSize(players.maxWidth);
+    setVideoSize(window.innerWidth);
 //    getVideoByURL(mediaFile, 'LOAD_SUBS'); 
     await getVideoByURL(mediaFile, 'LOAD_SUBS'); 
     loadingDone();
@@ -3098,7 +3097,7 @@ const setLeftColWidth = lw => { // could be used to resize the video
 // Setting width and height in style has the highest priority and may be bad 
 // if the window is resized to narrow. Styling via classes would work better.
 
-  const wmax = (lw >= players.maxWidth);
+  const wmax = (lw >= window.innerWidth);
   ytPlayer.style.marginTop = wmax ? '0' : '';
   qsel('.main-page').style.margin = wmax ? '0' : '';
   elid('page-row').style.backgroundColor = wmax ? 'black' : '';
@@ -3184,7 +3183,7 @@ const setVideoSize = cmd => {
     if (width > players.minWidth) vctrl.enable(0);
     else vctrl.disable(0);
 	
-    if (width < players.maxWidth) vctrl.enable(1);
+    if (width < window.innerWidth) vctrl.enable(1);
 	else vctrl.disable(1);
   }
 
@@ -3232,8 +3231,8 @@ style="width: ${width}%; height:${height}%;
 const changeVideoSize = cmd => {
   let width = players.videoWidth;
   if (cmd) {
-    width = Math.min(width + 150, players.maxWidth);
-	if (width + 50 > players.maxWidth) width = players.maxWidth; // snap to max
+    width = Math.min(width + 150, window.innerWidth);
+	if (width + 50 > window.innerWidth) width = window.innerWidth; // snap to max
   }
   else {
     width = Math.max(width - 150, players.minWidth);
