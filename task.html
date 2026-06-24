@@ -3827,7 +3827,7 @@ tstore.translation = { // experimental: 2026-02-14
     if (this.sentences && tstore.nodes)
       tstore.nodes.forEach((el, i) => {
         if (this.sentences[i]) {
-          el.dataset.transl = cmd ? this.sentences[i] : '';
+//          el.dataset.transl = cmd ? this.sentences[i] : '';
 //          setElClass(el, 'hover-overlay-s', cmd);
           this.setListeners(el);
         }
@@ -3874,7 +3874,8 @@ tstore.translation = { // experimental: 2026-02-14
   },
 */
   async addTip(el) {
-    let txt = el?.dataset?.transl;
+//    let txt = el?.dataset?.transl;
+    let txt = el?.dataset?.sentenceIndex ? this.sentences[el.dataset.sentenceIndex] : '';
     if (!txt) return;
     el.hovered = 1;
 //    await sleep(200);
