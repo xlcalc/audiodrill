@@ -5686,7 +5686,7 @@ gstore.taskParts = {
 	  + this.sections.map((s, i) => ':section: ' + this.languages[i] + '\n' + s).join('');
   },
 
-  extractSectSentences {
+  extractSectSentences() {
     const el = document.createElement('div');
     el.id = 'temporaryEl';
     el.hidden = true;
