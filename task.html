@@ -3725,6 +3725,8 @@ tstore.translation = { // experimental: 2026-02-14
     this.isOn = false;
 
     if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
+
+    gstore.taskParts.extractSectSentences(); // needed for translation
 // logic will change as more sections are added
     this.pinyinSentences = null;
     if (gstore.taskParts.getCurrSectionLang() === 'zh' && gstore.taskParts.languages.includes('pinyin')) {
@@ -4146,7 +4148,6 @@ const afterTaskLoaded = () => {
   scrollToHash();
   if (!players.isVideoSizeSet) setVideoSize(-1);
   prepareSettings();
-  gstore.taskParts.extractSectSentences(); // needed for translation
 }
 
 const emulateCueClick = () => {
