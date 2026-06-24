@@ -5630,7 +5630,7 @@ gstore.taskParts = {
 
 //      let lang = null;
 	  const len = lines[0].trim().length;
-      const lang = (len >= 2 && len <= 3) ? lines.shift().trim() : '';
+      const lang = (lang === 'pinyin') || (len >= 2 && len <= 3) ? lines.shift().trim() : '';
 
       this.languages.push(lang);
 //      this.sections.push(lines.join('\n').trim());
