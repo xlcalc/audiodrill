@@ -3855,12 +3855,13 @@ tstore.translation = { // experimental: 2026-02-14
 
   changeTask() {
 // Logic will change as more sections are handled;
-    const newTask = gstore.taskParts.currSectionNum ? 0 : 1;
-    this.setTask(newTask);
+//    const newTask = gstore.taskParts.currSectionNum ? 0 : 1;
+
+    this.setTask(this.tsectionNum);
   },
 
   setTask(n) {
-    this.tsectionNum = n ? 0 : 1; // logic will change as more sections are added
+    this.tsectionNum = gstore.taskParts.currSectionNum // logic will change as more sections are added
     refreshTask(gstore.taskParts.getTask(n));
   },
 
