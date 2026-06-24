@@ -4146,6 +4146,7 @@ const afterTaskLoaded = () => {
   scrollToHash();
   if (!players.isVideoSizeSet) setVideoSize(-1);
   prepareSettings();
+  gstore.taskParts.extractSectSentences(); // needed for translation
 }
 
 const emulateCueClick = () => {
@@ -5668,7 +5669,7 @@ gstore.taskParts = {
       this.vocab[i] = section.split(':vocab:')[1]?.trim() || '';
     });
 */
-    this.extractSectSentences();
+//    this.extractSectSentences();
 
     return this.getTask(sectionNum);
   },
