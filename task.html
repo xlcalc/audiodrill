@@ -3760,7 +3760,7 @@ tstore.translation = { // experimental: 2026-02-14
     this.init();
 
     let txt = gstore.taskParts.sections[this.tsectionNum]
-	if (!txt) return null;
+    if (!txt) return null;
 
 //    txt = highlightText(txt).replaceAll('<hr>', '<hr>\n').replace(/<\/h\d>/g, s => s + '\n');
 //    txt = getTextFromHTML(txt);
@@ -3779,16 +3779,16 @@ tstore.translation = { // experimental: 2026-02-14
       .filter(s => s); //leave non-empty lines
 */
     const el = document.createElement('div');
-	el.id = 'temporaryEl';
-	el.hidden = true;
-	document.body.appendChild(el);
-	loadElementWithText(txt, el.id, 'NO_DECODE');
+    el.id = 'temporaryEl';
+    el.hidden = true;
+    document.body.appendChild(el);
+    loadElementWithText(txt, el.id, 'NO_DECODE');
 //	el.innerHTML = txt;
     [this.nodes, this.sentences] = tstore.sentences.init(el, this.tlang);
 //    this.sentences = tstore.sentences.getSentences(txt, this.tlang, false)
 
     this.text = txt;
-	el.remove();
+    el.remove();
     return this.sentences.length;
   },
 
@@ -5684,6 +5684,21 @@ gstore.taskParts = {
     if (this.sections.length < 2) this.sourceText = this.header + (this.sections[0] || '');
     else this.sourceText = this.header 
 	  + this.sections.map((s, i) => ':section: ' + this.languages[i] + '\n' + s).join('');
+  },
+
+  extractSectSentences {
+    const el = document.createElement('div');
+    el.id = 'temporaryEl';
+    el.hidden = true;
+    document.body.appendChild(el);
+    this.sectSentences = {};
+    this.sections.forEach((txt, i) => {
+      loadElementWithText(txt, el.id, 'NO_DECODE');
+      const [nodes, sentences] = tstore.sentences.init(el, this.languages[i]);
+      this.sectSentences[i] = sentences;
+    })
+    
+    el.remove();
   },
 
 }
