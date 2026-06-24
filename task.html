@@ -3723,8 +3723,13 @@ tstore.translation = { // experimental: 2026-02-14
     this.text = '';
     this.sentences = [];
     this.isOn = false;
+    this.pinyinSection = null;
     if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
 // logic will change as more sections are added
+    if (gstore.taskParts.getCurrSectionLang() === 'zh' && gstore.taskParts.languages.includes['pinyin']) {
+      const i = gstore.taskParts.languages.indexOf('pinyin');
+      this.pinyinSection = gstore.taskParts.sections[i];
+    }
   },
 /*
   extractOld(txt) {
@@ -3875,7 +3880,8 @@ tstore.translation = { // experimental: 2026-02-14
 */
   async addTip(el) {
 //    let txt = el?.dataset?.transl;
-    let txt = el?.dataset?.sentenceIndex ? this.sentences[el.dataset.sentenceIndex] : '';
+    const sentNum = el?.dataset?.sentenceIndex;
+    let txt = this.sentences[sentNum];
     if (!txt) return;
     el.hovered = 1;
 //    await sleep(200);
@@ -3893,6 +3899,10 @@ tstore.translation = { // experimental: 2026-02-14
     setTipPosition(tip, el);
 
     txt = txt.replaceAll(' // ', '<br>') // temporary measure?
+    if (gstore.taskParts.getCurrSectionLang() === 'zh' && this.pinyinSection) {
+      const pinyinSent = this.pinyinSection[sentNum] || '';
+      txt = `<span class="font-110pc">${pinyinSent}</span><br>` + txt;
+    }
     elAddHTML(tip, txt);
 
 // link parent and child;
