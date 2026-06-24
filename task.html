@@ -3726,7 +3726,7 @@ tstore.translation = { // experimental: 2026-02-14
     this.pinyinSection = null;
     if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
 // logic will change as more sections are added
-    if (gstore.taskParts.getCurrSectionLang() === 'zh' && gstore.taskParts.languages.includes['pinyin']) {
+    if (gstore.taskParts.getCurrSectionLang() === 'zh' && gstore.taskParts.languages.includes(['pinyin'])) {
       const i = gstore.taskParts.languages.indexOf('pinyin');
       this.pinyinSection = gstore.taskParts.sections[i];
     }
