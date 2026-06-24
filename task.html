@@ -3778,6 +3778,7 @@ tstore.translation = { // experimental: 2026-02-14
       .map(entry => entry.segment.trim().replaceAll('%21', '!').replaceAll('%3F', '?'))
       .filter(s => s); //leave non-empty lines
 */
+/*
     const el = document.createElement('div');
     el.id = 'temporaryEl';
     el.hidden = true;
@@ -3789,6 +3790,10 @@ tstore.translation = { // experimental: 2026-02-14
 
     this.text = txt;
     el.remove();
+  */
+    this.text = txt;
+    this.sentences = gstore.taskParts.sectSentences[this.tsectionNum];
+
     return this.sentences.length;
   },
 
@@ -5661,6 +5666,8 @@ gstore.taskParts = {
       this.vocab[i] = section.split(':vocab:')[1]?.trim() || '';
     });
 */
+    this.extractSectSentences();
+
     return this.getTask(sectionNum);
   },
   
