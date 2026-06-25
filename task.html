@@ -2226,7 +2226,7 @@ const analyzeURLParams = async () => {
   const mediaFile = urlKeys.get('m');
   if (mediaFile) {
 //    players.autoPlay = urlHasKey('noauto')? 0 : 1; // maybe it should be 0 by default?
-    setVideoSize(window.innerWidth);
+    setVideoSize(document.body.clientWidth);
 //    getVideoByURL(mediaFile, 'LOAD_SUBS'); 
     await getVideoByURL(mediaFile, 'LOAD_SUBS'); 
     loadingDone();
@@ -3089,7 +3089,7 @@ const setPlayerSpeed = v => {
   htmlPlayer.playbackRate = v;
 }
 
-const isScreenNarrow = () => (window.innerWidth <= 700);
+const isScreenNarrow = () => document.body.clientWidth <= 700;
 
 const setLeftColWidth = lw => { // could be used to resize the video
   ytPlayer.style.width = lw + 'px';
@@ -3097,10 +3097,12 @@ const setLeftColWidth = lw => { // could be used to resize the video
 // Setting width and height in style has the highest priority and may be bad 
 // if the window is resized to narrow. Styling via classes would work better.
 
-  const wmax = (lw >= window.innerWidth);
+  const wmax = lw >= document.body.clientWidth;
   ytPlayer.style.marginTop = wmax ? '0' : '';
   qsel('.main-page').style.margin = wmax ? '0' : '';
   elid('page-row').style.backgroundColor = wmax ? 'black' : '';
+  leftCol.style.width = wmax ? 'stretch' : '';
+  leftCol.style.marginRight = wmax ? '0' : '';
   elid('topMenuBtn').style.backgroundColor = wmax ? 'black' : '';
   
   if (players.mediaInTask) return;
@@ -3183,7 +3185,7 @@ const setVideoSize = cmd => {
     if (width > players.minWidth) vctrl.enable(0);
     else vctrl.disable(0);
 	
-    if (width < window.innerWidth) vctrl.enable(1);
+    if (width < document.body.clientWidth) vctrl.enable(1);
 	else vctrl.disable(1);
   }
 
@@ -3201,11 +3203,13 @@ const setVideoSize = cmd => {
   
   if ([0, 1, 2].includes(width)) width = [400, 640, 800][width]; // legacy values
 
+  const maxWidth = document.body.clientWidth;
   const cmdString = cmd + '';
   if (cmdString.endsWith('%'))
-    width = Math.round(width / 100 * window.innerWidth);
+    width = Math.round(width / 100 * maxWidth);
 
   if (width < players.minWidth || cmd === 'min') width = players.minWidth;
+  if (width > maxWidth || cmd === 'max') width = maxWidth;
 
   players.videoWidth = width;
   localStorage.setItem('videoWidth', width);
@@ -3230,9 +3234,10 @@ style="width: ${width}%; height:${height}%;
 
 const changeVideoSize = cmd => {
   let width = players.videoWidth;
+  const maxWidth = document.body.clientWidth;
   if (cmd) {
-    width = Math.min(width + 150, window.innerWidth);
-	if (width + 50 > window.innerWidth) width = window.innerWidth; // snap to max
+    width = Math.min(width + 150, maxWidth);
+	if (width + 50 > maxWidth) width = maxWidth; // snap to max
   }
   else {
     width = Math.max(width - 150, players.minWidth);
