@@ -1619,8 +1619,12 @@ console.log('player.state changed to ', player.state, ':', states[player.state+1
 //    players.autoPlay = 2;
 //  }
   if ([0, 2, 5].includes(player.state)) { players.flag = 0; }
-  if (player.state === 1) { players.flag = 1; }
-  if (player.state === 5) showPlayerBox(); // added 2023-08-04 
+  if (player.state === 1) { 
+    players.flag = 1;
+	setPlayStopBtn('Play'); // added 2025-06-28
+  }
+  if (player.state === 2 && !players.looperInUse) setPlayStopBtn(); // added 2025-06-28
+  if (player.state === 5) showPlayerBox();
 }
 
 // == end of YT player code
@@ -1773,7 +1777,7 @@ console.log('** Stop: currentCue === firstCue')
     await sleep (500);
   }
   players.loopStopRequested = false;
-  setPlayStopBtn('Stop');
+  setPlayStopBtn('Play');
   if (players.currentCue !== firstCue) players.pausedAt = '';
 
   let clip = firstCue;
@@ -3062,8 +3066,8 @@ const playerTimeShift = t => {
 
 const handlePlayStopBtn = () => {
 //console.log('Click to stop = ', players.loopStopRequested);
-  if (!playStopBtn.classList.contains('play-triangle-solid')) hitStopButton();
-  else replayFragment(playStopBtn);
+  if (playStopBtn.classList.contains('play-triangle-solid')) replayFragment(playStopBtn);
+  else hitStopButton();
 }
 
 const hitStopButton = () => {
