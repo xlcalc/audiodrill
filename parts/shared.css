@@ -742,9 +742,9 @@ font-s, .font-75pc {font-size: 75%}
 
 .faded {opacity:0 !important}
 
-.gray {color: var(--dark-gray3)}
-.gray2 {color: var(--dark-gray2)}
-.grayish {color: #7799bb}
+.gray {color: var(--dark-gray3) !important}
+.gray2 {color: var(--dark-gray2) !important}
+.grayish {color: #7799bb !important}
 .green { 
   color: #00a500; 
   color: #095 !important; 
@@ -923,7 +923,7 @@ content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewB
   line-height: 0.8em;
   text-align:center;
 }
-.action-icon:hover {
+.action-icon:not(:disabled):hover {
   cursor: default;
 /*  background-color: #fff;*/
 /*  filter: brightness(0.9);*/
@@ -957,8 +957,8 @@ button.night-mode:hover {
   background-color: transparent;
   color: inherit;
 }
-.plain-button:hover { background-color: var(--color-overlay-s) }
-.plain-button:active {
+.plain-button:not(:disabled):hover { background-color: var(--color-overlay-s) }
+.plain-button:not(:disabled):active {
   background-color: var(--color-overlay-m);
   transform: translate(.7px, .7px);
 }

@@ -3730,6 +3730,11 @@ tstore.translation = { // experimental: 2026-02-14
     this.isOn = false;
 
     if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
+    if (this.tsectionNum === gstore.taskParts.currSectionNum) {
+      this.tsectionNum = this.tsectionNum ? 0 : 1;
+    }
+
+    if (!gstore.taskParts.sections[this.tsectionNum]) return null;
 
     gstore.taskParts.extractSectSentences(); // needed for translation
 // logic will change as more sections are added
@@ -3738,72 +3743,42 @@ tstore.translation = { // experimental: 2026-02-14
       const i = gstore.taskParts.languages.indexOf('pinyin');
       this.pinyinSentences = gstore.taskParts.sectSentences[i];
     }
+
+    return this.setTransl(gstore.taskParts.languages[this.tsectionNum] || 'en'); // is 'en' needed here?
   },
+
+  setTransl(lang) {
+    if (lang === 'pinyin') lang = 'zh';
+    tstore.translLangCtrl.set(lang);
+
+    this.tlang = lang;
+    this.tsectionNum = gstore.taskParts.languages.indexOf(lang);
+    this.sentences = gstore.taskParts.sectSentences[this.tsectionNum];
+
+    return this.sentences?.length;
+  },
+
+  onchangedTranslCtrl(lang) {
+    if (lang === 'off') lang = '';
+	setElClass(elid('target-lang-ctrl'), 'gray', !lang);
+	
+    const swapBtn = elid('transl-swap-btn');
+    swapBtn.disabled = !lang;
+    setElClass(swapBtn, 'gray', !lang);
+
+    this.setTransl(lang);
+  },
+
 /*
-  extractOld(txt) {
-    const pattern = new RegExp(
-      this.marker + '([\\s\\S]*?)(?=' + gstore.vocab.prefix + '|$)'
-    );
-
-    this.init();
-
-    return txt.replace(pattern, (_, captured) => {
-      const newLinePos = captured.indexOf('\n');
-      this.tlang = captured.slice(0, newLinePos).trim() || 'en';
-//console.log('Translation lang:', this.tlang);
-//      this.text = captured.trim();
-      this.text = captured.slice(newLinePos).trim();
-
-// language of translation may be added after the marker, just like for :lang: marker	  
-  	  const segmenter = new Intl.Segmenter(this.tlang, { granularity: 'sentence' });
-	    this.sentences = [...segmenter.segment(this.text)]
-        .map(entry => entry.segment.trim())
-        .filter(s => s); //leave non-empty lines
-
-      return '';
-    }).trim();
-  },
-*/
   extract() {
     this.init();
 
     let txt = gstore.taskParts.sections[this.tsectionNum]
     if (!txt) return null;
 
-//    txt = highlightText(txt).replaceAll('<hr>', '<hr>\n').replace(/<\/h\d>/g, s => s + '\n');
-//    txt = getTextFromHTML(txt);
-
-    this.tlang = gstore.taskParts.languages[this.tsectionNum] || 'en';
-    tstore.translLangCtrl.set(this.lang);
-//console.log('Translation lang:', this.tlang);
-/*
-    const s = txt.replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3') // for direct speech
-    .replace(/!([”"'])( )+([a-z])/g, '%21$1$2$3')
-	;
-
-  	const segmenter = new Intl.Segmenter(this.tlang, { granularity: 'sentence' });
-    this.sentences = [...segmenter.segment(s)]
-      .map(entry => entry.segment.trim().replaceAll('%21', '!').replaceAll('%3F', '?'))
-      .filter(s => s); //leave non-empty lines
-*/
-/*
-    const el = document.createElement('div');
-    el.id = 'temporaryEl';
-    el.hidden = true;
-    document.body.appendChild(el);
-    loadElementWithText(txt, el.id, 'NO_DECODE');
-//	el.innerHTML = txt;
-    [this.nodes, this.sentences] = tstore.sentences.init(el, this.tlang);
-//    this.sentences = tstore.sentences.getSentences(txt, this.tlang, false)
-
-    this.text = txt;
-    el.remove();
-  */
-    this.text = txt;
-    this.sentences = gstore.taskParts.sectSentences[this.tsectionNum];
-
-    return this.sentences.length;
+    return this.setTransl(gstore.taskParts.languages[this.tsectionNum] || 'en'); // is 'en' needed here?
   },
+*/
 
   setListeners(el) {
     el.onmouseenter = () => { this.addTip(el) }
@@ -3855,37 +3830,80 @@ tstore.translation = { // experimental: 2026-02-14
 //    }
   },
   
-  toggle(el) { 
+  toggle(el) { // may be phased out
     this.set(!this.isOn);
     toggleEl(el, 'bg-green');
   },
 
-  changeTask() {
+  swapTask() {
 // Logic will change as more sections are handled;
 //    const newTask = gstore.taskParts.currSectionNum ? 0 : 1;
+    if (!this.tlang) return;
+    const currTransl = this.tsectionNum;
+    this.tsectionNum = gstore.taskParts.currSectionNum;
+    this.setTask(currTransl);
+  },
+  
+  onchangedTaskLangCtrl(e) {
+    const lang = e.target.value;
+    const i = gstore.taskParts.languages.indexOf(lang);
+    if (lang === this.tlang) {
 
-    this.setTask(this.tsectionNum);
+    }
+    this.setTask(i);
   },
 
   setTask(n) {
-    this.tsectionNum = gstore.taskParts.currSectionNum // logic will change as more sections are added
+//    this.tsectionNum = gstore.taskParts.currSectionNum; // logic will change as more sections are added
     refreshTask(gstore.taskParts.getTask(n));
   },
 
-  addBtn() {
-   if (!this.extract()) return;
-	
-    const btn = `<div class="flex float-right font-80pc"><button title="Translation on hover" translate="no" 
-	  class="rel plain-button action-icon plain-button gray bg-green no-tts" 
-	  style="right:10px; width:auto" 
-	  onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button>
-	  <button title="Toggle original" translate="no" 
-	  class="rel plain-button action-icon plain-button gray no-tts" 
-	  style="right:10px; width:auto" 
-	  onclick="tstore.translation.changeTask()">⇄</button></div>`;
+  prepare() {
+    if (!this.init()) return;
+
+    const excluded = new Set(['pinyin']); //the set may be expanded in the future
+    const langs = gstore.taskParts.languages
+	  .filter(lang => lang && !excluded.has(lang))
+//      .map(lang => `<option value="${lang}">${lang}</option>`)
+      .map(lang => `<option>${lang}</option>`)
+      .join('');
+
+/*
+    const translbtn = `
+      ><button hidden title="Translation on hover" translate="no" 
+      class="plain-button action-icon plain-button gray bg-green no-tts" 
+      style="right:10px; width:auto" 
+      onclick="tstore.translation.toggle(this)">${gstore.translateIcon}</button
+	`;
+*/
+  
+    const btn = `<div class="no-tts flex float-right font-80pc padding-1em"
+      ><select title="Original language" id="orig-lang-ctrl"  class="inherit rounded">${langs}</select
+      ><button title="Swap original and translation" id="transl-swap-btn" translate="no" 
+      class="plain-button action-icon margin-03em" 
+      style="right:10px; width:auto" 
+      onclick="tstore.translation.swapTask()">⇄</button
+      ><select title="Translation language" id="target-lang-ctrl" class="inherit rounded"><option>off</option>${langs}</select
+      ></div>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
+
+    const oCtrl = elid('orig-lang-ctrl');
+	oCtrl.value = gstore.taskParts.getCurrSectionLang();
+	oCtrl.onchange = (e) => { this.onchangedTaskLangCtrl(e) };
+
+    const tCtrl = elid('target-lang-ctrl');
+	tCtrl.value = this.tlang;
+    for (const option of tCtrl.options) {
+      option.hidden = option.value === oCtrl.value;
+    }
+
+	tCtrl.onchange = (e) => {
+//console.log(e.target.value);
+      this.onchangedTranslCtrl(e.target.value);
+    };
+
     this.set(true); // turn on immediately
-   },
+  },
 
 /*
   clearNodesStyle() {
@@ -3894,6 +3912,7 @@ tstore.translation = { // experimental: 2026-02-14
 */
   async addTip(el) {
 //    let txt = el?.dataset?.transl;
+    if (!this.sentences) return;
     const sentNum = el?.dataset?.sentenceIndex;
     let txt = this.sentences[sentNum];
     if (!txt) return;
@@ -3983,7 +4002,7 @@ const taskTextHandler = txt => {
 const handleTransl = () => {
   addTranslationBtn();
 //  addTranslation(qsel('.original-text'), qsel('.translated-text'));
-  tstore.translation.addBtn();
+  tstore.translation.prepare();
 }
 
 // addTranslation is experimental fn
@@ -4820,8 +4839,11 @@ function getClickedTextFragment(range, lang, granularity) {
   
 //  const isInsideTranscript = (node) => node === transcriptText || transcriptText.contains(node);
   const checkedNode = node => node && transcriptText.contains(node) ? node : null;
-  const isBoundaryNode = node => node && /^(H|BR|P|BUTTON)/.test(node.tagName) ? node : null;
-// maybe need to add more boundaries like button? or div? We'll see...
+  const isBoundaryNode = node => node && (
+    /^(H|BR|P|BUTTON)/.test(node.tagName)
+    || node.classList?.contains('no-tts') // added 2026-06-27
+  )// ? node : null;
+// maybe need to add more boundaries like select? We'll see...
 
   let parentText = node.textContent;
   
@@ -5318,13 +5340,11 @@ tstore.sentences = {
 //return arr;
     return arr
       .join('')
-//      .replaceAll('<x-dummy>\n', '')
       .replaceAll('\uE000', '?')
   	  .replaceAll('<x-dot>', '.')
       .replaceAll('\n', '<br>')
 
       .replace(/<x-(label|button|div|style|xtag)>/g, (s, key) => this.buffer[key].shift()) 
-//      .replace(/<x-(button|div|style)>/g, (s, key) => this.buffer[key].shift()) 
       .replace('<x-vocab-header>', this.buffer.vocabHeader)
       ;
   },
@@ -5335,22 +5355,23 @@ tstore.sentences = {
 	    this.buffer[key].push(s);
 	    return `<x-dummy>\n<x-${key}><x-dummy>\n`;
 	  }
-	
-//    let index = 0;
-  
+
+    const eol = ':EOL:.\n';
+
     const getWrappedLine = (s, wrap) => {
-//  	  s = s.replaceAll('<x-dummy>\n', '');
+      if (s.endsWith(eol)) {
+        return s.slice(0, -eol.length);
+      }
+
 //console.log('Line', index, ':', s ,'$end');
       if (wrap && getTextFromHTML(s).trim()) {
 // Put the trailing spaces outside wrapping
-//	      s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<span data-sentence>` + '$2</span>$3');
         s = s.replace(/^(\s*)(.*?)(\s*)$/, `$1<div class="inline" data-sentence>` + '$2</div>$3');
 // Wrapping in div intead of span to prevent mixing with other </span> tags. 
 // But it can mix with </div> tags. Maybe in the future use custom tags, like x-div?
 //console.log(s);
-//	      index++;
 	    }
-	    return s;
+    return s;
     }
 
     this.buffer = {};
@@ -5358,19 +5379,17 @@ tstore.sentences = {
 
     this.source = html
   	.replace(this.buffer.vocabHeader, '<x-vocab-header>')
-//    .replaceAll('<x-br></x-br>', '<div style="display: block; height: .4em;"></div>')
-//    .replaceAll('<x-br-l></x-br-l>', '<div style="display: block; height: .7em;"></div>')
     .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
     .replaceAll('<br>', '\n')
     .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
-//    .replace(/<x-.*?<\/x-.*?>/g, s => toBuffer('xtag', s))
     .replace(/<(x-[\w-]+)\b[^>]*>[\s\S]*?<\/\1>/g, s => toBuffer('xtag', s))
     .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
     .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
     .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))
-    .replace(/(\n\s?)(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
     .replace(/<div[^>]*>/g, s => toBuffer('div', s))
     .replace(/(<\/?)(h[1-6]|div)([^>]*>)/g, '<x-dummy>\n$1$2$3<x-dummy>\n')
+//    .replace(/(^|\n\s?)(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
+    .replace(/(^|\n\s?)(\d+)\.(\s+)/g, '$1$2<x-dot>$3' + eol) // protect numbered lines like 1. bla-bla
     .replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3')
     .replace(/!([”"'])( )+([a-z])/g, '%21$1$2$3')
 
