@@ -333,7 +333,7 @@ const EDGE_VOICES = {
 };
 
 const CHROME_MAC_VOICES = {
-  en: ["Daniel", "Google", "Aaron", "Nicky", "Tessa"],
+  en: ["Google", "Aaron", "Nicky", "Tessa"],
   zh: ["Google", "Li-mu", "TingTing", "Yu-shu", "Sinji", "Meijia"],
 };
 
