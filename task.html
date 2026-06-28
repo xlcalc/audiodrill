@@ -5384,13 +5384,14 @@ tstore.sentences = {
   	.replace(this.buffer.vocabHeader, '<x-vocab-header>')
     .replaceAll('\n', '') // remove \n from multiple lines between `` marks 
     .replaceAll('<br>', '\n')
-    .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
     .replace(/<(x-[\w-]+)\b[^>]*>[\s\S]*?<\/\1>/g, s => toBuffer('xtag', s))
     .replace(/<label.*?<\/label>/g, s => toBuffer('label', s))
     .replace(/<button.*?<\/button>/g, s => toBuffer('button', s))
     .replace(/<style.*?<\/style>/g, s => toBuffer('style', s))
     .replace(/<div[^>]*>/g, s => toBuffer('div', s))
     .replace(/(<\/?)(h[1-6]|div)([^>]*>)/g, '<x-dummy>\n$1$2$3<x-dummy>\n')
+    .replace(/(<a [^>]*?)\?/g, '$1\uE000') // protect "?" in url, or it will be treated as end of the sentence
+
 //    .replace(/(^|\n\s?)(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
     .replace(/(^|\n\s?)(\d+)\.(\s+)/g, '$1$2<x-dot>$3' + eol) // protect numbered lines like 1. bla-bla
     .replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3')
