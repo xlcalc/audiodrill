@@ -5330,7 +5330,7 @@ tstore.sentences = {
     const resSentences = resNodes
       .map(el => this
         .getTextWithAlts(el)
-        .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before
+//        .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before
       );
     return [resNodes, resSentences];
   },
