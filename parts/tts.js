@@ -126,13 +126,15 @@ function listLangVoices() {
   ttsCallBack('TTS_GOT_LANG_VOICES', getLangVoices(lang));
 }
 
-const getLangVoices = lang => {
+/*
+const getLangVoicesOld = lang => {
   const voices = tts.getVoices();
   return lang ? voices
     .filter(voice => lang === voice.lang.split(/_|-/)[0])
     .sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name))
 	: voices
 }
+*/
 
 async function loadVoices() {
   await sleep(500); // things don't load immediately
@@ -300,6 +302,53 @@ const speakerButton = () => {
 
 const ttsFinish = async () => {
   while ((tts.pending || tts.speaking) && !tts.paused2) {await sleep (100); console.log('playing TTS')}
+}
+
+
+const getLangVoices = lang => {
+  const allowlist = getVoiceAllowlist()?.[lang];
+  const voices = tts.getVoices();
+
+  return lang ? voices
+    .filter(v => v.lang.split(/[-_]/)[0] === lang)
+    .filter(v =>
+      !allowlist ||
+      allowlist.some(name => v.name.includes(name))
+    )
+    .sort((a, b) =>
+      a.lang.localeCompare(b.lang) ||
+      a.name.localeCompare(b.name)
+    )
+    : voices;
+};
+
+// 2026-06-28: a whitelist of voices on Edge and Mac Chrome added
+const EDGE_VOICES = {
+  en: ["Natasha", "William O", "Clara", "Liam", "Libby", "Maisie", "Ryan O", "Sonia", "Sam ",  "Yan ",  "Connor",  
+    "Emily",  "Neerja O",  "Prabhat O",  "Asilia",  "Chilemba",  "Abeo",  "Ezinne",  "Mitchell",  "Molly",  "James",  
+    "Rosa",  "Luna Online (Natural) - English (S",  "Wayne",  "Elimu",  "Imani",  "Ana ",  "Andrew",  "Aria ",  "Ava ",  "Brian",  "Christopher O",
+    "David",  "Emma",  "Eric",  "Guy",  "Jenny O",  "Mark",  "Michelle",  "Roger",  "Steffan O",  "Zira",  "Leah",  "Luke"],
+  pl: ["Marek", "Zofia"],
+  zh: ["云健", "云夏", "云希", "云扬", "晓伊", "晓晓 O", "曉佳", "曉曼", "雲龍", "曉臻", "曉雨", "雲哲"],
+};
+
+const CHROME_MAC_VOICES = {
+  en: ["Daniel", "Google", "Aaron", "Nicky", "Tessa"],
+  zh: ["Google", "Li-mu", "TingTing", "Yu-shu", "Sinji", "Meijia"],
+};
+
+function getVoiceAllowlist() {
+  const ua = navigator.userAgent;
+
+  const isEdge = /\bEdg\//.test(ua);
+  const isChromeMac =
+    /\bChrome\//.test(ua) &&
+    /\bMac OS X\b/.test(ua) &&
+    !isEdge;
+
+  if (isEdge) return EDGE_VOICES;
+  if (isChromeMac) return CHROME_MAC_VOICES;
+  return null;
 }
 
 /*
