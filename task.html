@@ -4639,15 +4639,14 @@ transition: opacity 0.25s; opacity: 1;"
     return index;
   },
 
-  tweakedTTSLine(s) {
+tweakedTTSLine(s) {
     const specialLangs = ['ru', 'ar', 'he', 'ja', 'ko', 'zh'];
-    if (!specialLangs.includes(detectLang(s))) return s;
+    const lang = detectLang(s);
+    if (!specialLangs.includes(lang)) return s;
     const passed = [];
     const strParts = s.split(/[\s\u00A0]+/); // split at 1+ spaces and &nbsp;'s
     for (const part of strParts) {
-      if (!specialLangs.includes(detectLang(part))) break;
-
-      passed.push(part);
+      if (!/\p{Script=Latin}/u.test(part)) passed.push(part);
     }
 
     return passed.join(' ');
