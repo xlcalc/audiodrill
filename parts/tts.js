@@ -332,6 +332,7 @@ tts.EDGE_VOICES = {
 };
 
 tts.CHROME_MAC_VOICES = {
+  de: ["Google", "Helena", "Martin"],
   en: ["Google", "Aaron", "Nicky", "Tessa"],
   zh: ["Google", "Li-mu", "TingTing", "Yu-shu", "Sinji", "Meijia"],
 };
