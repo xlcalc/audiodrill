@@ -5840,11 +5840,17 @@ const formatTip = (key) => {
 }
 
 const debugTask = txt => {
-  const parts = txt.split(' ') .filter(Boolean);
-  if (parts[0] !== 'debug') return txt;
-  if (parts[2] === 'voices') {
-    const voices = getLangVoices(parts[1]);
-    return 'TTS voices for ' + parts[1] + ':\n' + voices
+  const words = txt.trim(). split(' ') .filter(Boolean);
+  if (words[0] !== 'debug') return txt;
+
+  if (txt.endsWith('voices')) {
+    let allAvailable = words[1] === 'all';
+    let lang = allAvailable ? words[2] : words[1];
+    if (lang === 'voices') lang = ''; // lang is missing
+
+    const voices = getLangVoices(lang, allAvailable);
+    lang = lang || 'all languages';
+    return 'TTS voices for ' + lang + ':\n' + voices
       .map((voice, i) => (i+1) + '. ' + voice.lang + ': ' + voice.name)
       .join('\n')
   }
