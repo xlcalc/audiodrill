@@ -305,13 +305,14 @@ const ttsFinish = async () => {
 }
 
 // 2026-06-28: a whitelist of voices on Edge and Mac Chrome added
-const getLangVoices = lang => {
+const getLangVoices = (lang, unfiltered) => {
   const allowlist = getVoiceAllowlist()?.[lang];
   const voices = tts.getVoices();
 
   return lang ? voices
     .filter(v => v.lang.split(/[-_]/)[0] === lang)
     .filter(v =>
+      unfiltered ||
       !allowlist ||
       allowlist.some(name => v.name.includes(name))
     )
