@@ -5791,18 +5791,19 @@ tstore.backToTaButton = '[< back](btn: tstore.toEditingTA() style="font-size: 75
 
 function makeTaskFromUserText() {
 //console.log('> makeTaskFromUserText');
-  const txt = qsel('textarea')?.value;
-  if (!txt) {
+  const taText = qsel('textarea')?.value;
+  if (!taText) {
     displayAlarmMessage('Enter the text first');
     return;
   }
 
-  tstore.taContent = debugTask(txt);
-  
+  tstore.taContent = taText;
   tstore.previousTask = transcriptText.innerHTML;
   players.previousTask = players.currentTask;
   tstore.previousPracticeTips = elid('practiceTips').innerHTML;
-  loadElementWithText(tstore.backToTaButton + '\n' + tstore.taContent, 'transcriptText');
+
+  const txt = debugTask(taText);
+  loadElementWithText(tstore.backToTaButton + '\n' + txt, 'transcriptText');
 
   const separator = '<hr>';
   showPracticeTips(separator);
@@ -5844,7 +5845,7 @@ const debugTask = txt => {
   if (parts[2] === 'voices') {
     const voices = getLangVoices(parts[1]);
     return 'TTS voices for ' + parts[1] + ':\n' + voices
-      .map((voice, i) => (i+1) + '. ' + voice.lang + ':' + voice.name)
+      .map((voice, i) => (i+1) + '. ' + voice.lang + ': ' + voice.name)
       .join('\n')
   }
   else return txt;
