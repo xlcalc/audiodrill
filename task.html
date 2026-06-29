@@ -5791,12 +5791,14 @@ tstore.backToTaButton = '[< back](btn: tstore.toEditingTA() style="font-size: 75
 
 function makeTaskFromUserText() {
 //console.log('> makeTaskFromUserText');
-  tstore.taContent = qsel('textarea')?.value;
-  if (!tstore.taContent) {
+  const txt = qsel('textarea')?.value;
+  if (!txt) {
     displayAlarmMessage('Enter the text first');
     return;
   }
 
+  tstore.taContent = debugTask(txt);
+  
   tstore.previousTask = transcriptText.innerHTML;
   players.previousTask = players.currentTask;
   tstore.previousPracticeTips = elid('practiceTips').innerHTML;
@@ -5834,6 +5836,18 @@ const showOneEl = (prefix, key, caller) => {
 
 const formatTip = (key) => {
   showOneEl('format-', key);
+}
+
+const debugTask = txt => {
+  const parts = txt.split(' ') .filter(Boolean);
+  if (parts[0] !== 'debug') return txt;
+  if (parts[2] === 'voices') {
+    const voices = getLangVoices(parts[1]);
+    return 'TTS voices for ' + parts[1] + ':\n' + voices
+      .map((voice, i) => (i+1) + '. ' + voice.lang + ':' + voice.name)
+      .join('\n')
+  }
+  else return txt;
 }
 /*
 async function getYoutubeTitle(videoUrl) {
