@@ -4553,7 +4553,7 @@ transition: opacity 0.25s; opacity: 1;"
 
     const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + ←)', dir: 'left'});
     const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + →)', dir: 'right'});
-    const pbr = getPbrHtml(2);
+    const pbr = getPbrHtml('-tts-overlay');
 
     const translateBtn = `<button id="${this.translBtnId}" title="Translate sentence"
       class="${commonBtn} inblock font-85pc" tip-class="tooltip-link"
