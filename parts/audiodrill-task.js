@@ -2591,12 +2591,18 @@ console.log('langListCtrl', !!langListCtrl());
 //  ttsInitParam.langSelector = elid('language-select');
   tts.init(ttsInitParam);
   
+  loadLastVoices();
   loadLangList();
   addVoicesCtrl('');
   listLangVoices(); // for Firefox browser
   googleTranslateElementInit();
   gstore.tips.initAll(); //experimental 2025-10-12
   setEmbeddedStyle();
+}
+
+const loadLastVoices = () => {
+  const v = localStorage.getItem('pickedVoices');
+  gstore.pickedVoices = JSON.parse(v) || {};
 }
 
 async function googleTranslateElementInit() {
@@ -2677,8 +2683,12 @@ const setVoiceList = (par) => {
   
   if (par.selectVoice) chooseVoice(n); // for words and phrases page
   else if (par.voices[0]) { // for tasks page
-    tts['spVoice' + n] = par.voices[0];
-    voiceSelector.title = par.voices[0].name;
+    let voice = null;
+    const vname = gstore.pickedVoices[getLangCode()];
+    if (vname) voice = par.voices.find(v => v.name === vname);
+
+    tts['spVoice' + n] = voice || par.voices[0];
+    voiceSelector.title = voiceSelector.value = voice?.name || par.voices[0].name;
 // no need to set voiceSelector.value b/c it's set to the first voice
   }
 
@@ -2731,10 +2741,16 @@ const addVoicesCtrl = n => {
   };
 }
 
+//gstore.pickedVoices = {};
+
 const handleVoiceSelect = (option, v='', initialized = '') => {
 //console.log('TTS voice option', option);
 //  if (!initialized) tts['manuallyPickedVoice' + v] = option.value;
+
+// Saving voice name added 2026-06-30 (experimental)
+  gstore.pickedVoices[getLangCode()] = option.value;
   setVoiceByName(option.value, v);
+  localStorage.setItem('pickedVoices', JSON.stringify(gstore.pickedVoices));
 //  option.title = option.value;
   if (!initialized) {
     tts['manuallyPickedVoice' + v] = 'VOICE_PICKED';
