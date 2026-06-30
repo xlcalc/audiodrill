@@ -588,6 +588,8 @@ gstore.copyVoiceList = suffix => {
   targetEl.innerHTML = sourceEl.innerHTML;
   [...targetEl.children].forEach(el => { el.id = el.id + suffix });
 
+  targetEl.value = sourceEl.value;
+
   elid('voice-select' + suffix).onchange = function(e) {
     handleVoiceSelect(e.target);
   }
