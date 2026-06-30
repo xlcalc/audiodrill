@@ -582,18 +582,18 @@ gstore.copyVoiceList = suffix => {
 
   const id = 'voice-ctrl-box';
   const sourceEl = elid(id);
-  let targetEl = elid(id + suffix);
+  const targetEl = elid(id + suffix);
   if (!sourceEl || !targetEl) return;
 
   targetEl.innerHTML = sourceEl.innerHTML;
   [...targetEl.children].forEach(el => { el.id = el.id + suffix });
 
-  targetEl.value = sourceEl.value;
+  const id2 = 'voice-select';
+  const sourceDDL = elid(id2);
+  const targetDDL = elid(id2 + suffix);
 
-  elid('voice-select' + suffix).onchange = function(e) {
-    handleVoiceSelect(e.target);
-  }
-
+  targetDDL.value = sourceDDL.value;
+  targetDDL.onchange = e => handleVoiceSelect(e.target);
 }
 
 const getPbrHtml = (s='') => {
