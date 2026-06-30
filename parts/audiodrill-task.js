@@ -164,7 +164,7 @@ async function loadElementFromURL(eID, url, altUrl) {
 	if (gstore.fromGoogleDoc) txt = extractFromGoogleDoc(txt);
 // Sections can be analysed and just one section  to be shown via loadElementWithText
 //    if (eID === 'transcriptText' && gstore.docHasSections) txt = gstore.taskParts.getSection(txt);
-    if (eID === 'transcriptText') txt = gstore.taskParts.getSection(txt, 0);
+    if (eID === 'transcriptText') txt = gstore.taskParts.getSection(txt, gstore.taskParts.requestedSection);
 
 	if (txt) loadElementWithText(txt, eID, cmd);
 	else { 

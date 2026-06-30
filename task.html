@@ -2246,10 +2246,11 @@ const analyzeURLParams = async () => {
     }
   }
 
+  gstore.taskParts.requestedSection = urlKeys.get('section') || 0;
   const fromDir = urlKeys.get('u');
   if (fromDir) {
     taskText = await loadTaskByDir(fromDir);
-  } 
+  }
 
   if (!taskText && !mediaFile && !loadTaskFromURLParam(urlKeys)) { 
     loadHtmlTaskByURL('/tasklist/default.txt'); 
@@ -5710,8 +5711,13 @@ gstore.taskParts = {
       .join('');  
   },
 
-  getTask(i) {
-    this.currSectionNum = i = clamp(i, 0, this.sections.length -1);
+  getTask(v) {
+    const i = Number(v);
+    if (!isNaN(i))
+      this.currSectionNum = clamp(i, 0, this.sections.length -1);
+    else if (typeof v === 'string')
+      this.currSectionNum = this.languages.indexOf(v);
+    else return null;
 
     return this.getCurrTask();
   },
@@ -5840,7 +5846,7 @@ const formatTip = (key) => {
 }
 
 const debugTask = txt => {
-  const words = txt.trim(). split(' ') .filter(Boolean);
+  const words = txt.trim() .toLowerCase() .split(' ') .filter(Boolean);
   if (words[0] !== 'debug') return txt;
 
   if (txt.endsWith('voices')) {
