@@ -3733,13 +3733,15 @@ tstore.translation = { // experimental: 2026-02-14
     this.text = '';
     this.sentences = [];
     this.isOn = false;
+    this.tlang = this.tlang || localStorage.getItem('sectionTLang');
+    this.tsectionNum = gstore.taskParts.languages.indexOf(this.tlang);
 
     if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
     if (this.tsectionNum === gstore.taskParts.currSectionNum) {
       this.tsectionNum = this.tsectionNum ? 0 : 1;
     }
 
-    if (!gstore.taskParts.sections[this.tsectionNum]) return null;
+    if (!gstore.taskParts.sections[this.tsectionNum]) return null; // or should gstore.taskParts.languages[this.tsectionNum] be checked instead?
 
     gstore.taskParts.extractSectSentences(); // needed for translation
 // logic will change as more sections are added
@@ -3757,6 +3759,7 @@ tstore.translation = { // experimental: 2026-02-14
     tstore.translLangCtrl.set(lang);
 
     this.tlang = lang;
+    localStorage.setItem('sectionTLang', lang);
     this.tsectionNum = gstore.taskParts.languages.indexOf(lang);
     this.sentences = gstore.taskParts.sectSentences[this.tsectionNum];
 
