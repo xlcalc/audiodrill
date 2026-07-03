@@ -3831,17 +3831,19 @@ tstore.translation = { // experimental: 2026-02-14
 
   swapTask() {
     if (!this.tlang) return;
-    const currTransl = this.tsectionNum;
-    this.tsectionNum = gstore.taskParts.currSectionNum;
-    this.setTask(currTransl);
+//    const newOrig = this.tsectionNum;
+//    this.tsectionNum = gstore.taskParts.currSectionNum;
+
+    this.tlang = gstore.taskParts.languages[gstore.taskParts.currSectionNum]
+    localStorage.setItem('sectionTLang', this.tlang);
+    this.setTask(this.tsectionNum);
   },
   
   onchangedTaskLangCtrl(e) {
     const lang = e.target.value;
     const i = gstore.taskParts.languages.indexOf(lang);
-    if (lang === this.tlang) {
-
-    }
+//    if (lang === this.tlang) {
+//    }
     this.setTask(i);
   },
 
