@@ -3777,17 +3777,6 @@ tstore.translation = { // experimental: 2026-02-14
     this.setTransl(lang);
   },
 
-/*
-  extract() {
-    this.init();
-
-    let txt = gstore.taskParts.sections[this.tsectionNum]
-    if (!txt) return null;
-
-    return this.setTransl(gstore.taskParts.languages[this.tsectionNum] || 'en'); // is 'en' needed here?
-  },
-*/
-
   setListeners(el) {
     el.onmouseenter = () => { this.addTip(el) }
 
@@ -3833,9 +3822,6 @@ tstore.translation = { // experimental: 2026-02-14
           this.setListeners(el);
         }
       });
-//    if (this.isOn && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-//      tstore.ttsOverlay.initTransl();
-//    }
   },
   
   toggle(el) { // may be phased out
@@ -3844,8 +3830,6 @@ tstore.translation = { // experimental: 2026-02-14
   },
 
   swapTask() {
-// Logic will change as more sections are handled;
-//    const newTask = gstore.taskParts.currSectionNum ? 0 : 1;
     if (!this.tlang) return;
     const currTransl = this.tsectionNum;
     this.tsectionNum = gstore.taskParts.currSectionNum;
@@ -3862,7 +3846,6 @@ tstore.translation = { // experimental: 2026-02-14
   },
 
   setTask(n) {
-//    this.tsectionNum = gstore.taskParts.currSectionNum; // logic will change as more sections are added
     refreshTask(gstore.taskParts.getTask(n));
   },
 
@@ -3872,7 +3855,6 @@ tstore.translation = { // experimental: 2026-02-14
     const excluded = new Set(['pinyin']); //the set may be expanded in the future
     const langs = gstore.taskParts.languages
 	  .filter(lang => lang && !excluded.has(lang))
-//      .map(lang => `<option value="${lang}">${lang}</option>`)
       .map(lang => `<option>${lang}</option>`)
       .join('');
 
@@ -3913,13 +3895,7 @@ tstore.translation = { // experimental: 2026-02-14
     this.set(true); // turn on immediately
   },
 
-/*
-  clearNodesStyle() {
-    tstore.nodes.forEach((el) => { el.style.backgroundColor = '' })	  
-  },
-*/
   async addTip(el) {
-//    let txt = el?.dataset?.transl;
     if (!this.sentences) return;
     const sentNum = el?.dataset?.sentenceIndex;
     let txt = this.sentences[sentNum];
@@ -3928,7 +3904,6 @@ tstore.translation = { // experimental: 2026-02-14
 //    await sleep(200);
 //    if (!el.hovered) return;
 
-//	this.clearNodesStyle();
     el.style.backgroundColor = 'var(--color-overlay-s)';
 
     document.querySelectorAll('.transl-tip').forEach(el => { el.remove() });
@@ -3968,7 +3943,6 @@ tstore.translation = { // experimental: 2026-02-14
   },
 
   async removeTip(el) {
-//    if (!el.dataset.transl) return;
     el.hovered = 0;
 //    await sleep(200);
 //    if (el.hovered) return;
@@ -3980,8 +3954,6 @@ tstore.translation = { // experimental: 2026-02-14
 }
 
 const taskTextHandler = txt => {
-//  txt = tstore.translation.extract(txt);
-
 // Is this order OK?
   gstore.langTag = gstore.taskParts.getCurrSectionLang() || detectLang(gstore.vocab.getBeforeVocab(txt));
 
@@ -4009,41 +3981,8 @@ const taskTextHandler = txt => {
 
 const handleTransl = () => {
   addTranslationBtn();
-//  addTranslation(qsel('.original-text'), qsel('.translated-text'));
   tstore.translation.prepare();
 }
-
-// addTranslation is experimental fn
-/*
-const addTranslation = (source, transl) => {
-  if (!source || !transl) return;
-  
-  const getSegmentedText = el => {
-    const lang = getContextLang(el);
-console.log('Language of the element', lang);
-    const segmenter = new Intl.Segmenter(lang, { granularity: 'sentence' });
-	return [...segmenter.segment(el.innerText)] .map(entry => entry.segment);
-  }
-  
-  tstore.sourceTextArr = getSegmentedText(source);
-  tstore.translTextArr = getSegmentedText(transl);
-// compare the lengths of two arrays
-  if (tstore.sourceTextArr.length !== tstore.translTextArr.length) {
-console.log('!! Original and translation length mismatch');
-    return;
-  }
-  
-  const getDivHtml = (name, lines) => {
-    let html = '<div class="' + name + '">';
-    for (line of lines) html += '<div class="' + name + '-line">' + line + '</div>';
-    return html + '</div>';
-  }
-  
-  const origDiv = getDivHtml('source', tstore.sourceTextArr);
-
-  elAddHTML(transcriptText, origDiv, 'afterbegin');
-}
-*/
 
 const addTranslationBtn = () => {
   const el = qsel('x-translate');
@@ -4135,8 +4074,6 @@ const refreshTask = s => {
 }
 
 const processTaskEl = async () => {
-//  transcriptText.querySelectorAll('.tooltip').forEach( e => {e.remove();});
-//  gstore.tips.initAll();
   loadingDone(); 
   afterTaskLoaded();
   parseCmdTag('transcriptText');
@@ -4166,7 +4103,7 @@ const afterTaskLoaded = () => {
   const tag = elid('startmedia'); // legacy tag to load video for this task
   if (tag) getVideoByURL(tag.getAttribute('url'), 'NEW_TASK');
   parseTTSTag(transcriptText); // run before prepareCloze
-//  prepareSettings();
+
   emulateCueClick();
 
   [tstore.nodes, tstore.taskSentences] = tstore.sentences.init(transcriptText);
@@ -4192,6 +4129,7 @@ const emulateCueClick = () => {
   }
 }
 
+/*
 const callTTSRead = (s = players.currentTask) => {
 // What to do with <x-vars>? Should :lang: tag be added?
   if (players.ttsLang && !s.includes(':lang:')) s = `:lang: ${players.ttsLang}\n` +  s;
@@ -4207,6 +4145,7 @@ const openTTSRead = () => {
   const txt = players.currentTask + vocabLabel;// + wordList.textContent.replace(/,\s?/g, '\n');
   callTTSRead(txt);
 }
+*/
 
 onpopstate = event => {
 //console.log('Popstate', event.state);
@@ -4431,22 +4370,7 @@ tstore.ttsOverlay = {
       elid(this.boxId).hidden = true;
       disableVoiceInput();
     },
-/*
-  set() { // not used since 2026-03-13
-//console.log('dict ID', this.id);
-    const dictDiv = `<div class="box-shadow rounded"
-style="position: fixed; left: 50%; transform: translateX(-50%);
-bottom: 72px; width:70vw; padding: .1em .3em; 
-text-align: left; background-color: var(--btn-lighgray);">
-<div id="${this.id}"contentEditable="true" style="min-height: 3em; outline:none;
-transition: opacity 0.25s; opacity: 1;"
-><i>Repeat what you heard</i></div></div>`;
-
-    this.remove();
-    elid('tts-sentence-reader').insertAdjacentHTML('afterbegin', dictDiv);
   },
-*/
-},
 
   insertSTT(text) {
     const el = this.dictDiv.el();
@@ -4458,15 +4382,11 @@ transition: opacity 0.25s; opacity: 1;"
     let range = sel.getRangeAt(0)
     range.deleteContents();
     range.insertNode(document.createTextNode(' ' + text + ' '));
-/*
-    range.collapse(false);
-    sel.removeAllRanges();
-    sel.addRange(range); 
-*/
+
     this.dictDiv.setFeedback('');
     const curText = el.textContent;
 //console.log('Current STT text', curText);
-//  	const sttOutput = checkStringVsRef(curText, this.ttsLine, this.ttsLang)[1]
+
   	let [match, sttOutput] = checkStringVsRef(curText, this.ttsLine, this.ttsLang);
 
     if (this.ttsLang === 'zh') sttOutput = sttOutput.replace(/\s/g, '');
@@ -4483,8 +4403,6 @@ transition: opacity 0.25s; opacity: 1;"
     this.dictDiv.setFeedback(feedback);
     putCaretAtStart(el, false);  // move caret to end
 
-//	  setElClass(el, 'green', sttOutput === this.ttsLine);
-//    if (match) this.shadowNext();
     if (match) {
       this.afterShadowing = true;
       this.play();
@@ -4495,7 +4413,7 @@ transition: opacity 0.25s; opacity: 1;"
 // simplified for test only. More code may be added, like in enableVoiceInput()
     tstore.STT.source = 'TTS_LINES';
     this.insertSTT();
-//    this.dictDiv.set();
+
     mic.isOff = false;
     startSTT();
   },
@@ -4680,7 +4598,8 @@ tweakedTTSLine(s) {
       this.repeatNum = 0;
     }
 
-    this.ttsLine = tstore.taskSentences[this.currentNum];
+    this.ttsLine = tstore.taskSentences[this.currentNum]
+      .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before;
     this.ttsLine = this.tweakedTTSLine(this.ttsLine);
 	
     const speed = speedCtrl.calcSpeed(this.repeatNum);
@@ -4712,7 +4631,7 @@ tweakedTTSLine(s) {
     if (!this.isActive()) return;
     if (this.isShadowMode()) {
   	  this.showPlaying(0);
-//      this.dictDiv.set();
+
       if (this.afterShadowing) {
         this.afterShadowing = false;
         if (this.ttsPlayMode === 'SHADOW_ALL') this.shadowNext();
@@ -4827,11 +4746,11 @@ tweakedTTSLine(s) {
   },
   
   shadowModes: ['SHADOW_LINE', 'SHADOW_AND_HIDE', 'SHADOW_ALL'],
-//  translModes: ['SHOW_TRANSLATION'],
+
 
   isShadowMode() { return this.shadowModes.includes(this.ttsPlayMode) },
   taskTransl: [],
-//  isTranslMode() {return this.translModes.includes(this.ttsPlayMode) && this.taskTransl.length},
+
   canTranslate() { return this.taskTransl.length && tstore.translation.isOn },
 }
 
@@ -5812,7 +5731,8 @@ function makeTaskFromUserText() {
   tstore.previousPracticeTips = elid('practiceTips').innerHTML;
 
   const txt = debugTask(taText);
-  loadElementWithText(tstore.backToTaButton + '\n' + txt, 'transcriptText');
+//  loadElementWithText(tstore.backToTaButton + '\n' + txt, 'transcriptText');
+  tstore.loadTaskFromText(tstore.backToTaButton + '\n' + txt);
 
   const separator = '<hr>';
   showPracticeTips(separator);
@@ -5831,20 +5751,21 @@ tstore.toEditingTA = () => {
 // should tstore.xvarsBox be restored too?
 }
 
-const showOneEl = (prefix, key, caller) => {
-  const btns = transcriptText.querySelectorAll('button[onclick]');
-  btns.forEach(el => {
-    const caller = el.getAttribute('onclick')?.includes(key);
-    setElClass(el, 'bg-ddd', caller);
-  });
+const formatTip = key => {
+// called from a task to show formatting features
+  const showOneEl = (prefix, key, caller) => {
+    const btns = transcriptText.querySelectorAll('button[onclick]');
+    btns.forEach(el => {
+      const caller = el.getAttribute('onclick')?.includes(key);
+      setElClass(el, 'bg-ddd', caller);
+    });
 
-  const elements = transcriptText.querySelectorAll(`[id^="${prefix}"]`);
-  elements.forEach(el => {
-    el.hidden = el.id !== prefix + key;
-  });
-}
+    const elements = transcriptText.querySelectorAll(`[id^="${prefix}"]`);
+    elements.forEach(el => {
+      el.hidden = el.id !== prefix + key;
+    });
+  }
 
-const formatTip = (key) => {
   showOneEl('format-', key);
 }
 
@@ -5864,6 +5785,16 @@ const debugTask = txt => {
       .join('\n')
   }
   else return txt;
+}
+
+tstore.loadTaskFromText = (txt, cmd) => {
+  if (!txt) {
+    loadingDone();
+    return;
+  }
+
+  txt = gstore.taskParts.getSection(txt, gstore.taskParts.requestedSection);
+  loadElementWithText(txt, 'transcriptText', cmd);
 }
 /*
 async function getYoutubeTitle(videoUrl) {

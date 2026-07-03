@@ -164,7 +164,10 @@ async function loadElementFromURL(eID, url, altUrl) {
 	if (gstore.fromGoogleDoc) txt = extractFromGoogleDoc(txt);
 // Sections can be analysed and just one section  to be shown via loadElementWithText
 //    if (eID === 'transcriptText' && gstore.docHasSections) txt = gstore.taskParts.getSection(txt);
-    if (eID === 'transcriptText') txt = gstore.taskParts.getSection(txt, gstore.taskParts.requestedSection);
+    if (eID === 'transcriptText') {
+      tstore.loadTaskFromText(txt, cmd);
+      return;
+    }
 
 	if (txt) loadElementWithText(txt, eID, cmd);
 	else { 
@@ -207,8 +210,9 @@ function uploadTextFile(evt, fnName, param) {
 		
 		text = text.replace(/^.*\n/, ''); // remove the first line
 	  }
-      if (param === 'transcriptText') text = gstore.taskParts.getSection(text, 0);  
-	  window[fnName](text, param);
+//      if (param === 'transcriptText') text = gstore.taskParts.getSection(text, 0);  
+      if (param === 'transcriptText') tstore.loadTaskFromText(text);
+	  else window[fnName](text, param);
 	} 
     catch(ex) { alert('ex when trying to load file = ' + ex); }
   };
@@ -1037,8 +1041,9 @@ placeholder="Enter video/audio URL here">
 //        loadElementWithText(iContent.innerText, 'transcriptText');
 // Full task with all sections is stored, not one section as before 2026-06-18
 // Not clear what to do with <style> in case of Google Doc
-        const txt = gstore.taskParts.getSection(iContent.innerText, 0);
-        loadElementWithText(txt, 'transcriptText'); // dont' use refreshTask
+//        const txt = gstore.taskParts.getSection(iContent.innerText, 0);
+//        loadElementWithText(txt, 'transcriptText'); // dont' use refreshTask
+        tstore.loadTaskFromText(iContent.innerText);
       }
 
       if (iContent.lastTask === 'EDIT_YT_STYLE' && iContent.initialHTML !== latestHTML) {
