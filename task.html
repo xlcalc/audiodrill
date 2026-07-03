@@ -3736,6 +3736,10 @@ tstore.translation = { // experimental: 2026-02-14
     this.tlang = this.tlang || localStorage.getItem('sectionTLang');
     this.tsectionNum = gstore.taskParts.languages.indexOf(this.tlang);
 
+    if (this.prevOrigSection >= 0 && this.tsectionNum === gstore.taskParts.currSectionNum) {
+      this.tsectionNum = this.prevOrigSection;
+      this.prevOrigSection = null;
+    }
     if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
     if (this.tsectionNum === gstore.taskParts.currSectionNum) {
       this.tsectionNum = this.tsectionNum ? 0 : 1;
@@ -3823,12 +3827,12 @@ tstore.translation = { // experimental: 2026-02-14
         }
       });
   },
-  
+/*
   toggle(el) { // may be phased out
     this.set(!this.isOn);
     toggleEl(el, 'bg-green');
   },
-
+*/
   swapTask() {
     if (!this.tlang) return;
 //    const newOrig = this.tsectionNum;
@@ -3848,6 +3852,7 @@ tstore.translation = { // experimental: 2026-02-14
   },
 
   setTask(n) {
+    this.prevOrigSection = gstore.taskParts.currSectionNum;
     refreshTask(gstore.taskParts.getTask(n));
   },
 
@@ -3857,6 +3862,7 @@ tstore.translation = { // experimental: 2026-02-14
     const excluded = new Set(['pinyin']); //the set may be expanded in the future
     const langs = gstore.taskParts.languages
 	  .filter(lang => lang && !excluded.has(lang))
+      .toSorted()
       .map(lang => `<option>${lang}</option>`)
       .join('');
 
