@@ -3879,15 +3879,16 @@ tstore.translation = { // experimental: 2026-02-14
       ><select title="Original language" id="orig-lang-ctrl"  class="inherit rounded">${langs}</select
       ><button title="Swap original and translation" id="transl-swap-btn" translate="no" 
       class="plain-button action-icon margin-03em" 
-      style="right:10px; width:auto" 
-      onclick="tstore.translation.swapTask()">⇄</button
+      style="right:10px; width:auto">⇄</button
       ><select title="Translation language" id="target-lang-ctrl" class="inherit rounded"><option>off</option>${langs}</select
       ></div>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
 
     const oCtrl = elid('orig-lang-ctrl');
 	oCtrl.value = gstore.taskParts.getCurrSectionLang();
-	oCtrl.onchange = (e) => { this.onchangedTaskLangCtrl(e) };
+	oCtrl.onchange = e => { this.onchangedTaskLangCtrl(e) };
+
+    elid('transl-swap-btn').onclick = () => { this.swapTask() };
 
     const tCtrl = elid('target-lang-ctrl');
 	tCtrl.value = this.tlang;
@@ -3895,7 +3896,7 @@ tstore.translation = { // experimental: 2026-02-14
       option.hidden = option.value === oCtrl.value;
     }
 
-	tCtrl.onchange = (e) => {
+	tCtrl.onchange = e => {
 //console.log(e.target.value);
       this.onchangedTranslCtrl(e.target.value);
     };
