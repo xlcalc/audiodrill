@@ -3834,13 +3834,13 @@ tstore.translation = { // experimental: 2026-02-14
   },
 */
   swapTask() {
-    if (!this.tlang) return;
+//    if (!this.tlang) return;
 //    const newOrig = this.tsectionNum;
 //    this.tsectionNum = gstore.taskParts.currSectionNum;
 
-    this.tlang = gstore.taskParts.languages[gstore.taskParts.currSectionNum]
-    localStorage.setItem('sectionTLang', this.tlang);
-    this.setTask(this.tsectionNum);
+//    this.tlang = gstore.taskParts.languages[gstore.taskParts.currSectionNum]
+//    localStorage.setItem('sectionTLang', this.tlang);
+    if (this.tlang) this.setTask(this.tsectionNum);
   },
   
   onchangedTaskLangCtrl(e) {
