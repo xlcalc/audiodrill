@@ -126,6 +126,7 @@ const extractFromGoogleDoc = html => {
   gstore.docStyleHtml = '';
   gstore.docBodyHtml = '';
   gstore.docBodyText = '';
+  gstore.docBodyImages = [...doc.querySelectorAll("img")];
 
 // This logic may change
 //  gstore.docHasSections = html.includes(':section:');
@@ -2282,6 +2283,9 @@ const highlightText = txt => {
       .filter(opt => !styles[opt])
       .join(';');
 
+//    if (!isNaN(url) && gstore.docBodyImages.length) return gstore.docBodyImages[url].outerHTML;
+    if (!isNaN(url) && gstore.docBodyImages.length)
+      return gstore.docBodyImages[url].outerHTML;
 	return `<img src=${getNewURL(url)} class="${cl}" style="max-width:75%; ${st}; ${st2}">`; 
   }
 

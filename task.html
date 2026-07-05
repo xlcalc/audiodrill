@@ -2642,7 +2642,6 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
       <span class="action-icon close-x01" id="clear-wordlist" title="Clear the list">&times;</span>
     </div>
     <div id="wordlist" class="rounded" style="outline: none"></div>
-	<div class="flex-center"><button class="btn-darker" onclick=openTTSRead()>Go to TTS Reader</button></div>
   </div>
 End of wordlist-box   -->
 
@@ -3581,9 +3580,6 @@ const analyzeXvars = () => {
     
   elid('task-icons').hidden = ['0', 'off', 'hide'].includes(getV('task-icons'));
 
-//  if (getV('task-title')) setElHTML('task-title', highlightText(getV('task-title')));
-//  else setElHTML('task-title', 'Audiodrill task');
-
 //  setVideoSize(getUrlKey('video-size') || getV('video-size') || localStorage.getItem('videoWidth') || 1);
   setVideoSize(getUrlKey('video-size') || getV('video-size'));
 
@@ -3646,8 +3642,6 @@ const analyzeXvars = () => {
 //console.log('Player title:', highlightText(getV('player-title')));
   tstore.playerTitle.displayMsg(getV('player-title'));
   
-//  setTaskTitle(getV('task-title')); // so far kept to allow prev/next episode btns in the title
-  
   tstore.textToClozeMode = getV('text-cloze') !== null;
   
   setFontSize(getV('font-size'));
@@ -3660,19 +3654,11 @@ const setVoiceInVoiceCtrl = async (voiceName, n='') => {
   const el = elid('voice-select' + n); 
   if (el) {
 	await sleep(700); // not the best to delay setting voice, but it works
-//    setVoiceByName(voiceName, n); // turned off 2025-08-03
     el.value = voiceName;
     el.title = voiceName;
 console.log('Set voice to', voiceName);
   }
 }
-
-/*
-const setTaskTitle = s => {
-  if (s) setElHTML('task-title', highlightText(s));
-  elid('task-icons').hidden = s;
-}
-*/
 
 const showSettings = () => {
   hideElid('settings-sign');
@@ -3689,7 +3675,6 @@ const getActivityKey = () => '/?t=';
 
 function handleLangSelect(e) {
 //console.log('Lang set:', e.target.value);
-//  tts.langSelector.value = e.target.value; // Is it needed? Is it called without setting langSelector?
 
   const lang = tts.langSelector.value = e.target.value;
 //  const lang = getLangCode();
@@ -3725,7 +3710,6 @@ const shareFragment = () => {
 
 
 tstore.translation = { // experimental: 2026-02-14
-//  marker: ':transl:',
   tsectionNum: -1,
 
   init() {
@@ -3733,29 +3717,52 @@ tstore.translation = { // experimental: 2026-02-14
     this.text = '';
     this.sentences = [];
     this.isOn = false;
-    this.tlang = this.tlang || localStorage.getItem('sectionTLang');
-    this.tsectionNum = gstore.taskParts.languages.indexOf(this.tlang);
 
-    if (this.prevOrigSection >= 0 && this.tsectionNum === gstore.taskParts.currSectionNum) {
+    const langs = gstore.taskParts.languages;
+    let langsN = langs.length;
+    const hasPinyin = langs.includes('pinyin');
+    if (hasPinyin) langsN --;
+    if (langsN < 2) return null;
+
+    gstore.taskParts.extractSectSentences(); // needed for translation
+
+    this.tlang = this.tlang || localStorage.getItem('sectionTLang');
+    this.tsectionNum = langs.indexOf(this.tlang);
+
+    const currSectionNum = gstore.taskParts.currSectionNum;
+    if (this.prevOrigSection >= 0 && this.tsectionNum === currSectionNum) {
       this.tsectionNum = this.prevOrigSection;
       this.prevOrigSection = null;
     }
-    if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
-    if (this.tsectionNum === gstore.taskParts.currSectionNum) {
-      this.tsectionNum = this.tsectionNum ? 0 : 1;
-    }
 
-    if (!gstore.taskParts.sections[this.tsectionNum]) return null; // or should gstore.taskParts.languages[this.tsectionNum] be checked instead?
+//    if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
 
-    gstore.taskParts.extractSectSentences(); // needed for translation
+//    if (this.tsectionNum === gstore.taskParts.currSectionNum) {
+//      this.tsectionNum = this.tsectionNum ? 0 : 1;
+//    }
+
+    if (this.tlang === '') // means translation is off
+      return -1;
+//      return this.setTransl('');
+
+    if (this.tsectionNum === -1) this.tsectionNum = 0;
+    const pinyinSectionNum = langs.indexOf('pinyin');
+    while (this.tsectionNum === pinyinSectionNum || this.tsectionNum === currSectionNum) this.tsectionNum ++;
+
+
+//    if (!gstore.taskParts.sections[this.tsectionNum]) return null; // or should gstore.taskParts.languages[this.tsectionNum] be checked instead?
+
 // logic will change as more sections are added
     this.pinyinSentences = null;
-    if (gstore.taskParts.getCurrSectionLang() === 'zh' && gstore.taskParts.languages.includes('pinyin')) {
-      const i = gstore.taskParts.languages.indexOf('pinyin');
-      this.pinyinSentences = gstore.taskParts.sectSentences[i];
+    if (gstore.taskParts.getCurrSectionLang() === 'zh' && hasPinyin) {
+//      const i = langs.indexOf('pinyin');
+      this.pinyinSentences = gstore.taskParts.sectSentences[pinyinSectionNum];
     }
 
-    return this.setTransl(gstore.taskParts.languages[this.tsectionNum] || 'en'); // is 'en' needed here?
+//    return this.setTransl(langs[this.tsectionNum] || 'en'); // is 'en' needed here?
+//    return this.setTransl(langs[this.tsectionNum]);
+    this.tlang = langs[this.tsectionNum];
+    return 1;
   },
 
   setTransl(lang) {
@@ -3767,12 +3774,14 @@ tstore.translation = { // experimental: 2026-02-14
     this.tsectionNum = gstore.taskParts.languages.indexOf(lang);
     this.sentences = gstore.taskParts.sectSentences[this.tsectionNum];
 
-    return this.sentences?.length;
+//    return this.sentences?.length;
+    return true;
   },
 
   onchangedTranslCtrl(lang) {
     if (lang === 'off') lang = '';
 	setElClass(elid('target-lang-ctrl'), 'gray', !lang);
+	this.isOn = !!lang;
 	
     const swapBtn = elid('transl-swap-btn');
     swapBtn.disabled = !lang;
@@ -3817,37 +3826,24 @@ tstore.translation = { // experimental: 2026-02-14
   }, // end setListeners()
 
   set(cmd) {
-    this.isOn = cmd;	
+    this.isOn = cmd;
+/*
     if (this.sentences && tstore.nodes)
       tstore.nodes.forEach((el, i) => {
-        if (this.sentences[i]) {
-//          el.dataset.transl = cmd ? this.sentences[i] : '';
-//          setElClass(el, 'hover-overlay-s', cmd);
-          this.setListeners(el);
-        }
+        if (this.sentences[i]) this.setListeners(el);
       });
-  },
-/*
-  toggle(el) { // may be phased out
-    this.set(!this.isOn);
-    toggleEl(el, 'bg-green');
-  },
 */
-  swapTask() {
-//    if (!this.tlang) return;
-//    const newOrig = this.tsectionNum;
-//    this.tsectionNum = gstore.taskParts.currSectionNum;
+    if (tstore.nodes)
+      tstore.nodes.forEach(el => { this.setListeners(el) });
+  },
 
-//    this.tlang = gstore.taskParts.languages[gstore.taskParts.currSectionNum]
-//    localStorage.setItem('sectionTLang', this.tlang);
+  swapTask() {
     if (this.tlang) this.setTask(this.tsectionNum);
   },
   
   onchangedTaskLangCtrl(e) {
     const lang = e.target.value;
     const i = gstore.taskParts.languages.indexOf(lang);
-//    if (lang === this.tlang) {
-//    }
     this.setTask(i);
   },
 
@@ -3858,6 +3854,8 @@ tstore.translation = { // experimental: 2026-02-14
 
   prepare() {
     if (!this.init()) return;
+
+    const ddlClass = 'class="inherit rounded"';
 
     const excluded = new Set(['pinyin']); //the set may be expanded in the future
     const langs = gstore.taskParts.languages
@@ -3876,11 +3874,11 @@ tstore.translation = { // experimental: 2026-02-14
 */
   
     const btn = `<div class="no-tts flex float-right font-80pc padding-1em"
-      ><select title="Original language" id="orig-lang-ctrl"  class="inherit rounded">${langs}</select
+      ><select title="Original language" id="orig-lang-ctrl" ${ddlClass}>${langs}</select
       ><button title="Swap original and translation" id="transl-swap-btn" translate="no" 
       class="plain-button action-icon margin-03em" 
       style="right:10px; width:auto">⇄</button
-      ><select title="Translation language" id="target-lang-ctrl" class="inherit rounded"><option>off</option>${langs}</select
+  ><select title="Translation language" id="target-lang-ctrl" ${ddlClass}><option>off</option>${langs}</select
       ></div>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
 
@@ -3891,7 +3889,7 @@ tstore.translation = { // experimental: 2026-02-14
     elid('transl-swap-btn').onclick = () => { this.swapTask() };
 
     const tCtrl = elid('target-lang-ctrl');
-	tCtrl.value = this.tlang;
+	tCtrl.value = this.tlang || 'off';
     for (const option of tCtrl.options) {
       option.hidden = option.value === oCtrl.value;
     }
@@ -3901,7 +3899,9 @@ tstore.translation = { // experimental: 2026-02-14
       this.onchangedTranslCtrl(e.target.value);
     };
 
-    this.set(true); // turn on immediately
+    this.set(true);
+//    this.set(!!this.tlang);
+    this.onchangedTranslCtrl(tCtrl.value);
   },
 
   async addTip(el) {
@@ -4087,7 +4087,7 @@ const processTaskEl = async () => {
   afterTaskLoaded();
   parseCmdTag('transcriptText');
 
-  if (tstore.translation.sentences.length 
+  if (tstore.translation.sentences?.length 
   && tstore.translation.previousText !== tstore.translation.text) {
     const lang = tstore.translation.tlang.toUpperCase();
     await sleep(10); // wait till editing window closes;
@@ -4099,7 +4099,7 @@ const processTaskEl = async () => {
 const afterTaskLoaded = () => {
   players.looperInUse = false;
   players.loopStopRequested = true; // maybe it should be set even earlier?
-  
+
 //  parseWordList();
   movePlayer();
 
@@ -4118,7 +4118,7 @@ const afterTaskLoaded = () => {
   [tstore.nodes, tstore.taskSentences] = tstore.sentences.init(transcriptText);
   handleTransl();
   handleVocab();
-  
+
   if (tstore.textToClozeMode) clozeInputToSpans();
   else prepareCloze(); // run after parseTTSTag and tstore.sentences.init
 
@@ -4137,24 +4137,6 @@ const emulateCueClick = () => {
 	else getVideoByURL(url); // this way, no info on the stream name is passed
   }
 }
-
-/*
-const callTTSRead = (s = players.currentTask) => {
-// What to do with <x-vars>? Should :lang: tag be added?
-  if (players.ttsLang && !s.includes(':lang:')) s = `:lang: ${players.ttsLang}\n` +  s;
-//console.log('Encode', s);
-  location.assign('/?tts-read&read-enc=' + encode64(s)
-  // + getLangForUrl()); //so far on this page, lang is determined from x-vars and url, not from :lang: label
-  ); 
-}
-
-const openTTSRead = () => {
-//console.log('Vocab', '\n:vocab:\n' + wordList.textContent.replace(/,\s?/g, '\n'));
-  const vocabLabel = (players.currentTask.includes(':vocab:'))? '\n' : '\n:vocab:\n';
-  const txt = players.currentTask + vocabLabel;// + wordList.textContent.replace(/,\s?/g, '\n');
-  callTTSRead(txt);
-}
-*/
 
 onpopstate = event => {
 //console.log('Popstate', event.state);
@@ -4190,7 +4172,6 @@ const handleTextInteraction = (s, cmd, el) => {
     if (!/\s/.test(chunk))
       dictOK = await tryDictAudio(chunk, tts.spVoice.lang, speedCtrl.calcSpeed());
 
-//	if (!dictOK) speak(chunk, 'IGNORE_IF_BUSY');
 	if (!dictOK) ttsSpeakLang(chunk, tstore.contextLang, 'IGNORE_IF_BUSY');
   }
 
@@ -4208,8 +4189,6 @@ const handleTextInteraction = (s, cmd, el) => {
     if (audioRecAllowed2()) emulateTTSClick(s); 
     else speakDictOrTTS(s);
   }
-
-//  if (cmd === 'SELECTED_TEXT') tstore.showChunkTooltip(s); // tooltip is shown in handleSelection()
 
 //console.log('selected?', cmd)
 }
@@ -4362,10 +4341,8 @@ tstore.ttsOverlay = {
     async clear() {
 //      this.setFeedback('');
       await blinkElClass(this.el(), 'faded', 1, 500);
-//      this.el().textContent = '';
+
       this.el().innerHTML = '';
-//  	  setElClass(this.el(), 'green', 0);
-//      el.innerHTML = this.speakPrompt;
     },
 
     async showPrompt(s) {
@@ -4777,7 +4754,7 @@ function getClickedTextFragment(range, lang, granularity) {
   const isBoundaryNode = node => node && (
     /^(H|BR|P|BUTTON)/.test(node.tagName)
     || node.classList?.contains('no-tts') // added 2026-06-27
-  )// ? node : null;
+  );
 // maybe need to add more boundaries like select? We'll see...
 
   let parentText = node.textContent;
@@ -4801,15 +4778,7 @@ function getClickedTextFragment(range, lang, granularity) {
 	  if (!nextNode || isBoundaryNode(nextNode)) break;
 
 // What if the node is inside vocab entries?	
-/*
-	  if (currentNode.nextSibling) currentNode = currentNode.nextSibling;
-	  else {
-	    if (currentNode.parentElement.nextSibling) currentNode = currentNode.parentElement.nextSibling;
-	    else currentNode = currentNode.parentElement.parentElement.nextSibling;
-	  }
-	  
-      if (!nextNode) break;
-*/
+
       if (nextNode.textContent) {
 	    parentText += nextNode.textContent;
 	  }
@@ -4830,15 +4799,6 @@ function getClickedTextFragment(range, lang, granularity) {
 	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.parentElement.previousSibling);
 	  if (!nextNode || isBoundaryNode(nextNode)) break;
 
-/*
-	if (currentNode.previousSibling) currentNode = currentNode.previousSibling;
-	  else {
-	    if (currentNode.parentElement.previousSibling) currentNode = currentNode.parentElement.previousSibling;
-	    else currentNode = currentNode.parentElement.parentElement.previousSibling;
-	  }
-	  
-      if (!nextNode) break;
-*/
 //      if (nextNode.textContent) {
       if (nextNode.innerText) { // experimental: 2026-05-15
 //		let chunk = nextNode.textContent;
@@ -4858,12 +4818,6 @@ function getClickedTextFragment(range, lang, granularity) {
   const segmenter = new Intl.Segmenter(lang, { granularity: granularity });
   const segments = [...segmenter.segment(parentText.trim())];
 
-/*
-  // Find the result containing the offset
-  const res = segments.find(seg => 
-    seg.index <= clickedOffset && clickedOffset < seg.index + seg.segment.length
-  );
-*/
   const currentIndex = segments.findIndex(seg =>
     seg.index <= clickedOffset && clickedOffset < seg.index + seg.segment.length
   );
