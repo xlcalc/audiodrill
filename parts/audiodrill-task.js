@@ -127,6 +127,8 @@ const extractFromGoogleDoc = html => {
   gstore.docBodyHtml = '';
   gstore.docBodyText = '';
   gstore.docBodyImages = [...doc.querySelectorAll("img")];
+  gstore.docBodyImages.forEach(el => { el.dataset.imgFromHtml = '' });
+  
 
 // This logic may change
 //  gstore.docHasSections = html.includes(':section:');
@@ -635,6 +637,14 @@ const parseCmdTag = eID => {
 
   tags = elid(eID).getElementsByTagName('x-copy');
   for (const tag of tags) runTaskCmd(tag, 'COPY2TA');
+  
+  tags = elid(eID).getElementsByTagName('x-img');
+  for (const tag of tags) {
+    const i = tag.dataset.imgIndex;
+	const el = gstore.docBodyImages[i];
+	el.className = tag.dataset.class + ' margin-05em';
+    tag.append(el);
+  }
 }
 
 /*
@@ -2285,7 +2295,7 @@ const highlightText = txt => {
 
 //    if (!isNaN(url) && gstore.docBodyImages.length) return gstore.docBodyImages[url].outerHTML;
     if (!isNaN(url) && gstore.docBodyImages.length)
-      return gstore.docBodyImages[url].outerHTML;
+      return `<x-img data-img-index="${url}" data-class="${cl}"></x-img>`; 
 	return `<img src=${getNewURL(url)} class="${cl}" style="max-width:75%; ${st}; ${st2}">`; 
   }
 
