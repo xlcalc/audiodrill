@@ -17,15 +17,16 @@
   --scroll-track-bgcolor: rgba(200, 200, 200, .3);
   --scroll-thumb-bgcolor: rgba(0, 0, 0, .1);
   --color-white-darkgray: white;
+  --color-white-darkergray: white;
   --color-overlay-s: #0001;
   --color-overlay-m: #0002;
   --color-overlay-green: #0b83;
 }
 
 :root.night-mode {
-  --color-text: #665030;
-  --color-marked-text: #222;
+/*  --color-text: #665030;*/
   --color-text: #776633;
+  --color-marked-text: #222;
   --a-color: #565;
   --ah-color: #676;
   --dark-gray: #555;
@@ -43,6 +44,7 @@
   --scroll-track-bgcolor: rgba(200, 200, 200, .1);
   --scroll-thumb-bgcolor: #282828;
   --color-white-darkgray: #282828;
+  --color-white-darkergray: #111;
   --color-overlay-s: #fff2;
   --color-overlay-m: #fff3;
   --color-overlay-green: #0b85;
@@ -261,9 +263,14 @@ box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 20px 0 rgba(0, 0, 0, 0.19);
 
 .transl-tip {
   max-width: 500px;
+/*
   background-color: var(--color-white-darkgray);
   color: var(--color-text);
   border: dotted 1px #aaa;
+*/
+  background-color: var(--color-white-darkergray);
+  color: var(--dark-gray2);
+  border: dotted 1px var(--color-white-darkgray);
   z-index: 4; /* lower than other tips */
 /*  font-size: 100%;*/
 }
