@@ -4586,6 +4586,8 @@ tweakedTTSLine(s) {
 
     this.ttsLine = tstore.taskSentences[this.currentNum]
       .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before;
+      .replace(/^(.{1,14}):\s*/, (_, s) => (s ? '' : _)) // remove speaker (in dialogues)
+// Maybe speaker should be removed from sentences in case of shadowing?
     this.ttsLine = this.tweakedTTSLine(this.ttsLine);
 	
     const speed = speedCtrl.calcSpeed(this.repeatNum);
