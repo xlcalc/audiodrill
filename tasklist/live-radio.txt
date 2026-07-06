@@ -30,4 +30,4 @@ Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream
 `ru`: [Svoboda](stream: https://stream.radiojar.com/hcrb063nn3quv)
 `se`: [SR P1](stream: https://ljud1-cdn.sr.se/lc/p1.m3u8)
 `uk`: [RUI](stream: https://radio.ukr.radio/rui-aacplus-l)
-`zh`: [Sichuan iRadio (CN)](stream: https://lhttp.qingting.fm/live/1110/64k.mp3)
+`zh`: [Sichuan](stream: https://lhttp.qingting.fm/live/4906/64k.mp3), [Yanbian](stream: https://lhttp.qtfm.cn/live/5022488/64k.mp3)
