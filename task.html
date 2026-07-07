@@ -4586,7 +4586,7 @@ tweakedTTSLine(s) {
 
     this.ttsLine = tstore.taskSentences[this.currentNum]
       .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before;
-      .replace(/^.{1,14}[:：]\s*/, '') // remove speaker (in dialogues)
+//      .replace(/^.{1,14}[:：]\s*/, '') // remove speaker (in dialogues)
 // Maybe speaker should be removed from sentences in case of shadowing?
     this.ttsLine = this.tweakedTTSLine(this.ttsLine);
 	
@@ -5218,6 +5218,7 @@ tstore.sentences = {
     const resSentences = resNodes
       .map(el => this
         .getTextWithAlts(el)
+        .replace(/^.{1,14}[:：]\s*/, '') // remove speaker (in dialogues)
 //        .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before
       );
     return [resNodes, resSentences];
