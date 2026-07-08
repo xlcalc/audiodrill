@@ -5712,7 +5712,8 @@ function makeTaskFromUserText() {
   tstore.taContent = taText;
   tstore.previousTask = transcriptText.innerHTML;
   players.previousTask = players.currentTask;
-  tstore.previousPracticeTips = elid('practiceTips').innerHTML;
+  tstore.prevPracticeTips = elid('practiceTips').innerHTML;
+  tstore.prevPracticeTipsHidden = elid('practiceTips').hidden;
 
   const txt = debugTask(taText);
 //  loadElementWithText(tstore.backToTaButton + '\n' + txt, 'transcriptText');
@@ -5733,7 +5734,8 @@ tstore.toEditingTA = () => {
   players.currentTask = players.previousTask;
   transcriptText.innerHTML = tstore.previousTask;
   qsel('textarea').value = tstore.taContent;
-  elid('practiceTips').innerHTML = tstore.previousPracticeTips;
+  elid('practiceTips').innerHTML = tstore.prevPracticeTips;
+  elid('practiceTips').hidden = tstore.prevPracticeTipsHidden;
 // should tstore.xvarsBox be restored too?
 }
 
