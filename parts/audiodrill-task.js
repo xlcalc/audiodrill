@@ -2396,8 +2396,10 @@ const showSpinner = eID => {
   setElHTML(eID, spinner);
 }
 
-const fetchText = async (url, keep = true) => {
-  const response = await fetch(getNewURL(url, keep));
+const fetchText = async (url, keep = true) => await fetchTextCore(getNewURL(url, keep));
+
+const fetchTextCore = async url => {
+  const response = await fetch(url);
 
   if (!response.ok) {
 //    throw new Error('File loading error: ' + response.status);
