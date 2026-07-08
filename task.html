@@ -2266,15 +2266,32 @@ const loadTaskByDir = async key => {
   return r;
 }
 
-const getUrlFromDirFile = async key => {
-  const dir = 'https://docs.google.com/document/d/1ivaaIiKzDlBJLgKYOoQbnitypuFwPtJ0kspHiitn6fE/export?tab=t.0'
+const getUrlFromDirFile = async (key, 
+  dir = 'https://docs.google.com/document/d/1ivaaIiKzDlBJLgKYOoQbnitypuFwPtJ0kspHiitn6fE/export?tab=t.0'
+) => {
+  if (key.startsWith('x/') && key.indexOf('/', 2) > -1) {
+    const userKey = key.slice(0, key.indexOf('/', 2)); // e.g., x/test out of x/test/en/a2/...
+    if (!userKey) return null;
+
+    dir = await getUrlFromDirFile(userKey); // recursive call to get url of external dir
+    if (!dir) return null;
+
+    key = key.slice(key.indexOf('/',2) + 1);  // e.g., en/a2/... out of x/test/en/a2/...
+  }
+
   try {
-    const html = await fetchText(dir, false);
-	if (getTextFromHTML) {
+    const html = await fetchTextCore(dir);
+	if (html) {
       const txt = getTextFromHTML(html);
       const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const regex = new RegExp(`\\[${escapedKey}\\]\\(([^)]*)\\)`, 'i');
       const match = txt.match(regex);
+
+// key can contain key to another dir, like, go/another-dir/file-path
+// in this case, newDir path is retrieved via recursive getUrlFromDirFile(another-dir), 
+// then getUrlFromDirFile(file-path, newDir) runs.
+
+
       return match?.[1];
     } else console.log('Dir file not found');
 
@@ -2287,13 +2304,14 @@ const getUrlFromDirFile = async key => {
 const loadTaskFromURLParam = urlKeys => {
   let newDir = true;
   let r = urlKeys.get('tasklist') || urlKeys.get('t');
-  if (r?.startsWith('https://docs.google.com/document/')) {
+  if (!r) return r;
+
+  if (r.startsWith('https://docs.google.com/document/')) {
     newDir = false;
     const tab = urlKeys.get('tab');
     if (tab) r += '?tab=' + tab;
   }
 
-  if (!r) return r;
   return loadHtmlTaskByURL(r, newDir); // async process
 }
 
@@ -2631,7 +2649,7 @@ value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
   <div id="taskBox" data-themeable class="task-box">
     <div id="transcriptText" data-themeable class="task-body rounded"></div>
-    <div id="practiceTips" data-themeable class="task-body rounded" style="min-height:0"></div>
+    <div id="practiceTips" data-themeable class="task-body rounded" style="min-height:0; padding-bottom: .45em"></div>
   </div> <!--   End of taskBox   -->
 
 <!-- wordlist-box no longer needed
@@ -2826,7 +2844,6 @@ class ToggleSwitch {
 	toggle() { this.set(!this.isOn); }
 
 	inspect() {return this}
-
 }
 
 tstore.ttsClickSwitchCallback = function(isOn) {
@@ -3123,9 +3140,7 @@ const setLeftColWidth = lw => { // could be used to resize the video
 }
 
 const adjustMediaInTask = (cmd) => {
-//  if (!players.mediaInTask || !xAudioBox.childElementCount) return false;
   if (!players.mediaInTask) return false;
-//  if (!cmd && isElHidden(playerBox)) {
   if (!cmd && playerBox.hidden) {
     setMediaInTask(0);
     return false;
@@ -3436,7 +3451,6 @@ const markTime = () => {
 console.log(time);
   copyToClipboard(time + '\n', time + ' copied to clipboard', 600);
   if (!copyToInfopage(time + '\n')) {
-//    displayMessage('Open a new task');
   }
 }
 
@@ -3614,7 +3628,9 @@ const analyzeXvars = () => {
   if (getV('show-settings') !== null) showSettings();
   if (getV('hide-settings') !== null) hideSettings();
 
-  if (getV('practice-tips') !== null) showPracticeTips('<br>');
+//  if (getV('practice-tips') !== null) showPracticeTips('<br>');
+  if (getV('no-practice-tips') === null) showPracticeTips();
+//  showPracticeTips();
 //console.log('show-settings', getV('show-settings'));
 
   if (getV('style')) transcriptText.style = getV('style');
@@ -3975,7 +3991,8 @@ const taskTextHandler = txt => {
   }
   
   txt += '\n'; // might help fix issues with Hebrew
-  if (typeof gstore.vocabMode === 'undefined') gstore.vocabMode = gstore.calledFromWords? 4 : 1;
+//  if (typeof gstore.vocabMode === 'undefined') gstore.vocabMode = gstore.calledFromWords? 4 : 1;
+  gstore.vocabMode ??= gstore.calledFromWords? 4 : 1;
   const editableVocabDiv = gstore.vocabMode !== 4;
   txt = gstore.vocab.render(txt, {addDiv: editableVocabDiv, prefix: '<))[*', suffix: '*]', examplePrefix: '<))~', exampleSuffix: '~'});
   if (gstore.calledFromWords) txt = gstore.vocab.renderTag(txt, 'TTS Reader');
@@ -5700,11 +5717,10 @@ function makeTaskFromUserText() {
 //  loadElementWithText(tstore.backToTaButton + '\n' + txt, 'transcriptText');
   tstore.loadTaskFromText(tstore.backToTaButton + '\n' + txt);
 
-  const separator = '<hr>';
-  showPracticeTips(separator);
+  showPracticeTips();
 }
 
-function showPracticeTips(prefix = '') {
+function showPracticeTips(prefix = '<br><hr>') {
   loadElementWithText(prefix + tstore.howToPractice(), 'practiceTips');
   parseCmdTag('practiceTips');
 }

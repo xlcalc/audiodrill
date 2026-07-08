@@ -1,4 +1,4 @@
-<x-vars video-size=-1>
+<x-vars no-practice-tips video-size=-1>
 :lang:en
 <div style="line-height:1.5em">
 ### Turn a text into language practice
