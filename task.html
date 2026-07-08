@@ -5723,8 +5723,10 @@ function makeTaskFromUserText() {
 
 function showPracticeTips(prefix = '<br><hr>') {
   elid('practiceTips').hidden = prefix === 'OFF';
-  loadElementWithText(prefix + tstore.howToPractice(), 'practiceTips');
-  parseCmdTag('practiceTips');
+  if (prefix !== 'OFF') {
+    loadElementWithText(prefix + tstore.howToPractice(), 'practiceTips');
+    parseCmdTag('practiceTips');
+  }
 }
 
 tstore.toEditingTA = () => {
