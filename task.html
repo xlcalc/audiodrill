@@ -3628,9 +3628,9 @@ const analyzeXvars = () => {
   if (getV('show-settings') !== null) showSettings();
   if (getV('hide-settings') !== null) hideSettings();
 
-//  if (getV('practice-tips') !== null) showPracticeTips('<br>');
-  if (getV('no-practice-tips') === null) showPracticeTips();
-//  showPracticeTips();
+//  if (getV('no-practice-tips') === null) showPracticeTips();
+  if (getV('no-practice-tips') !== null) showPracticeTips('OFF');
+
 //console.log('show-settings', getV('show-settings'));
 
   if (getV('style')) transcriptText.style = getV('style');
@@ -4125,6 +4125,7 @@ const afterTaskLoaded = () => {
   tstore.contextLang = getContextLang(transcriptText) || gstore.langTag;
   setLanguage(tstore.contextLang, true);
 
+  showPracticeTips();
   const o = analyzeXvars(); // o is assigned just to wait for analyzeXvars to finish. Does it wait?
   const tag = elid('startmedia'); // legacy tag to load video for this task
   if (tag) getVideoByURL(tag.getAttribute('url'), 'NEW_TASK');
@@ -5721,6 +5722,7 @@ function makeTaskFromUserText() {
 }
 
 function showPracticeTips(prefix = '<br><hr>') {
+  elid('practiceTips').hidden = prefix === 'OFF';
   loadElementWithText(prefix + tstore.howToPractice(), 'practiceTips');
   parseCmdTag('practiceTips');
 }
