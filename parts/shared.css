@@ -15,7 +15,7 @@
   --color-darker-onhover: rgba(0, 0, 0, .2);
   --btn-lighgray-hovered: #e6e6e6;
   --scroll-track-bgcolor: rgba(200, 200, 200, .3);
-  --scroll-thumb-bgcolor: rgba(0, 0, 0, .1);
+  --scroll-thumb-bgcolor: rgba(0, 0, 0, .15);
   --color-white-darkgray: white;
   --color-white-darkergray: white;
   --color-overlay-s: #0001;
@@ -42,7 +42,7 @@
   --color-darker-onhover: rgba(255, 255, 255, .2);
   --audio-controls-bg: var(--dark-gray);
   --scroll-track-bgcolor: rgba(200, 200, 200, .1);
-  --scroll-thumb-bgcolor: #282828;
+  --scroll-thumb-bgcolor: #333;
   --color-white-darkgray: #282828;
   --color-white-darkergray: #111;
   --color-overlay-s: #fff2;
@@ -551,16 +551,19 @@ https://stackoverflow.com/questions/22907777/make-scrollbar-visible-in-mobile-br
 */
 select::-webkit-scrollbar {width: 18px;}
 
-.custom-scrollbars ::-webkit-scrollbar {-webkit-appearance: none; width: 12px}
+.custom-scrollbars ::-webkit-scrollbar {-webkit-appearance: none; width: 10px}
 
 .custom-scrollbars ::-webkit-scrollbar-thumb {
   background-color: var(--scroll-thumb-bgcolor);
+
   border-radius: 10px;
-  border: 1px solid var(--color-white-darkgray);
+/*  border: 1px solid var(--color-white-darkgray);*/
 }
 
 .custom-scrollbars ::-webkit-scrollbar-track {
-  background-color: var(--scroll-track-bgcolor);
+/*  background-color: var(--scroll-track-bgcolor);*/
+  background-color: transparent;
+  border: 1px solid var(--scroll-thumb-bgcolor);
   border-radius: 10px;
 }
 
