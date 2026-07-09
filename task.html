@@ -977,7 +977,7 @@ z-index: 2;
 </div> <!-- page-header div -->
 
 <div id="page-row" class="row">
-<div id="left-column" class="left-column">
+<div id="left-column" class="left-column flex-center">
 
 <div id="player-with-settings">
 <div id="player-title" class="gray2 font-90pc semibold all-small-caps padding-05em" style="letter-spacing:.5px"></div>
@@ -2230,7 +2230,7 @@ const analyzeURLParams = async () => {
   const mediaFile = urlKeys.get('m');
   if (mediaFile) {
 //    players.autoPlay = urlHasKey('noauto')? 0 : 1; // maybe it should be 0 by default?
-    setVideoSize(document.body.clientWidth);
+    setVideoSize('max');
 //    getVideoByURL(mediaFile, 'LOAD_SUBS'); 
     await getVideoByURL(mediaFile, 'LOAD_SUBS'); 
     loadingDone();
@@ -3118,7 +3118,7 @@ const setLeftColWidth = lw => { // could be used to resize the video
 // Setting width and height in style has the highest priority and may be bad 
 // if the window is resized to narrow. Styling via classes would work better.
 
-  const wmax = lw >= document.body.clientWidth;
+  const wmax = lw >= getMaxVideoWidth();
   ytPlayer.style.marginTop = wmax ? '0' : '';
   qsel('.main-page').style.margin = wmax ? '0' : '';
   elid('page-row').style.backgroundColor = wmax ? 'black' : '';
@@ -3204,12 +3204,10 @@ const setVideoSize = cmd => {
     if (width > players.minWidth) vctrl.enable(0);
     else vctrl.disable(0);
 	
-    if (width < document.body.clientWidth) vctrl.enable(1);
+    if (width < getMaxVideoWidth()) vctrl.enable(1);
 	else vctrl.disable(1);
   }
 
-
-//  const leftCol = elid('left-column');
 //console.log('### Left column width', width);
 //  if (width === -1 || ['hide', 'hidden', 'off', 'none'].includes(cmd)) {
   if ([-1, '-1', 'hide', 'hidden', 'off', 'none'].includes(cmd)) {
@@ -3222,7 +3220,7 @@ const setVideoSize = cmd => {
   
   if ([0, 1, 2].includes(width)) width = [400, 640, 800][width]; // legacy values
 
-  const maxWidth = document.body.clientWidth;
+  const maxWidth = getMaxVideoWidth();
   const cmdString = cmd + '';
   if (cmdString.endsWith('%'))
     width = Math.round(width / 100 * maxWidth);
@@ -3253,7 +3251,7 @@ style="width: ${width}%; height:${height}%;
 
 const changeVideoSize = cmd => {
   let width = players.videoWidth;
-  const maxWidth = document.body.clientWidth;
+  const maxWidth = getMaxVideoWidth();
   if (cmd) {
     width = Math.min(width + 150, maxWidth);
 	if (width + 50 > maxWidth) width = maxWidth; // snap to max
@@ -3271,6 +3269,12 @@ const videoResizerReset = () => {
 // This works only for html video, since mouse movement over YT iframe can't be detected
   if (!players.mouseOverVideoResize && players.isHtml)
     players.resizeTimeout = setTimeout(()=>{ showVideoResizer(0) }, 2000);
+}
+
+const getMaxVideoWidth = () => {
+  const w1 = document.body.clientWidth;
+  const w2 = window.innerHeight * 16/9;
+  return Math.min(w1, w2);
 }
 
 const showVideoResizer = async show => {
@@ -5719,7 +5723,7 @@ function makeTaskFromUserText() {
 //  loadElementWithText(tstore.backToTaButton + '\n' + txt, 'transcriptText');
   tstore.loadTaskFromText(tstore.backToTaButton + '\n' + txt);
 
-  showPracticeTips();
+//  showPracticeTips();
 }
 
 function showPracticeTips(prefix = '<br><hr>') {
