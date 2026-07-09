@@ -2580,7 +2580,16 @@ const langListCtrl = () => elid('language-select');
 const setTopMenu = () => setElHTML('top-menu', uiblox.topMenuHtml);
 const setBottomBar = () => setElHTML('bottom-bar', uiblox.bottomBarHtml.replace(':TRAN:', '<b>' + gstore.translateIcon + '</b>' + 'Translate this site'));
 
+const setCustomScrollBars = () => {
+  const isMac = navigator.userAgentData?.platform === "macOS"
+    || navigator.platform.startsWith("Mac");
+
+  if (!isMac) 
+    document.documentElement.classList.add("custom-scrollbars");
+}
+
 const loadCommonItems = () => {
+  setCustomScrollBars();
   setElHTML('set-fsize', getFsizeHtml());
   setFontSize();
 

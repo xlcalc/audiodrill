@@ -551,16 +551,15 @@ https://stackoverflow.com/questions/22907777/make-scrollbar-visible-in-mobile-br
 */
 select::-webkit-scrollbar {width: 18px;}
 
-::-webkit-scrollbar {-webkit-appearance: none; width: 12px}
+.custom-scrollbars ::-webkit-scrollbar {-webkit-appearance: none; width: 12px}
 
-
-::-webkit-scrollbar-thumb {
+.custom-scrollbars ::-webkit-scrollbar-thumb {
   background-color: var(--scroll-thumb-bgcolor);
   border-radius: 10px;
   border: 1px solid var(--color-white-darkgray);
 }
 
-::-webkit-scrollbar-track {
+.custom-scrollbars ::-webkit-scrollbar-track {
   background-color: var(--scroll-track-bgcolor);
   border-radius: 10px;
 }
