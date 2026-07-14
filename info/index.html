@@ -90,14 +90,11 @@ const analyzeURL = () => {
   }
 }
 
-document.addEventListener('DOMContentLoaded', event => {
-//  setElHTML('top-menu', topMenuHtml);
-//  setElHTML('bottom-bar', bottomBarHtml);
+document.addEventListener('DOMContentLoaded', e => {
   setBottomBar();
   setTopMenu();
 
   analyzeURL();
-  hideOnClickOutside();
   googleTranslateElementInit();
 })
 
