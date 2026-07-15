@@ -2309,7 +2309,7 @@ const loadTaskFromURLParam = urlKeys => {
   if (r.startsWith('https://docs.google.com/document/')) {
     newDir = false;
     const tab = urlKeys.get('tab');
-    if (tab) r += '?tab=' + tab;
+    if (tab) r += '&tab=' + tab;
   }
 
   return loadHtmlTaskByURL(r, newDir); // async process
