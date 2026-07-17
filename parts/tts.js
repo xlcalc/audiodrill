@@ -87,32 +87,6 @@ const getLangCode = () => {
   
   return res;
 }
-/*
-function listLangVoicesOld() {
-//console.log('** listLangVoices called by', listLangVoices.caller);
-  let langVoices = tts.getVoices();
-
-  if (tts.langSelector) {
-    const filterLangVoices = voice => {
-      const langCode = voice.lang.split(/_|-/)[0]; // ...lang.substr(0, 2) doesn't work for 'fil' (Filipino) lang
-      if (langCode === currentLang) return voice;
-    }
-
-    let currentLang = tts.langSelector.value;
-    // Most lang codes have 2 chars as per ISO 639-1, like 'en'. 
-    // But some lang codes are as per ISO 639-2, like 'fil' for Filipino. 
-    // Hope, no lang code is longer than 3 letters.
-    if (tts.langSelector.value.length > 3) currentLang = getLangCode(); // Get full lang name for words and phrases page. 
-
-    if (currentLang) langVoices = langVoices
-	   .filter(filterLangVoices) // filter by lang
-     // now sort by lang and name
-       .sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name));
-  }
-  
-  ttsCallBack('TTS_GOT_LANG_VOICES', langVoices);
-}
-*/
 
 function listLangVoices() {
 //console.log('** listLangVoices called by', listLangVoices.caller);
@@ -234,6 +208,7 @@ console.log(`TTS resumed after ${event.elapsedTime}ms`);
     if (e.error === 'canceled' || e.error === 'interrupted') return;
 
 console.warn(`TTS ERROR ${e.error}`);
+// ttsCallBack could be used here instead of displayAlarmMessage
     displayAlarmMessage('Try selecting a different voice in Settings');
   }
 }
@@ -304,8 +279,9 @@ const ttsFinish = async () => {
   while ((tts.pending || tts.speaking) && !tts.paused2) {await sleep (100); console.log('playing TTS')}
 }
 
+/*
 // 2026-06-28: a whitelist of voices on Edge and Mac Chrome added
-const getLangVoices = (lang, unfiltered) => {
+const getLangVoicesOld = (lang, unfiltered) => {
   const allowlist = getVoiceAllowlist()?.[lang];
   const voices = tts.getVoices();
 
@@ -321,6 +297,33 @@ const getLangVoices = (lang, unfiltered) => {
       a.name.localeCompare(b.name)
     )
     : voices;
+}
+*/
+
+// 2026-07-17: filter out duplicate voices found in Safari
+const getLangVoices = (lang, unfiltered) => {
+  const allowlist = getVoiceAllowlist()?.[lang];
+  let voices = tts.getVoices();
+  if (!lang) return voices;
+  
+  voices = voices
+    .filter(v => v.lang.split(/[-_]/)[0] === lang)
+    .filter(v =>
+      unfiltered ||
+      !allowlist ||
+      allowlist.some(name => v.name.includes(name))
+    )
+    .sort((a, b) =>
+      a.lang.localeCompare(b.lang) ||
+      a.name.localeCompare(b.name)
+    );
+
+// filter out duplicate voices found in Safari
+    return voices.filter((v, i) =>
+      i === voices.findIndex(
+        obj => obj.lang === v.lang && obj.name === v.name
+      )
+    );
 }
 
 tts.EDGE_VOICES = {
