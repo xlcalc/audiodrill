@@ -846,6 +846,44 @@ z-index: 2;
   background-color: #ccc;
 }
 
+.wb-window {
+    position: fixed;
+/*	
+    left: 100px;
+    left:50%;
+    top: 100px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+*/
+    width: 500px;
+    height: 300px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    user-select: none;
+    z-index: 100;
+}
+
+.wb-titlebar {
+    height: 40px;
+    background: #888;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    cursor: move;
+/*    font-weight: bold;*/
+}
+
+.wb-content {
+  height: 250px;
+  width:490px;
+  padding: 5px;
+  color: inherit;
+  user-select: text;
+}
+
 @media (min-width: 768px) {
   .task-box, #wordlist-box { border: 1px hsl(150, 20%, 92%) solid; }
 /*
@@ -928,6 +966,16 @@ z-index: 2;
 <div id="screen-cover" data-themeable class="screen-shade flex-center">Loading
   <div class="spinner"></div>
 </div>
+
+<div id="wb-window" class="wb-window box-shadow" data-themeable hidden>
+  <div class="wb-titlebar" id="wb-titlebar">
+  <span class="close-x0 action-icon" id="wb-close" style="width:16px">&times;</span>
+  <span id="wb-name-btn" title="Enter pad name" class="ptr">Pad ___</span>
+  </div>
+  <div id="wb-content" class="wb-content">
+  </div>
+</div>
+
 
 <!--
 <div id="mic" class="flex hidden" title="Start dictating (Chrome only)">
@@ -1037,7 +1085,9 @@ const videoResize = elid('video-resize');
 const topControls = elid('top-controls');
 
 const tstore = {};
-ontouchstart = (e) => tstore.touchScreen = 1;
+//ontouchstart = (e) => tstore.touchScreen = 1;
+//tstore.touchScreen = 'ontouchstart' in window;
+tstore.canHover = window.matchMedia('(hover: hover)').matches;
 
 tstore.chunkTooltip = elid('chunk-tooltip-menu');
 tstore.speakBtn = elid('speak-btn');
@@ -1259,7 +1309,7 @@ const toggleGaps = el => {
     }
   }
   else {
-    if (!tstore.touchScreen && el.checked) displayMessage('Hover the mouse to see the answer', 2000);
+    if (tstore.canHover && el.checked) displayMessage('Hover the mouse to see the answer', 2000);
     viewTestAnswers(el.checked);
     if (!el.checked) tstore.STT.destroyToolbar();
   }
@@ -1268,7 +1318,7 @@ const toggleGaps = el => {
 const viewTestAnswers = cmd => {
   const setRightColors = async (el) => {
     el.classList.remove('red');
-	if (tstore.touchScreen) el.classList.add('green'); // on touch screens
+	if (!tstore.canHover) el.classList.add('green'); // on touch screens
     else {
 	  el.classList.remove('green'); // hide answers even if correct
 	  await blinkElClass(el, 'view-cloze-answers-no-transition', 1, 100);
@@ -2280,7 +2330,7 @@ const getUrlFromDirFile = async (key,
   }
 
   try {
-    const html = await fetchTextCore(dir);
+    const html = await ioRequest(dir);
 	if (html) {
       const txt = getTextFromHTML(html);
       const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -2907,6 +2957,8 @@ window.onload = () => {
   elid('share-fragment').innerHTML = uiblox.shareIcon('0 0 24 24', 24);
 
   setNightMode('default');
+
+  tstore.wb.init();
 
 //  setEmbeddedStyle();
 }
@@ -5788,6 +5840,155 @@ tstore.loadTaskFromText = (txt, cmd) => {
   txt = gstore.taskParts.getSection(txt, gstore.taskParts.requestedSection);
   loadElementWithText(txt, 'transcriptText', cmd);
 }
+
+tstore.wb = {
+  init() {
+    this.dragging = false
+    this.offsetX = this.offsetY = 0
+
+    this.win = elid('wb-window')
+    this.titlebar = elid('wb-titlebar')
+    elid('wb-close').addEventListener("pointerdown", () => { this.win.hidden = true })
+    
+    this. win.style.left = (window.innerWidth - this.win.offsetWidth) / 2 + "px"
+    this. win.style.top = (window.innerHeight - this.win.offsetHeight) / 2 + "px"
+
+    this.titlebar.addEventListener("pointerdown", e => {
+      this.dragging = true;
+
+      const rect = this.win.getBoundingClientRect();
+
+      this.offsetX = e.clientX - rect.left;
+      this.offsetY = e.clientY - rect.top;
+
+      this.titlebar.setPointerCapture(e.pointerId);
+    })
+
+    this.titlebar.addEventListener("pointermove", e => {
+      if (!this.dragging) return;
+
+      let x = e.clientX - this.offsetX;
+      let y = e.clientY - this.offsetY;
+
+      // Keep inside browser window
+      const maxX = window.innerWidth - this.win.offsetWidth+370;
+      const maxY = window.innerHeight - this.win.offsetHeight+270;
+
+      x = Math.max(-370, Math.min(x, maxX));
+      y = Math.max(0, Math.min(y, maxY));
+
+      this.win.style.left = x + "px";
+      this.win.style.top = y + "px";
+    })
+
+
+    this.titlebar.addEventListener("pointerup", e => {
+      this.dragging = false
+      this.titlebar.releasePointerCapture(e.pointerId)
+    })
+	
+	this.contentEl = elid('wb-content')
+//	const titleBtn = '[Notes](btn: tstore.wb.askWbname())'
+	elid('wb-name-btn').addEventListener("pointerdown", () => { this.askWbname() })
+  },
+
+  open() {
+    this.win.hidden = false
+    this.wbname = localStorage.getItem('whiteboard')
+    if (this.wbname) this.processWbname(this.wbname)
+    else this.askWbname()
+  },
+
+  wbnameInputHtml: `Enter pad name<br>
+<input id="wb-input" type="url" placeholder="" 
+class="inherit"><input id="wb-input-btn" type="submit" 
+class="plain-button font-80pc rounded darker-bg-onhover" value="🔍">`,
+ 
+  askWbname() {
+	this.contentEl.innerHTML = this.wbnameInputHtml
+	elid('wb-input').onchange = () => { this.processWbname() }
+	elid('wb-input-btn').onclick = () => { this.processWbname() }
+  },
+  
+  async processWbname(s) {
+    s = s || elid('wb-input').value;
+console.log('Whiteboard:', s);
+    if (s) this.loadWb(s)
+    else displayAlarmMessage('No whiteboard name')
+  },
+  
+  async processWbnameOld(s) {
+    s = s || elid('wb-input').value;
+console.log('Whiteboard:', s);
+    const txt = await this.checkWbname(s);
+console.log('Whiteboard text', txt);
+    if (txt === null) this.askWbname()
+    else {
+//      localStorage.setItem('whiteboard', s);
+//      loadElementWithText(txt, 'wb-content');
+    }
+  },
+  
+  async checkWbname(s) {
+    let r = null
+    if (!s) displayAlarmMessage('No whiteboard name')
+    else {
+      r = await this.readWb(s);
+	  if (!r) {
+		  displayAlarmMessage('Incorrect whiteboard name')
+//console.log('Alarm Read wb:', r);	  
+      }
+    }
+    return r;
+  },
+
+  base: 'https://audr-frb-default-rtdb.firebaseio.com/banks/',
+
+  readWb(s) {
+    return ioRequest(this.base + s + '/text.json');
+  },
+
+  getIframe(key) {
+    return `<iframe src="https://pad.freifunk.net/p/${key}?showChat=false" width="490" height="250" frameborder="0"></iframe>`
+  },
+
+  loadWb(key) {
+    this.contentEl.innerHTML = this.getIframe(key);
+  },
+}
+
+/*
+tstore.wb = {
+  base: 'https://audr-frb-default-rtdb.firebaseio.com/banks/',
+  id: '',
+
+  async read(key = 'text') {
+    return await ioRequest(this.base + this.id + '/' + key + '.json');
+  },
+
+  async readText() {
+    let r = await this.read('new');
+    if (r === '0') return null;
+
+    r = await this.read();
+    if (r === null) return null;
+
+//    await this.write(0, 'new');
+    return r;
+  },
+
+  async write(data, key = 'text') {
+    return await ioRequest(this.base + this.id + '/' + key + '.json', 'PUT', data);
+  },
+
+  async writeText(data) {
+    const r = await this.write(data);
+    if (r === '0') return null;
+    return await this.write(1, 'new');
+  },
+
+}
+*/
 /*
 async function getYoutubeTitle(videoUrl) {
   const endpoint =
