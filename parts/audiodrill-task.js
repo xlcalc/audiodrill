@@ -2396,8 +2396,27 @@ const showSpinner = eID => {
   setElHTML(eID, spinner);
 }
 
-const fetchText = async (url, keep = true) => await fetchTextCore(getNewURL(url, keep));
+const fetchText = async (url, keep = true) => await ioRequest(getNewURL(url, keep));
 
+const ioRequest = async (url, method = 'GET', data = undefined) => {
+  const options = { method };
+
+  if (data !== undefined) {
+    options.headers = {
+      'Content-Type': 'application/json'
+    };
+    options.body = JSON.stringify(data);
+  }
+
+  const response = await fetch(url, options);
+
+  if (!response.ok) return null;
+  
+  const txt = await response.text();
+  return txt === 'null' ? null : txt;
+}
+
+/*
 const fetchTextCore = async url => {
   const response = await fetch(url);
 
@@ -2409,7 +2428,7 @@ const fetchTextCore = async url => {
   const txt = await response.text();
   return txt;
 }
-
+*/
 const fetchDirInfo = async () => {
   gstore.dirInfo = 'LOADING';
   try {
