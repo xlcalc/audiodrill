@@ -27,7 +27,7 @@ Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream
 `no`: [NRK P2](stream: https://lyd.nrk.no/nrk_radio_p2_mp3_h)
 `pl`: [TOK FM](stream: https://radiostream.pl/tuba10-2.mp3), [Kraków](stream: https://stream4.nadaje.com:9679/radiokrakow-s2)
 `pt`: [TSF (PT)](stream: https://directo.tsf.pt/tsfdirecto.mp3), [CBN (BR)](stream: https://radio901.webnimbus.cloud/radioalpha/icecast.audio)
-`ru`: [Svoboda](stream: https://stream.radiojar.com/hcrb063nn3quv)
+`ru`: [Echo](stream: https://edifchqufozvbegw.global.ssl.fastly.net/audio_echofm/stream), [Svoboda](stream: https://stream.radiojar.com/hcrb063nn3quv)
 `se`: [SR P1](stream: https://ljud1-cdn.sr.se/lc/p1.m3u8)
 `uk`: [RUI](stream: https://radio.ukr.radio/rui-aacplus-l)
 `zh`: [Sichuan](stream: https://lhttp.qingting.fm/live/4906/64k.mp3), [Yanbian](stream: https://lhttp.qtfm.cn/live/5022488/64k.mp3)
