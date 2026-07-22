@@ -2308,7 +2308,7 @@ const analyzeURLParams = async () => {
 }
 
 const loadTaskByDir = async key => {
-  let r = await getUrlFromDirFile(key);
+  let r = await getUrlFromDirFile(key, 'FIREBASE');
   if (r) return loadHtmlTaskByURL(r); // async process
 
 //  displayAlarmMessage("Can't find " + key);
@@ -2330,6 +2330,16 @@ const getUrlFromDirFile = async (key,
   }
 
   try {
+    if (dir === 'FIREBASE') {
+      const key2 = key.replace(/[\\/]/g, '%5C'); 
+      const url = 'https://audr-frb-default-rtdb.firebaseio.com/dir/' + key2 + '.json';
+	  const res = await ioRequest(url, 'GET_JSON');
+console.log('Firebase key', key, ', value', res);
+      if (typeof res === 'string') return res;	  
+	  else return await getUrlFromDirFile(key); // recursive call to get url of Google Doc dir
+    }
+
+console.log('Looking in dir', dir);
     const html = await ioRequest(dir);
 	if (html) {
       const txt = getTextFromHTML(html);
@@ -5945,7 +5955,7 @@ console.log('Whiteboard text', txt);
   base: 'https://audr-frb-default-rtdb.firebaseio.com/banks/',
 
   readWb(s) {
-    return ioRequest(this.base + s + '/text.json');
+    return ioRequest(this.base + s + '/text.json', 'GET_JSON');
   },
 
   getIframe(key) {

@@ -207,9 +207,8 @@ console.log(`TTS resumed after ${event.elapsedTime}ms`);
   utterance.onerror = e => {
     if (e.error === 'canceled' || e.error === 'interrupted') return;
 
-console.warn(`TTS ERROR ${e.error}`);
-// ttsCallBack could be used here instead of displayAlarmMessage
-    displayAlarmMessage('Try selecting a different voice in Settings');
+console.warn('TTS ERROR' + e.error);
+    ttsCallBack('UTTERANCE_ERROR');
   }
 }
 

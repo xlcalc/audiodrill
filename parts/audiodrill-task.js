@@ -152,7 +152,8 @@ async function loadElementFromURL(eID, url, altUrl) {
     cmd = 'GOOGLE_DOC';
     gstore.fromGoogleDoc = true;
     const tab = new URL(url).searchParams.get('tab');
-    url = url.replace(/\/[^/]*$/, '/export?tab=') + tab || '';
+    url = url.replace(/\/[^/]*$/, '/export');
+	if (tab) url += '?tab=' + tab;
   }
 // Shared Google Sheets can also viewd as html with /htmlview instead of /edit
 
@@ -975,9 +976,7 @@ async function displayInfopage(task, param) {
 //  if (['hide'].includes(task)) hideEl(iPage);
   if (['hide'].includes(task)) dismissEl(iPage);
   else {
-//    hideOnClickOutside(iPage);
     showEl(iPage, 'inline-block');
-//	iPage.init = true;
 	dismissManager.add(iPage, () => dismissEl(iPage));
   }
 
@@ -985,25 +984,7 @@ async function displayInfopage(task, param) {
     case 'SHOW_DEBUG_INFO':
       loadElementWithText(gstore.debugInfo, 'infopage-content');
 	  break;
-	  
-/*    case 'settings':
-	  setInfoPageSizePos({width: '440px', height: '180px', marginTop: '0em'}); // auto size should be implemented
-	  const txt = '<div style="white-space: normal"><small><b>Settings</b></small><x-br></x-br>' 
-	    + speedCtrlEl('-set') 
-	    + '<x-br></x-br>' 
-//		+ '<div class="inblock">'
-//		+ uiblox.vocabSettings
-//		+ '</div>'
-//	    + '<x-br></x-br>' 
-        + getVocabCtrl()
-		+ getFsizeHtml('-set') 
-		+ '</div>';
-      loadElementWithText(txt, 'infopage-content');
-	  setPBR();
-// set vocab mode too	  
-	  setFontSize();
-	  break;
-*/
+
     case 'copyright': case 'contribute': case 'help':
       const url = location.origin + '/info/' + task + '.txt'; 
 	  // location.origin is needed b/c the path can be interpreted as relative from the current one
@@ -1014,8 +995,6 @@ async function displayInfopage(task, param) {
       infopageSaveBox('SHOW');
       iContent.contentEditable = "true";
       iContent.focus();
-//      iContent.innerText = players.currentTask || '';
-// Changed to getting full task with all sections
       iContent.innerText = gstore.taskParts.sourceText || '';
 
 // line breaks characters may be changed compared to players.currentTask
@@ -1049,7 +1028,6 @@ placeholder="Enter video/audio URL here">
 		iContent.innerHTML = latestHTML.replace(/<b>|<\/b>/g, '*')
 		  .replace(/<i>|<\/i>/g, '~'); //  keep formatting changes made with Ctrl+B, Ctrl+I
 		
-//        loadElementWithText(iContent.innerText, 'transcriptText');
 // Full task with all sections is stored, not one section as before 2026-06-18
 // Not clear what to do with <style> in case of Google Doc
 //        const txt = gstore.taskParts.getSection(iContent.innerText, 0);
@@ -1062,7 +1040,6 @@ placeholder="Enter video/audio URL here">
       }
 
       loadElementWithText('', 'infopage-content');
-//	  hideEl(iPage);
 	  dismissEl(iPage);
       break;
 
@@ -1125,36 +1102,7 @@ Object.defineProperty(players, 'speedCtrlLeft', {
   }
 });
 
-/*
-const infopageActive = () => {
-  const e = elid('infopage');
-  return !(e.style.display === 'none' || isElHidden(e));
-}
-
-const topMenuActive = () => !isElHidden(elid('topMenu'));
-*/
-/*
-const escToCloseWindow = () => {
-
-  if (infopageActive()) {
-    displayInfopage('hide');
-    return true;
-  }
-
-  if (wordsPageActive() && !isElHidden(elid('play-controls'))) {
-	hideSettings();
-	return true;
-  }
-  if (topMenuActive()) {
-    hideTopMenu();
-    return true;
-  }
-  return false;
-}
-*/  
-
 const relayKey = e => {
-//  if (e.code === 'Escape' && escToCloseWindow()) return;
   if (typeof handleKeyEvent === 'function') handleKeyEvent(e);
 }
 
@@ -1212,8 +1160,6 @@ const getReplayNumber = () => players.ReplayNumber;
 window.onblur = () => {
   if (players.speedCtrlLeft) { players.speedCtrlLeft = false; }
 }
-
-//const showTopMenuOld = () => { elid("menuCloseBtn").focus(); }
 
 const showTopMenu = () => { 
   showElid('topMenu');
@@ -1412,7 +1358,6 @@ const createTip = el => {
 // would  be limited to the parent's window.
 
 //console.log('tip', tip);
-//  parseTTSTag(tip, 'light-color');
 
 // link parent and child;
   el.child = tip;
@@ -1440,7 +1385,7 @@ const setTipContent = (parent, tip) => {
 
   setTipPosition(tip, parent);
   setTipImageWidth(tip);
-//  parseTTSTag(tip, 'light-color');// is light-color needed?
+
   parseTTSTag(tip);
 
   return 1;
@@ -2399,7 +2344,8 @@ const showSpinner = eID => {
 const fetchText = async (url, keep = true) => await ioRequest(getNewURL(url, keep));
 
 const ioRequest = async (url, method = 'GET', data = undefined) => {
-  const options = { method };
+  const method2 = method.replace('_JSON', '');
+  const options = { method2 };
 
   if (data !== undefined) {
     options.headers = {
@@ -2412,8 +2358,8 @@ const ioRequest = async (url, method = 'GET', data = undefined) => {
 
   if (!response.ok) return null;
   
-  const txt = await response.text();
-  return txt === 'null' ? null : txt;
+  const txt = method.includes('_JSON') ? await response.json() : await response.text();
+  return txt// === 'null' ? null : txt;
 }
 
 /*
@@ -2463,7 +2409,10 @@ console.log('Debug data:', JSON.stringify(data));
     if (cmd === 'VOICES_CHANGED_EVENT') loadLangList();
   
     if (cmd === 'NO_VOICE') displayAlarmMessage('There is no voice for ' + langListCtrl().value);
+	
   }
+
+  if (cmd === 'UTTERANCE_ERROR') displayAlarmMessage('Try a different voice in Settings');
 }
 
 const afterTTSStarted = () => {
@@ -2475,11 +2424,9 @@ const afterTTSEnded = () => {
     restartSTT(); 
   }
   if (tasksPageActive()) gCallback('TTS_ENDED'); 
-
 }
 
 const changeEpisodeUrl = (s, v, pad, min, max) => {
-//  const getCurNum = s => String(s).replace(/[\D]/g, ''); // why String object?
   const getCurNum = s => s.replace(/[\D]/g, '');
   const addToNum = (s, v = 0) => parseInt(getCurNum(s)) + parseInt(v);
 
@@ -2494,7 +2441,7 @@ const changeEpisodeUrl = (s, v, pad, min, max) => {
   const n0 = String(i0).padStart(pad, '0');
 
   const path = getPathFromUrl(s);
-//  return path + String(fname).replace(n0, n); // why String object here?
+
   return path + fname.replace(n0, n);
 }
 
@@ -2572,8 +2519,7 @@ const getEpisodeNavigation = (dirInfo, url) => {
   const firstEp = getDirInfoKey('first-episode:');
   const lastEp = getDirInfoKey('last-episode:');
   const epList = getDirInfoKey('episode-list:');
-  
-//  const newRef = v => changeEpisodeUrl(url, v, '', firstEp, lastEp);
+
   const newRef = v => epList? prevNextEpisodeUrl(url, epList, v) : changeEpisodeUrl(url, v, '', firstEp, lastEp);
 
 //  const prevBtn = navButton('🡰', newRef(-1), 'previous task');
@@ -2624,9 +2570,6 @@ const loadCommonItems = () => {
   document.querySelectorAll('.settings-icon') .forEach(el => el.innerHTML = gstore.settingsIcon);
   setElHTML('top-menu-settings', gstore.settingsIcon + '<span style="padding: 0 .2em; vertical-align: -10%;">Settings</span>');
 //  setElHTML('top-menu-settings', gstore.settingsIcon + 'Settings');
-  
-
-//  hideOnClickOutside();
 
   adjustSpeeds(localStorage.getItem('speedFactors') || '1, 0.7');
   setPBR();
@@ -3076,6 +3019,7 @@ function getYouTubeId(input) {
       u.hostname === 'youtube.com' ||
       u.hostname === 'www.youtube.com'
     ) {
+      if (u.pathname.startsWith('/shorts/')) return u.pathname.slice(8);
       return u.searchParams.get('v');
     }
   } catch {
