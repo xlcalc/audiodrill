@@ -3403,11 +3403,12 @@ const handleYTstyleInput = txt => {
   loadElementWithText(task, 'transcriptText'); 
 }
 
-const processYTtranscript = txt =>{
+const processTaskMedia = txt =>{
 // maybe processTimeStamps fn should be called first?
   const marker = 'video/audio:';
   if (!txt.includes(marker) 
-  && !tstore.xvarsBox 
+//  && !tstore.xvarsBox 
+  && !tstore.mediaInXvars 
   && !txt.includes('<x-video') 
   && !txt.includes('<x-audio')
   ) return txt;
@@ -3712,13 +3713,13 @@ const analyzeXvars = () => {
     }
   }
 
-  const ytId = getV('yt-id');
-  if (ytId) getVideoByURL('https://youtu.be/' + ytId, 'NEW_TASK');
-//  else getVideoByURL(getV('startmedia'), 'NEW_TASK')
+  let mediaId = getV('yt-id');
+  if (mediaId) getVideoByURL('https://youtu.be/' + mediaId, 'NEW_TASK');
   else {
-    const media = tstore.startmedia || getV('audio') || getV('video') || getV('startmedia');
-    getVideoByURL(media, 'NEW_TASK')
+    mediaId = tstore.startmedia || getV('audio') || getV('video') || getV('startmedia');
+    getVideoByURL(mediaId, 'NEW_TASK')
   }
+//  tstore.mediaInXvars = mediaId; // used in processTaskMedia()
 
   setDocTitle(getV('doc-title')); // browser tab title
 //console.log('Player title:', highlightText(getV('player-title')));
@@ -4087,7 +4088,11 @@ const extractXvars = s => {
   if (s) {
     tstore.xvarsBox = document.createElement('div');
     tstore.xvarsBox.innerHTML = s.replace('&lt;', '<').replace('&gt;', '>');
-  } else tstore.xvarsBox = s;
+    const vars = tstore.xvarsBox.firstChild;
+    const getV = attr => vars.getAttribute(attr);
+    tstore.mediaInXvars = getV('yt-id') || getV('audio') || getV('video') || getV('startmedia');
+  }
+  else tstore.xvarsBox = s;
   return '';
 }
 

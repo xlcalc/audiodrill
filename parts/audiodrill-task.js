@@ -409,7 +409,7 @@ function parseTaskText(sourceText, saveTask) {
 //  let s = decodedText(sourceText);
   let s = sourceText;
 
-  s = processYTtranscript(s); // there're bugs related to timestamps in cues, see with voa115 task
+  s = processTaskMedia(s); // there're bugs related to timestamps in cues, see with voa115 task
   s = applyDirInfo(s);
   
   s = s
@@ -3217,10 +3217,10 @@ loadElementWithText ->
 *parseTaskText* OR parseInfoPage OR parseWordlist, etc, 
 depending on the text purpose/target window -> 
 
-*parseTaskText* sanitizes, calls processYTtranscript, 
+*parseTaskText* sanitizes, calls processTaskMedia, 
 replaces tags, calls parseTextFile, makeTestForm, parseXTag
 
-*processYTtranscript* may use textContent/innerText to process 
+*processTaskMedia* may use textContent/innerText to process 
 time codes more reliably.
 
   ***  Future plans  ***
