@@ -2356,8 +2356,9 @@ const wrCallback = (cmd) => {
 }
 */
 
-const gCallback = cmd => {
+const gCallback = (cmd, par) => {
 // callbacks from audiodrill-task.js
+  if (cmd === 'SET_FONT_SIZE') setTaskFontSize(par);
   if (cmd === 'SHOW_SETTINGS') showTopSettings();
   if (cmd === 'TTS_READ_LINES') tstore.ttsOverlay.init();
   if (cmd === 'TTS_STARTED') tstore.ttsOverlay.showPlaying(1);
@@ -2370,7 +2371,6 @@ const gCallback = cmd => {
   }
   
 //console.log('gCallback:', cmd);
-//... && status === task loaded) showEpisodeBar() // this isn't implemented yet. Is it needed?
 }
 
 const episodeBar = function() {

@@ -2473,9 +2473,9 @@ const setFontSize = inputV => {
     localStorage.setItem('fontSize', v);
 
   cloneCtrlValue(v, 'input-fsize');
-  if (tasksPageActive()) setTaskFontSize(v);
+  if (tasksPageActive()) gCallback('SET_FONT_SIZE', v);
+
   v += 'pt';
-//  if (tasksPageActive()) transcriptText.style.fontSize = v;
   if (wordsPageActive()) {
     ta.style.fontSize = v;
     gstore.notes.style.fontSize = v;
