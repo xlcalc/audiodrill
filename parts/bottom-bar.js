@@ -392,8 +392,9 @@ uiblox.vocabHeader = `
       justify-content: space-between;
       align-items: center;
 	  border-radius: 5px;
-/*      padding-bottom: 0.2em;*/
+/*      padding-bottom: 0.2em;
 	  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px 2px rgba(0, 0, 0, 0.1);
+*/
     }
 
     .vocab-title {
@@ -492,4 +493,3 @@ uiblox.specKeys = {
       style="font-size: ${btnSize}; min-width:1.4em">${ch}</button>`).join('');
   },
 }
-
