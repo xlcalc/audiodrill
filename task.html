@@ -1844,6 +1844,7 @@ const fetchStartStop = cue => {
   elEnd.value = end;
   StartFrom = players.pausedAt || hmsToSeconds(start);
   StopAt = hmsToSeconds(end);
+  if (StartFrom === StopAt) StopAt = 0;
   
   if (isNaN(StartFrom) || StartFrom === null) players.stream = true;
 //  players.cueLength added 2026-03-28
@@ -2495,12 +2496,10 @@ defined by start and stop time"><span class="inline-flex align-top"></span>
 
 &thinsp;
 <div title="Copy start and stop time" class="btn-inside inline-flex align-top" 
-  style="filter: invert(0.36) brightness(1.6); background-color: transparent;"
-  onclick="copyStartStop()" tabindex="0">
-  <span style="position: relative;">📄</span><span style="position: absolute; top: .2em; left: .4em">📄</span>
+  style="filter: invert(.16)" onclick="copyStartStop()" tabindex="0">
+  <span style="position: relative;">📄</span><span style="position: relative; top: .2em; left: -.7em">📄</span>
 </div>
 
-&thinsp;
 <div id="share-fragment" class="share-fragm inline-flex align-top" title="Share the fragment">
 </div>
 
@@ -2814,30 +2813,38 @@ class ToggleSwitch {
   constructor(data) {
     this.elementID = data.id;
     this.label = data.label || '';
+    this.label2 = data.label2 || '';
     this.tip = data.tip || '';
     this.storeKey = data.storeKey || '';
     this.isOn = +localStorage.getItem(this.storeKey) || data.isOn || 0;
     this.callback = data.callback;
+    this.invert = data.invert; // so far, not used
+	this.button = data.button;
 
 // Initialize the UI
 //        this.updateUI();
-
-// Bind event listener
-//        this.element.addEventListener('click', () => this.toggle());
   }
 
   load() {
-    if (elid(this.elementID)) return; // element already loaded
+//    if (elid(this.elementID)) return; // element already loaded
+    if (this.el) return; // element already loaded
 	
-    const html = `<span tip="${this.tip}">${this.label}`
-	+ ' <button class="plain-button switch-btn show-focus"><div id="'
-	+ this.elementID
-	+ '" class="slider round"></div></button></span>';
+    const html = this.button ?
+    `<span>${this.label}`
+    + `<button tip="${this.tip}" class="plain-button rounded font-100pc"><div id="${this.elementID}`
+    + `"></div></button></span>`
+    :
+    `<span tip="${this.tip}">${this.label}`
+    + ' <button class="plain-button switch-btn show-focus"><div id="'
+    + this.elementID
+    + `" class="slider round"></div></button> ${this.label2}</span>`
+    
 
     setElHTML(this.elementID + '-box', html);
 	setTimeout(() => { // Now it's safe to manipulate this element
+      this.el = elid(this.elementID);
       this.set(+(localStorage.getItem(this.storeKey) || this.isOn)); // + converts string to integer
-      elid(this.elementID).parentElement.onclick = this.toggle.bind(this);
+      this.el.parentElement.onclick = this.toggle.bind(this);
     }, 0);
   }
 
@@ -2849,12 +2856,14 @@ class ToggleSwitch {
 	if (typeof this.callback === 'function') this.callback(this.isOn);
 
 //	apply to UI 
-	const el = elid(this.elementID);
-	if (!el) return null;
-	setElClass(el, 'switch-on', v);
-//    const ctrlClasses = el.classList;
-//    if (v) ctrlClasses.add('switch-on')
-//    else ctrlClasses.remove('switch-on')
+//	const el = elid(this.elementID);
+	if (!this.el) return null;
+    if (this.invert) v = !v;
+    else v = !!v;
+    if (this.button) {
+      this.el.innerHTML = this.button[+v];
+    }
+    else setElClass(this.el, 'switch-on', v);
   }
 	
 	toggle() { this.set(!this.isOn); }
@@ -2883,8 +2892,9 @@ tstore.dicSwitch = new ToggleSwitch({id: 'use-dic-switch',
   });
 
 tstore.nightModeSwitch = new ToggleSwitch({id: 'night-mode-switch', 
-  label: 'Night mode',
-  tip: 'Toggle: |_Shift_|+|_F11_|',
+//  label: 'Day/night mode:',
+  button: ['Day/night mode: ☼','Day/night mode: ☾'],
+  tip: 'Toggle day/night mode - |_Shift_| + |_F11_|',
   storeKey: 'nightMode',
   callback: setNightMode
   });
@@ -2926,7 +2936,17 @@ window.onload = () => {
 
   tstore.wb.init();
 
+  tstore.nightModeSwitch.init();
 //  setEmbeddedStyle();
+}
+
+tstore.nightModeSwitch.init = () => {
+  const elBoxHtml = '<div id="night-mode-switch-box" style="padding-bottom: .7em"></div>';
+
+  elAddHTML(elid('google_translate_el'), elBoxHtml, 'afterend');
+//  elAddHTML(elid('bottomMenu'), elBoxHtml);
+  tstore.nightModeSwitch.load();
+  gstore.tips.initAll();
 }
 
 const prepareSettings = () => {
@@ -2997,14 +3017,14 @@ const prepareTopSettings = (cmd = '') => {
   if (!elWasPrepared) {
     const html = getVocabCtrl() 
 	  + '<div id="font-size-box">' + getFsizeHtml('-set') + '</div>'
-	  + '<div id="night-mode-switch-box"></div>';
+//	  + '<div id="night-mode-switch-box"></div>';
     elAddHTML(el, html);
   }
 
   setPBR();
   showVocabMode();
   setFontSize();
-  tstore.nightModeSwitch.load();
+//  tstore.nightModeSwitch.load();
   gstore.tips.initAll();
 }
 
@@ -3026,7 +3046,7 @@ const showTopSettings = async (par = '') => {
     'transl-lang-box',
     'vocab-settings-box',
     'font-size-box',
-    'night-mode-switch-box'
+//    'night-mode-switch-box'
   ];
 
   topSettingsEls.forEach(id => {
