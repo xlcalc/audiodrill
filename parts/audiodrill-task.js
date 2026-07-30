@@ -2184,7 +2184,8 @@ const highlightText = txt => {
 
     if (url.endsWith('.txt') && !url.includes('?t=') && !url.includes('url=')) // for task filenames
 	// use compact url instead of getNewURL
-      url = getActivityKey() + squeezedUrl(url, true); // what if url starts with / or ../ ?
+//      url = getActivityKey() + squeezedUrl(url, true); // what if url starts with / or ../ ?
+      url = getActivityKey() + squeezedUrl(url, false); // what if url starts with / or ../ ?
 
     return [`<a href=${url} ${attributes} ${target}>${atext}</a>`, url];
   }

@@ -2495,7 +2495,8 @@ defined by start and stop time"><span class="inline-flex align-top"></span>
 </button>
 
 &thinsp;
-<div title="Copy start and stop time" class="btn-inside inline-flex align-top" 
+<div title="Copy start and stop time. 
+Shift+click to assign stop time to start time." class="btn-inside inline-flex align-top" 
   style="filter: invert(.16)" onclick="copyStartStop()" tabindex="0">
   <span style="position: relative;">📄</span><span style="position: relative; top: .2em; left: -.7em">📄</span>
 </div>
@@ -3475,6 +3476,12 @@ console.log(time);
 
 const copyStartStop = () => {
   const v = id => elid(id).value.trim();
+// added 2026-07-30
+  if (gstore.shiftKeyDown) {
+    elid('ReplayFrom').value = v('ReplayTo')
+	return
+  }
+  
   const s = v("ReplayFrom") + '-' + v("ReplayTo") + ' ';
   copyToClipboard(s);
   copyToInfopage(s);
@@ -3774,32 +3781,18 @@ tstore.translation = { // experimental: 2026-02-14
       this.prevOrigSection = null;
     }
 
-//    if (this.tsectionNum === -1 && gstore.taskParts.sections.length > 1) this.tsectionNum = gstore.taskParts.sections.length - 1;
-
-//    if (this.tsectionNum === gstore.taskParts.currSectionNum) {
-//      this.tsectionNum = this.tsectionNum ? 0 : 1;
-//    }
-
-    if (this.tlang === '') // means translation is off
+    if (this.tlang === '') // means translation is off, not the same as undefined
       return -1;
-//      return this.setTransl('');
 
     if (this.tsectionNum === -1) this.tsectionNum = 0;
     const pinyinSectionNum = langs.indexOf('pinyin');
     while (this.tsectionNum === pinyinSectionNum || this.tsectionNum === currSectionNum) this.tsectionNum ++;
 
-
-//    if (!gstore.taskParts.sections[this.tsectionNum]) return null; // or should gstore.taskParts.languages[this.tsectionNum] be checked instead?
-
-// logic will change as more sections are added
     this.pinyinSentences = null;
     if (gstore.taskParts.getCurrSectionLang() === 'zh' && hasPinyin) {
-//      const i = langs.indexOf('pinyin');
       this.pinyinSentences = gstore.taskParts.sectSentences[pinyinSectionNum];
     }
 
-//    return this.setTransl(langs[this.tsectionNum] || 'en'); // is 'en' needed here?
-//    return this.setTransl(langs[this.tsectionNum]);
     this.tlang = langs[this.tsectionNum];
     return 1;
   },
