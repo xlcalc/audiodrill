@@ -607,7 +607,7 @@ gstore.copyVoiceList = suffix => {
 const getPbrHtml = (s='') => {
   const masterPBR = localStorage.getItem('masterPBR') || 1;
   return `
-  <div class="inblock gray font-90pc" style="text-align:left; width:136px">
+  <div class="inblock gray font-90pc" style="text-align:left; width:140px">
     <input id="setpbr${s}" title="Player speed" class="gray" 
     type="range" list="pbr-tickmarks" value="${masterPBR}" min="0.1" max="2" step="0.05" 
     oninput="setPBR(this)" style="width:90px; vertical-align: middle">
