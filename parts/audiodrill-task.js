@@ -1,17 +1,17 @@
 const players = {}, gstore = {notes:''};
 
-const vbreakDiv = (h=0.5) => `<div style="height:${h}em;"></div>`;
+const vbreakDiv = (h=0.5) => `<div style="height:${h}em"></div>`;
 
 const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
 const elid = id => document.getElementById(id);
-const elids = (...ids) => ids.map(id => elid(id));
+//const elids = (...ids) => ids.map(id => elid(id));
 
 const qsel = s => document.querySelector(s);
 
 const setElHTML = (id, txt) => elid(id).innerHTML = txt;
 
-const elAddHTML = (e, txt, pos = "beforeend") => e.insertAdjacentHTML(pos, highlightText(txt));
+const elAddHTML = (el, txt, pos = "beforeend") => el.insertAdjacentHTML(pos, highlightText(txt));
 
 const tasksPageActive = () => gstore.webPageName === 'TASKS';
 const wordsPageActive = () => gstore.webPageName === 'WORDS';
@@ -33,7 +33,7 @@ const getUrlKey = key => {
   return urlKeys.get(key);
 }
 
-const urlHasKey = key => (getUrlKey(key) !== null);
+const urlHasKey = key => getUrlKey(key) !== null;
 
 const encode64 = s => btoa(unescape(encodeURIComponent(s)));
 const decode64 = s => decodeURIComponent(escape(atob(s)));
@@ -131,7 +131,6 @@ const extractFromGoogleDoc = html => {
   
 
 // This logic may change
-//  gstore.docHasSections = html.includes(':section:');
   if (html.includes(':section:')) {
     doc.body.innerHTML = doc.body.innerHTML.replaceAll('</p>', '</p>\n');
     gstore.docBodyText = doc.body.innerText;
@@ -164,10 +163,9 @@ async function loadElementFromURL(eID, url, altUrl) {
       return;
     }
 
-//    gstore.docHasSections = txt.includes(':section:');
-	if (gstore.fromGoogleDoc) txt = extractFromGoogleDoc(txt);
-// Sections can be analysed and just one section  to be shown via loadElementWithText
-//    if (eID === 'transcriptText' && gstore.docHasSections) txt = gstore.taskParts.getSection(txt);
+    if (gstore.fromGoogleDoc) txt = extractFromGoogleDoc(txt);
+// Sections can be analysed and just one section to be shown via loadElementWithText
+
     if (eID === 'transcriptText') {
       tstore.loadTaskFromText(txt, cmd);
       return;
@@ -205,19 +203,19 @@ function uploadTextFile(evt, fnName, param) {
   const reader = new FileReader();
   reader.onload = () => {
     try {
-	  let text = reader.result;
-	  if (text.startsWith('original-url=')) { // this could be a separate fn
-		console.log(text.split('\n')[0]);
-		gstore.keptUrl = text.split('\n')[0]. split('original-url=')[1];
+      let text = reader.result;
+      if (text.startsWith('original-url=')) { // this could be a separate fn
+        console.log(text.split('\n')[0]);
+        gstore.keptUrl = text.split('\n')[0]. split('original-url=')[1];
 //		const url = location.origin + '?t=' + gstore.keptUrl; // ! works only for tasks!
 //		history.pushState({'pushed': url}, "", url);
 		
-		text = text.replace(/^.*\n/, ''); // remove the first line
-	  }
-//      if (param === 'transcriptText') text = gstore.taskParts.getSection(text, 0);  
+        text = text.replace(/^.*\n/, ''); // remove the first line
+      }
+
       if (param === 'transcriptText') tstore.loadTaskFromText(text);
-	  else window[fnName](text, param);
-	} 
+      else window[fnName](text, param);
+    } 
     catch(ex) { alert('ex when trying to load file = ' + ex); }
   };
   reader.readAsText(file);
@@ -260,7 +258,6 @@ function loadElementWithText(sourceText, eID, cmd) {
   .replace(/<script|<style|\r/g, ''); //sanitize and remove \r
 
   if (eID === 'transcriptText') {
-//	text = text.replace(/\r/g, '');
 	players.currentTask = text;
 
 // x-vars are extracted here and removed from the text
@@ -299,7 +296,6 @@ function loadElementWithText(sourceText, eID, cmd) {
   if (eID === 'infopage-content') 
     if (text.length > 100) activateAccordion(); 
 
-
   if (eID === 'transcriptText') processTaskEl();
   else parseTTSTag(elid(eID));
 
@@ -307,25 +303,12 @@ function loadElementWithText(sourceText, eID, cmd) {
 
   gstore.tips.initAll();
 }
-/*
-const writeHtmlIntoElOld = (html, id) => {
-// adjusts img sources
-// in the future, more adjustments may be added
 
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-
-  doc.querySelectorAll('img').forEach(img => {
-    img.src = getNewURL(img.getAttribute('src'));
-  });
-  setElHTML(id, doc.body.innerHTML);
-}
-*/
 const writeHtmlIntoEl = (html, id) => {
+  setElHTML(id, html);
+
 // adjusts img sources
 // in the future, more adjustments may be added
-
-  setElHTML(id, html);
   document.querySelectorAll('img').forEach(img => {
     img.src = getNewURL(img.src);
   });
@@ -389,13 +372,11 @@ const parseXswitch = s => {
   const xswitchSuffix = "><div class='slider round'></div></label>";
 
   return s
-//    .replace(/<x-switch>/g, xswitchPrefix)
-	.replace(/<x-switch(.*?)>/g, (s, p) => xswitchPrefix(p))
+    .replace(/<x-switch(.*?)>/g, (s, p) => xswitchPrefix(p))
     .replace(/<\/x-switch>/g, xswitchSuffix)
 }
 
 function parseTaskText(sourceText, saveTask) {
-
   const taskPrefix = "<a class='vlink' onclick=loadHtmlTaskByRef(this)";
   const cuePrefix = "<a class='cue' onclick=replayFragment(this)";
   const pcuePrefix = "<p class='cue' onclick=replayFragment(this)";
@@ -426,7 +407,6 @@ function parseTaskText(sourceText, saveTask) {
     .replace(/<x-audio.*?>/, s => s +'</x-audio>')
     .replace(/<x-video.*?>/, s => s +'</x-video>')
     .replace(/{x-cmd(.*?)}/, '<x-cmd$1></x-cmd>')
-//    .replace(/<x-video>/, '<x-video></x-video>')
     .replace(/{x-vocab}/, '<x-vocab></x-vocab>')
     .replace(/<x-view-gaps>|{x-view-gaps}/, viewGaps2)
     .replace(/{x-speed-ctrl}/, '<x-cmd id="pbr-box" cmd="SHOW_PBR"></x-cmd>')
@@ -434,10 +414,6 @@ function parseTaskText(sourceText, saveTask) {
     .replace(/{x-rec-ctrl}/, '<x-switch>setRecSwitch(this.checked)</x-switch>')
     .replace(/{x-transl}/, '<x-translate></x-translate>')
     .replace(/{x-tts-read}/i, '<button class="cue-button grayish play-triangle" title="TTS read" onclick="readTTSChunks(this)"></button>')
-//    .replace(/<x-switch>/g, xswitchPrefix)
-//    .replace(/<\/x-switch>/g, xswitchSuffix)
-//    .replace(/\<x-vars\s.*?\>/g, s => s + '</x-vars>') // add closing </x-vars>
-//    .replace(/<\/x-vars>\s*(<br>)?/g, '</x-vars>') // remove trailing \s, <br>
 	.replace(/\n.{0,14}:\s/g, s => s[0]+'<i>' + s.slice(1) + '</i>') // italicize speakers in dialogues
 	;
   s = parseXswitch(s);
@@ -576,15 +552,6 @@ console.log(txt);
 
 }
 
-/*
-const copyReplaceNode = (sourceEl, targetEl) => {
-  const tempEl = sourceEl.cloneNode(true);
-  tempEl.id = targetEl.id;
-  targetEl.replaceWith(tempEl);
-  return tempEl;
-}
-*/
-
 gstore.copyVoiceList = suffix => {
   if (!suffix) return;
 
@@ -612,9 +579,9 @@ const getPbrHtml = (s='') => {
     type="range" list="pbr-tickmarks" value="${masterPBR}" min="0.1" max="2" step="0.05" 
     oninput="setPBR(this)" style="width:90px; vertical-align: middle">
     <span id="current-pbr${s}" class="font-90pc"></span>x
-  </div>
 `
   + uiblox.getSliderMarksHtml('pbr-tickmarks', 0, 2, 0.25)
+  + '</div>'
 }
 
 const getFsizeHtml = (s='') => {
@@ -675,7 +642,6 @@ gstore.printIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 gstore.settingsIcon = `<svg style="vertical-align: -0.2em" width="0.9em" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">`
   + `<path fill=none stroke=currentColor stroke-width=3 d="M39.23,26a16.52,16.52,0,0,0,.14-2,16.52,16.52,0,0,0-.14-2l4.33-3.39a1,1,0,0,0,.25-1.31l-4.1-7.11a1,1,0,0,0-1.25-.44l-5.11,2.06a15.68,15.68,0,0,0-3.46-2l-.77-5.43a1,1,0,0,0-1-.86H19.9a1,1,0,0,0-1,.86l-.77,5.43a15.36,15.36,0,0,0-3.46,2L9.54,9.75a1,1,0,0,0-1.25.44L4.19,17.3a1,1,0,0,0,.25,1.31L8.76,22a16.66,16.66,0,0,0-.14,2,16.52,16.52,0,0,0,.14,2L4.44,29.39a1,1,0,0,0-.25,1.31l4.1,7.11a1,1,0,0,0,1.25.44l5.11-2.06a15.68,15.68,0,0,0,3.46,2l.77,5.43a1,1,0,0,0,1,.86h8.2a1,1,0,0,0,1-.86l.77-5.43a15.36,15.36,0,0,0,3.46-2l5.11,2.06a1,1,0,0,0,1.25-.44l4.1-7.11a1,1,0,0,0-.25-1.31ZM24,31.18A7.18,7.18,0,1,1,31.17,24,7.17,7.17,0,0,1,24,31.18Z"/></svg>`;
 
-
 gstore.translateIcon = '<div class="inline font-75pc" style="vertical-align:15%">文</div>'
     +'<div class="inline font-85pc font-monospace" style="vertical-align:-10%; margin-left: -.2em;">A</div>';
 
@@ -704,7 +670,6 @@ pos="${pos}" say="${say}" speed="${speed}" lang="${lang}" onmousedown="event.pre
 <span class="small-padding">${country}${btnText}</span></button>`;
     }
 
-//	spHtml = '<span>' + spHtml + '</span>';
 	spHtml = '<div class="inline">' + spHtml + '</div>';
 //    const tts = tag.innerHTML ? `<span>${tag.innerHTML}</span>` : '';
     let tts = '';
@@ -735,8 +700,7 @@ const getRelatedURL = (url, newURL) => {
 
   return (newURL[0] === '/') ? oldHost + newURL
 //         : getPathFromUrl(url) + newURL; //this logic doesn't work well if e.g. url = tasklist/voa/voa-index.txt
-//         : getPathFromUrl(url) + getFnameFromUrl(newURL);
-         : getPathFromUrl(url) + getPathFromUrl(newURL) + getFnameFromUrl(newURL);
+    : getPathFromUrl(url) + getPathFromUrl(newURL) + getFnameFromUrl(newURL);
 }
 
 const getPathFromUrl = url => url.substring(url.lastIndexOf('/')+1, 0);
@@ -760,17 +724,6 @@ const squeezedUrl = (url, keep = true) => getNewURL(url, keep)
 //  .replace('https://raw.githubusercontent.com/xlcalc/blog/main/', 's2://');
   .replace('https://raw.githubusercontent.com/xlcalc/blog/main/', '/2/');
 
-/*
-const adjustUrlOld = (path = '') => {
-// for media files
-  if (!path) return '';
-//  path = path.replaceAll('?', '&');
-  path = path.split(/[&?]/)[0];
-  if (path.startsWith('s2://')) return path.replace('s2://', 'https://raw.githubusercontent.com/xlcalc/blog/main/');
-  if (path.startsWith('//')) return path.replace('//', 'https://drmedia.netlify.app/');
-  return path;
-}
-*/
 //const adjustUrl = url => (url || '').split(/[&?]/)[0] // commented out 2026-05-07
 const adjustUrl = url => (url || '')
   .replace(/^\/\//, 'https://drmedia.netlify.app/')
@@ -783,7 +736,6 @@ const loadHtmlTaskByRef = ref => {
   location.assign(key + squeezedUrl(url));
 }
 
-
 const toggleEl = (e, className = 'hidden') => { if (e) e.classList.toggle(className); }
 const toggleElid = (...ids) => 
   ids.forEach(id => toggleEl(elid(id)));
@@ -792,27 +744,39 @@ const toggleElements = (elArray, className) => {
   elArray.forEach(el => toggleEl(el, className));
 }
 
+/*
 const addElementsClass = (elArray, className) => { 
-//  elArray.forEach(el => {if (el) el.classList.add(className)});
   elArray.forEach(el => {
 	if (!el) return;
 	if (typeof className === 'object') className.forEach(cl => { el.classList.add(cl) });
 	else el.classList.add(className);
   });
 }
+*/
 
 const removeElementsClass = (elArray, className) => { 
-//  elArray.forEach(el => {if (el) el.classList.remove(className)});
+/*
   elArray.forEach(el => {
 	if (!el) return;
 	if (typeof className === 'object') className.forEach(cl => { el.classList.remove(cl) });
 	else el.classList.remove(className);
   });
+*/
+  setElementsClass(elArray, className, 0);
 }
-
-const setElementsClass = (elArray, className, cmd) => {
+/*
+const setElementsClassOld = (elArray, className, cmd) => {
   if (cmd) addElementsClass(elArray, className);
   else removeElementsClass(elArray, className);
+}
+*/
+const setElementsClass = (elArray, className, cmd) => {
+  const fn = cmd ? 'add' : 'remove';
+  elArray.forEach(el => {
+	if (!el) return;
+	if (typeof className === 'object') className.forEach(cl => { el.classList[fn](cl) });
+	else el.classList[fn](className);
+  });
 }
 
 const setElClass = (el, className, cmd) => { setElementsClass([el], className, cmd) };

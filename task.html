@@ -1433,7 +1433,6 @@ function extractYouTubeTimestamp(url) {
 }
 
 const setMediaInTask = cmd => {
-//  if (cmd && xAudioBox.hidden) hitStopButton();
   if (cmd && xAudioBox.hidden) tstore.ttsOverlay.setActive(0);
   xAudioBox.hidden = !cmd;
 }
@@ -1473,10 +1472,9 @@ async function getVideoByURL(url, task) {
 // YT subs can't be loaded the old way after Nov 2021
 //    if (task === 'LOAD_SUBS') fetchYTSubs(YTId);
 
-//    if (players.videoID !== YTId) { // if video isn't the same, load it
     players.videoID = '';
 
-    loadYTVideoByID(YTId); // experiment 2023-08-04: don't await
+    loadYTVideoByID(YTId); // 2023-08-04: don't await
     players.videoID = YTId;
 
 	players.mediaType = 'video';
@@ -1869,10 +1867,19 @@ const replayFragmentCore = async (cue) => {
     await getVideoByURL(cue.getAttribute("url")); // since 2023-08-04, this fn doesn't wait till the video is loaded
 // a new way to wait till it's loaded is needed	
 
+/*
     if (players.mediaState !== 'loaded' || players.flag === -1) {
       displayAlarmMessage('Nothing to play!'); 
       return;
     }
+*/
+  }
+
+// 2026-08-04 check for readiness to play moved here
+  if (players.mediaState !== 'loaded' || players.flag === -1) {
+    displayAlarmMessage('Nothing to play!'); 
+    setPlayStopBtn();
+    return;
   }
 
   if (players.stream) {
@@ -2716,8 +2723,8 @@ End of wordlist-box   -->
 
 
 
+<!-- == Footer ==  -->
 
-<!--  Footer   -->
 <div id="bottom-bar"></div>
 <script>
 
@@ -2894,7 +2901,8 @@ tstore.dicSwitch = new ToggleSwitch({id: 'use-dic-switch',
 
 tstore.nightModeSwitch = new ToggleSwitch({id: 'night-mode-switch', 
 //  label: 'Day/night mode:',
-  button: ['Day/night mode: ☼','Day/night mode: ☾'],
+//  button: ['Day/night mode: ☼','Day/night mode: ☾'],
+  button: ['☼ Day mode', '☾ Night mode'],
   tip: 'Toggle day/night mode - |_Shift_| + |_F11_|',
   storeKey: 'nightMode',
   callback: setNightMode
@@ -3069,7 +3077,7 @@ const handleKeyEvent = e => {
 //console.log('Key',e.key);
 
   if (e.key === 'Escape') {
-    hitStopButton();
+    hitStopButton('ESCAPE');
     topControls.hidden = true;
     tstore.hideChunkTooltip();
 //    hideEl(vocabInput);
@@ -3121,14 +3129,14 @@ const playerTimeShift = t => {
 const handlePlayStopBtn = () => {
 //console.log('Click to stop = ', players.loopStopRequested);
   if (playStopBtn.classList.contains('play-triangle-solid')) replayFragment(playStopBtn);
-  else hitStopButton();
+  else hitStopButton('STOP_BTN');
 }
 
-const hitStopButton = () => {
+const hitStopButton = cmd => {
   players.loopStopRequested = true; 
   setPlayStopBtn();
   
-  if (players.stream) playerStop(); // force stop streaming
+  if (cmd || players.stream) playerStop(); // cmd added 2026-08-04
 
   disableVoiceInput();
   tts.cancel(); 
@@ -3409,7 +3417,6 @@ const processTimeStamps = txt => {
     return '{{TIME_STAMP}}';
   }
 
-//  const getStampArray = s => s.replace(/[\[\]\s]/g, '').split(/,|-/);
   const getStampArray = s => s
     .replace(/[\[\]\s]/g, '')
     .replace(/,\d*\:/g, s=>'-' + s.slice(1)) //comma between start and end replaced by -
@@ -3935,17 +3942,18 @@ tstore.translation = { // experimental: 2026-02-14
     this.onchangedTranslCtrl(tCtrl.value);
   },
 
-  async addTip(el) {
+  addTip(el) {
     if (!this.sentences) return;
     const sentNum = el?.dataset?.sentenceIndex;
     let txt = this.sentences[sentNum];
     if (!txt) return;
-    el.hovered = 1;
+//    el.hovered = 1;
 //    await sleep(200);
 //    if (!el.hovered) return;
 
-    el.style.backgroundColor = 'var(--color-overlay-s)';
-    el.style.color = 'inherit';
+//    el.style.backgroundColor = 'var(--color-overlay-s)';
+//    el.style.color = 'inherit';
+    this.setTipAttributes(el, 1);
 
     document.querySelectorAll('.transl-tip').forEach(el => { el.remove() });
 
@@ -3978,20 +3986,26 @@ tstore.translation = { // experimental: 2026-02-14
       }
     }
 
-    tip.style.width = Math.ceil(max) + "px";
+    tip.style.width = Math.ceil(max) + 'px';
 
     return tip;
   },
 
-  async removeTip(el) {
-    el.hovered = 0;
+  removeTip(el) {
+    this.setTipAttributes(el, 0);
+//    el.hovered = 0;
+//    el.style.backgroundColor = '';
+//    el.style.color = '';
 //    await sleep(200);
 //    if (el.hovered) return;
     if (el.child) el.child.remove();
-    el.style.backgroundColor = '';
-    el.style.color = '';
   },
-  
+
+  setTipAttributes(el, cmd) {
+    el.hovered = cmd;
+    el.style.backgroundColor = cmd? 'var(--color-overlay-s)' : '';
+    el.style.color = cmd? 'inherit' : '';
+  },
 //  inspectTips() { return document.querySelectorAll('.transl-tip') },
 }
 
@@ -4008,7 +4022,6 @@ const taskTextHandler = txt => {
   }
   
   txt += '\n'; // might help fix issues with Hebrew
-//  if (typeof gstore.vocabMode === 'undefined') gstore.vocabMode = gstore.calledFromWords? 4 : 1;
   gstore.vocabMode ??= gstore.calledFromWords? 4 : 1;
   const editableVocabDiv = gstore.vocabMode !== 4;
   txt = gstore.vocab.render(txt, {addDiv: editableVocabDiv, prefix: '<))[*', suffix: '*]', examplePrefix: '<))~', exampleSuffix: '~'});
