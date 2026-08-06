@@ -1014,10 +1014,7 @@ h1, h2, h3, h4, h5, h6 {
 
 <div id="player-box-bgr">
 <div id="player-box" hidden>
-
-<div id="video-resize" 
-  tip="resize">
-</div>
+<div id="video-resize"></div>
 
 <div id="yt-video" hidden class="inherit yt-video rounded">
   <div id="yt-player">
@@ -3246,10 +3243,10 @@ const setVideoSize = cmd => {
   }();
   
   const setVideoSizeCtrls = width => {
-    if (width > players.minWidth) vctrl.enable(0);
+    if (width > players.minWidth + 1) vctrl.enable(0);
     else vctrl.disable(0);
 	
-    if (width < getMaxVideoWidth()) vctrl.enable(1);
+    if (width < getMaxVideoWidth() - 1) vctrl.enable(1);
 	else vctrl.disable(1);
   }
 
@@ -3270,8 +3267,11 @@ const setVideoSize = cmd => {
   if (cmdString.endsWith('%'))
     width = Math.round(width / 100 * maxWidth);
 
-  if (width < players.minWidth || cmd === 'min') width = players.minWidth;
-  if (width > maxWidth || cmd === 'max') width = maxWidth;
+  if (cmd === 'smaller') width = players.videoWidth - 150;
+  if (cmd === 'bigger') width = players.videoWidth + 150;
+
+  if (width < players.minWidth + 50 || cmd === 'min') width = players.minWidth;
+  if (width > maxWidth - 50 || cmd === 'max') width = maxWidth;
 
   players.videoWidth = width;
   localStorage.setItem('videoWidth', width);
@@ -3281,31 +3281,15 @@ const setVideoSize = cmd => {
 
 const initVideoResizer = () => {
   let divs = ''; 
-//  widths = [18, 28, 40], heights = [25, 45, 60];
-  const widths = [25, 40], heights = [45, 70], // in %
-    classes = ['smaller', 'bigger'];
+  const classes = ['smaller', 'bigger'],
+    widths = [25, 40], heights = [45, 70]; // in %
 	
   for (let i = 0; i < 2; i++) {
-    const height = heights[i], width = widths[i], fnclass = classes[i];
-    divs += `<div onclick = changeVideoSize(${i}) class = "ptr video-size video-${fnclass}"
-style="width: ${width}%; height:${height}%;
-"></div>`;
+    divs += `<div class="ptr video-size video-${classes[i]}"
+style="width: ${widths[i]}%; height:${heights[i]}%;
+" onclick=setVideoSize('${classes[i]}')></div>`;
   }
   videoResize.innerHTML = divs;
-}
-
-const changeVideoSize = cmd => {
-  let width = players.videoWidth;
-  const maxWidth = getMaxVideoWidth();
-  if (cmd) {
-    width = Math.min(width + 150, maxWidth);
-	if (width + 50 > maxWidth) width = maxWidth; // snap to max
-  }
-  else {
-    width = Math.max(width - 150, players.minWidth);
-	if (width - 50 < players.minWidth) width = players.minWidth; // snap to min
-  }
-  setVideoSize(width);
 }
 
 const videoResizerReset = () => {
