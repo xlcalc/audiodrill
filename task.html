@@ -440,13 +440,23 @@ z-index: 10;
   border-radius: 4px;
   padding: 5px;
 }
-.video-smaller:hover:before {content: 'Smaller\00A0size'}
-.video-bigger:hover:before {content: 'Bigger\00A0size'}
-
 .video-size-disabled, .video-size-disabled:hover {
   border-color: #bbb;
   backdrop-filter: none;
 }
+
+.video-smaller {
+  width: 25%;
+  height: 45%;
+}
+
+.video-bigger {
+  width: 40%;
+  height: 70%;
+}
+
+.video-smaller-tooltip:hover:before {content: 'Smaller\00A0size'}
+.video-bigger-tooltip:hover:before {content: 'Bigger\00A0size'}
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0.2em 0;
@@ -3227,27 +3237,11 @@ const setVideoSize = cmd => {
   if (!cmd || players.mediaInTask) return;
   players.isVideoSizeSet = true;
 
-  const vctrl = function(n) {
-    const ctrls = document.querySelectorAll('.video-size');
-    const classes = ['video-smaller', 'video-bigger'];
-  	return {
-	  enable: (n) => {
-        ctrls[n].classList.add(classes[n]);
-        ctrls[n].classList.remove('video-size-disabled');
-	  },
-	  disable: (n) => {
-        ctrls[n].classList.remove(classes[n]);
-        ctrls[n].classList.add('video-size-disabled');	
-	  }
-	}
-  }();
-  
-  const setVideoSizeCtrls = width => {
-    if (width > players.minWidth + 1) vctrl.enable(0);
-    else vctrl.disable(0);
-	
-    if (width < getMaxVideoWidth() - 1) vctrl.enable(1);
-	else vctrl.disable(1);
+  const vctrl = (i, cmd) => {
+    const el = document.querySelectorAll('.video-size')[i];
+    const cls = ['video-smaller-tooltip', 'video-bigger-tooltip'][i];
+    setElClass(el, cls, cmd);
+    setElClass(el, 'video-size-disabled', !cmd);
   }
 
 //console.log('### Left column width', width);
@@ -3264,8 +3258,7 @@ const setVideoSize = cmd => {
 
   const maxWidth = getMaxVideoWidth();
   const cmdString = cmd + '';
-  if (cmdString.endsWith('%'))
-    width = Math.round(width / 100 * maxWidth);
+  if (cmdString.endsWith('%')) width = Math.round(width / 100 * maxWidth);
 
   if (cmd === 'smaller') width = players.videoWidth - 150;
   if (cmd === 'bigger') width = players.videoWidth + 150;
@@ -3275,19 +3268,21 @@ const setVideoSize = cmd => {
 
   players.videoWidth = width;
   localStorage.setItem('videoWidth', width);
-  setVideoSizeCtrls(width);
+
+  vctrl(0, (width > players.minWidth + 1));
+  vctrl(1, (width < maxWidth - 1));
+
   if (!isScreenNarrow()) setLeftColWidth(width);
 }
 
 const initVideoResizer = () => {
   let divs = ''; 
-  const classes = ['smaller', 'bigger'],
-    widths = [25, 40], heights = [45, 70]; // in %
+  const classes = ['smaller', 'bigger'];
+//    widths = [25, 40], heights = [45, 70]; // in %
 	
   for (let i = 0; i < 2; i++) {
     divs += `<div class="ptr video-size video-${classes[i]}"
-style="width: ${widths[i]}%; height:${heights[i]}%;
-" onclick=setVideoSize('${classes[i]}')></div>`;
+    onclick=setVideoSize('${classes[i]}')></div>`;
   }
   videoResize.innerHTML = divs;
 }
