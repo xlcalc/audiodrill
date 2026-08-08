@@ -21,10 +21,10 @@ const trimToLower = txt => txt.trim() .toLowerCase();
 
 //backslash added 2022-10-30. What about ()and []?
 // trimming apostrophes added 2024-07-18
-const removePunctuation = txt => txt.replace(/[.!?,"“”,。,？,！,，,、:\\]/g, '').replace(/^'|'$/g,'');
-const removePunctuation2 = txt => txt.replace(/[\(\);.!?,"“”,。,？,！,，,、:\\]/g, '') //(); added 2024-06-29. What about []?
-//const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s|-/g,' ').replace(/’/g,"'"); // hyphen moved here from removePunctuation
-const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s+|-/g,' ').replace(/’/g,"'"); // hyphen moved here from removePunctuation
+const removePunctuation = txt => txt.replace(/[.!?,"â€œâ€,ã€‚,ï¼Ÿ,ï¼,ï¼Œ,ã€:\\]/g, '').replace(/^'|'$/g,'');
+const removePunctuation2 = txt => txt.replace(/[\(\);.!?,"â€œâ€,ã€‚,ï¼Ÿ,ï¼,ï¼Œ,ã€:\\]/g, '') //(); added 2024-06-29. What about []?
+//const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s|-/g,' ').replace(/â€™/g,"'"); // hyphen moved here from removePunctuation
+const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s+|-/g,' ').replace(/â€™/g,"'"); // hyphen moved here from removePunctuation
 const normalizeStr = txt => trimToLower(txt.replace(/\s+/g, ' ') .replace(/_+/g,''));
 //const capitalizeFirstLetter = s => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -232,7 +232,7 @@ function loadElementWithText(sourceText, eID, cmd) {
 // issues tbc:
 // commas and hypens in flashcards
 
-    let s = txt.replace(/’/g, "'")
+    let s = txt.replace(/â€™/g, "'")
       .replace(/-{2}/g, '{hyphen}');
     if (!pubchem.checked) { 
       s = s.replace(/\\-/g, '\\{hyphen}'); 
@@ -380,8 +380,8 @@ function parseTaskText(sourceText, saveTask) {
   const taskPrefix = "<a class='vlink' onclick=loadHtmlTaskByRef(this)";
   const cuePrefix = "<a class='cue' onclick=replayFragment(this)";
   const pcuePrefix = "<p class='cue' onclick=replayFragment(this)";
-//  const viewGaps = '<span style="cursor:default; margin-right:-0.65em; color:#aaa;">👁</span><b>/</b>' 
-//    + '&nbsp;&nbsp;<x-switch>viewTestAnswers(this.checked)</x-switch> 👁';
+//  const viewGaps = '<span style="cursor:default; margin-right:-0.65em; color:#aaa;">ðŸ‘</span><b>/</b>' 
+//    + '&nbsp;&nbsp;<x-switch>viewTestAnswers(this.checked)</x-switch> ðŸ‘';
   //const viewGaps2 = '<div title="Toggle gaps" class="view-gap" onclick="toggleGaps(this)"><x-switch></x-switch></div>';
 //  const viewGaps2 = '<button title="Toggle gaps" class="view-gap" onclick="toggleGaps(this)"><x-switch></x-switch></button>';
 //  const viewGaps2 = '<span title="Toggle gaps"><x-switch>"toggleGaps(this)" title="Toggle gaps"</x-switch></span>';
@@ -642,7 +642,7 @@ gstore.printIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 gstore.settingsIcon = `<svg style="vertical-align: -0.2em" width="0.9em" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">`
   + `<path fill=none stroke=currentColor stroke-width=3 d="M39.23,26a16.52,16.52,0,0,0,.14-2,16.52,16.52,0,0,0-.14-2l4.33-3.39a1,1,0,0,0,.25-1.31l-4.1-7.11a1,1,0,0,0-1.25-.44l-5.11,2.06a15.68,15.68,0,0,0-3.46-2l-.77-5.43a1,1,0,0,0-1-.86H19.9a1,1,0,0,0-1,.86l-.77,5.43a15.36,15.36,0,0,0-3.46,2L9.54,9.75a1,1,0,0,0-1.25.44L4.19,17.3a1,1,0,0,0,.25,1.31L8.76,22a16.66,16.66,0,0,0-.14,2,16.52,16.52,0,0,0,.14,2L4.44,29.39a1,1,0,0,0-.25,1.31l4.1,7.11a1,1,0,0,0,1.25.44l5.11-2.06a15.68,15.68,0,0,0,3.46,2l.77,5.43a1,1,0,0,0,1,.86h8.2a1,1,0,0,0,1-.86l.77-5.43a15.36,15.36,0,0,0,3.46-2l5.11,2.06a1,1,0,0,0,1.25-.44l4.1-7.11a1,1,0,0,0-.25-1.31ZM24,31.18A7.18,7.18,0,1,1,31.17,24,7.17,7.17,0,0,1,24,31.18Z"/></svg>`;
 
-gstore.translateIcon = '<div class="inline font-75pc" style="vertical-align:15%">文</div>'
+gstore.translateIcon = '<div class="inline font-75pc" style="vertical-align:15%">æ–‡</div>'
     +'<div class="inline font-85pc font-monospace" style="vertical-align:-10%; margin-left: -.2em;">A</div>';
 
 const parseTTSTag = (el, lightBtn = '') => {
@@ -1991,7 +1991,7 @@ const highlightText = txt => {
 
 	if (tipHtml.startsWith('tip:')) tipHtml = tipHtml.slice(4).trim();
 
-	const tipClass = (txt === '◦')? 'lookup-tip' : 'task-tip'; // a stopgap for alternative tip classes
+	const tipClass = (txt === 'â—¦')? 'lookup-tip' : 'task-tip'; // a stopgap for alternative tip classes
 
 	txt = highlightText(txt);
 //	tipHtml = highlightText(tipHtml); // b/c highlightText is applied in setTipContent
@@ -2038,7 +2038,8 @@ const highlightText = txt => {
       const arr = code.split('web:');
       code = arr[0].trim();
       code2 = arr[1]?.trim() || '';
-      if (!code.includes(':')) code = 'https://youtu.be/' + code;
+//      if (!code.includes(':')) code = 'https://youtu.be/' + code;
+      if (isYouTubeId(code)) code = 'https://youtu.be/' + code;
     }
 
   	const colors = `<${key}:${code}>${txt}</${key}>`;
@@ -2495,9 +2496,9 @@ const getEpisodeNavigation = (dirInfo, url) => {
 
   const newRef = v => epList? prevNextEpisodeUrl(url, epList, v) : changeEpisodeUrl(url, v, '', firstEp, lastEp);
 
-//  const prevBtn = navButton('🡰', newRef(-1), 'previous task');
+//  const prevBtn = navButton('ðŸ¡°', newRef(-1), 'previous task');
   const prevBtn = navButton('<span style="transform: rotateY(180deg);">&#10154;</span>', newRef(-1), 'previous task');
-//  const nextBtn = navButton('🡲', newRef(1), 'next task');
+//  const nextBtn = navButton('ðŸ¡²', newRef(1), 'next task');
 //  const nextBtn = navButton('&#129138;&#xfe0f;', newRef(1), 'next task');
   const nextBtn = navButton('&#10154;', newRef(1), 'next task');
 
@@ -2732,18 +2733,18 @@ const sayCtrlVoiceName = (n='') => {
   const voice = tts['spVoice' + n];
   const v = voice.name;
   const greetings = {
-    de: `Hallo! Diese Stimme ist ${v}. Um die Sprechgeschwindigkeit zu ändern, verwenden Sie den Master-Geschwindigkeitsregler.`,
+    de: `Hallo! Diese Stimme ist ${v}. Um die Sprechgeschwindigkeit zu Ã¤ndern, verwenden Sie den Master-Geschwindigkeitsregler.`,
     en: `Hi, this voice is ${v}. To change the speech rate, use the master speed control.`,
 	es: `Hola, esta voz es ${v}. Para cambiar la velocidad del habla, utilice el control de velocidad maestro.`,
-	fr: `Salut, cette voix est ${v}. Pour modifier le débit de parole, utilisez le contrôle de vitesse principal.`,
-	he: `היי, הקול הזה הוא ${v}. כדי לשנות את קצב הדיבור, השתמש במחוון בקרת המהירות.`,
-	it: `Ciao, questa voce è ${v}. Per modificare la velocità della voce, utilizzare il controllo della velocità principale.`,
+	fr: `Salut, cette voix est ${v}. Pour modifier le dÃ©bit de parole, utilisez le contrÃ´le de vitesse principal.`,
+	he: `×”×™×™, ×”×§×•×œ ×”×–×” ×”×•× ${v}. ×›×“×™ ×œ×©× ×•×ª ××ª ×§×¦×‘ ×”×“×™×‘×•×¨, ×”×©×ª×ž×© ×‘×ž×—×•×•×Ÿ ×‘×§×¨×ª ×”×ž×”×™×¨×•×ª.`,
+	it: `Ciao, questa voce Ã¨ ${v}. Per modificare la velocitÃ  della voce, utilizzare il controllo della velocitÃ  principale.`,
 	nl: `Hallo, deze stem is ${v}. Gebruik de hoofdsnelheidsregelaar om de spreeksnelheid te wijzigen.`,
-	pl: `Cześć, ten głos jest ${v}. Aby zmienić tempo mowy, użyj regulatora prędkości Master Speed Rate.`,
-	pt: `Olá, esta voz é ${v}. Para alterar a velocidade da fala, use o controle deslizante de velocidade.`,
-	ru: `Привет, это голос ${v}. Чтобы изменить скорость речи, используйте слайдер контроля скорости.`,
-	uk: `Привіт, це голос ${v}. Щоб змінити швидкість мовлення, використовуйте повзунок регулювання швидкості.`,
-	zh: `你好，这个声音是 ${v}。 要更改语速，请使用速度控制滑块。`
+	pl: `CzeÅ›Ä‡, ten gÅ‚os jest ${v}. Aby zmieniÄ‡ tempo mowy, uÅ¼yj regulatora prÄ™dkoÅ›ci Master Speed Rate.`,
+	pt: `OlÃ¡, esta voz Ã© ${v}. Para alterar a velocidade da fala, use o controle deslizante de velocidade.`,
+	ru: `ÐŸÑ€Ð¸Ð²ÐµÑ‚, ÑÑ‚Ð¾ Ð³Ð¾Ð»Ð¾Ñ ${v}. Ð§Ñ‚Ð¾Ð±Ñ‹ Ð¸Ð·Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ ÑÐºÐ¾Ñ€Ð¾ÑÑ‚ÑŒ Ñ€ÐµÑ‡Ð¸, Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ ÑÐ»Ð°Ð¹Ð´ÐµÑ€ ÐºÐ¾Ð½Ñ‚Ñ€Ð¾Ð»Ñ ÑÐºÐ¾Ñ€Ð¾ÑÑ‚Ð¸.`,
+	uk: `ÐŸÑ€Ð¸Ð²Ñ–Ñ‚, Ñ†Ðµ Ð³Ð¾Ð»Ð¾Ñ ${v}. Ð©Ð¾Ð± Ð·Ð¼Ñ–Ð½Ð¸Ñ‚Ð¸ ÑˆÐ²Ð¸Ð´ÐºÑ–ÑÑ‚ÑŒ Ð¼Ð¾Ð²Ð»ÐµÐ½Ð½Ñ, Ð²Ð¸ÐºÐ¾Ñ€Ð¸ÑÑ‚Ð¾Ð²ÑƒÐ¹Ñ‚Ðµ Ð¿Ð¾Ð²Ð·ÑƒÐ½Ð¾Ðº Ñ€ÐµÐ³ÑƒÐ»ÑŽÐ²Ð°Ð½Ð½Ñ ÑˆÐ²Ð¸Ð´ÐºÐ¾ÑÑ‚Ñ–.`,
+	zh: `ä½ å¥½ï¼Œè¿™ä¸ªå£°éŸ³æ˜¯ ${v}ã€‚ è¦æ›´æ”¹è¯­é€Ÿï¼Œè¯·ä½¿ç”¨é€Ÿåº¦æŽ§åˆ¶æ»‘å—ã€‚`
   };
   const lang = voice.lang.slice(0, 2);
   const intro = greetings[lang] || greetings.en;
@@ -2912,7 +2913,7 @@ const changeVocabMode = d => {
 function detectLang(txt) {
   const langRanges = {
 	de: /\b(?:ein|eine|der|die|das)\b/,
-	pl: /ł|\bsię(\s|[.,!?;:])/,
+	pl: /Å‚|\bsiÄ™(\s|[.,!?;:])/,
     ru: /[\u0400-\u04ff]/,
     ar: /[\u0600-\u06ff]/,
     he: /[\u0590-\u05ff]/,
@@ -2973,16 +2974,17 @@ console.log(res.matches.map(entry => entry.translation + ` (${entry.quality})`))
 	[0]; // first value is usually the most accurate
 }
 
-function getYouTubeId(input) {
-  // Bare video ID
-  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) {
-    return input;
-  }
+const isYouTubeId = s => /^[a-zA-Z0-9_-]{11}$/.test(s);
 
-  input = input.replaceAll('%3F', '?'); // more replacements may be needed later
+function getYouTubeId(s) {
+  // Bare video ID
+//  if (/^[a-zA-Z0-9_-]{11}$/.test(s)) {
+  if (isYouTubeId(s)) return s;
+
+  s = s.replaceAll('%3F', '?'); // more replacements may be needed later
 
   try {
-    const u = new URL(input);
+    const u = new URL(s);
 
     if (u.hostname === 'youtu.be') {
       return u.pathname.slice(1);
@@ -3028,7 +3030,7 @@ const getSegmentedText = (text, param) => {
 }
 
 const checkStringVsRef = (str, ref, lang) => {
-  ref = ref.replaceAll("’", "'");
+  ref = ref.replaceAll("â€™", "'");
   const strArr = getSegmentedText(str, {lang: lang || getLangCode()});
   const refArr = getSegmentedText(ref, {lang: lang || getLangCode()});
 //  return alignTokens(strArr, refArr);
@@ -3037,7 +3039,7 @@ const checkStringVsRef = (str, ref, lang) => {
 
 function alignTokensWithPunct(strTokens, referenceTokens) {
   // Edge case with hyphens isn't treated yet
-  const punctuationSet = new Set(`•.,!?;:”“'"()[]{}-–—…。？！，、`); // extend as needed
+  const punctuationSet = new Set(`â€¢.,!?;:â€â€œ'"()[]{}-â€“â€”â€¦ã€‚ï¼Ÿï¼ï¼Œã€`); // extend as needed
   const isWord = t => t && !punctuationSet.has(t);
 
   const refWords = referenceTokens.filter(isWord);
