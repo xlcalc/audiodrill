@@ -1869,8 +1869,15 @@ const replayFragmentCore = async (cue) => {
   fetchStartStop(cue);
 
   if (cue !== playStopBtn) {
-    if (players.stream) tstore.playerTitle.displayMsg(cue.textContent);
-	
+    if (players.stream) {
+      let msg = cue.textContent;
+      if (cue.dataset?.web) {
+        tstore.playerTitle.title = 'Open website';
+        msg = highlightText(`[🌏︎&thinsp;${msg}](${cue.dataset.web})`);
+      }
+      tstore.playerTitle.displayMsg(msg);
+    }
+
     await getVideoByURL(cue.getAttribute("url")); // since 2023-08-04, this fn doesn't wait till the video is loaded
 // a new way to wait till it's loaded is needed	
 

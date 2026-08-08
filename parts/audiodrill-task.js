@@ -2030,9 +2030,16 @@ const highlightText = txt => {
     let code = parts[1].trim();
     let playAttr = code.split(' ');
     if (!playAttr[1]) playAttr[1] = '0:0';
-    if (key === 'stream' && !code.includes(':')) code = 'https://youtu.be/' + code;
-
     if (key === 'play' && !txt) return cueTagBtn({url: playAttr[0], time: playAttr[1], title: 'Play/pause'});
+
+//    if (key === 'stream' && !code.includes(':')) code = 'https://youtu.be/' + code;
+    let code2 = '';
+    if (key === 'stream') {
+      const arr = code.split('web:');
+      code = arr[0].trim();
+      code2 = arr[1]?.trim() || '';
+      if (!code.includes(':')) code = 'https://youtu.be/' + code;
+    }
 
   	const colors = `<${key}:${code}>${txt}</${key}>`;
     const res = {
@@ -2041,7 +2048,7 @@ const highlightText = txt => {
       'cue': `<cue time="${code}" title="Play ${code}">${txt}</cue>`,
       'play': `<cue url="${playAttr[0]}" time="${playAttr[1]}">${txt}</cue>`,
   // player-title might be added for streaming
-      'stream': `<cue url="${code}">${parts[0]}</cue>`,
+      'stream': `<cue url="${code}" data-web="${code2}">${parts[0]}</cue>`,
       'tts': `<tts data-btntext="${txt}" say="${code}"></tts>`,
     };
     return res[key];
