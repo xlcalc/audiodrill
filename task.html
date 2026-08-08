@@ -89,7 +89,7 @@
 }
 
 .dropdown-label::after {
-  content: "â–¼";
+  content: "▼";
   color: lightgray;
   font-size: 60%;
   padding-right: 0.1em;
@@ -972,9 +972,9 @@ h1, h2, h3, h4, h5, h6 {
 
 <div id="chunk-tooltip-menu" class="chunk-tooltip-menu" style="top: -100px" tabindex="0" role="tooltip" aria-label="Tooltip with buttons">
   <button id="speak-btn" tip="Click to hear, or<br>|_Ctrl_| + click to hear the whole sentence"></button>
-  <button id="search-btn" tip="Look up with Google">ðŸ”Ž&#xFE0E;</button>
+  <button id="search-btn" tip="Look up with Google">🔎&#xFE0E;</button>
   <button id="translate-btn" tip-class="tooltip-link" tip="Translate"></button>
-  <button id="add-to-vocab-btn" tip="Explore and add to vocabulary">ðŸ“–&#xFE0E;</button>
+  <button id="add-to-vocab-btn" tip="Explore and add to vocabulary">📖&#xFE0E;</button>
 </div>
 
 <!-- Vocab Input UI -->
@@ -986,7 +986,7 @@ h1, h2, h3, h4, h5, h6 {
     <div id="selectedChunkDisplay" class="inline semibold italic light-green-bgr"></div>
     <div id="chunk-action-buttons" class="inline chunk-action-buttons">
       <button id="speak-btn2" title="Speak"></button>
-      <button id="search-btn2" title="Look up with Google">ðŸ”Ž&#xFE0E;</button>
+      <button id="search-btn2" title="Look up with Google">🔎&#xFE0E;</button>
       <button id="translate-btn2" title="Google Translate"></button>
 	</div>
     <input id="translationInput" placeholder="Enter meaning or translation" />
@@ -1873,7 +1873,7 @@ const replayFragmentCore = async (cue) => {
       let msg = cue.textContent;
       if (cue.dataset?.web) {
         tstore.playerTitle.title = 'Open website';
-        msg = highlightText(`[ðŸŒï¸Ž&thinsp;${msg}](${cue.dataset.web})`);
+        msg = highlightText(`[🌏︎&thinsp;${msg}](${cue.dataset.web})`);
       }
       tstore.playerTitle.displayMsg(msg);
     }
@@ -2519,7 +2519,7 @@ defined by start and stop time"><span class="inline-flex align-top"></span>
 <div title="Copy start and stop time. 
 Shift+click to assign stop time to start time." class="btn-inside inline-flex align-top" 
   style="filter: invert(.16)" onclick="copyStartStop()" tabindex="0">
-  <span style="position: relative;">ðŸ“„</span><span style="position: relative; top: .2em; left: -.7em">ðŸ“„</span>
+  <span style="position: relative;">📄</span><span style="position: relative; top: .2em; left: -.7em">📄</span>
 </div>
 
 <div id="share-fragment" class="share-fragm inline-flex align-top" title="Share the fragment">
@@ -2554,7 +2554,7 @@ Alt+click for longer hop">
 
 &emsp;
 <button class="time-mark-btn btn" onclick="markTime()" title="Copy current time">
-  <div>ðŸ•‘</div>
+  <div>🕑</div>
 </button>
 </div>
 
@@ -2613,7 +2613,7 @@ Just load the audio or video from the Internet...<br>
     placeholder="Enter URL here" 
     onchange="getVideoFromURLInput(this)">
   <input type="submit" class="plain-button font-80pc rounded" 
-value="ðŸ”" onclick="getVideoFromURLInput(this.previousElementSibling)">
+value="🔍" onclick="getVideoFromURLInput(this.previousElementSibling)">
 
 </div>
 </label>
@@ -2663,14 +2663,14 @@ value="ðŸ”" onclick="getVideoFromURLInput(this.previousElementSibling)">
 	</div>
 
     <div id="download-task" class="action-icon font-75pc"><div 
-	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">â†“</div></div>
+	style="transform: scaleX(1.5); text-decoration: underline; text-underline-offset: 4px;" title="Download task">↓</div></div>
 	
     <div id="share-link" class="action-icon share-icon" title="Share task">
 	</div>
 
     <span class="padding-03em"></span>
 
-    <div id="tts-lines-btn" class="action-icon" title="Read lines">ðŸ—£
+    <div id="tts-lines-btn" class="action-icon" title="Read lines">🗣
 	</div>
 
     <span class="padding-03em"></span>
@@ -2692,7 +2692,7 @@ value="ðŸ”" onclick="getVideoFromURLInput(this.previousElementSibling)">
 <!-- wordlist-box no longer needed
   <div id="wordlist-box" class="hidden">
     <div class="box-header">&emsp;Word list to explore
-      <span class="action-icon float-left" id="drill-wordlist" title="Explore with Audiodrill words and phrases">âžª</span>
+      <span class="action-icon float-left" id="drill-wordlist" title="Explore with Audiodrill words and phrases">➪</span>
       <img class="action-icon float-left" id="copy-words" src='copy.svg' title="Copy to clipboard">
       <span class="action-icon close-x01" id="clear-wordlist" title="Clear the list">&times;</span>
     </div>
@@ -2915,8 +2915,8 @@ tstore.dicSwitch = new ToggleSwitch({id: 'use-dic-switch',
 
 tstore.nightModeSwitch = new ToggleSwitch({id: 'night-mode-switch', 
 //  label: 'Day/night mode:',
-//  button: ['Day/night mode: â˜¼','Day/night mode: â˜¾'],
-  button: ['â˜¼ Day mode', 'â˜¾ Night mode'],
+//  button: ['Day/night mode: ☼','Day/night mode: ☾'],
+  button: ['☼ Day mode', '☾ Night mode'],
   tip: 'Toggle day/night mode - |_Shift_| + |_F11_|',
   storeKey: 'nightMode',
   callback: setNightMode
@@ -3902,7 +3902,7 @@ tstore.translation = { // experimental: 2026-02-14
       ><select title="Original language" id="orig-lang-ctrl" ${ddlClass}>${langs}</select
       ><button title="Swap original and translation" id="transl-swap-btn" translate="no" 
       class="plain-button action-icon margin-03em" 
-      style="right:10px; width:auto">â‡„</button
+      style="right:10px; width:auto">⇄</button
   ><select title="Translation language" id="target-lang-ctrl" ${ddlClass}><option>off</option>${langs}</select
       ></div>`;
     elAddHTML(transcriptText, btn, 'afterbegin');
@@ -4261,7 +4261,7 @@ function handleSelection() {
   if (text.length) {
     transcriptText.lastSelectionText = text;
     transcriptText.justHandledSelection = true; // set flag to suppress click handling
-//console.log('ðŸ“Œ Text selection:', text);
+//console.log('📌 Text selection:', text);
 // Show selection tooltip here
 	gstore.engagedEl = node.nodeType === Node.TEXT_NODE
     ? node.parentElement
@@ -4332,7 +4332,7 @@ transcriptText.onclick = async (e) => {
 	gstore.clickedWord = getClickedTextFragment(range, lang, 'word');
 	const s = gstore.clickedWord;
 
-//console.log('ðŸ”¹ clicked:', s);
+//console.log('🔹 clicked:', s);
     if (e.ctrlKey || e.metaKey || tstore.ttsOverlay.isActive()) tstore.ttsOverlay.init(gstore.engagedEl);
     else handleTextInteraction(s, 'CLICK', e.target);
   }
@@ -4498,8 +4498,8 @@ tstore.ttsOverlay = {
     + uiblox.chevronIcon(par.dir)  
     + '</button>';
 
-    const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + â†)', dir: 'left'});
-    const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + â†’)', dir: 'right'});
+    const prevBtn = getPrevNextBtn({id: 'play-prev-sentence', step: -1, title: 'Previous sentence (Shift + ←)', dir: 'left'});
+    const nextBtn = getPrevNextBtn({id: 'play-next-sentence', step: 1, title: 'Next sentence (Shift + →)', dir: 'right'});
     const pbr = getPbrHtml('-tts-overlay');
 
     const translateBtn = `<button id="${this.translBtnId}" title="Translate sentence"
@@ -4625,7 +4625,7 @@ tweakedTTSLine(s) {
 
     this.ttsLine = tstore.taskSentences[this.currentNum]
       .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before;
-//      .replace(/^.{1,14}[:ï¼š]\s*/, '') // remove speaker (in dialogues)
+//      .replace(/^.{1,14}[:：]\s*/, '') // remove speaker (in dialogues)
 // Maybe speaker should be removed from sentences in case of shadowing?
     this.ttsLine = this.tweakedTTSLine(this.ttsLine);
 	
@@ -4824,7 +4824,7 @@ function getClickedTextFragment(range, lang, granularity) {
 	    parentText += nextNode.textContent;
 	  }
 //	  else if (nextNode.nodeName === 'BR') {
-//	    if (!/[.!?ã€‚ï¼Ÿï¼]\s*$/.test(parentText)) parentText += '. ';
+//	    if (!/[.!?。？！]\s*$/.test(parentText)) parentText += '. ';
 //	  }
 	  else break;
       currentNode = nextNode;  
@@ -4844,7 +4844,7 @@ function getClickedTextFragment(range, lang, granularity) {
       if (nextNode.innerText) { // experimental: 2026-05-15
 //		let chunk = nextNode.textContent;
 		let chunk = nextNode.innerText;
-//	    if (lastNodeName === 'BR' && !/[.!?ã€‚ï¼Ÿï¼]\s*$/.test(chunk)) chunk += '. ';
+//	    if (lastNodeName === 'BR' && !/[.!?。？！]\s*$/.test(chunk)) chunk += '. ';
         if (!chunk.trim()) chunk = ' '; // collapse spaces and \n into one space
 	    parentText = chunk + parentText;
 		clickedOffset += chunk.length; // edge cases should be tested
@@ -4984,7 +4984,7 @@ gstore.vocab.addMeaning = async (el) => {
   const entry = transcriptText.lastSelectionText.trim();
   const meaning = el.value.trim();
   if (meaning) {
-console.log('ðŸ“š Add to vocab:', {
+console.log('📚 Add to vocab:', {
       word: entry,
       meaning: meaning
     });
@@ -5257,7 +5257,7 @@ tstore.sentences = {
     const resSentences = resNodes
       .map(el => this
         .getTextWithAlts(el)
-        .replace(/^.{1,14}[:ï¼š]\s*/, '') // remove speaker (in dialogues)
+        .replace(/^.{1,14}[:：]\s*/, '') // remove speaker (in dialogues)
 //        .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before
       );
     return [resNodes, resSentences];
@@ -5322,8 +5322,8 @@ tstore.sentences = {
 
 //    .replace(/(^|\n\s?)(\d+)\.(\s+)/g, '$1$2<x-dot>$3') // protect numbered lines like 1. bla-bla
     .replace(/(^|\n\s?)(\d+)\.(\s+)/g, '$1$2<x-dot>$3' + eol) // protect numbered lines like 1. bla-bla
-    .replace(/\?([â€"'])( )+([a-z])/g, '%3F$1$2$3')
-    .replace(/!([â€"'])( )+([a-z])/g, '%21$1$2$3')
+    .replace(/\?([”"'])( )+([a-z])/g, '%3F$1$2$3')
+    .replace(/!([”"'])( )+([a-z])/g, '%21$1$2$3')
 
 // Segmenter doesn't recognize a new sentence if it starts with <input> or <span> el
     .replace(/<input /g, '<INPUT ') 
@@ -5399,7 +5399,7 @@ tstore.STT = {
     setMediaInTask(0);
     const langCtrlCloneBox = '<div id="lang-ctrl-clone-box" class="inblock"></div>';
     const sttSwitch = cmd 
-      ? '<span id="stt-switch-box" class="padding-03em" style="cursor:default"><span id="stt-switch-icon">ðŸ—£</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></span></div></div>'
+      ? '<span id="stt-switch-box" class="padding-03em" style="cursor:default"><span id="stt-switch-icon">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></span></div></div>'
       : '';
     const msg = '<div id="gap-tools-box">' 
 	  + uiblox.specKeys.boxHtml 
@@ -5483,7 +5483,7 @@ const enableVoiceInput = async () => {
 //Switch state tstore.STT.switchIsOn is persistent, so that it's restored after displayOverlay is closed and opened again
  
   
-//console.log('âœ”ï¸ Enable Voice Input: STT allowed?', sttAllowed());
+//console.log('✔️ Enable Voice Input: STT allowed?', sttAllowed());
   if (!recognition.supported) {
     tstore.STT.init(0);
     return;
@@ -5515,7 +5515,7 @@ const enableVoiceInput = async () => {
 const disableVoiceInput = () => {
   if (!recognition.supported) return;
 
-//console.log('âŒ Disable Voice Input: STT allowed?', sttAllowed());
+//console.log('❌ Disable Voice Input: STT allowed?', sttAllowed());
 //  abortSTT();
 //  mic.turnOff();
   mic.isOff = true;
@@ -5559,7 +5559,7 @@ function printTask() {
 }
 
 gstore.goodJob = {
-  emojis: ['â¼•ã„–ã„–ã‡„!!', 'áŽ¶áŽ§áŽ§á—ª!', 'âœ…', 'ðŸ‘','ðŸ™Œ','ðŸŽ‰','ðŸ‘','ðŸ‘Œ','âœ¨','ðŸ”¥','ðŸ†','ðŸ¥‡','ðŸŽ–ï¸','ðŸ…','ðŸ’¯','ðŸŒŸ','ðŸ˜Ž','ðŸ’ª', 'â—(â€á—¢â€)â—œ', 'ãƒ½(ï¼¾â–½ï¼¾)ï¾‰', '(*â€¿*)', 'Ù©(â—•â€¿â—•ï½¡)Û¶', 'â—(áµ”áµ•áµ”)â—œ'],
+  emojis: ['⼕ㄖㄖ㇄!!', 'ᎶᎧᎧᗪ!', '✅', '👏','🙌','🎉','👍','👌','✨','🔥','🏆','🥇','🎖️','🏅','💯','🌟','😎','💪', '◝(⁀ᗢ⁀)◜', 'ヽ(＾▽＾)ﾉ', '(*‿*)', '٩(◕‿◕｡)۶', '◝(ᵔᵕᵔ)◜'],
   getRandomEmoji() {
     return this.emojis[Math.floor(Math.random() * this.emojis.length)];
   }
@@ -5867,7 +5867,7 @@ tstore.wb = {
   wbnameInputHtml: `Enter pad name<br>
 <input id="wb-input" type="url" placeholder="" 
 class="inherit"><input id="wb-input-btn" type="submit" 
-class="plain-button font-80pc rounded darker-bg-onhover" value="ðŸ”">`,
+class="plain-button font-80pc rounded darker-bg-onhover" value="🔍">`,
  
   askWbname() {
 	this.contentEl.innerHTML = this.wbnameInputHtml
