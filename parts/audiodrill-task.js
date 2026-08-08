@@ -137,7 +137,9 @@ const extractFromGoogleDoc = html => {
     return gstore.docBodyText.trim();
   }
 
-  gstore.docStyleHtml = doc.head.querySelector('style')?.outerHTML;
+  const st = doc.head.querySelector('style')?.outerHTML;
+// temporary fix for p and h1-h6 styles
+  if (st) gstore.docStyleHtml = st.replace(/color:#000000;/g, '');
   gstore.docBodyHtml = doc.body.innerHTML;
   return gstore.docBodyHtml;
 }
