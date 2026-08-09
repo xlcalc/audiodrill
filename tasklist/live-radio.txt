@@ -24,7 +24,7 @@ Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream
 `ja`: [Kahoku](stream: https://radio.kahoku.net:8443/; web: https://fm.kahoku.net)
 `nl`: [NPO Radio 1](stream: https://icecast.omroep.nl/radio1-bb-mp3 web: https://www.nporadio1.nl/)
 `no`: [NRK P2](stream: https://lyd.nrk.no/nrk_radio_p2_mp3_h)
-`pl`: [TOK FM](stream: https://radiostream.pl/tuba10-2.mp3 web: https://www.tokfm.pl), [Kraków](stream: https://stream4.nadaje.com:9679/radiokrakow-s2 web: https://www.radiokrakow.pl/)
+`pl`: [PR24](stream: https://stream15.polskieradio.pl/pr24/pr24.sdp/chunklist_w781981680.m3u8 web: https://polskieradio24.pl), [TOK FM](stream: https://radiostream.pl/tuba10-2.mp3 web: https://www.tokfm.pl), [Kraków](stream: https://stream4.nadaje.com:9679/radiokrakow-s2 web: https://www.radiokrakow.pl/)
 `pt`: [TSF (PT)](stream: https://directo.tsf.pt/tsfdirecto.mp3 web: https://www.tsf.pt), [CBN (BR)](stream: https://27443.live.streamtheworld.com/CBN_VITORIA.mp3)
 `ru`: [Echo](stream: https://edifchqufozvbegw.global.ssl.fastly.net/audio_echofm/stream web: https://echofm.online/), [Svoboda](stream: https://stream.radiojar.com/hcrb063nn3quv web: https://www.svoboda.org)
 `se`: [Sveriges Radio P1](stream: https://ljud1-cdn.sr.se/lc/p1.m3u8 web: https://www.sverigesradio.se/)
