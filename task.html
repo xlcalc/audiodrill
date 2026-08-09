@@ -1873,7 +1873,7 @@ const replayFragmentCore = async (cue) => {
       let msg = cue.textContent;
       if (cue.dataset?.web) {
         tstore.playerTitle.title = 'Open website';
-        msg = highlightText(`[🌏︎&thinsp;${msg}](${cue.dataset.web})`);
+        msg = highlightText(`[🌏&thinsp;${msg}](${cue.dataset.web})`);
       }
       tstore.playerTitle.displayMsg(msg);
     }
