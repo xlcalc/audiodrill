@@ -19,7 +19,7 @@ Tip: You can read live captions [in Chrome](https://support.google.com/chrome/an
 `it:` [Euronews](stream: pUcmpyynASM web: https://it.euronews.com)
 `ja:` [Asahi News24](stream: coYw-eVU0Ks web: https://news.tv-asahi.co.jp/news-lives/)
 `ko:` [YonhapnewsTV](stream: 6QZ_qc75ihU web: https://www.yonhapnewstv.co.kr)
-`pl:` [Republika](stream: dzntyCTgJMQ web: https://tvrepublika.pl), [TVP Info](stream: 3jKb-uThfrg web: https://www.tvp.info)
+`pl:` [Euronews](stream: fG7PjdiKaBY web: https://pl.euronews.com), [Republika](stream: dzntyCTgJMQ web: https://tvrepublika.pl), [TVP Info](stream: 3jKb-uThfrg web: https://www.tvp.info)
 `pt:` [Euronews](stream: XuZAl-ZPEcA web: https://pt.euronews.com)
 `ru:` [Euronews](stream: lwYzwdBiaho web: https://ru.euronews.com), [DW (DE)](stream: gP7872YRFDk web: https://www.dw.com/ru/live-tv/channel-russian)
 `uk:` [TSN](stream: WY8sDvZdWEA web: https://tsn.ua)
