@@ -469,11 +469,14 @@ input:focus + .slider {
   overflow: hidden  !important;
 }
 
+hr {
+  opacity:.4;
 /*
-hr { margin-bottom: -0.5em }
+  margin-bottom: -0.5em;
+  border-color: var(--btn-lighgray);
 */
+}
 
-hr {border-color: var(--btn-lighgray)}
 
 
 .flash-hr {
