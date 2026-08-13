@@ -1069,15 +1069,11 @@ const videoResize = elid('video-resize');
 const topControls = elid('top-controls');
 
 const tstore = {};
-//ontouchstart = (e) => tstore.touchScreen = 1;
-//tstore.touchScreen = 'ontouchstart' in window;
 tstore.canHover = window.matchMedia('(hover: hover)').matches;
 
 tstore.chunkTooltip = elid('chunk-tooltip-menu');
 tstore.speakBtn = elid('speak-btn');
-//tstore.speakBtn2 = elid('speak-btn2');
 tstore.translateBtn = elid('translate-btn');
-//tstore.translateBtn2 = elid('translate-btn2');
 tstore.searchBtn = elid('search-btn');
 tstore.addToVocabBtn = elid('add-to-vocab-btn');
 
@@ -1222,8 +1218,6 @@ const adjustGapWidth = (gap, s = '') => {
   // else don't shrink while typing
 }
 
-//const strMatch = (s, ref) => normalizeStr(s).includes(normalizeStr(ref));
-
 const strMatch = (str, reference) => {
   str = normalizeStr(str);
   reference = normalizeStr(reference);
@@ -1241,14 +1235,8 @@ const checkGapMatch = gap => {
   if (gapValue) gap.value = gapValue; //trim only if gap value is not empty
 
   let match = false;
-// what about using forward slash in answers?
-//  const refs = gap.alt.split('\\');
   const refs = gap.alt.split(/=>|\\--/)[0].trim().split(/\\|\//);
   for (const reference of refs) {
-/*
-    if (!reference.startsWith('--')  // prompt starts with --
-    && strMatch(gap.value, reference)) { 
-*/
     if (strMatch(gap.value, reference)) { 
       match = true;
       gap.value = reference.trim();
@@ -1367,10 +1355,8 @@ console.log('Input value', input.value);
 const clozeInputToSpans = () => {
   document.querySelectorAll('.cloze').forEach(input => {
     const span = document.createElement('span');
-// set some data in the span
     span.dataset.cloze = input.alt;
     span.textContent = input.alt.split(/=>|\\--/)[0].trim();
-// any other data?
 
     input.replaceWith(span);
   });
@@ -1511,7 +1497,7 @@ console.log('ERROR loading html video/audio', e);
         const ready = waitForEvent(el, 'loadedmetadata');
         el.src = htmlPlayer.src;
         await ready;
-        htmlPlayer = elid('html-audio');
+        htmlPlayer = el;
       }
 /*	  
 	  if (oldPlayer !== htmlPlayer) {
@@ -1540,6 +1526,7 @@ console.log('Loading the media file...');
   await new Promise(resolve => players.resolveVideoReady = resolve);
 console.log(players.mediaType + ' loaded in getVideoByURL()'); 
   adjustMediaInTask(); // for htmlPlayer video
+  prepareSettings(); // added 2026-08-13
 }
 
 function waitForEvent(el, event) {
@@ -2345,6 +2332,7 @@ const loadTaskFromURLParam = urlKeys => {
   let r = urlKeys.get('tasklist') || urlKeys.get('t');
   if (!r) return r;
 
+  if (r.includes('/tasklist/')) newDir = false;
   if (r.startsWith('https://docs.google.com/document/')) {
     newDir = false;
     const tab = urlKeys.get('tab');
@@ -3504,6 +3492,7 @@ const changeEpisode = (key, url) => {
 }
 
 const openTaskByUrl = (url, newDir) => {
+// This fn is called from task buttons, e.g. in default.txt
   historyPush(getActivityKey(), url);
   loadHtmlTaskByURL(url, newDir);
 }
@@ -3937,8 +3926,6 @@ tstore.translation = { // experimental: 2026-02-14
 //    await sleep(200);
 //    if (!el.hovered) return;
 
-//    el.style.backgroundColor = 'var(--color-overlay-s)';
-//    el.style.color = 'inherit';
     this.setTipAttributes(el, 1);
 
     document.querySelectorAll('.transl-tip').forEach(el => { el.remove() });
@@ -3980,8 +3967,6 @@ tstore.translation = { // experimental: 2026-02-14
   removeTip(el) {
     this.setTipAttributes(el, 0);
 //    el.hovered = 0;
-//    el.style.backgroundColor = '';
-//    el.style.color = '';
 //    await sleep(200);
 //    if (el.hovered) return;
     if (el.child) el.child.remove();
@@ -4642,7 +4627,6 @@ tweakedTTSLine(s) {
     }
 
     if (isOutOfView(el, 64) || this.isTooLow(el)) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
-
   },
   
   async playAllWithReps() {
@@ -4733,18 +4717,18 @@ tweakedTTSLine(s) {
   setBtn(id, cmd) {
     const el = elid(id);
     if (cmd) {
-	    el.classList.add('gray-bg-onhover', 'grayish');
+      el.classList.add('gray-bg-onhover', 'grayish');
 //	  el.classList.remove('gray');
       el.style.color = '';
-	    el.removeAttribute("disabled");
-	  }
-	  else {
-	    el.classList.remove('gray-bg-onhover', 'grayish');
+      el.removeAttribute("disabled");
+    }
+    else {
+      el.classList.remove('gray-bg-onhover', 'grayish');
 //	  el.classList.add('gray');
       el.style.color = 'var(--color-ccc-444)';
-	    el.setAttribute("disabled", "");
-	    this.playPauseBtn().focus();
-	  }
+      el.setAttribute("disabled", "");
+      this.playPauseBtn().focus();
+    }
   },
 
   updatePevNextBts() {
@@ -4810,23 +4794,23 @@ function getClickedTextFragment(range, lang, granularity) {
 	let nextNode;
     while (true) { // extend text right
       nextNode = checkedNode(currentNode.nextSibling);
-	  if (isBoundaryNode(nextNode)) break;
+      if (isBoundaryNode(nextNode)) break;
 
-	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.nextSibling);
-	  if (isBoundaryNode(nextNode)) break;
+      if (!nextNode) nextNode = checkedNode(currentNode.parentElement.nextSibling);
+      if (isBoundaryNode(nextNode)) break;
 
-	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.parentElement.nextSibling);
-	  if (!nextNode || isBoundaryNode(nextNode)) break;
+      if (!nextNode) nextNode = checkedNode(currentNode.parentElement.parentElement.nextSibling);
+      if (!nextNode || isBoundaryNode(nextNode)) break;
 
 // What if the node is inside vocab entries?	
 
       if (nextNode.textContent) {
-	    parentText += nextNode.textContent;
-	  }
+        parentText += nextNode.textContent;
+      }
 //	  else if (nextNode.nodeName === 'BR') {
 //	    if (!/[.!?。？！]\s*$/.test(parentText)) parentText += '. ';
 //	  }
-	  else break;
+      else break;
       currentNode = nextNode;  
     } // end while extending text right
 
@@ -4834,24 +4818,24 @@ function getClickedTextFragment(range, lang, granularity) {
 	currentNode = node;
     while (true) { // extend text left
       nextNode = checkedNode(currentNode.previousSibling);
-	  if (isBoundaryNode(nextNode)) break;
-	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.previousSibling);
-	  if (isBoundaryNode(nextNode)) break;
-	  if (!nextNode) nextNode = checkedNode(currentNode.parentElement.parentElement.previousSibling);
-	  if (!nextNode || isBoundaryNode(nextNode)) break;
+      if (isBoundaryNode(nextNode)) break;
+      if (!nextNode) nextNode = checkedNode(currentNode.parentElement.previousSibling);
+      if (isBoundaryNode(nextNode)) break;
+      if (!nextNode) nextNode = checkedNode(currentNode.parentElement.parentElement.previousSibling);
+      if (!nextNode || isBoundaryNode(nextNode)) break;
 
 //      if (nextNode.textContent) {
       if (nextNode.innerText) { // experimental: 2026-05-15
 //		let chunk = nextNode.textContent;
-		let chunk = nextNode.innerText;
+        let chunk = nextNode.innerText;
 //	    if (lastNodeName === 'BR' && !/[.!?。？！]\s*$/.test(chunk)) chunk += '. ';
         if (!chunk.trim()) chunk = ' '; // collapse spaces and \n into one space
-	    parentText = chunk + parentText;
-		clickedOffset += chunk.length; // edge cases should be tested
+        parentText = chunk + parentText;
+        clickedOffset += chunk.length; // edge cases should be tested
 // this logic has to be further tested: now it adds punctuation closure at the start of the task
-	  }
+      }
 //	  else if (nextNode.nodeName === 'BR') lastNodeName = 'BR';
-	  else break;
+      else break;
       currentNode = nextNode;  
     } // end while
   }
@@ -4992,7 +4976,7 @@ console.log('📚 Add to vocab:', {
     gstore.vocab.sentenceExample = tstore.taskSentences.filter(s => s.includes(entry))[0].trim() || '';
 //console.log('Example sentence:', gstore.vocab.sentenceExample);
 	
-	gstore.vocab.addEntry(players.currentTask, entry, meaning);
+    gstore.vocab.addEntry(players.currentTask, entry, meaning);
 	
     displayInfopage('hide');
   }
@@ -5011,8 +4995,8 @@ tstore.editVocabOn = (el) => {
 
   el.focus();
   el.innerText = gstore.vocab.getVocabEntries(players.currentTask)
-	  .trim('\n')
-	  .replace(/\n /g, '\n\u00A0'); // b/c browsers will trim the leading space
+    .trim('\n')
+    .replace(/\n /g, '\n\u00A0'); // b/c browsers will trim the leading space
   el.contentEditable = 'true';
   el.style.backgroundColor = 'hsl(150, 30%, 95%)';
 
@@ -5043,8 +5027,8 @@ const handleVocab = () => {
    
   vocabTitle.onclick = () => {
     toggleEl(elid('vocab-title-chevron'), 'chevron-down');
-	toggleEl(qsel('.vocab-content'), 'collapsed');
-	toggleEl(elid('vocab-edit-btn'));
+    toggleEl(qsel('.vocab-content'), 'collapsed');
+    toggleEl(elid('vocab-edit-btn'));
   }
   
 // tbc: Edit vocab button may be replaced by a slider?
@@ -5076,7 +5060,7 @@ tstore.downloadTask = () => {
   const hms = [d.getHours(), d.getMinutes(), d.getSeconds()];
   const time = hms.map(v => String(v)
     .padStart(2, '0'))
-	.join('_');
+    .join('_');
   link.download = `audiodrill task ${date}__${time}.txt`;
   document.body.appendChild(link);
   link.click();
@@ -5113,8 +5097,8 @@ tstore.translLangCtrl = {
     el.onchange = function() {
 //	  tstore.translLangCtrl.lang = el.value;
 //console.log('Transl lang selected', el.value);
-	    localStorage.setItem('translLangCode', el.value); 
-	  };
+      localStorage.setItem('translLangCode', el.value); 
+    }
 
     this.set();
   },
@@ -5144,7 +5128,7 @@ tstore.transl = async (s, par) => {
 //console.log('Tip el', el.child)
     if (el.child) {
 //	  if (s.includes('<a ')) el.child.className = 'tooltip-link';
-	  el.child.innerHTML = s;
+      el.child.innerHTML = s;
     }
   }
 
@@ -5173,19 +5157,19 @@ tstore.transl = async (s, par) => {
 //        res = await gstore.getTranslation(s);
 //        const sourceLang = tstore.contextLang || getLangCode();
         const sourceLang = getContextLang(gstore.engagedEl) || getLangCode();
-		if (sourceLang === targetLang) {
-		  tip = '<div class="alarm-bgr">Same source and target language!</div>';
-		  setBtnTip(tip);
-		  return '';
-		}
-		tstore.busyTranslating = true;
+        if (sourceLang === targetLang) {
+          tip = '<div class="alarm-bgr">Same source and target language!</div>';
+          setBtnTip(tip);
+          return '';
+        }
+        tstore.busyTranslating = true;
         res = await gstore.fetchTranslation(s, sourceLang, targetLang);
       }
-	  catch(e) {
-	    tstore.busyTranslating = false;
-	    tstore.translError = e.message;
+      catch(e) {
+        tstore.busyTranslating = false;
+        tstore.translError = e.message;
 console.log('Translation error:', e.message);
-	    res = ''; 
+        res = ''; 
       }
       gstore.translations[s][targetLang] = res;
     }
@@ -5210,7 +5194,7 @@ const getWordRef = (query) => {
 document.addEventListener('click', e => {
   if (!tstore.chunkTooltip.contains(e.target) 
     && tstore.chunkTooltip.mayBeHidden
-	&& !tstore.doubleClicked) tstore.hideChunkTooltip();
+    && !tstore.doubleClicked) tstore.hideChunkTooltip();
 	
   if (!topControls.contains(e.target) && tstore.topControlsMayBeHidden) topControls.hidden = true;
 });
@@ -5283,9 +5267,9 @@ tstore.sentences = {
   getSentences(html, lang, wrap = true) {
     const toBuffer = (key, s) => {
   	  this.buffer[key] ??= [];
-	    this.buffer[key].push(s);
-	    return `<x-dummy>\n<x-${key}><x-dummy>\n`;
-	  }
+      this.buffer[key].push(s);
+      return `<x-dummy>\n<x-${key}><x-dummy>\n`;
+    }
 
     const eol = ':EOL:.\n';
 
@@ -5301,7 +5285,7 @@ tstore.sentences = {
 // Wrapping in div intead of span to prevent mixing with other </span> tags. 
 // But it can mix with </div> tags. Maybe in the future use custom tags, like x-div?
 //console.log(s);
-	    }
+      }
     return s;
     }
 
@@ -5328,7 +5312,7 @@ tstore.sentences = {
 // Segmenter doesn't recognize a new sentence if it starts with <input> or <span> el
     .replace(/<input /g, '<INPUT ') 
     .replace(/<span /g, '<SPAN ') // maybe <span> should also be replace
-	;
+    ;
 
 // What with <img> tags?
 
@@ -5357,7 +5341,7 @@ tstore.sentences = {
 
     clone.querySelectorAll('.dropdown-label').forEach(label => {
       let res = '';
-	  const ddList = label.children[0];
+      const ddList = label.children[0];
       for (const option of ddList.options) {
         if (option.value.startsWith('**')) {
           if (res) res += '/';
@@ -5368,7 +5352,7 @@ tstore.sentences = {
       label.replaceWith(text);
     });
 
-  return clone.textContent;
+    return clone.textContent;
   },
 }
 
@@ -5383,7 +5367,7 @@ tstore.STT = {
   
   async toggle(el) {
     this.switchIsOn = el.checked;
-	  this.set(this.switchIsOn); // to set the tooltip
+    this.set(this.switchIsOn); // to set the tooltip
     mic.isOff = !el.checked;
     if (mic.isOff) disableVoiceInput();
     else if (! await testMic()) { // added 2026-03-08
@@ -5402,42 +5386,42 @@ tstore.STT = {
       ? '<span id="stt-switch-box" class="padding-03em" style="cursor:default"><span id="stt-switch-icon">🗣</span><x-switch>tstore.STT.toggle(this) id="stt-switch"</x-switch></span></div></div>'
       : '';
     const msg = '<div id="gap-tools-box">' 
-	  + uiblox.specKeys.boxHtml 
-	  + '<div>'
-	  + langCtrlCloneBox
-	  + sttSwitch;
+      + uiblox.specKeys.boxHtml 
+      + '<div>'
+      + langCtrlCloneBox
+      + sttSwitch;
 //    const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray); left:auto; right:0; transform: translateX(-10px);';
     const msgStyle = 'width: auto; padding: 0.4em .8em; font-size: 18px; background-color:var(--btn-lighgray)';
     displayOverlay({msg: parseXswitch(msg), style: msgStyle, noCloseBtn: true});
 
-	uiblox.specKeys.set('onmousedown');
+    uiblox.specKeys.set('onmousedown');
 
 // check if tts.langSelector?	
-	tts.langSelectorClone = tts.langSelector.cloneNode(true);
+    tts.langSelectorClone = tts.langSelector.cloneNode(true);
     elid('lang-ctrl-clone-box').appendChild(tts.langSelectorClone);
     tts.langSelectorClone.id = 'langSelectClone';
 //	tts.langSelectorClone.value = gstore.engagedEl? getContextLang(gstore.engagedEl) : tts.langSelector.value;
-	tts.langSelectorClone.value = gstore.getContextLangCode();
-	tts.langSelectorClone.onchange = handleLangSelect;
+    tts.langSelectorClone.value = gstore.getContextLangCode();
+    tts.langSelectorClone.onchange = handleLangSelect;
 
-	this.set(this.switchIsOn);
+    this.set(this.switchIsOn);
   },
   
   set(v) {
     if (!elid(this.switchID)) return;
     elid(this.switchID).checked = v;
-	const el = elid('stt-switch-box');
-	const state = v? 'ON' : 'OFF';
-	el.title = 'Voice input is ' + state;
+    const el = elid('stt-switch-box');
+    const state = v? 'ON' : 'OFF';
+    el.title = 'Voice input is ' + state;
 
-	const el2 = elid('stt-switch-icon');
-	setElClass(el2, ['gray', 'slashed'], !v);
-	setElClass(el2, 'gray2', v);
+    const el2 = elid('stt-switch-icon');
+    setElClass(el2, ['gray', 'slashed'], !v);
+    setElClass(el2, 'gray2', v);
   },
 }
 
 const handleSttResult = (txt) => {
-  if   (!sttAllowed() || !txt) return; 
+  if (!sttAllowed() || !txt) return; 
 console.log ('** Transcript: ', txt);
 
   txt = txt.replace(/\s*[.?!]\s*$/, ''); // for Edge browser
@@ -5448,8 +5432,8 @@ console.log ('** Transcript: ', txt);
     mic.isOff = true;
     gstore.engagedEl.value = txt;
   	adjustGapWidth(gstore.engagedEl, txt);
-	  gstore.engagedEl.blur() // onblur calls checkClozeInput fn
-	  if (checkGapMatch(gstore.engagedEl)) ttsSpeakLang(txt, recognition.lang);
+    gstore.engagedEl.blur() // onblur calls checkClozeInput fn
+    if (checkGapMatch(gstore.engagedEl)) ttsSpeakLang(txt, recognition.lang);
   }
 }
 
@@ -5461,7 +5445,7 @@ const setupVoiceInputForTextareas = () => {
       gstore.engagedEl = el;
       tstore.STT.source = 'TEXT_AREA';
       enableVoiceInput();
-	}
+    }
     el.onblur = () => disableVoiceInput();
   });
 }
@@ -5492,13 +5476,13 @@ const enableVoiceInput = async () => {
   let micPermission = await getNavigatorMicPermission();
 
   if (micPermission === 'denied') {
-	  displayMessage('For voice input, allow microphone access in your browser');
-	  return;
+    displayMessage('For voice input, allow microphone access in your browser');
+    return;
   }
 
   if (!tstore.sttOffered) {
     tstore.sttOffered = true;
-	  await displayMessage('You can use voice input', 1000);
+    await displayMessage('You can use voice input', 1000);
   }
   tstore.STT.init();
 
@@ -5605,10 +5589,10 @@ gstore.taskParts = {
       const lines = part.split('\n');
 
 //      let lang = null;
-	  let lang = lines[0].trim();
-    const len = lang.length;
+      let lang = lines[0].trim();
+      const len = lang.length;
     
-    lang = (lang === 'pinyin') || (len >= 2 && len <= 3) ? lines.shift().trim() : '';
+      lang = (lang === 'pinyin') || (len >= 2 && len <= 3) ? lines.shift().trim() : '';
 
       this.languages.push(lang);
 //      this.sections.push(lines.join('\n').trim());
@@ -5651,11 +5635,11 @@ gstore.taskParts = {
 
   setCurrTask(text) { // added 2026-06-18
 // called by refreshTask(), text doesn't contain sections
-	this.sections[this.currSectionNum] = text.slice(this.header.length);
+    this.sections[this.currSectionNum] = text.slice(this.header.length);
 // this.sourceText should be updated too
     if (this.sections.length < 2) this.sourceText = this.header + (this.sections[0] || '');
     else this.sourceText = this.header 
-	  + this.sections.map((s, i) => ':section: ' + this.languages[i] + '\n' + s).join('');
+      + this.sections.map((s, i) => ':section: ' + this.languages[i] + '\n' + s).join('');
   },
 
   extractSectSentences() {
@@ -5672,7 +5656,6 @@ gstore.taskParts = {
     
     el.remove();
   },
-
 }
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -5851,10 +5834,10 @@ tstore.wb = {
       this.dragging = false
       this.titlebar.releasePointerCapture(e.pointerId)
     })
-	
-	this.contentEl = elid('wb-content')
+
+    this.contentEl = elid('wb-content')
 //	const titleBtn = '[Notes](btn: tstore.wb.askWbname())'
-	elid('wb-name-btn').addEventListener("pointerdown", () => { this.askWbname() })
+    elid('wb-name-btn').addEventListener("pointerdown", () => { this.askWbname() })
   },
 
   open() {
@@ -5870,9 +5853,9 @@ class="inherit"><input id="wb-input-btn" type="submit"
 class="plain-button font-80pc rounded darker-bg-onhover" value="🔍">`,
  
   askWbname() {
-	this.contentEl.innerHTML = this.wbnameInputHtml
-	elid('wb-input').onchange = () => { this.processWbname() }
-	elid('wb-input-btn').onclick = () => { this.processWbname() }
+    this.contentEl.innerHTML = this.wbnameInputHtml
+    elid('wb-input').onchange = () => { this.processWbname() }
+    elid('wb-input-btn').onclick = () => { this.processWbname() }
   },
   
   async processWbname(s) {
@@ -5899,8 +5882,8 @@ console.log('Whiteboard text', txt);
     if (!s) displayAlarmMessage('No whiteboard name')
     else {
       r = await this.readWb(s);
-	  if (!r) {
-		  displayAlarmMessage('Incorrect whiteboard name')
+      if (!r) {
+      displayAlarmMessage('Incorrect whiteboard name')
 //console.log('Alarm Read wb:', r);	  
       }
     }
