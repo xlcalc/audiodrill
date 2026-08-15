@@ -1507,7 +1507,9 @@ console.log('ERROR loading html video/audio', e);
 	  }
 */
       tstore.setHtmlPlayerEvents();
-      htmlPlayer.playbackRate = getPlayerPBR(); //restore PBR since it may be reset to default 1.0 after loading an audio
+//      if (/\.m3u8?$/.test(htmlPlayer.src)) htmlPlayer.playbackRate = 1;
+      if (/\.m3u8?$/.test(htmlPlayer.src)) setPBR(1);
+      else htmlPlayer.playbackRate = getPlayerPBR(); //restore PBR since it may be reset to default 1.0 after loading an audio
 //    if (players.mediaType === 'video' || /\.(mp4|webm)$/i.test(url)) { //what about other extensions?
       htmlPlayer.controls = isAudio;
       players.mediaType = isAudio? 'audio' : 'video';

@@ -1785,9 +1785,10 @@ const cloneCtrlValue = (v, masterId) => {
 
 const setPBR = srcEl => {
   const el = srcEl || elid('setpbr');
-  const v = el.value;
+  const v = (typeof el === 'object') ? el.value : el;
   if (srcEl) // user changed control element
     localStorage.setItem('masterPBR', v);
+
   cloneCtrlValue(v, 'setpbr');
   speedCtrl.setBase(v);
   adjustPBR();
