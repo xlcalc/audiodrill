@@ -1,5 +1,5 @@
 <x-vars doc-title="Radio stations"><x-audio>
-### Radio stations for language learners <x-p>
+### Radio stations for language learners {{{
 <div style="line-height: 1.6em; font-size: 80%">You can listen at a slower or faster playback rate and hop a few seconds backward/forward in order to repeat or skip certain audio fragments. 
 Keyboard shortcuts: 
  * Press left |_Ctrl_| to slow down playback.
@@ -7,7 +7,7 @@ Keyboard shortcuts:
  * For a longer skip, hold |_Alt_| while pressing Hop buttons.
 Tip: You can read [live captions in Chrome](https://support.google.com/chrome/answer/10538231) and in [Windows 11](https://www.microsoft.com/en-us/windows/learning-center/choose-best-caption-settings). Chrome also offers live translation.
 Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream Directory</a>.</div><hr>
-</x-p>
+}}}
 <i>In English</i>
 [ABC News (AU)](stream: https://live-radio01.mediahubaustralia.com/PBW/mp3/), [ABC Kids (AU)](stream: https://live-radio01.mediahubaustralia.com/XTDW/mp3/), [CKNW 980 (CA)](stream: https://live.leanstream.co/CKNWAM-MP3), [AudioBook Radio (UK)](stream: https://audiobookradio.out.airtime.pro/audiobookradio_a), [BBC World Service (UK)](stream: https://stream.live.vc.bbcmedia.co.uk/bbc_world_service web: https://www.bbc.com/audio/schedules/bbc_world_service), [LBC news (UK)](stream: https://media-ssl.musicradio.com/LBCNewsUK web: https://www.lbc.co.uk/radio/), [Bloomberg (US)](stream: https://playerservices.streamtheworld.com/api/livestream-redirect/WBBRBOS.mp3), [WPR (US)](stream: https://wpr-ice.streamguys1.com/wpr-ideas-mp3-64 web: https://www.wpr.org/), [WNYC FM (US)](stream: https://fm939.wnyc.org/wnycfm). 
 
@@ -30,3 +30,10 @@ Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream
 `se`: [Sveriges Radio P1](stream: https://ljud1-cdn.sr.se/lc/p1.m3u8 web: https://www.sverigesradio.se/)
 `uk`: [RUI](stream: https://radio.ukr.radio/rui-aacplus-l web: https://www.ukr.radio/channel.html?channelID=4)
 `zh`: [Sichuan](stream: https://lhttp.qingting.fm/live/4906/64k.mp3), [Yanbian](stream: https://lhttp.qtfm.cn/live/5022488/64k.mp3)
+
+
+~Unwind & relax~ {{{
+Classical music: [Alleen Klassiek](stream: https://playerservices.streamtheworld.com/api/livestream-redirect/SERVICE06AAC.aac), [Art-Baroque](stream: https://air.radioart.com/fBaroque.mp3), [Classical relaxation](https://classicalradio.com/classicalrelaxation), [Free Classical](stream: https://streaming.live365.com/a13949)
+
+Sounds of nature: [fire](stream: https://ice2.radia.cz/relax-fire64.aac), [morning birds](stream: https://ice2.radia.cz/relax-morning-birds64.aac), [rain](stream: https://ice2.radia.cz/relax-thunder-rain64.aac), [sea](stream: https://ice2.radia.cz/relax-sea64.aac)
+}}}
