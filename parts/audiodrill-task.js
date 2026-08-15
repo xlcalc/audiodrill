@@ -184,18 +184,6 @@ async function loadElementFromURL(eID, url, altUrl) {
   }
 }
 
-function uploadTaskFile(evt) {
-  uploadTextFile(evt, 'loadElementWithText', 'transcriptText');
-}
-
-function uploadWordFile(evt) {
-  uploadTextFile(evt, 'showReadText');  // how about games?
-}
-
-function uploadGameScript(evt) {
-  uploadTextFile(evt, 'parseGrammarGame', 'uploaded-game'); 
-}
-
 function uploadTextFile(evt, fnName, param) {
   let file;
   if (evt.target.files) file = evt.target.files[0];
@@ -2789,28 +2777,9 @@ function handleDraggingNew(dropZone, addZone) {
 //console.log('ondrop event', event);	
     markDropZone(0);
     event.preventDefault(); 
-    event.stopPropagation(); 
-	if (wordsPageActive()) uploadWordFile(event) // how about games?
-//    else uploadTaskFile(event);
-    else {
-	  const file = event.dataTransfer.files[0] || {};
-	  uploadFile(file);
-	}
+    event.stopPropagation();
+	gCallback('DRAG_DROP_ENDED', event);
   }
-}
-
-const uploadFile = file => {
-  if (!file) return null;
-  if (/^(audio|video)/.test(file.type)
-    || /\.(mp3|mp4|wav|webm|m4a|ogg)$/i.test(file.name)) {
-    const fileURL = URL.createObjectURL(file);
-    if (/^video/.test(file.type) || /\.(mp4|webm)$/i.test(file.name))
-      players.mediaType = 'video';
-    else players.mediaType = 'audio';
-    getVideoByURL(fileURL, 'NEW_TASK');
-  }
-  else uploadTaskFile(event);
-  return true;
 }
 
 async function highlightEl(el, msec = 4000) {
@@ -2818,14 +2787,7 @@ async function highlightEl(el, msec = 4000) {
   this.on = 1;
 
   await blinkElClass(el, 'outlined', 0, 100, msec);
-/*  
-  const ecl = el.classList;
-  ecl.remove('outlined');
-  await sleep(100);
-  ecl.add('outlined');
-  await sleep(msec);
-  ecl.remove('outlined');
-*/  
+
   this.on = 0;
 }
 

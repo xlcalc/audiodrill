@@ -2366,6 +2366,20 @@ const wrCallback = (cmd) => {
 }
 */
 
+const uploadFile = file => {
+  if (!file) return null;
+  if (/^(audio|video)/.test(file.type)
+    || /\.(mp3|mp4|wav|webm|m4a|ogg)$/i.test(file.name)) {
+    const fileURL = URL.createObjectURL(file);
+    if (/^video/.test(file.type) || /\.(mp4|webm)$/i.test(file.name))
+      players.mediaType = 'video';
+    else players.mediaType = 'audio';
+    getVideoByURL(fileURL, 'NEW_TASK');
+  }
+  else uploadTextFile(event, 'loadElementWithText', 'transcriptText');
+  return true;
+}
+
 const gCallback = (cmd, par) => {
 // callbacks from audiodrill-task.js
   if (cmd === 'SET_FONT_SIZE') setTaskFontSize(par);
@@ -2378,6 +2392,11 @@ const gCallback = (cmd, par) => {
   if (cmd === 'DIR_INFO_LOADED' && isEpiNavPossible()) {
     episodeBar.show();
 	setDocTitle();
+  }
+  
+  if (cmd === 'DRAG_DROP_ENDED') {
+    const file = par.dataTransfer.files[0] || {};
+    uploadFile(file);
   }
   
 //console.log('gCallback:', cmd);
