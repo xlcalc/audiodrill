@@ -15,6 +15,7 @@ const youglish = {
 console.log('YG player reloading...');
     ygCallback('RELOAD_PLAYER');
     onYouglishAPIReady();
+    youglish.reloaded = true;
   },
 
   fetchVideo([query, lang] = ['','']) { // called from index.html 

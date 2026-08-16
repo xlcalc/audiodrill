@@ -7,8 +7,10 @@ const loadSTT = (cmd) => {
   if ('SpeechRecognition' in window) {recognition = new SpeechRecognition(); }
   else if ('webkitSpeechRecognition' in window) {recognition = new webkitSpeechRecognition(); }
 
-  const isChrome = /Chrome/.test(navigator.userAgent) && !/Edg/.test(navigator.userAgent);
-  if (!isChrome || !recognition.phrases) {
+//  const isChrome = /Chrome/.test(navigator.userAgent) && !/Edg/.test(navigator.userAgent);
+  const isChromeOrEdge = /Chrome/.test(navigator.userAgent);
+//  if (!isChrome || !recognition.phrases) {
+  if (!isChromeOrEdge || !recognition.phrases) {
 console.warn ('Speech recognition API not supported');
     recognition = {supported: false, allowed: false};
     return 0;

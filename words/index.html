@@ -2444,24 +2444,15 @@ console.log('Fetching current video');
 	fetchCurVideo();
   }
 
-  if (cmd === 'YG_ERROR') players.reportError(param);
+  if (cmd === 'YG_ERROR') players.onYouglishError();
+}
 
-/*
-// a separate async fn can be tested to retry youglish.reload() after await sleep(500)
-// b/c making ygCallback fn async inhibits autostart
-
-  if (cmd === 'YG_ERROR') {
-    if (gstore.YGErrorFlag) {
-	  gstore.YGErrorFlag = 0;
-	  players.reportError(param);
-	}
-	else { // retry once after a pause
-	  gstore.YGErrorFlag = 1;
-	  await sleep(500);
-	  youglish.reload();
-	}
+players.onYouglishError = async () => {
+  if (youglish.reloaded) players.reportError();
+  else {
+    await sleep(500);
+    youglish.reload();
   }
-*/
 }
 
 const ttsCueClick = cue => { speakLangText(cue); }
