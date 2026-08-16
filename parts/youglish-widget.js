@@ -100,25 +100,24 @@ console.log('YG player ready');
   }
 
   const onCaptionConsumed = async e => {
+    const snooze = msec => new Promise(resolve => setTimeout(resolve, msec));
+
     if (youglish.manuallyPaused) return;
 //console.log('Caption consumed,', e);
 	const charsBeforeEnd = youglish.caption.split(youglish.query)[1]?.length || 0;
 //console.log('charsBeforeEnd', charsBeforeEnd);
 	const ms = charsBeforeEnd < 10? 1000 : 2000;
-    await ygCallback('SLEEP', ms); // wait a bit because onCaptionConsumed may fire too early
-//	if (charsBeforeEnd < 10) 
+
+    await snooze(ms); // wait a bit because onCaptionConsumed may fire too early
     if (!youglish.manuallyPaused && !youglish.manuallyClosed) widget.replay();
     widget.pause();
-    await ygCallback('SLEEP', 4000); // pause so that the user could read and think
+    await snooze(4000); // pause so that the user could read and think
   
-//    if (youglish.manuallyPaused) return;
-
     replayOrNext();
   }
 
   const onCaptionChange = async e => {
 //console.log('Caption:', e);
-//	youglish.caption = decodeURIComponent(e.caption);
 	youglish.caption = decodeMixedEncoding(e.caption);
 console.log('Caption decoded:', youglish.caption);
 //console.log('Caption ID:' ,e.id);
