@@ -114,12 +114,12 @@ function handleReference(txt, lang = 'en', context) {
   let addFeatures = '<b>' + gstore.translateIcon + '</b>' 
     + getTranslationLinks(transl);
 
-  addFeatures += ` ${vBreak}🎧Listen with
+  addFeatures += ` ${vBreak}🎧&thinsp;Listen with
     <<forvo.com/search/${wrstore.queryForURI}/${lang}'>Forvo</a>`;
 	
   if (tts.spVoice) addFeatures += ' or synthetic speech:' + speakerButton();
 
-  const imgIcon = '<span title="Images at google.com">🖼️images</span></a>';
+  const imgIcon = '<span title="Images at google.com">🖼️&thinsp;images</span></a>';
   let imgLang = 'lang_' + lang;
   if (lang === 'ko') imgLang = 'lang_kr';
   if (lang === 'sv') imgLang = 'lang_se';
@@ -136,6 +136,7 @@ function handleReference(txt, lang = 'en', context) {
 
   elid('feature-box').innerHTML = vbreakDiv(0.3) 
     + '<div id="wiki-box"><div id="wiki-menu"></div><div id="wiki-articles"></div></div>' 
+    + vbreakDiv(0.3)
 	+ expandLinks(addFeatures);
 
   wrstore.addWikis(wrstore.queryForURI, lang);
@@ -452,7 +453,7 @@ title="Idioms at TheFreeDictionary.com">Idioms</a>,
 ${wrstore.tubeQuizard}
 `
   ,add:`, 
-<span style="filter: brightness(2)">🎞️</span>film clips with 
+<span style="filter: brightness(2)">🎞️</span>&thinsp;film clips with 
 <<yarn.co/yarn-find?text=${wrstore.query}'>Yarn.co</a>, 
 <!-- <<lingo.life/movie-phrases?q=${wrstore.query}'>Lingo.Life</a>, -->
 <a href="https://playphrase.me/#/search?q=${wrstore.query}" onclick="popFilmWindow('${wrstore.query}'); return false;">PlayPhrase.me</a>
@@ -477,6 +478,7 @@ ${wrstore.tubeQuizard}
 <<online-translator.com/kontexte/deutsch-englisch/${wrstore.query}'>PROMT.One</a>`
 
   ,add:`, 
+<span style="filter: brightness(2)">🎞️</span>&thinsp;film clips with 
 <a href="https://playphrase.me/#/search?q=${wrstore.query}&language=de" 
 onclick="popFilmWindow('${wrstore.query}&language=de'); return false;">PlayPhrase.me</a>
 `
@@ -494,6 +496,7 @@ onclick="popFilmWindow('${wrstore.query}&language=de'); return false;">PlayPhras
   ,quotes:`<<fraze.it/n_search.jsp?l=4&q="${wrstore.query}"'>fraze.it</a>,
 <<online-translator.com/contexts/italian-english/${wrstore.query}'>PROMT.One</a>`
   ,add:`, 
+<span style="filter: brightness(2)">🎞️</span>&thinsp;film clips with 
 <a href="https://playphrase.me/#/search?q=${wrstore.query}&language=it" 
 onclick="popFilmWindow('${wrstore.query}&language=it'); return false;">PlayPhrase.me</a>
 `
@@ -513,6 +516,7 @@ onclick="popFilmWindow('${wrstore.query}&language=it'); return false;">PlayPhras
 <<online-translator.com/contexts/french-english/${wrstore.query}'>PROMT.One</a>`
 
   ,add:`, 
+<span style="filter: brightness(2)">🎞️</span>&thinsp;film clips with 
 <a href="https://playphrase.me/#/search?q=${wrstore.query}&language=fr" 
 onclick="popFilmWindow('${wrstore.query}&language=fr'); return false;">PlayPhrase.me</a>
 `
@@ -531,6 +535,7 @@ onclick="popFilmWindow('${wrstore.query}&language=fr'); return false;">PlayPhras
 <<online-translator.com/contexts/spanish-english/${wrstore.query}'>PROMT.One</a>`
 
   ,add:`, 
+<span style="filter: brightness(2)">🎞️</span>&thinsp;film clips with 
 <a href="https://playphrase.me/#/search?q=${wrstore.query}&language=es" 
 onclick="popFilmWindow('${wrstore.query}&language=es'); return false;">PlayPhrase.me</a>
 `
@@ -595,6 +600,7 @@ onclick="popFilmWindow('${wrstore.query}&language=es'); return false;">PlayPhras
 <<translate.google.com/#view=home&op=translate&sl=ja&tl=en&text=${wrstore.query}'>Google Translate</a>
 `
   ,add:`, 
+<span style="filter: brightness(2)">🎞️</span>&thinsp;film clips with 
 <a href="https://playphrase.me/#/search?q=${wrstore.query}&language=ja" 
 onclick="popFilmWindow('${wrstore.query}&language=ja'); return false;">PlayPhrase.me</a>
 `
