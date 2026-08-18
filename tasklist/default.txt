@@ -3,12 +3,22 @@
 <div style="line-height:1.5em">
 ### Turn a text into language practice
 
-<textarea id="story" class="inherit" style="margin-right: 0.4em; width:90%; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea>
+<div id="media-options" hidden><label id="media-url-label" for="media-url" class="font-80pc">*Video/audio url*</label>
+<input id="media-url" type="text" style="width:90%">
+
+<label id="transcript-with-timestamps-label" for="story" class="font-80pc">*Transcript with timestamps*</label>
+</div><textarea id="story" class="inherit" style="margin-right: 0.4em; width:90%; font-size:100%" rows="9" placeholder="Paste or type your text here..."></textarea>
 <button id=go-btn class="btn-darker no-tts font-100pc" style="margin-top: 0.2em; border: 1px solid #999; background-color: floralwhite; color: inherit; padding: .5em 1.5em; border-radius: 6px" onclick="makeTaskFromUserText()"><img src=/icon.png width=22px style="vertical-align: text-bottom">  Start practicing</button>
 
 
-<small>No text handy? [Sample](btn: qsel('textarea').value='Shadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.') · [Bilingual sample](btn: qsel('textarea').value='\:section\: de\nShadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.\n\n\:section\: en\nShadowing is an effective method for language learning. You hear a sentence and immediately repeat it, if possible with the same pronunciation and intonation. Regular shadowing improves listening comprehension and helps you speak more fluently.')</small>
+<small>No text handy? Try out the samples {{{
+[A short text in German](btn: elid('media-options').hidden=true; elid('media-url').value=''; qsel('textarea').value='Shadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.')
+[A short text in two languages](btn: elid('media-options').hidden=true; elid('media-url').value=''; qsel('textarea').value='\:section\: de\nShadowing ist eine effektive Methode zum Sprachenlernen. Dabei hört man einen Satz und spricht ihn sofort nach, möglichst mit derselben Aussprache und Intonation. Regelmäßiges Shadowing verbessert das Hörverständnis und hilft dabei, flüssiger zu sprechen.\n\n\:section\: en\nShadowing is an effective method for language learning. You hear a sentence and immediately repeat it, if possible with the same pronunciation and intonation. Regular shadowing improves listening comprehension and helps you speak more fluently.')
+[A video with transcript](btn: elid('media-options').hidden=false; elid('media-url').value='https://www.youtube.com/watch?v=7CeNTtbhYLs'; elid('story').value='0:00 Let\'s start with the shape of the mouth.\n0:02 For both sounds, we put our tongue between our teeth\n0:06 and push air out between them.\n0:08 The difference is that the first one is voiced,\n0:12.1 which means we use our vocal cords\n0:15 and the second one is unvoiced,\n0:17.5 which means we don\'t use our vocal cords.\n0:20.3 OK, try this:\nVoiced - vibrations.\nUnvoiced - no vibrations.\n0:30.5 Can you feel the difference?\n0:32.3 Now let\'s practice with some common words you already know:\n0:36.2 \'this\', \'thing\', \'though\',\n0:39.3 \'through\', \'mother\', \'birthday\',\n0:43 \'clothes\', \'fourth\', \'bathe\', \'bath\'.\n0:48.5 And of course it helps to put them in a sentence:\n0:51.2 \'I never sunbathe, but I love a bath.\'\n0:54 But remember to say them out loud so you\'re practicing the pronunciation.')
 
+Or you can just drag and drop a text file and/or a video or audio to start practicing.
+}}}
+</small>
 
 
 How else can I use Audiodrill? <x-p>
@@ -43,7 +53,7 @@ With Audiodrill, you can build your reading, listening and speaking skills in fo
 
 ### 4. Create your own tasks
 
-✍️ From your own text - do it at the top of this page. If you want to use rich content such as formatted text, gaps, images, audio, and video, see [this guide.](btn: openTaskByUrl('/info/task-markup.txt', false))
+✍️ From your own text - do it at the top of this page. If you want to use rich content such as formatted text, gaps, images, audio, and video, see [this guide.](btn: openTaskByUrl('/info/task-markup.txt'))
 <color:silver>▶</color> From a YouTube video:
  * Click the {{arrow:new-task y-shift=14|🗋 icon}} and paste the url of a YouTube video. 
  * Copy/paste lines with timestamps from the video transcript. 

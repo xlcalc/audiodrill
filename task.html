@@ -3389,6 +3389,7 @@ const processTaskMedia = txt =>{
   && !tstore.mediaInXvars 
   && !txt.includes('<x-video') 
   && !txt.includes('<x-audio')
+  && !tstore.mediaUrl
   ) return txt;
 
   const lines = txt.split('\n');
@@ -5735,6 +5736,9 @@ function makeTaskFromUserText() {
   }
 
   tstore.taContent = taText;
+  tstore.mediaUrl = elid('media-url')?.value || '';
+  getVideoByURL(tstore.mediaUrl, 'NEW_TASK');
+  
   tstore.previousTask = transcriptText.innerHTML;
   players.previousTask = players.currentTask;
   tstore.prevPracticeTips = elid('practiceTips').innerHTML;
@@ -5761,6 +5765,8 @@ tstore.toEditingTA = () => {
   qsel('textarea').value = tstore.taContent;
   elid('practiceTips').innerHTML = tstore.prevPracticeTips;
   elid('practiceTips').hidden = tstore.prevPracticeTipsHidden;
+  elid('media-url').value = tstore.mediaUrl || '';
+
 // should tstore.xvarsBox be restored too?
 }
 
