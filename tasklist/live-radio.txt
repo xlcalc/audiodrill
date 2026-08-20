@@ -35,5 +35,5 @@ Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream
 ~Unwind & relax~ {{{
 Classical music: [Alleen Klassiek](stream: https://playerservices.streamtheworld.com/api/livestream-redirect/SERVICE06AAC.aac), [Art-Baroque](stream: https://air.radioart.com/fBaroque.mp3), [Classical relaxation](https://classicalradio.com/classicalrelaxation), [Free Classical](stream: https://streaming.live365.com/a13949)
 
-Sounds of nature: [fire](stream: https://ice2.radia.cz/relax-fire64.aac), [morning birds](stream: https://ice2.radia.cz/relax-morning-birds64.aac), [rain](stream: https://ice2.radia.cz/relax-thunder-rain64.aac), [sea](stream: https://ice2.radia.cz/relax-sea64.aac)
+Sounds of nature: [ambient](stream: https://ec6.yesstreaming.net:2980/stream), [fire](stream: https://ice2.radia.cz/relax-fire64.aac), [morning birds](stream: https://ice2.radia.cz/relax-morning-birds64.aac), [rain 1](stream: https://maggie.torontocast.com:8108/;), [rain 2](stream: https://rainyday-mynoise.radioca.st/live), [rain with thunder](stream: https://ice2.radia.cz/relax-thunder-rain64.aac), [sea 1](stream: https://ec6.yesstreaming.net:1520/stream), [sea 2](stream: https://ice2.radia.cz/relax-sea64.aac), [sea 3](stream: https://oceanwaves-mynoise.radioca.st/live)
 }}}
