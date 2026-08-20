@@ -2633,22 +2633,18 @@ const setVoiceList = (par) => {
   const voiceTag = elid('voice-select-prompt' + n);
   voiceTag.textContent = n? 'Dialogue voice #2:' : 'Voice:';
   if (numOfVoices < 2) {
-//    voiceSelector.style.display = 'none';
-//    voiceTag.innerHTML += ` <span class="font-75pc" title="${voiceName}">${voiceText}</span>`;
     voiceTag.innerHTML += ` <span title="${voiceName}">${voiceText}</span>`;
-  } //else voiceSelector.style.display = 'initial';
+  }
 
   voiceSelector.hidden = numOfVoices < 2;
   
   if (par.selectVoice) chooseVoice(n); // for words and phrases page
   else if (par.voices[0]) { // for tasks page
-    let voice = null;
     const vname = gstore.pickedVoices[getLangCode()];
-    if (vname) voice = par.voices.find(v => v.name === vname);
+    const voice = vname ? par.voices.find(v => v.name === vname) : null;
 
     tts['spVoice' + n] = voice || par.voices[0];
     voiceSelector.title = voiceSelector.value = voice?.name || par.voices[0].name;
-// no need to set voiceSelector.value b/c it's set to the first voice
   }
 
   if (!n) gstore.copyVoiceList('-intask');

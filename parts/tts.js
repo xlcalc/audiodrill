@@ -97,7 +97,8 @@ function listLangVoices() {
 // Hope, no lang code is longer than 3 letters.
   if (!lang || lang.length > 3) lang = getLangCode(); // Get full lang name for words and phrases page. 
   
-  ttsCallBack('TTS_GOT_LANG_VOICES', getLangVoices(lang));
+  tts.curLangVoices = getLangVoices(lang);
+  ttsCallBack('TTS_GOT_LANG_VOICES', tts.curLangVoices);
 }
 
 /*

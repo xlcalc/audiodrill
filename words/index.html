@@ -933,21 +933,27 @@ function matchingVoiceLang(voice) {
 }
 
 const chooseVoice = (n = '') => {
-  const spVoice = 'spVoice' + n;
-  tts[spVoice] = null;
-  const voices = tts.getVoices();
+//  tts[spVoice] = null;
+//  const voices = tts.getVoices();
 // first, pick up fave voices by voice.name
 //  tts[spVoice] = voices.find(matchingVoiceName);
 //console.log('After match voice name it is', tts[spVoice]);
 // if not found by voice.name, pick up by voice.lang
 //  if (typeof tts[spVoice] === 'undefined') { tts[spVoice] = voices.find(matchingVoiceLang); }
 //  if (!defined(tts[spVoice])) { tts[spVoice] = voices.find(matchingVoiceLang); }
-  if (!tts[spVoice]) { tts[spVoice] = voices.find(matchingVoiceLang); }
+//  if (!tts[spVoice]) { tts[spVoice] = voices.find(matchingVoiceLang); }
+  const pickedVname = gstore.pickedVoices[getLangCode()];
+  const voice = pickedVname ? tts.curLangVoices.find(v => v.name === pickedVname) : null;
+
+  const spVoice = 'spVoice' + n;
+  tts[spVoice] = voice || tts.curLangVoices[0];
+//    voiceSelector.title = voiceSelector.value = voice?.name || par.voices[0].name;
+
+//  if (!tts[spVoice]) tts[spVoice] = tts.curLangVoices[0]; // localStorage.pickedVoices match for tts.langCode should be added?
   if (tts[spVoice]) {
-    const voiceName = tts[spVoice].name;
+//    const voiceName = tts[spVoice].name;
     const voiceSelector = elid('voice-select' + n);
-    voiceSelector.value = voiceName;
-    voiceSelector.title = voiceName;
+    voiceSelector.value = voiceSelector.title = tts[spVoice].name;
   }
 // this spaghetti logic could be streamlined later
   setVoice(getUrlKey("voice" + n) || n, n);
@@ -1625,7 +1631,7 @@ const setVoice = (n, v='') => {
   if (!voices.length || !n || n < 1 || n > voices.length) return;
   const voice = voices.item(n-1);
   voices.value = voice.value;
-  handleVoiceSelect(voice, v, 'INITIALIZE');
+//  handleVoiceSelect(voice, v, 'INITIALIZE'); // commented out 2026-08-20 b/c it it changes the primary voice-select control
 }
 
 function uploadGameScript(evt) {
