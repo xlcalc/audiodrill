@@ -1747,6 +1747,11 @@ const unmutedPlay = async () => {
   await testPlay();
 }
 
+const getNextElement = (current, selector) => {
+  const nodes = document.querySelectorAll(selector);
+  return nodes[[...nodes].indexOf(current) + 1];
+}
+/*
 const getNextSibling = (elem, selector) => {
   let sibling = elem.nextElementSibling;
   if (!selector) return sibling;
@@ -1756,7 +1761,7 @@ const getNextSibling = (elem, selector) => {
     sibling = sibling.nextElementSibling;
   }
 }
-
+*/
 const replayFragment = async (firstCue, isTTS = false) => {
   displayOverlay('');
   await sleep (300);
@@ -1792,10 +1797,10 @@ console.log('** Stop: currentCue === firstCue')
 	  players.isCueTTS = isTTS;
       if (isTTS) {
         await replayTTSCore(clip);
-        clip = getNextSibling(clip, '.tts-speak-task');
+        clip = getNextElement(clip, '.tts-speak-task');
       } else {
         await replayFragmentCore(clip);
-        clip = getNextSibling(clip, '.cue');
+        clip = getNextElement(clip, '.cue');
       }
     }
   }
