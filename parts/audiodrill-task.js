@@ -2040,6 +2040,7 @@ const highlightText = txt => {
       'cue': `<cue time="${code}" title="Play ${code}">${txt}</cue>`,
       'play': `<cue url="${playAttr[0]}" time="${playAttr[1]}">${txt}</cue>`,
   // player-title might be added for streaming
+      'loop': `<cue url="${code}" data-infinite-loop=1>${parts[0]}</cue>`,
       'stream': `<cue url="${code}" data-web="${code2}">${parts[0]}</cue>`,
       'tts': `<tts data-btntext="${txt}" say="${code}"></tts>`,
     };
@@ -2123,7 +2124,7 @@ const highlightText = txt => {
       if (akey === 'say') return [s];
       if (['tip', 'arrow'].includes(akey)) return [getTipTag(atag, atext)];
 
-      for (const key of ['color', 'bcolor', 'cue', 'play', 'stream', 'tts']) 
+      for (const key of ['color', 'bcolor', 'cue', 'loop', 'play', 'stream', 'tts']) 
         if (akey === key) return [expandWithKey(s, key)];
     }
 
@@ -2637,15 +2638,16 @@ const setVoiceList = (par) => {
   }
 
   voiceSelector.hidden = numOfVoices < 2;
-  
-  if (par.selectVoice) chooseVoice(n); // for words and phrases page
-  else if (par.voices[0]) { // for tasks page
+
+// 2026-08-21: same code is for tasks and words pages
+//  if (par.selectVoice) chooseVoice(n); // for words and phrases page
+//  else if (par.voices[0]) { // for tasks page
     const vname = gstore.pickedVoices[getLangCode()];
     const voice = vname ? par.voices.find(v => v.name === vname) : null;
 
-    tts['spVoice' + n] = voice || par.voices[0];
-    voiceSelector.title = voiceSelector.value = voice?.name || par.voices[0].name;
-  }
+    tts['spVoice' + n] = voice || par.voices[0] || '';
+    voiceSelector.title = voiceSelector.value = voice?.name || par.voices[0]?.name || '';
+//  }
 
   if (!n) gstore.copyVoiceList('-intask');
 }

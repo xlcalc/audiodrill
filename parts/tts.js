@@ -131,7 +131,7 @@ const getVoice = lang => {
   if (lang) {
 	if (tts.voiceMatchesLang(tts.spVoice, lang)) return tts.spVoice;
 
-    for (const voice of tts.getVoices())
+    for (const voice of tts.getVoices()) // 2026-08-22: should getLangVoices(lang) be used instead?
       if (tts.voiceMatchesLang(voice, lang)) return voice;
   }
   return null;

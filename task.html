@@ -1658,9 +1658,20 @@ const playerStop = () => {
 const getPlayerCurTime = () => players.isHtml? 
     htmlPlayer.currentTime : player.getCurrentTime();
 
+players.resetTime = () => players.isHtml? 
+    htmlPlayer.currentTime = StartFrom : player.seekTo(StartFrom);
+	
+players.setLoop = cmd => players.isHtml? 
+    htmlPlayer.loop = cmd : player.setLoop(cmd);
+
 const playerCheckPlay = () => {
   let curPos = getPlayerCurTime();
-  const needToStop = players.loopStopRequested || (StopAt && StopAt >= StartFrom && curPos >= StopAt);
+  players.playedThrough = StopAt && StopAt >= StartFrom && curPos >= StopAt;
+  if (players.playedThrough && (players.infiniteLoop || players.infiniteLoop2)) {
+    players.playedThrough = false;
+    players.resetTime();
+  }
+  const needToStop = players.loopStopRequested || players.playedThrough;
 
   if (needToStop) {
     playerStop();
@@ -1751,17 +1762,7 @@ const getNextElement = (current, selector) => {
   const nodes = document.querySelectorAll(selector);
   return nodes[[...nodes].indexOf(current) + 1];
 }
-/*
-const getNextSibling = (elem, selector) => {
-  let sibling = elem.nextElementSibling;
-  if (!selector) return sibling;
 
-  while (sibling) {
-    if (sibling.matches(selector)) return sibling;
-    sibling = sibling.nextElementSibling;
-  }
-}
-*/
 const replayFragment = async (firstCue, isTTS = false) => {
   displayOverlay('');
   await sleep (300);
@@ -1890,6 +1891,17 @@ const replayFragmentCore = async (cue) => {
     return;
   }
 
+  players.setLoop(cue.dataset?.infiniteLoop) // probably will work for htmlPlayer but not YT
+  if (cue.dataset?.infiniteLoop) {
+//    players.stream = false;
+    players.stream = true;
+    players.pauseFactor = 0;
+    players.infiniteLoop2 = true;
+//    StartFrom = 0;
+//	StopAt = 0;
+  } else players.infiniteLoop2 = false;
+
+
   if (players.stream) {
 console.log('Stream or play full ' + players.mediaType);
     unmutedPlay();
@@ -1905,8 +1917,10 @@ console.log('Stream or play full ' + players.mediaType);
 
   setAdvancedSpeed(cue.getAttribute("speed"));
 
-  const replaysTotal = speedCtrl.getAdvanced().length; 
+//  const replaysTotal = speedCtrl.getAdvanced().length; 
+const replaysTotal = (players.infiniteLoop || players.infiniteLoop2) ? Infinity : speedCtrl.getAdvanced().length; 
 
+//replaysTotal can be Infinity
   let replayCounter = 0;
   while (replayCounter < replaysTotal && !players.loopStopRequested) {
 
@@ -1924,7 +1938,8 @@ console.log('Stream or play full ' + players.mediaType);
       displayOverlay('Playing ' + replayCounter + ' of ' + replaysTotal);
     }
 
-    await playCue(speedCtrl.calcSpeed(replayCounter - 1));
+    const speedCounter = (players.infiniteLoop || players.infiniteLoop2) ? 0 : replayCounter - 1
+    await playCue(speedCtrl.calcSpeed(speedCounter));
 
 // no looping?
     if (players.loopStopRequested || !loopingNeeded()) break;
@@ -2248,7 +2263,9 @@ const analyzeURLParams = async () => {
   elid('ReplayFrom').value = urlKeys.get('s') || '';
   elid('ReplayTo').value = urlKeys.get('e') || '';
 
-  elid('rep-num').value = urlKeys.get('r') || 2; 
+  players.infiniteLoop = urlKeys.get('r') === '0';
+  elid('rep-num').value = urlKeys.get('r') || 2;
+  adjustRepNum();
   adjustSpeeds(urlKeys.get('speed'));
 
   const mediaFile = urlKeys.get('m');
@@ -2842,7 +2859,8 @@ elid('clear-wordlist').onclick = () => {
 */
 
 const loadVoiceList = voicesArr => {
-  setVoiceList({voices: voicesArr, selectVoice: false, speakerN: ''});
+//  setVoiceList({voices: voicesArr, selectVoice: false, speakerN: ''});
+  setVoiceList({voices: voicesArr, speakerN: ''});
 }
 
 class ToggleSwitch {
@@ -3648,11 +3666,14 @@ const analyzeXvars = () => {
     storeLangCode(lang);
     setTextDirection(lang);
     setLanguage(lang, true);
+/*
+// 2026-08-22: commented out, as voice is set via setLanguage cascade
     const ttsVoice = getVoice(players.ttsLang);
 	if (ttsVoice) {
 	  tts.spVoice = ttsVoice;
 	  setVoiceInVoiceCtrl(ttsVoice.name);
 	}
+*/
   }
 
   if (getV('show-settings') !== null) showSettings();
@@ -4469,6 +4490,8 @@ tstore.ttsOverlay = {
   hasVoice(n) {
     const el = tstore.nodes[n];
     this.ttsLang = gstore.getContextLangCode(el);
+// 2026-08-23: should getVoice be used? It may not return the preferred voice
+// On the other hand, the voice isn't actually used, just checked if it exists
     const voice = getVoice(this.ttsLang);
     if (!voice) displayAlarmMessage(`${this.ttsLang.toUpperCase()} language is not supported`);
     return voice;
