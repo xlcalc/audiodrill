@@ -101,16 +101,6 @@ function listLangVoices() {
   ttsCallBack('TTS_GOT_LANG_VOICES', tts.curLangVoices);
 }
 
-/*
-const getLangVoicesOld = lang => {
-  const voices = tts.getVoices();
-  return lang ? voices
-    .filter(voice => lang === voice.lang.split(/_|-/)[0])
-    .sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name))
-	: voices
-}
-*/
-
 async function loadVoices() {
   await sleep(500); // things don't load immediately
   if (!tts.spVoice || !tts.spVoice.lang) listLangVoices();
@@ -127,11 +117,12 @@ tts.voiceMatchesLang = (voice, lang) => (voice && lang)
   ? voice.lang.replace('_', '-') .startsWith(lang.replace('_', '-')) //lang can be with or w/o locale: e.g., en or en-US
   : null;
 
-const getVoice = lang => {
+tts.getVoice = lang => {
   if (lang) {
-	if (tts.voiceMatchesLang(tts.spVoice, lang)) return tts.spVoice;
+    if (tts.voiceMatchesLang(tts.spVoice, lang)) return tts.spVoice;
 
-    for (const voice of tts.getVoices()) // 2026-08-22: should getLangVoices(lang) be used instead?
+//    for (const voice of tts.getVoices()) // 2026-08-22: should getLangVoices(lang) be used instead?
+    for (const voice of getLangVoices(lang))
       if (tts.voiceMatchesLang(voice, lang)) return voice;
   }
   return null;
@@ -150,7 +141,7 @@ console.log('TTS canceled in ttsSpeak');
 // speed can arrive as ''
   utterance.rate = (speed || 1) * speedCtrl.calcSpeed();
 //console.log('TTS SPEED', speed);
-  utterance.voice = voice || tts.spVoice || getVoice('en-US');
+  utterance.voice = voice || tts.spVoice || tts.getVoice('en-US');
 //  if (voice && voice.lang) utterance.lang = voice.lang.replace('_', '-'); // needed for Android, see https://talkrapp.com/speechSynthesis.html
 //  if (voice && voice.lang) utterance.lang = voice.lang.split(/_|-/)[0]; // needed for MS Edge
   if (voice && voice.lang) utterance.lang = voice.lang; // added 2024-11-17 to work with mobile Chrome
@@ -213,12 +204,12 @@ console.warn('TTS ERROR' + e.error);
   }
 }
 
-function speak(text = gstore.currentQuery || '', cmd, speed) {
+function speak(text = tts.currentQuery || '', cmd, speed) {
   if (tts.spVoice) ttsSpeak(tts.spVoice, text, cmd, speed);
 }
 
 const ttsSpeakLang = (txt, lang, cmd = true, speed) => {
-  const voice = lang? getVoice(lang) : tts.spVoice;
+  const voice = lang? tts.getVoice(lang) : tts.spVoice;
   if (!voice) ttsCallBack('LANG_NOT_SUPPORTED', lang);
   else if (txt) ttsSpeak(voice, txt, cmd, speed);
 }
@@ -228,7 +219,6 @@ const speakEl = (el, par) => {
   let txt = par.txt;
   if (el) txt = txt || el.getAttribute('say') || el.textContent.replace(/\(.*?\)/g, ''); //previously el.innerText;
 //  const spVoice = (el.getAttribute("dlg-speaker") === '2') ? tts.spVoice2 : tts.spVoice;
-//  const voice = par.voice || spVoice; // this logic may be not perfect
   const voice = par.voice || tts.spVoice;
   ttsSpeak(voice, txt, 0, par.speed);
 }
@@ -237,14 +227,14 @@ const speakLangText = (btn, pbr) => {
   const parent = btn.parentElement;
   let el = btn;
   if (!btn.getAttribute('say'))
-     el = (btn.getAttribute('pos') === 'before')? parent.nextSibling : parent.previousSibling;
+    el = (btn.getAttribute('pos') === 'before')? parent.nextSibling : parent.previousSibling;
   const lang = btn.getAttribute('lang');
   const dlgSpeaker = el.getAttribute('dlg-speaker');
   const spVoice = (dlgSpeaker === '2') ? tts.spVoice2 : tts.spVoice;
   const obj = {};
 
   if (tts.manuallyPickedVoice) obj.voice = spVoice; // override cue settings in task page
-  else obj.voice = getVoice(lang) || spVoice,
+  else obj.voice = tts.getVoice(lang) || spVoice,
   
   obj.txt = btn.getAttribute('say');
   obj.speed = pbr || btn.getAttribute('speed');
@@ -253,14 +243,14 @@ const speakLangText = (btn, pbr) => {
 }
 
 const speakCurrent = lang => {
-  ttsSpeakLang(gstore.currentQuery, lang, false);
+  ttsSpeakLang(tts.currentQuery, lang, false);
 }
 
 const speakerHtml = (language, countries) => {
   let lang, str = '';
   for (const country of countries) {
     lang = language + '-' + country;
-    if (getVoice(lang)) str += `<span class="tts-speak" title="${lang}" 
+    if (tts.getVoice(lang)) str += `<span class="tts-speak" title="${lang}" 
           onclick="speakCurrent('${lang}')">${country}&#x1f509&#xfe0e;</span>`;
   }
   return str;

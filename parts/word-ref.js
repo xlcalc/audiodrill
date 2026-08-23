@@ -54,7 +54,8 @@ console.log('phrase ',phrase);
 }
 
 function handleReference(txt, lang = 'en', context) {
-  gstore.currentQuery = txt;
+  wrCallback('HANDLE_REF', txt)
+//  gstore.currentQuery = txt;
 
   if (!txt) {
     wrstore.refBox().innerHTML = '';  // a different handler may be needed
@@ -98,8 +99,8 @@ function handleReference(txt, lang = 'en', context) {
   wrstore.refMsg = refMsg;
 
   const targetLang = localStorage.getItem('translLangCode') || 'ru';  
-  refMsg.vocabInput = gstore.vocab.getMeaning(gstore.currentQuery) 
-    || (gstore.translations[gstore.currentQuery] && gstore.translations[gstore.currentQuery][targetLang])
+  refMsg.vocabInput = gstore.vocab.getMeaning(txt) 
+    || (gstore.translations[txt] && gstore.translations[txt][targetLang])
     || '';
 
   wrstore.refBox().innerHTML = prepRefBox(refMsg);

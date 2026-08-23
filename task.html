@@ -883,6 +883,10 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+@media (max-width: 530px) {
+  .x-audio-box {max-width: 280px}
+}
+
 @media (max-width: 400px) {
   #vocabButtons {
     flex-direction: column;
@@ -2383,13 +2387,6 @@ const loadHtmlTaskByURL = async (url, newDir = false) => {
   return gstore.taskUrl;
 }
 
-/*
-const wrCallback = (cmd) => {
-// callbacks from word-ref.js: so far not really needed
-  if (cmd === 'YOUGLISH_LINK_NEEDED') return true;
-}
-*/
-
 const uploadFile = file => {
   if (!file) return null;
   if (/^(audio|video)/.test(file.type)
@@ -2564,7 +2561,7 @@ Loop
    title="Number of fragments to play" min="1" value="1" /> cue(s) 
 </label></div>
 <div id="rep-num-box" class="inblock"><label><input type="number" id="rep-num" style="width: 2em; height: 0.9em;"  
-       title="Number of replays" min="1" value="2" oninput="adjustRepNum(this)" /> time(s).
+       title="Number of replays (0 means infinite loop)" min="0" value="2" oninput="adjustRepNum(this)" /> time(s).
 </label></div>
 
 <x-br-l></x-br-l>
@@ -4490,11 +4487,15 @@ tstore.ttsOverlay = {
   hasVoice(n) {
     const el = tstore.nodes[n];
     this.ttsLang = gstore.getContextLangCode(el);
-// 2026-08-23: should getVoice be used? It may not return the preferred voice
-// On the other hand, the voice isn't actually used, just checked if it exists
+/*
+// 2026-08-23: getVoice() replaced with getLangVoices()
     const voice = getVoice(this.ttsLang);
     if (!voice) displayAlarmMessage(`${this.ttsLang.toUpperCase()} language is not supported`);
     return voice;
+*/
+    const voiceCount = getLangVoices(this.ttsLang)?.length;
+    if (!voiceCount) displayAlarmMessage(`${this.ttsLang.toUpperCase()} language is not supported`);
+    return voiceCount;
   },
 
   init(cmd) {
@@ -4660,8 +4661,6 @@ tweakedTTSLine(s) {
 
     this.ttsLine = tstore.taskSentences[this.currentNum]
       .replace(/( |\u00A0|&nbsp;|\t)*\(.*?\)/g, '') //remove comments in brackets and spaces before;
-//      .replace(/^.{1,14}[:：]\s*/, '') // remove speaker (in dialogues)
-// Maybe speaker should be removed from sentences in case of shadowing?
     this.ttsLine = this.tweakedTTSLine(this.ttsLine);
 	
     const speed = speedCtrl.calcSpeed(this.repeatNum);

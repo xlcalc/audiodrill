@@ -7,7 +7,7 @@
 <label id="media-url-label" for="media-url" class="font-80pc">*Video/audio (optional)*</label>
 <input id="media-url" type="text" class="font-monospace border-lgray rounded font-100pc" style="width:stretch" placeholder="Paste or type its address here...">
 
-<button id=go-btn class="no-tts inherit btn-darker font-90pc border-lgray border-solid-1px rounded" style="margin-top: .2em; padding: .5em 1.5em; background-color: floralwhite" onclick="makeTaskFromUserText()"><img src=/icon.png width=22px style="vertical-align: text-bottom">  Start practicing</button>
+<button id=go-btn class="no-tts inherit btn-darker font-90pc border-lgray border-solid-1px rounded" style="margin-top: .2em; padding: .5em 1.5em; background-color: floralwhite" onclick="makeTaskFromUserText()"><img src=/icon.png style="vertical-align: text-bottom; width:1em"> Start practicing</button>
 
 
 <small>No text handy? {{{

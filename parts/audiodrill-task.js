@@ -1101,6 +1101,7 @@ document.onkeyup = e => {
 
 const setRepNum = () => {
   players.ReplayNumber = parseInt(elid('rep-num').value);
+  players.infiniteLoop = !players.ReplayNumber
 }
 
 const setReplayNumber = n => {
@@ -1802,6 +1803,7 @@ const advancedSpeedUserChange = v => {
 }
 
 const setAdvancedSpeed = v => {
+  if (!getReplayNumber()) return; // 0 means infinite loop
   speedCtrl.setAdvanced(v);
   setReplayNumber(speedCtrl.getAdvanced().length); //adjust rep-num control
 }
@@ -1867,8 +1869,10 @@ Speech recording allowed
 
 const adjustRepNum = (el) => {
   setRepNum();
-  const repnum = parseInt(elid('rep-num').value);
-
+//  const repnum = parseInt(elid('rep-num').value);
+  const repnum = getReplayNumber();
+  if (!repnum) return;
+  
   let speeds = "1";
   for (let i=1; i<repnum; i++) {
     speeds += ", 0.7"; 
@@ -3118,6 +3122,14 @@ const setEmbeddedStyle = () => {
     el.innerHTML = highlightText('~Powered by&nbsp;[Audiodrill](https://www.audiodrill.com)~');
 //    elid('bottom-bar').after(el);
   }
+}
+
+const wrCallback = (cmd, data) => {
+// callbacks from word-ref.js
+  if (cmd === 'HANDLE_REF') {
+    gstore.currentQuery = tts.currentQuery = data;
+  }
+//  if (cmd === 'YOUGLISH_LINK_NEEDED') return true;
 }
 
 /*
