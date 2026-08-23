@@ -1879,7 +1879,6 @@ const replayFragmentCore = async (cue) => {
 
     await getVideoByURL(cue.getAttribute("url")); // since 2023-08-04, this fn doesn't wait till the video is loaded
 // a new way to wait till it's loaded is needed	
-
 /*
     if (players.mediaState !== 'loaded' || players.flag === -1) {
       displayAlarmMessage('Nothing to play!'); 
@@ -1897,14 +1896,10 @@ const replayFragmentCore = async (cue) => {
 
   players.setLoop(cue.dataset?.infiniteLoop) // probably will work for htmlPlayer but not YT
   if (cue.dataset?.infiniteLoop) {
-//    players.stream = false;
     players.stream = true;
     players.pauseFactor = 0;
     players.infiniteLoop2 = true;
-//    StartFrom = 0;
-//	StopAt = 0;
   } else players.infiniteLoop2 = false;
-
 
   if (players.stream) {
 console.log('Stream or play full ' + players.mediaType);
@@ -1921,11 +1916,10 @@ console.log('Stream or play full ' + players.mediaType);
 
   setAdvancedSpeed(cue.getAttribute("speed"));
 
-//  const replaysTotal = speedCtrl.getAdvanced().length; 
-const replaysTotal = (players.infiniteLoop || players.infiniteLoop2) ? Infinity : speedCtrl.getAdvanced().length; 
-
-//replaysTotal can be Infinity
+  const infiniteLoop = players.infiniteLoop || players.infiniteLoop2;
+  const replaysTotal = infiniteLoop ? Infinity : speedCtrl.getAdvanced().length; 
   let replayCounter = 0;
+
   while (replayCounter < replaysTotal && !players.loopStopRequested) {
 
 // ===  The Great Loop starts here :)  ===
@@ -1938,11 +1932,12 @@ const replaysTotal = (players.infiniteLoop || players.infiniteLoop2) ? Infinity 
 
     replayCounter++;
 
-    if (loopingNeeded() && !players.stream) {
+    if (infiniteLoop) displayOverlay('Looping continuously...');
+    else if (loopingNeeded() && !players.stream) {
       displayOverlay('Playing ' + replayCounter + ' of ' + replaysTotal);
     }
 
-    const speedCounter = (players.infiniteLoop || players.infiniteLoop2) ? 0 : replayCounter - 1
+    const speedCounter = infiniteLoop ? 0 : replayCounter - 1
     await playCue(speedCtrl.calcSpeed(speedCounter));
 
 // no looping?
