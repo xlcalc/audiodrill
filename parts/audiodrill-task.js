@@ -3005,6 +3005,156 @@ const checkStringVsRef = (str, ref, lang) => {
 }
 
 function alignTokensWithPunct(strTokens, referenceTokens) {
+  const punctuationSet = new Set(`•.,!?;:”“'"()[]{}-–—…。？！，、`);
+  const isWord = t => t && !punctuationSet.has(t);
+
+  const refWords = referenceTokens.filter(isWord);
+  const strWords = strTokens.filter(isWord);
+
+  const ref = refWords.map(s => s.toLowerCase());
+  const hyp = strWords.map(s => s.toLowerCase());
+
+  const m = ref.length;
+  const n = hyp.length;
+
+  // Find the earliest exact occurrence of the dictated words.
+  let matchStart = -1;
+
+  if (n > 0) {
+    for (let i = 0; i <= m - n; i++) {
+      let found = true;
+
+      for (let j = 0; j < n; j++) {
+        if (ref[i + j] !== hyp[j]) {
+          found = false;
+          break;
+        }
+      }
+
+      if (found) {
+        matchStart = i;
+        break;
+      }
+    }
+  }
+
+  const out = [];
+  let match = true;
+
+  // Exact match found.
+  if (matchStart !== -1) {
+    for (let i = 0; i < m; i++) {
+      if (i >= matchStart && i < matchStart + n) {
+        out.push(" " + refWords[i]);
+      } else {
+        out.push(" ___");
+        match = false;
+      }
+
+      // Add punctuation occurring immediately after this word.
+      let refIndex = 0;
+      let wordIndex = 0;
+
+      for (let k = 0; k < referenceTokens.length; k++) {
+        const t = referenceTokens[k];
+
+        if (isWord(t)) {
+          if (wordIndex === i) {
+            refIndex = k + 1;
+            break;
+          }
+          wordIndex++;
+        }
+      }
+
+      while (
+        refIndex < referenceTokens.length &&
+        referenceTokens[refIndex] !== ""
+      ) {
+        const t = referenceTokens[refIndex];
+
+        if (punctuationSet.has(t)) {
+          out.push(t);
+          refIndex++;
+        } else {
+          break;
+        }
+      }
+    }
+
+    return [match, out.join("").replace(/^\s/, "")];
+  }
+
+  // No exact sequence: fall back to your original Levenshtein algorithm.
+  // ------------------------------------------------------------
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = ref[i - 1] === hyp[j - 1] ? 0 : 1;
+
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + cost
+      );
+    }
+  }
+
+  let i = m;
+  let j = n;
+  let rIdx = referenceTokens.length - 1;
+
+  while (rIdx >= 0 || i > 0 || j > 0) {
+    const t = referenceTokens[rIdx];
+
+    if (rIdx >= 0 && t === "") {
+      rIdx--;
+      continue;
+    }
+
+    if (rIdx >= 0 && punctuationSet.has(t)) {
+      out.unshift(t);
+      rIdx--;
+      continue;
+    }
+
+    if (i > 0 && j > 0 && ref[i - 1] === hyp[j - 1]) {
+      out.unshift(" " + refWords[i - 1]);
+      i--;
+      j--;
+      rIdx--;
+    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {
+      out.unshift(" ___");
+      match = false;
+      i--;
+      rIdx--;
+    } else if (j > 0 && dp[i][j] === dp[i][j - 1] + 1) {
+      out.unshift(` <span class="extra-word">${strWords[j - 1]}</span>`);
+      match = false;
+      j--;
+    } else if (i > 0 && j > 0) {
+      out.unshift(` <span class="wrong-word">${strWords[j - 1]}</span>`);
+      match = false;
+      i--;
+      j--;
+      rIdx--;
+    } else {
+      rIdx--;
+    }
+  }
+
+  const res = out.join("").replace(/^\s/, "");
+
+  console.log("STT checked:", res);
+  return [match, res];
+}
+
+/*
+function alignTokensWithPunctOld(strTokens, referenceTokens) {
   // Edge case with hyphens isn't treated yet
   const punctuationSet = new Set(`•.,!?;:”“'"()[]{}-–—…。？！，、`); // extend as needed
   const isWord = t => t && !punctuationSet.has(t);
@@ -3082,7 +3232,7 @@ function alignTokensWithPunct(strTokens, referenceTokens) {
 console.log('STT checked:', res);
   return [match, res];
 }
-
+*/
 // =======
 
 function isOutOfView(el, offset = 0) {
