@@ -1896,7 +1896,7 @@ const replayFragmentCore = async (cue) => {
 
   players.setLoop(cue.dataset?.infiniteLoop) // probably will work for htmlPlayer but not YT
   if (cue.dataset?.infiniteLoop) {
-    players.stream = true;
+    if (StartFrom === null) players.stream = true;
     players.pauseFactor = 0;
     players.infiniteLoop2 = true;
   } else players.infiniteLoop2 = false;
@@ -1932,8 +1932,8 @@ console.log('Stream or play full ' + players.mediaType);
 
     replayCounter++;
 
-    if (infiniteLoop) displayOverlay('Looping continuously...');
-    else if (loopingNeeded() && !players.stream) {
+    if (players.infiniteLoop) displayOverlay('Looping continuously...');
+    else if (loopingNeeded() && !players.stream && !players.infiniteLoop2) {
       displayOverlay('Playing ' + replayCounter + ' of ' + replaysTotal);
     }
 
@@ -1941,7 +1941,7 @@ console.log('Stream or play full ' + players.mediaType);
     await playCue(speedCtrl.calcSpeed(speedCounter));
 
 // no looping?
-    if (players.loopStopRequested || !loopingNeeded()) break;
+    if (infiniteLoop || players.loopStopRequested || !loopingNeeded()) break;
 
 // video fragment has played, time for a pause :)
     const fragmentLength = players.fragmLength() * 1000/getPlayerPBR(); //used in replayFragment() to calculate a pause between fragment replays
@@ -2194,6 +2194,7 @@ const playCue = async (pbr = 1) => {
   await unmutedPlay(); 
 console.log('Unmuted play: players.flag ',players.flag);
   while (players.flag === 1){
+    if (players.loopStopRequested) return;
     if (player && player.state === 1) console.log('Waiting for playing to be finished');
     else console.log('Waiting for playing to start');
     await sleep(100);

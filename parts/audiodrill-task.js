@@ -2029,11 +2029,18 @@ const highlightText = txt => {
 
 //    if (key === 'stream' && !code.includes(':')) code = 'https://youtu.be/' + code;
     let code2 = '';
+    if (key === 'loop') {
+      const arr = code.split('time:');
+      code = arr[0].trim();
+      code2 = arr[1]?.trim() || '';
+      if (code2) code2 = `time="${code2}"`;
+      if (isYouTubeId(code)) code = 'https://youtu.be/' + code;
+    }
+
     if (key === 'stream') {
       const arr = code.split('web:');
       code = arr[0].trim();
       code2 = arr[1]?.trim() || '';
-//      if (!code.includes(':')) code = 'https://youtu.be/' + code;
       if (isYouTubeId(code)) code = 'https://youtu.be/' + code;
     }
 
@@ -2044,7 +2051,7 @@ const highlightText = txt => {
       'cue': `<cue time="${code}" title="Play ${code}">${txt}</cue>`,
       'play': `<cue url="${playAttr[0]}" time="${playAttr[1]}">${txt}</cue>`,
   // player-title might be added for streaming
-      'loop': `<cue url="${code}" data-infinite-loop=1>${parts[0]}</cue>`,
+      'loop': `<cue url="${code}" ${code2} data-infinite-loop=1>${parts[0]}</cue>`,
       'stream': `<cue url="${code}" data-web="${code2}">${parts[0]}</cue>`,
       'tts': `<tts data-btntext="${txt}" say="${code}"></tts>`,
     };
