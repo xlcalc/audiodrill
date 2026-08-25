@@ -1867,8 +1867,12 @@ const loopingNeeded = () => (elid('longLoopCheckbox').checked ||
 const replayFragmentCore = async (cue) => {
   fetchStartStop(cue);
 
+  players.infiniteLoop2 = cue.dataset?.infiniteLoop;
+//  if (players.infiniteLoop2) players.pauseFactor = 0; // not needed yet?
+
+
   if (cue !== playStopBtn) {
-    if (players.stream) {
+    if (players.stream || players.infiniteLoop2) {
       let msg = cue.textContent;
       if (cue.dataset?.web) {
         tstore.playerTitle.title = 'Open website';
@@ -1878,7 +1882,6 @@ const replayFragmentCore = async (cue) => {
     }
 
     await getVideoByURL(cue.getAttribute("url")); // since 2023-08-04, this fn doesn't wait till the video is loaded
-// a new way to wait till it's loaded is needed	
 /*
     if (players.mediaState !== 'loaded' || players.flag === -1) {
       displayAlarmMessage('Nothing to play!'); 
@@ -1894,12 +1897,7 @@ const replayFragmentCore = async (cue) => {
     return;
   }
 
-  players.setLoop(cue.dataset?.infiniteLoop) // probably will work for htmlPlayer but not YT
-  if (cue.dataset?.infiniteLoop) {
-    if (StartFrom === null) players.stream = true;
-    players.pauseFactor = 0;
-    players.infiniteLoop2 = true;
-  } else players.infiniteLoop2 = false;
+  players.setLoop(players.infiniteLoop2) // probably will work for htmlPlayer but not YT
 
   if (players.stream) {
 console.log('Stream or play full ' + players.mediaType);
@@ -1910,13 +1908,13 @@ console.log('Stream or play full ' + players.mediaType);
   players.looperInUse = true;
 
   setRepNum();
-  markCuePlaying(cue, 1)
+  const infiniteLoop = players.infiniteLoop || players.infiniteLoop2;
+  if (!infiniteLoop) markCuePlaying(cue, 1);
 //  const cueOldStyle = cue.style;
 //  cue.style.borderLeft = "3px solid lightgreen";
 
   setAdvancedSpeed(cue.getAttribute("speed"));
 
-  const infiniteLoop = players.infiniteLoop || players.infiniteLoop2;
   const replaysTotal = infiniteLoop ? Infinity : speedCtrl.getAdvanced().length; 
   let replayCounter = 0;
 
@@ -2103,8 +2101,6 @@ const markCuePlaying = (cue, cmd) => {
   }
   else { // btnClass empty
     setElClass(cue, 'cue-active', cmd);
-//    if (cmd) cue.classList.add('cue-active')
-//    else cue.classList.remove('cue-active');
   }
 }
 
@@ -2194,7 +2190,7 @@ const playCue = async (pbr = 1) => {
   await unmutedPlay(); 
 console.log('Unmuted play: players.flag ',players.flag);
   while (players.flag === 1){
-    if (players.loopStopRequested) return;
+    if (players.loopStopRequested || players.infiniteLoop2) return;
     if (player && player.state === 1) console.log('Waiting for playing to be finished');
     else console.log('Waiting for playing to start');
     await sleep(100);
@@ -3402,6 +3398,7 @@ const processTaskMedia = txt =>{
   const marker = 'video/audio:';
   if (!txt.includes(marker) 
 //  && !tstore.xvarsBox 
+  && !tstore.useTimeCodes 
   && !tstore.mediaInXvars 
   && !txt.includes('<x-video') 
   && !txt.includes('<x-audio')
@@ -4066,6 +4063,7 @@ const extractXvars = s => {
     const vars = tstore.xvarsBox.firstChild;
     const getV = attr => vars.getAttribute(attr);
     tstore.mediaInXvars = getV('yt-id') || getV('audio') || getV('video') || getV('startmedia');
+    tstore.useTimeCodes = getV('timecodes') !== null;
   }
   else tstore.xvarsBox = s;
   return '';
