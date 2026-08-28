@@ -1157,8 +1157,8 @@ const hoverTipChild = el => el.hovered = 1; // no need to call showTip fn?
 const leaveTipChild = async el => { // changed 2025-10-22, to be tested
   el.hovered = 0;
 //  if (el.parent.hovered) return;
-  
-  await sleep (200);
+  const linger = +el.dataset.linger || 200;
+  await sleep (linger);
 //console.log('leaveTipChild parent.hovered', el.parent.hovered);
 
   if (!el.hovered && !el.parent.hovered) hideAllTips();
@@ -1221,19 +1221,21 @@ gstore.tips = {
 
 const showTip = async el => {
 //  await sleep(200);
-  gstore.activeTipParent = el;
+  gstore.activeTipParent = el; // for debugging
   el.hovered = 1;
 //console.log('Show tip', el);
   if (el.child) {
 //	setTipPosition(el.child, el);
 // what if tip content has changed, like in dictation?
 //    el.child.innerHTML = el.getAttribute('tip'); // this will break tipStore.get() pathway
-    if (!el.child.classList.contains('arrow') && !setTipContent(el, el.child)) {
-		hideEl(el.child);
-		return;
-	}
+    if (!el.child.classList.contains('arrow')
+    && !setTipContent(el, el.child)) {
+// a typical tip whose content can't be set from parent or tipStore
+      hideEl(el.child);
+      return;
+    }
 
-	showEl(el.child); 
+    showEl(el.child); 
   }
   else {
 	await createTip(el);
@@ -1329,13 +1331,12 @@ const setTipContent = (parent, tip) => {
   
   tip.style = parent.getAttribute('tip-style') || '';
 //console.log('tip-class', tip.className);
-  let res = '';
-  if (parent.id) res = tipStore.get(parent.id);
-  if (!res) res = parent.getAttribute('tip');
 
-  res = highlightText(res); // added 2025-10-11
+  const s = tipStore.get(parent.id) || parent.getAttribute('tip');
+  const res = highlightText(s); // added 2025-10-11
   tip.innerHTML = res;
   if (!res) return 0;
+
   if (res.includes('<a ')) tip.className = 'tooltip-link';
 
   setTipPosition(tip, parent);
@@ -1943,7 +1944,7 @@ const tipStore = function() {
 	  return idKey + (tipArr.length -1);
 	}
 
-	const get = id => {
+	const get = (id = '') => {
 	  const i = id.split(idKey)[1] || '';
 	  return tipArr[i];
 	}
@@ -2941,11 +2942,24 @@ console.log('Transl problem', res);
   }
 
 console.log(res.matches.map(entry => entry.translation + ` (${entry.quality})`));
+/*
   return res.matches
     .filter(entry => entry.translation && Number(entry.quality)) // filter out entries that are empty or have '0' quality
 // perhaps the entry with highest quality (converted to integer) should be returned
     .map(entry => entry.translation)
 	[0]; // first value is usually the most accurate
+*/
+  const best = res.matches
+    .filter(entry => entry.translation && entry.quality != null)
+    .reduce((best, entry) =>
+      Number(entry.quality) > Number(best.quality) ? entry : best
+    );
+
+  const translation = best
+  ? best.translation + (Number(best.quality) === 0 ? ' (?)' : '')
+  : undefined;
+
+  return translation;
 }
 
 const isYouTubeId = s => /^[a-zA-Z0-9_-]{11}$/.test(s);

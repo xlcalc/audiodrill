@@ -12,7 +12,7 @@
 <meta property="og:image" content="https://www.audiodrill.com/img/og-image.jpg" />
 <meta property="og:description" content="Listening and speaking practice for language learners" />
 
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 
 <script>
 
@@ -1655,7 +1655,7 @@ const playerPause = () => {
 
 const playerStop = () => {
   playerPause();
-  clearInterval(gstore.myTimeInterval); // clearing doesn't always stop setInterval executing playerCheckPlay()
+  players.clearCheckInterval();
   players.jsPlay = false;
 }
 
@@ -1679,19 +1679,22 @@ const playerCheckPlay = () => {
 
   if (needToStop) {
     playerStop();
+console.log('== Playing stopped in playerCheckPlay() ==');
 	players.pausedAt = ''; // clear by default
-	if (players.savePause) {
-	  players.savePause = false;
-	  if (!StopAt || curPos + 0.1 < StopAt) players.pausedAt = curPos;
-//console.log('Paused at', players.pausedAt);
-	}
+    players.saveCurPos();
   }
-  else if (players.checkInterval > 25 && StopAt && StopAt >= StartFrom && curPos > (StopAt - 0.13)) {
-// run playerCheckPlay() more often
+  else if (players.checkInterval > 25 && StopAt >= StartFrom && curPos > (StopAt - 0.13)) {
 //console.log('*** Shorten check interval at', curPos);
-    clearInterval(gstore.myTimeInterval); 
-    players.checkInterval = 25;
-    gstore.myTimeInterval = setInterval(playerCheckPlay, players.checkInterval);
+    players.setCheckInterval(25); // vs 100 ms normally
+  }
+}
+
+players.saveCurPos = () => {
+  if (players.savePause) {
+    players.savePause = false;
+    const curPos = getPlayerCurTime();
+    if (!StopAt || curPos + 0.1 < StopAt) players.pausedAt = curPos;
+//console.log('Paused at', players.pausedAt);
   }
 }
 
@@ -1705,13 +1708,24 @@ console.log ('testPlay waiting for flags to be cleared');
 
   players.flag = 1;
   players.jsPlay = true;
-  players.checkInterval = 100;
+//  players.checkInterval = 100;
 console.log('trying to play from ', StartFrom, ' to ', StopAt);
   if (players.isHtml) { htmlPlay(); }
   else { await ytPlay(); }
 
-  gstore.myTimeInterval = setInterval(playerCheckPlay, players.checkInterval);
+  players.setCheckInterval(100);
 }
+
+players.setCheckInterval = ms => {
+  players.clearCheckInterval();
+  gstore.timeIntervalID = setInterval(playerCheckPlay, ms);
+  players.checkInterval = ms;
+}	
+
+players.clearCheckInterval = () => {
+  clearInterval(gstore.timeIntervalID);
+  gstore.timeIntervalID = null;
+}	
 
 const ytPlay = async () => {
   if (players.stream) { player.playVideo(); return; }
@@ -1770,26 +1784,24 @@ const getNextElement = (current, selector) => {
 const replayFragment = async (firstCue, isTTS = false) => {
   displayOverlay('');
   await sleep (300);
-/*
-  if (doubleClicked()) { // avoid playing lines if they are double clicked.
-// this is not real double click but change of selection leading to false positives
-console.log('return from replayFragment'); 
-    return; 
-  }
-*/
 
+console.log('== replayFragment: currentCue?', players.currentCue === firstCue);
   players.savePause = false;
-// Wait for the previous loop to stop
+
+  // Wait for the previous loop to stop
   while (players.looperInUse) {
     players.loopStopRequested = true;
 console.log('** Loop Stop Requested!')
+    if (players.jsPlay) playerStop();
+
     if (players.currentCue === firstCue) {
-console.log('** Stop: currentCue === firstCue')
       players.savePause = true;
+      players.saveCurPos();
       return;
     }
     await sleep (500);
   }
+
   players.loopStopRequested = false;
   setPlayStopBtn('Play');
   if (players.currentCue !== firstCue) players.pausedAt = '';
@@ -1832,7 +1844,6 @@ const hmsToSeconds = str => {
 }
 
 const fetchStartStop = cue => {
-  players.stream = false;
   const elStart = elid('ReplayFrom'), elEnd = elid('ReplayTo');
   if (cue !== playStopBtn) {
     elStart.value = '';
@@ -1850,22 +1861,20 @@ const fetchStartStop = cue => {
   StopAt = hmsToSeconds(end);
   if (StartFrom === StopAt) StopAt = 0;
   
-  if (isNaN(StartFrom) || StartFrom === null) players.stream = true;
-//  players.cueLength added 2026-03-28
 // players.fragmLength() will change if players.pausedAt, but players.cueLength won't.
-  else if (!players.pausedAt && StopAt) players.cueLength = StopAt - StartFrom;
+  if (!players.pausedAt && StopAt) players.cueLength = StopAt - StartFrom;
 console.log('StartFrom', StartFrom, ' StopAt', StopAt, 'Cue length', players.cueLength);
 }
 
 players.fragmLength = () => StopAt - StartFrom;
 const loopingNeeded = () => (elid('longLoopCheckbox').checked || 
-//   (players.fragmLength() < elid('thresholdForLooping').value)) && StopAt && StopAt >= StartFrom;
-  (players.cueLength && players.cueLength < elid('thresholdForLooping').value)) && StopAt && StopAt >= StartFrom;
+  (players.cueLength && players.cueLength < elid('thresholdForLooping').value)) && StopAt >= StartFrom;
 
 
 // *** Central looping function ***
 const replayFragmentCore = async (cue) => {
   fetchStartStop(cue);
+  players.stream = isNaN(StartFrom) || StartFrom === null;
 
   players.infiniteLoop2 = cue.dataset?.infiniteLoop;
 //  if (players.infiniteLoop2) players.pauseFactor = 0; // not needed yet?
@@ -1881,13 +1890,7 @@ const replayFragmentCore = async (cue) => {
       tstore.playerTitle.displayMsg(msg);
     }
 
-    await getVideoByURL(cue.getAttribute("url")); // since 2023-08-04, this fn doesn't wait till the video is loaded
-/*
-    if (players.mediaState !== 'loaded' || players.flag === -1) {
-      displayAlarmMessage('Nothing to play!'); 
-      return;
-    }
-*/
+    await getVideoByURL(cue.getAttribute("url")); 
   }
 
 // 2026-08-04 check for readiness to play moved here
@@ -2191,8 +2194,10 @@ const playCue = async (pbr = 1) => {
 console.log('Unmuted play: players.flag ',players.flag);
   while (players.flag === 1){
     if (players.loopStopRequested || players.infiniteLoop2) return;
-    if (player && player.state === 1) console.log('Waiting for playing to be finished');
-    else console.log('Waiting for playing to start');
+    if (!players.isHtml) {
+      if (player && player.state === 1) console.log('Waiting for playing to be finished');
+      else console.log('Waiting for playing to start');
+    }
     await sleep(100);
   }
 }
@@ -5115,35 +5120,39 @@ tstore.downloadTask = () => {
 
 tstore.translLangCtrl = {
   selectorId: 'tr-language-select',
-
-  load() {
-// Translation languages should not be the same as TTS b/c TTS languages may be limited
-    const langList = {ar: 'Arabic', be: 'Belarusian', bg: 'Bulgarian', cs: 'Czech', da: 'Danish', de: 'German', el: 'Greek', en: 'English', 
+  langList: {ar: 'Arabic', be: 'Belarusian', bg: 'Bulgarian', cs: 'Czech', da: 'Danish', de: 'German', el: 'Greek', en: 'English', 
       es: 'Spanish', fa: 'Persian', fi: 'Finnish', fr: 'French', he: 'Hebrew', hi: 'Hindi', hr: 'Croatian', it: 'Italian',
       id: 'Indonesian', ja: 'Japanese', ko: 'Korean', nl: 'Dutch', pl: 'Polish', 
       pt: 'Portuguese', ro: 'Romanian', ru: 'Russian', sk: 'Slovak', sv: 'Swedish', th: 'Thai', tr: 'Turkish', 
       uk: 'Ukrainian', vi: 'Vietnamese', zh: 'Chinese'
-    }
+  },
+
+  load() {
+// Translation languages should not be the same as TTS b/c TTS languages may be limited
 
     let ddl = '';
-    for (const lang in langList)
-      ddl += `<option value="${lang}" title="${langList[lang]}">` + lang + '</option>';
+    for (const lang in this.langList)
+      ddl += `<option value="${lang}" title="${this.langList[lang]}">` + lang + '</option>';
 
     const html = '<span tip = "Choose the target language for translation">Translate to </span>'
-    + `<select id="${this.selectorId}" class="drop-down darker-hover" name="language" onchange="handleTrLangSelect()">`
+//    + `<select id="${this.selectorId}" class="drop-down darker-hover" name="language" onchange="handleTrLangSelect()">`
+    + `<select id="${this.selectorId}" class="drop-down darker-hover" name="language">`
     + ddl
     + '</select>';
 
     setElHTML('transl-lang-box', html);
 
     const el = elid(this.selectorId);	
-    el.onchange = function() {
-//	  tstore.translLangCtrl.lang = el.value;
-//console.log('Transl lang selected', el.value);
-      localStorage.setItem('translLangCode', el.value); 
-    }
+    el.onchange = () => this.onChange(); 
 
     this.set();
+  },
+
+  onChange() {
+    const el = elid(this.selectorId);
+//console.log('Transl lang selected', el.value);
+    el.title = this.langList[el.value];
+    localStorage.setItem('translLangCode', el.value);
   },
 
   set(lang) {
@@ -5161,70 +5170,98 @@ tstore.translLangCtrl = {
 }
 
 tstore.transl = async (s, par) => {
-  const translateBtn = par?.el || tstore.translateBtn;
-  
-  const setBtnTip = s => {
-    const el = translateBtn;
-    el.setAttribute('tip', s);
+  const setBtnTip = (el, s) => {
+//    el.setAttribute('tip', s); // not needed if setBtnTip runs after await showTip(translateBtn)
     el.setAttribute('tip-style', par?.style || 'max-width:400px');
-//    el.hovered = 1;
+
 //console.log('Tip el', el.child)
     if (el.child) {
-//	  if (s.includes('<a ')) el.child.className = 'tooltip-link';
       el.child.innerHTML = s;
+      el.child.dataset.linger = 2500;
     }
   }
 
-  const getTranslLinks = s => '<small>' + getTranslationLinks(s) +'</small>';
+  const prepTlangCtrl = boxId => {
+    const sourceEl = elid(tstore.translLangCtrl.selectorId);
+    const el = sourceEl.cloneNode(true);
 
-// console.log('tstore.transl fn:', s);
-  if (tstore.busyTranslating) return;
-  let tip = getTranslLinks(s); 
-  setBtnTip(tip);
-  showTip(translateBtn);
-  s = s.trim();
-//  let tip = '<div class="spinner" style="width: 10px; height: 10px; margin: 0 0 .2em;"></div> click to use Google Translate';
+    el.value = sourceEl.value;
+//    el.id = 'tlang-select';
 
-  const targetLang = localStorage.getItem('translLangCode') || 'en';
+    el.onchange = () => {
+      sourceEl.value = el.value;
+      tstore.translLangCtrl.onChange();
+      el.title = sourceEl.title;
 
-  let res = gstore.vocab.getMeaning(s);
-  if (!res) {
-    if  (!gstore.translations[s]) gstore.translations[s] = {};
-    if  (gstore.translations[s][targetLang]) { // translation already exists. Language check can be added later
-      res = gstore.translations[s][targetLang];
-    } 
-    else if (!tstore.translError) { // the case when quota is reset, should be considered
-      try { 
-        tip = '<div class="spinner" style="width: 10px; height: 10px; margin: 0 0 .2em;"></div>' + getTranslLinks(s);
-        setBtnTip(tip);
-//        res = await gstore.getTranslation(s);
-//        const sourceLang = tstore.contextLang || getLangCode();
-        const sourceLang = getContextLang(gstore.engagedEl) || getLangCode();
-        if (sourceLang === targetLang) {
-          tip = '<div class="alarm-bgr">Same source and target language!</div>';
-          setBtnTip(tip);
-          return '';
+      getTranslResult(sourceText, el.value);  
+    }
+
+    elid(boxId).appendChild(el);
+    return el.value;
+  }
+
+  const showTrResult = txt => {
+    elid('tr-spinner').hidden = !!txt;
+    elid('tr-result').innerHTML = txt || '';
+    elid('tr-links').innerHTML = getTranslationLinks(sourceText);
+  }
+
+  const getTranslResult = async (s, lang) => {
+	showTrResult('');
+
+    let res = gstore.vocab.getMeaning(s);
+    if (!res) {
+      if (!gstore.translations[s]) gstore.translations[s] = {};
+      if (gstore.translations[s][lang]) { // translation already exists
+        res = gstore.translations[s][lang];
+      } 
+      else if (!tstore.translError) { // the case when quota is reset, should be considered
+        try {
+          const sourceLang = getContextLang(gstore.engagedEl) || getLangCode();
+          if (sourceLang === lang) {
+            res = '<div class="alarm-bgr">Same source and target language!</div>';
+            showTrResult(res);
+            tstore.busyTranslating = false;
+            return '';
+          }
+          tstore.busyTranslating = true;
+          res = await gstore.fetchTranslation(s, sourceLang, lang);
         }
-        tstore.busyTranslating = true;
-        res = await gstore.fetchTranslation(s, sourceLang, targetLang);
+        catch(e) {
+          tstore.translError = e.message;
+console.warn('Translation error:', e.message);
+          res = ''; 
+        }
+        gstore.translations[s][lang] = res;
       }
-      catch(e) {
-        tstore.busyTranslating = false;
-        tstore.translError = e.message;
-console.log('Translation error:', e.message);
-        res = ''; 
-      }
-      gstore.translations[s][targetLang] = res;
     }
-  }
-
+  
 //console.log('Translation result:', res);
-  tip = getTranslLinks(s); 
-  if (res) tip = res + '<hr style="margin-bottom:0">' + tip;
-  setBtnTip(tip);
+    showTrResult(res);  
+    tstore.busyTranslating = false;
+    return res;
+  } // end of getTranslResult();
 
-  tstore.busyTranslating = false;
-  return res;
+
+// Function action starts here
+  if (tstore.busyTranslating) return;
+
+  const translateBtn = par?.el || tstore.translateBtn;
+  await showTip(translateBtn);
+
+  const tlangBoxId = 'tlang-select-box';
+  const tip = `<div id="${tlangBoxId}" class="inblock"></div>&nbsp;`
+        + '<div id="tr-spinner" class="spinner inblock" style="width: 10px; height: 10px; margin: 0 0 .2em;"></div>'
+        + '<div id="tr-result" class="inblock"></div>'
+        + '<hr style="margin-bottom:0">'
+        + '<div id="tr-links" class="font-s"></div>';
+
+  setBtnTip(translateBtn, tip);
+
+  const sourceText = s.trim();
+// console.log('tstore.transl fn:', s);
+  const trLang = prepTlangCtrl(tlangBoxId);
+  getTranslResult(sourceText, trLang);
 }
 
 const getWordRef = (query) => {
