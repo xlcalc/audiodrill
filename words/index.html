@@ -1442,7 +1442,7 @@ const downloadText = () => {
 
 const setLangIndicator = lang => {
   const el = elid('lang-indicator');
-  if (!el) return;
+  if (!el || !lang) return;
 
   el.textContent = lang.toUpperCase();
 
@@ -1488,11 +1488,20 @@ const afterLangChange = () => {
   }
 }
 
+gstore.setLang = lang => {
+  if (!lang) return false;
+  setLanguage(lang);
+  storeLangCode(lang);
+  setLangIndicator(lang);
+  return true;
+}
+
 function analyzeURL() {
   const urlKeys = new URLSearchParams(location.search);
   const lang = urlKeys.get('lang') || localStorage.getItem('langCode') || 'en';
-  setLanguage(lang);
-  storeLangCode(lang);
+  gstore.setLang(lang);
+//  setLanguage(lang);
+//  storeLangCode(lang);
   
   adjustSpeeds(urlKeys.get('speed'));
 //  clickSplitBy(urlKeys.get('split') || localStorage.getItem('ttsSplitBy') || 'chunks');
@@ -1542,6 +1551,10 @@ const offerWords = async urlKeys => {
   const list = urlKeys.get('wlist') || urlKeys.get('w') || urlKeys.get('ngram') || initialWordList;
   loadElementWithText(list, 'ta', 'NO_DECODE'); 
 
+  if (urlKeys.get('wlist') || urlKeys.get('w')) {
+    gstore.setLang(detectLang(list));
+  }
+  
   if (urlKeys.get('ngram')) showNgram(list);
 }
 
