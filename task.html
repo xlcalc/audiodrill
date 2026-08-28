@@ -3321,7 +3321,8 @@ const initVideoResizer = () => {
 }
 
 const videoResizerReset = () => {
-  showVideoResizer(1);
+//  showVideoResizer(1);
+  showVideoResizer(players.mediaType !== 'audio');
   if (players.resizeTimeout) clearTimeout(players.resizeTimeout);
 // This works only for html video, since mouse movement over YT iframe can't be detected
   if (!players.mouseOverVideoResize && players.isHtml)
@@ -3336,7 +3337,8 @@ const getMaxVideoWidth = () => {
 
 const showVideoResizer = async show => {
 //  if (show && players.mediaInTask) return;
-  videoResize.style.display = show? 'flex' : 'none';
+//  videoResize.style.display = show? 'flex' : 'none';
+  showOrHideEl(videoResize, show);
 }
 
 const setPostRecActions = txt => {
