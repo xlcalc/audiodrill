@@ -2108,6 +2108,7 @@ const markCuePlaying = (cue, cmd) => {
 
 function setPause() {
   players.pauseFactor = parseFloat(elid('setpause').value);
+  tstore.pausesAV.setParam({extraPause: players.pauseFactor});
   const pauseInfo = (players.pauseFactor > 0) 
     ? players.pauseFactor + 'x of the cue length' 
     : '0 (no pause)';
@@ -6254,25 +6255,25 @@ tstore.initPausesInMedia = (media, options) => {
 
 tstore.pausesAV = {
   init() {
-    const options = {
+    const param = {
       minSilence: 700,
       minSound: 2,
       extraPause: players.pauseFactor,
       silenceThreshold: 0.015
     };
 
-    this.audioExtender = this.initMedia(elid('html-audio'), options);
-    this.videoExtender = this.initMedia(elid('html-video'), options);
+    this.audioExtender = this.initMedia(elid('html-audio'), param);
+    this.videoExtender = this.initMedia(elid('html-video'), param);
   },
   
-  initMedia(media, options) {
-    const extender = new PauseExtender(media, options);
+  initMedia(media, par) {
+    const extender = new PauseExtender(media, par);
     return extender;
   },
   
-  setOptions(option) {
-    this.audioExtender.setParam(options);
-    this.videoExtender.setParam(options);
+  setParam(par) {
+    if (this.audioExtender) this.audioExtender.setParam(par);
+    if (this.videoExtender) this.videoExtender.setParam(par);
   },
 /*
   enable(v) {
