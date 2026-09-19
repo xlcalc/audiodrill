@@ -597,7 +597,6 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(to bottom, #f5f5f5 0%, #fafafa 30%, #ffffff 45%, #ffffff 50%, #f5f5f5 65%, #e0e0e0 100%);
 }
 
-.height-36 {height: 36px !important}
 
 .x-audio-player {
 /*  margin-top: 0.4em !important;*/
@@ -1475,7 +1474,8 @@ async function getVideoByURL(url, task) {
     players.videoID = YTId;
 
 	players.mediaType = 'video';
-	showEl(videoResize);
+//	showEl(videoResize);
+    showVideoResizer(1);
   }
   else { //html player
     hidePlayerBox();
@@ -1519,9 +1519,8 @@ console.log('ERROR loading html video/audio', e);
       players.mediaType = isAudio? 'audio' : 'video';
       elid('html-audio').hidden = !isAudio;
       elid('html-video').hidden = isAudio;
-//      setElClass(htmlPlayer, 'height-36', isAudio);
-//      setElClass(htmlPlayer, 'x-audio-player', isAudio);    
-      setElClass(videoResize, 'hidden', isAudio);
+
+      showVideoResizer(!isAudio);
       showPlayerBox();
     }
   }
@@ -2840,11 +2839,9 @@ document.onclick = () => {
 elid('drill-wordlist').onclick = () => {
   window.open('/words/?w=' + wordList.textContent + getLangForUrl());
 }
-*/
 
 const getLangForUrl = () => players.ttsLang ? '&lang=' + players.ttsLang.slice(0,2) : '';
 
-/*
 elid('clear-wordlist').onclick = () => {
   hideElid('wordlist-box');
   wordList.textContent = '';
@@ -2986,6 +2983,10 @@ window.onload = () => {
   tstore.wb.init();
 
   tstore.nightModeSwitch.init();
+  
+  elid('html-audio').crossOrigin = "anonymous";
+  elid('html-video').crossOrigin = "anonymous";
+  tstore.pausesAV.init();
 //  setEmbeddedStyle();
 }
 
@@ -3236,7 +3237,8 @@ const adjustMediaInTask = (cmd) => {
   const audioCtrls = elid('audio-ctrls');
   
   if (players.mediaType === 'video') {
-    hideEl(videoResize);
+//    hideEl(videoResize);
+    showVideoResizer(0);
 
     xAudioBox.style.width = 'fit-content';
     xAudioBox.style.padding = '10px 10px 0 10px';
@@ -3324,6 +3326,7 @@ const videoResizerReset = () => {
 //  showVideoResizer(1);
   showVideoResizer(players.mediaType !== 'audio');
   if (players.resizeTimeout) clearTimeout(players.resizeTimeout);
+
 // This works only for html video, since mouse movement over YT iframe can't be detected
   if (!players.mouseOverVideoResize && players.isHtml)
     players.resizeTimeout = setTimeout(()=>{ showVideoResizer(0) }, 2000);
@@ -3338,6 +3341,7 @@ const getMaxVideoWidth = () => {
 const showVideoResizer = async show => {
 //  if (show && players.mediaInTask) return;
 //  videoResize.style.display = show? 'flex' : 'none';
+// setting videoResize.hidden doesn't work
   showOrHideEl(videoResize, show);
 }
 
@@ -3568,7 +3572,7 @@ console.log('movePlayer: players.ytAPI', players.ytAPI);
     prepXAudio();
     getVideoByURL(media.getAttribute('src'));
   }
-  else showEl(videoResize);
+  else showVideoResizer(1); //showEl(videoResize);
 
 //  setElClass(htmlPlayer, 'x-audio-player', media);
   setElClass(elid('html-audio'), 'x-audio-player', media); // there's no x-video-player class
@@ -3583,7 +3587,8 @@ const closeXaudio = () => {
 }
 
 const prepXAudio = () => {
-  hideEl(videoResize);
+//  hideEl(videoResize);
+  showVideoResizer(0);
   if (xAudioBox.isReady) return; // in order not to create additional audioCtrls divs
 
 //  playerBox.style.display = 'inline-block';	
@@ -4630,7 +4635,8 @@ tweakedTTSLine(s) {
     const passed = [];
     const strParts = s.split(/[\s\u00A0]+/); // split at 1+ spaces and &nbsp;'s
     for (const part of strParts) {
-      if (!/\p{Script=Latin}/u.test(part)) passed.push(part);
+//      if (!/\p{Script=Latin}/u.test(part)) passed.push(part);
+      if (lang === detectLang(part)) passed.push(part);
     }
 
     return passed.join(' ');
@@ -5991,6 +5997,291 @@ console.log('Whiteboard text', txt);
     this.contentEl.innerHTML = this.getIframe(key);
   },
 }
+
+class PauseExtender {
+  constructor(media, options = {}) {
+    this.media = media;
+
+    this.options = {
+      minSilence: 700, // msec
+      minSound: 2, // seconds
+      extraPause: 1.5, // factor
+      silenceThreshold: 0.015,
+      fftSize: 2048,
+      ...options
+    };
+
+    this.audioContext = null;
+    this.source = null;
+    this.analyser = null;
+    this.samples = null;
+
+    this.running = false;
+    this.animationFrame = null;
+
+//	this.pauseExtensionEnabled = true;
+//    this.silenceStartedAt = null;
+    this.pauseExtended = false;
+
+    // True while PauseExtender is intentionally pausing/resuming the media.
+    this.extending = false;
+
+    // True once sound has been detected during the current
+    // uninterrupted user playback run.
+    this.hasHeardSoundInThisRun = false;
+
+    // Used to distinguish our media.play() from a user play.
+    this.internalPlay = false;
+
+    // Used to distinguish our media.pause() from a user pause.
+    this.internalPause = false;
+
+    this.handlePlay = this.handlePlay.bind(this);
+    this.handlePause = this.handlePause.bind(this);
+
+    this.media.addEventListener("play", this.handlePlay);
+    this.media.addEventListener("pause", this.handlePause);
+  }
+
+  async handlePlay() {
+    // If this play was caused by extendPause(), this is a continuation
+    // of the existing playback run.
+    if (this.internalPlay) {
+      this.internalPlay = false;
+      return;
+    }
+
+//	if (!this.pauseExtensionEnabled) return;
+
+    // This is a genuine user/application playback start.
+    //
+    // Every new play starts a fresh run, regardless of currentTime.
+    this.hasHeardSoundInThisRun = false;
+    this.silenceStartedAt = null;
+    this.soundStartedAt = null;
+    this.pauseExtended = false;
+
+    await this.start();
+  }
+
+  handlePause() {
+    // Pause caused by PauseExtender.
+    if (this.internalPause) {
+      this.internalPause = false;
+      return;
+    }
+
+//	if (!this.pauseExtensionEnabled) return;
+    // Genuine user/application pause.
+    //
+    // The next play starts a fresh run.
+    this.stop();
+  }
+
+  async start() {
+    if (this.running || this.media.duration === Infinity) return;
+
+    this.running = true;
+
+    this.audioContext =
+      this.audioContext ||
+      new AudioContext();
+
+    if (this.audioContext.state === "suspended") {
+      await this.audioContext.resume();
+    }
+
+    if (!this.source) {
+      this.source =
+        this.audioContext.createMediaElementSource(this.media);
+
+      this.analyser =
+        this.audioContext.createAnalyser();
+
+      this.analyser.fftSize = this.options.fftSize;
+
+      this.source.connect(this.analyser);
+      this.analyser.connect(this.audioContext.destination);
+
+      this.samples =
+        new Float32Array(this.analyser.fftSize);
+    }
+
+    this.detect();
+  }
+
+  stop() {
+    this.running = false;
+
+    if (this.animationFrame !== null) {
+      cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = null;
+    }
+
+    this.silenceStartedAt = null;
+    this.soundStartedAt = null;
+    this.pauseExtended = false;
+    this.extending = false;
+  }
+
+  getRms() {
+    this.analyser.getFloatTimeDomainData(this.samples);
+
+    let sum = 0;
+
+    for (let i = 0; i < this.samples.length; i++) {
+      const sample = this.samples[i];
+      sum += sample * sample;
+    }
+
+    return Math.sqrt(sum / this.samples.length);
+  }
+
+  detect = () => {
+    if (!this.running) return;
+
+    if (
+      this.media.paused ||
+      this.media.ended ||
+      this.extending
+    ) {
+      this.animationFrame =
+        requestAnimationFrame(this.detect);
+
+      return;
+    }
+
+    const rms = this.getRms();
+    const now = performance.now();
+
+    const silent =
+      rms < this.options.silenceThreshold;
+
+    if (silent) {
+      this.silenceStartedAt ??= now;
+
+      const silenceDuration =
+        now - this.silenceStartedAt;
+
+      const soundDuration = this.media.currentTime - this.soundStartedAt;
+
+      // A pause is extendable only if sound has already occurred
+      // during THIS user playback run.
+      if (
+        this.hasHeardSoundInThisRun &&
+        silenceDuration >= this.options.minSilence &&
+        soundDuration >= this.options.minSound &&
+        !this.pauseExtended
+      ) {
+        this.soundStartedAt = null;
+        this.extendPause(soundDuration * 1000);
+      }
+    } else {
+      // Sound has now occurred during this playback run.
+      this.soundStartedAt ??= this.media.currentTime;
+      this.silenceStartedAt = null;
+
+      this.hasHeardSoundInThisRun = true;
+      this.pauseExtended = false;
+    }
+
+    this.animationFrame =
+      requestAnimationFrame(this.detect);
+  } // end of detect()
+
+  extendPause(msec) {
+    this.extending = true;
+    this.pauseExtended = true;
+
+    // Mark this pause as ours before calling pause().
+    this.internalPause = true;
+    this.media.pause();
+//console.log('Pausing for', msec * this.options.extraPause);
+
+    setTimeout(() => {
+      if (!this.running) {
+        this.extending = false;
+        return;
+      }
+
+      // Mark this play as ours before calling play().
+      this.internalPlay = true;
+
+      this.media
+        .play()
+        .catch(() => {
+          // Autoplay/user-interaction restrictions can cause
+          // play() to reject.
+          this.internalPlay = false;
+        })
+        .finally(() => {
+          this.extending = false;
+        });
+
+    }, msec * this.options.extraPause);
+  }
+
+  setParam(options) {
+    this.options = {
+      ...this.options,
+      ...options
+    };
+  }
+/*
+  async enable(v) {
+    this.pauseExtensionEnabled = v;
+    if (v) return;
+
+    if (this.source) {
+      this.source.disconnect();
+      this.analyser?.disconnect();
+    
+      this.source = null;
+      this.analyser = null;
+      this.samples = null;
+    }
+
+    if (this.audioContext) {
+      await this.audioContext.close();
+    this.audioContext = null;
+    }  
+  }
+*/
+}
+
+tstore.initPausesInMedia = (media, options) => {
+}
+
+tstore.pausesAV = {
+  init() {
+    const options = {
+      minSilence: 700,
+      minSound: 2,
+      extraPause: players.pauseFactor,
+      silenceThreshold: 0.015
+    };
+
+    this.audioExtender = this.initMedia(elid('html-audio'), options);
+    this.videoExtender = this.initMedia(elid('html-video'), options);
+  },
+  
+  initMedia(media, options) {
+    const extender = new PauseExtender(media, options);
+    return extender;
+  },
+  
+  setOptions(option) {
+    this.audioExtender.setParam(options);
+    this.videoExtender.setParam(options);
+  },
+/*
+  enable(v) {
+    this.audioExtender.enable(v); 
+    this.videoExtender.enable(v);
+  },
+*/
+}
+
 
 /*
 async function getYoutubeTitle(videoUrl) {

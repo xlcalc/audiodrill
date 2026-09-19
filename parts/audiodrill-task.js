@@ -278,7 +278,6 @@ function loadElementWithText(sourceText, eID, cmd) {
     renderTA(ta.text); 
     return; 
   }
-//  else { setElHTML(eID, text); }
   else { writeHtmlIntoEl(text, eID); }
 
 //  gstore.tips.initAll(); //experimental 2025-10-12
@@ -377,7 +376,6 @@ function parseTaskText(sourceText, saveTask) {
 //  const viewGaps2 = '<span title="Toggle gaps"><x-switch>"toggleGaps(this)" title="Toggle gaps"</x-switch></span>';
   const viewGaps2 = '<x-switch title="Toggle gaps">"toggleGaps(this)"</x-switch>';
 
-//  let s = decodedText(sourceText);
   let s = sourceText;
 
   s = processTaskMedia(s); // there're bugs related to timestamps in cues, see with voa115 task
@@ -410,10 +408,7 @@ function parseTaskText(sourceText, saveTask) {
 //previously parseTextFile fn preceeded tags replacement above. This change needs more testing
   s = parseTextFile(s);
 
-//  s = s.replace(/<x-br>\r?(<br>)?/g, '<x-br></x-br>')
-//    .replace(/<\/h\d><br>/g, s => s.slice(0, 5) + '<x-br></x-br>') 
   s = s // try to change the order of two first replacements
-//    .replace(/<\/h\d><br>/g, s => s.slice(0, 5) + '<x-br>')
     .replace(/<\/h\d>\s*?<br>/g, s => s.slice(0, 5))
     .replace(/<x-br>(<br>)?/g, '<x-br></x-br>')
     .replace(/<\/div>\n?<br>/g, '</div><x-br-l></x-br-l>')
@@ -497,9 +492,7 @@ const parseAccentTag = txt => {
 
 const runTaskCmd = (el, cmd) => {
   if (!el) return 0;
-//  if (cmd === 'PAIRED-LINES') {
-//console.log(el);  
-//  }
+
   if (cmd === 'COPY2TA') {
     el.classList.add('inblock',  'margin-1em', 'hover-overlay-s');
 	el.title = 'Click to copy to clipboard';
@@ -539,7 +532,6 @@ console.log(txt);
 	el.hidden = false;
     return 1;
   }
-
 }
 
 gstore.copyVoiceList = suffix => {
@@ -697,10 +689,7 @@ const getPathFromUrl = url => url.substring(url.lastIndexOf('/')+1, 0);
 const getFnameFromUrl = url => url.substring(url.lastIndexOf('/')+1);
 
 function getNewURL(url, keep = false) {
-//  if (!this.url) this.url = ''; //saved url
-//  const newURL = getRelatedURL(this.url, adjustUrl(url));
   const newURL = getRelatedURL(adjustUrl(gstore.keptUrl), adjustUrl(url));
-//  if (keep) this.url = newURL;
   if (keep) gstore.keptUrl = newURL;
   return newURL;
 }
@@ -1197,8 +1186,6 @@ const hideTip = async () => {
 */
 gstore.tips = {
   init(el) {
-//      el.setAttribute('onmouseenter', "showTip(this)");
-//      el.setAttribute('onmouseleave', "leaveTipParent(this)");
       el.onmouseenter = () => showTip(el);
       el.onmouseleave = () => leaveTipParent(el);
 //	  el.classList.add('task-tip');
@@ -1225,9 +1212,6 @@ const showTip = async el => {
   el.hovered = 1;
 //console.log('Show tip', el);
   if (el.child) {
-//	setTipPosition(el.child, el);
-// what if tip content has changed, like in dictation?
-//    el.child.innerHTML = el.getAttribute('tip'); // this will break tipStore.get() pathway
     if (!el.child.classList.contains('arrow')
     && !setTipContent(el, el.child)) {
 // a typical tip whose content can't be set from parent or tipStore
@@ -1257,15 +1241,13 @@ const createTip = el => {
 // are tip elements ever removed?
   const tip = document.createElement('div');
 
-//  tip.setAttribute('onmouseenter', "hoverTipChild(this)"); // is it needed for arrows?
-//  tip.setAttribute('onmouseleave', "leaveTipChild(this)"); // is it needed for arrows?
   tip.onmouseenter = () => hoverTipChild(tip); // is it needed for arrows?
   if (el.dataset.persistentTip === undefined)
     tip.onmouseleave = () => leaveTipChild(tip); // is it needed for arrows?
-  else {
+//  else {
 //	tip.init = true;
 //	gstore.hideOnClickArr.push(tip);
-  }
+//  }
 
 // persistent tips can be implemented: they'd hide on click outside, not on mouseleave
 
@@ -1348,9 +1330,6 @@ const setTipContent = (parent, tip) => {
 }
 
 const setTipImageWidth = tip => {
-//  let width = getTipWidth(); // doesn't work until a tip has been shown;
-//  if (!width) return;
-//  width = width.slice(0, -2); // remove 'px'
   width = '200';
   if (tip.firstChild.nodeName === 'IMG')
     tip.firstChild.width = width;
@@ -1480,14 +1459,6 @@ console.log('Warning: no audio tracks, exiting...');
 	audioChunks = [];
     mediaRecorder.start();
   }
-  
-/*
-  let audioUrl;
-  const clean = async () => {
-    if (audioUrl) URL.revokeObjectURL(audioUrl);
-console.log('URL.revokeObjectURL(audioUrl):', audioUrl);
-  }
-*/
 
   const stop = (keep = false) => new Promise(resolve => {
     mediaRecorder.onstop = () => {
@@ -1544,14 +1515,7 @@ const toggleRecSwitch = (el) => {
 
 const audioRecorder = function() {
   let cmd, recMode, recState, recorder, record, audio = '', pbr = 1, pbrBasic = 1,
-//    startTime, stopTime, recLength, 
 	isAudioLocked, keepRecorder;
-/*
-  const getNewRecorder = async () => {
-    recorder = await getAudioRecorder(recMode);
-console.log('New recorder ready');
-  }
-*/
 
   const cleanAudio = (audio) => {
 	if (audio) { 
@@ -1569,7 +1533,6 @@ console.log('audioRecorder cmd', newCmd);
 	    newCmd = 'REC_START_MIC';
        if (!audioRecAllowed() || isAudioLocked 
        || recState === 'started') return;
-//     else continue 
 
       case 'REC_START_SCREEN':
       case 'REC_START_MIC_SCREEN':
@@ -1611,21 +1574,17 @@ console.log('REC_STOP_AND_LOCK');
        if (recState !== 'started') return;
        recState = 'stopping';
        cmd = newCmd; 
-//       stopTime = Date.now();
-//       recLength = stopTime - startTime;
 //console.log('Record length =', recLength);
 
        record = await recorder.stop(keepRecorder);
 	   audio = record.audio;
        recState = 'recorded'; 
 console.log('AUDIO RECORDED');
-//       if (audio) getNewRecorder();
       break;
 
       case 'REC_PLAY':
        if (!audioRecAllowed()) return;
 console.log('cmd', cmd);
-//       if (record && recState === 'recorded') { 
        if (audio) { 
 	     audio.currentTime = 0;
          audio.playbackRate = pbr/pbrBasic;
@@ -1665,8 +1624,7 @@ console.log('REC_PAUSE');
       break;
 
       case 'REC_DISCARD':
-//       record = '';
-	     audio = cleanAudio(audio);
+       audio = cleanAudio(audio);
        recState = 'discarded';
 console.log('REC_DISCARDED');
        isAudioLocked = false;
@@ -1851,16 +1809,6 @@ const advSpeedCtrlEl = () => {
 `;
 }
 
-/*
-const recSwitchEl = `
-Speech recording allowed
-<label class="switch show-focus">
-  <input id="rec-switch" type="checkbox" onchange="clickRecSwitch()">
-  <div class="slider round"></div>
-</label>
-`;
-*/
-
 const recSwitchEl = `
 Speech recording allowed
 <button class="plain-button switch-btn show-focus" onclick="toggleRecSwitch(this)">
@@ -1870,7 +1818,6 @@ Speech recording allowed
 
 const adjustRepNum = (el) => {
   setRepNum();
-//  const repnum = parseInt(elid('rep-num').value);
   const repnum = getReplayNumber();
   if (!repnum) return;
   
@@ -1990,7 +1937,6 @@ const highlightText = txt => {
 	const tipClass = (txt === '◦')? 'lookup-tip' : 'task-tip'; // a stopgap for alternative tip classes
 
 	txt = highlightText(txt);
-//	tipHtml = highlightText(tipHtml); // b/c highlightText is applied in setTipContent
 	const tipAnchorId = tipStore.add(tipHtml);
 	return `<span id=${tipAnchorId} class=${tipClass} tip>${txt}</span>`;
   }
@@ -2005,12 +1951,6 @@ const highlightText = txt => {
 	}
 	return getTipTag(tip, txt);
   }
-/*
-  const expandTip2 = s => {
-	const parts = getParts(s, 'tip:');
-	return getTipTag(parts[1].trim(), parts[0]);
-  }
-*/
 
   const expandBtn = (txt, code) => {
 //    const match = code.match(/style\s*=\s*(['"])(.*?)\1/i);
@@ -2080,7 +2020,6 @@ const highlightText = txt => {
     let say = '';
     if (/\[|<<|\]\(say:/.test(s)) {
 	  say = 'say="' + getTextToSay(s) + '"'
-//      s = s.replace(/\[.*?\]\(say:.*?\)/g, s => s.split('](say:')[0].slice(1)); 
       s = s.replace(/\[(.*?)\]\(say:.*?\)/g, (match, p1) => p1); 
     }
     return `<tts pos="before" ${say}>${s}</tts>`;
@@ -2094,32 +2033,7 @@ const highlightText = txt => {
 
     return `<tts ${pos} say="${say}" lang="${lang}">${s}</tts>`;
   }
-/*
-  const ttsLineBtnOld = s => {
-    s = s.slice(3); // remove <))
-	let say = '';
-    if (/\[\[|<<|\]\(say:/.test(s)) {
-	  say = 'say="' + getTextToSay(s) + '"'
-//      s = s.replace(/\[.*?\]\(say:.*?\)/g, s => s.split('](say:')[0].slice(1)); 
-      s = s.replace(/\[(.*?)\]\(say:.*?\)/g, (match, p1) => p1); 
-	}
-    return `<tts pos="before" ${say}>${s}</tts>`;
-  }
 
-  const ttsBtnOld = s => {
-    if (s.startsWith('<))')) {
-//      return '<tts pos=before>' + s.slice(4, -1) + '</tts>'; 
-      s = s.slice(3, -1).replace(/\[|\]/g, '');
-      const say = getTextToSay(s);
-	  return `<tts pos="before" say="${say}">${s}</tts>`;
-    } else
-
-    if (s.startsWith('<)')) // Shows only the speaker btn, not the text. Don't use formatted text for this!
-	  return '<tts say="' + s.slice(3, -1) + '"></tts>'; 
-  }
-
-//  const ttsBtn3 = s => '<tts pos="before">' + s.split('](')[0].slice(1) + '</tts>'; 
-*/
   const getParts = (s, splitter = '') => s.slice(1, -1).split('](' + splitter);
 
   const expandLink = s => { 
@@ -2150,17 +2064,14 @@ const highlightText = txt => {
 	} else {
 	  url = atag.slice(0, firstSpaceAt);
 	  attributes = atag.slice(firstSpaceAt + 1);
-//	  if (!attributes.includes('class="') && !attributes.includes('style="'))
 	  if (!/class="|style="|onclick="/.test(attributes))
         attributes = 'title="' + attributes + '"';
 	}
 
-//	const target = (url.startsWith('http'))? 'target="_blank"' : ''; // " can interfere with tips
 	const target = (url.startsWith('http'))? 'target=_blank' : ''; 
 
     if (url.endsWith('.txt') && !url.includes('?t=') && !url.includes('url=')) // for task filenames
 	// use compact url instead of getNewURL
-//      url = getActivityKey() + squeezedUrl(url, true); // what if url starts with / or ../ ?
       url = getActivityKey() + squeezedUrl(url, false); // what if url starts with / or ../ ?
 
     return [`<a href=${url} ${attributes} ${target}>${atext}</a>`, url];
@@ -2215,7 +2126,6 @@ const highlightText = txt => {
       .filter(opt => !styles[opt])
       .join(';');
 
-//    if (!isNaN(url) && gstore.docBodyImages.length) return gstore.docBodyImages[url].outerHTML;
     if (!isNaN(url) && gstore.docBodyImages.length)
       return `<x-img data-img-index="${url}" data-class="${cl}"></x-img>`; 
 	return `<img src=${getNewURL(url)} class="${cl}" style="max-width:75%; ${st}; ${st2}">`; 
@@ -2239,9 +2149,7 @@ const highlightText = txt => {
   .replace(/\\>/g, '&gt;')
   .replace(/\\([*|(){},\.~`^#=])/g, (match, p1) => `___ESCAPED_${p1.charCodeAt(0)}___`)
 
-//.replace(/\n##font-size:(\s?.*)##\x20(.*)(\n|$$)/g, (s, p1, p2) => toStyle(p1, p2)) // why $$ in regex?
   .replace(/\n##font-size:(\s?.*)##\x20(.*)(\n|$)/g, (s, p1, p2) => toStyle(p1, p2))
-//  .replace(/\r?\n#+\x20.*\r?\n/g, s => toHeader(s))
   .replace(/(^|\n)#+\x20.*($|\n)/g, s => toHeader(s))
   .replace(/(^|\n)\x20\*./g, s => '\n\&thinsp;&bull;&thinsp;' + s[3]) // bullet point
   .replace(/(^|\n)\x20\S/g, s => '\n&emsp;' + s[2]) // indent
@@ -2256,7 +2164,6 @@ const highlightText = txt => {
 //   .replace(/\*\*(?!\*)[\S^\*].*?[\S^\*]\*\*(?!\*)/g, s => mark(s, 'i', 2)) //stopgap solution
   .replace(/\^\^.+?\^\^/g, s => mark(s, 'x-small-caps', 2))
   .replace(/\=\=.+?\=\=/g, s => mark(s, 'mark', 2))
-//   .replace(/\=\=(.+?)\=\=/g, (s, p1) => `<mark>${p1}</mark>`)
 
   .replace(/\|_.+?_\|/g, s => mark(s, 'kbd', 2))
   .replace(/``.+?``/g, s => mark(s, 'kbd', 2))
@@ -2268,15 +2175,12 @@ const highlightText = txt => {
   .replace(/\~[\S^\~].*?[\S^\~]\~/g, s => mark(s, 'i')) // doesn't work for ~a~ one-letter case
 // underscores do not work well for italics b/c '_' is used in gaps and _blank attribute of <a> tags
 
-//   .replace(/\*\*/g, '{two-stars}') // preserve ** used e.g., for drop-down lists
   .replace(/\*\*/g, '{star}{star}') // preserve ** used e.g., for drop-down lists
   .replace(/\*[\S^\*]\*/g, s => mark(s, 'b')) // for *a* one-letter case
   .replace(/\*[\S^\*].*?[\S^\*]\*/g, s => mark(s, 'b')) // doesn't work for *a* one-letter case
-//   .replace(/{two-stars}/g, '**') // restore **
   .replace(/{star}/g, '*') // insert *
 
 // {x-vars .*?} can be added 
-//  .replace(/\<https?:\/\/.*?\>/g, s => simpleATag(s.slice(1, -1))) // hyperlink as <https?://...>  
   .replace(/<(https?:\/\/.*?)>/g, (_, url) => simpleATag('', url)) // hyperlink as <https?://...>  
   .replace(/<(www\..*?)>/g, (_, url) => simpleATag('https://', url)) // hyperlink as <https?://...>  
 
@@ -2298,8 +2202,6 @@ const highlightText = txt => {
 //  .replace(/\<\)\)?\s*?\[.*?\]/g, s => ttsBtn(s)) // tts for <))[text]... or <)[text]...
 //  .replace(/\<\)\)?\s*?\[([^\[]+\])/g, s => ttsBtn(s)) // tts for <))[text]... or <)[text]... but not <)) [[text]
 //  .replace(/\<\)(\))?\s*\[([^\[]+)\](?:\(lang:\s*([^)]+)\))?/g, (_, show, s, lang) => ttsBtn(_, show, s, lang)) // tts for <))[text]... or <)[text]... but not <)) [[text]
-//  .replace(/<\)\).*?(?=\n|\r|<br>|$|<\)\)?|<x-br)/g, s => ttsLineBtn(s)) 
-//  .replace(/<\)\).*?(?=\n|<br>|$|<\)\)?|<x-br)/g, s => ttsLineBtn(s)) 
   .replace(/<\)\)(.*?)(?=\n|<br>|$|<\)\)?|<x-br)/g, (_, p1) => ttsLineBtn(p1)) 
   // tts for text before any of these tockens:
   // \n, \r, <br>, [end of line], <), <)), <x-br
@@ -2339,19 +2241,6 @@ const ioRequest = async (url, method = 'GET', data = undefined) => {
   return txt// === 'null' ? null : txt;
 }
 
-/*
-const fetchTextCore = async url => {
-  const response = await fetch(url);
-
-  if (!response.ok) {
-//    throw new Error('File loading error: ' + response.status);
-    return '';
-  }
-
-  const txt = await response.text();
-  return txt;
-}
-*/
 const fetchDirInfo = async () => {
   gstore.dirInfo = 'LOADING';
   try {
@@ -2385,8 +2274,7 @@ console.log('Debug data:', JSON.stringify(data));
 
     if (cmd === 'VOICES_CHANGED_EVENT') loadLangList();
   
-    if (cmd === 'NO_VOICE') displayAlarmMessage('There is no voice for ' + langListCtrl().value);
-	
+    if (cmd === 'NO_VOICE') displayAlarmMessage('There is no voice for ' + langListCtrl().value);	
   }
 
   if (cmd === 'UTTERANCE_ERROR') displayAlarmMessage('Try a different voice in Settings');
@@ -2547,7 +2435,6 @@ const loadCommonItems = () => {
 
   document.querySelectorAll('.settings-icon') .forEach(el => el.innerHTML = gstore.settingsIcon);
   setElHTML('top-menu-settings', gstore.settingsIcon + '<span style="padding: 0 .2em; vertical-align: -10%;">Settings</span>');
-//  setElHTML('top-menu-settings', gstore.settingsIcon + 'Settings');
 
   adjustSpeeds(localStorage.getItem('speedFactors') || '1, 0.7');
   setPBR();
@@ -2560,7 +2447,6 @@ console.log('langListCtrl', !!langListCtrl());
 	langNames: gstore.langNames, 
 	langCodes: gstore.langCodes
   };
-//  ttsInitParam.langSelector = elid('language-select');
   tts.init(ttsInitParam);
   
   loadLastVoices();
@@ -2652,14 +2538,11 @@ const setVoiceList = (par) => {
   voiceSelector.hidden = numOfVoices < 2;
 
 // 2026-08-21: same code is for tasks and words pages
-//  if (par.selectVoice) chooseVoice(n); // for words and phrases page
-//  else if (par.voices[0]) { // for tasks page
-    const vname = gstore.pickedVoices[getLangCode()];
-    const voice = vname ? par.voices.find(v => v.name === vname) : null;
+  const vname = gstore.pickedVoices[getLangCode()];
+  const voice = vname ? par.voices.find(v => v.name === vname) : null;
 
-    tts['spVoice' + n] = voice || par.voices[0] || '';
-    voiceSelector.title = voiceSelector.value = voice?.name || par.voices[0]?.name || '';
-//  }
+  tts['spVoice' + n] = voice || par.voices[0] || '';
+  voiceSelector.title = voiceSelector.value = voice?.name || par.voices[0]?.name || '';
 
   if (!n) gstore.copyVoiceList('-intask');
 }
@@ -2710,11 +2593,8 @@ const addVoicesCtrl = n => {
   };
 }
 
-//gstore.pickedVoices = {};
-
 const handleVoiceSelect = (option, v='', initialized = '') => {
 //console.log('TTS voice option', option);
-//  if (!initialized) tts['manuallyPickedVoice' + v] = option.value;
 
 // Saving voice name added 2026-06-30 (experimental)
   gstore.pickedVoices[getLangCode()] = option.value;
@@ -2780,7 +2660,6 @@ function handleDraggingNew(dropZone, addZone) {
   function allowDrop(event) {
     event.preventDefault();
     event.stopPropagation(); 
-//	dropZone.firstElementChild.style.backgroundColor = '#acc';
     markDropZone(1);
   }
     
@@ -2966,7 +2845,6 @@ const isYouTubeId = s => /^[a-zA-Z0-9_-]{11}$/.test(s);
 
 function getYouTubeId(s) {
   // Bare video ID
-//  if (/^[a-zA-Z0-9_-]{11}$/.test(s)) {
   if (isYouTubeId(s)) return s;
 
   s = s.replaceAll('%3F', '?'); // more replacements may be needed later
@@ -3021,7 +2899,6 @@ const checkStringVsRef = (str, ref, lang) => {
   ref = ref.replaceAll("’", "'");
   const strArr = getSegmentedText(str, {lang: lang || getLangCode()});
   const refArr = getSegmentedText(ref, {lang: lang || getLangCode()});
-//  return alignTokens(strArr, refArr);
   return alignTokensWithPunct(strArr, refArr);
 }
 
@@ -3174,86 +3051,6 @@ function alignTokensWithPunct(strTokens, referenceTokens) {
   return [match, res];
 }
 
-/*
-function alignTokensWithPunctOld(strTokens, referenceTokens) {
-  // Edge case with hyphens isn't treated yet
-  const punctuationSet = new Set(`•.,!?;:”“'"()[]{}-–—…。？！，、`); // extend as needed
-  const isWord = t => t && !punctuationSet.has(t);
-
-  const refWords = referenceTokens.filter(isWord);
-  const str = strTokens.filter(isWord);
-
-  const ref = refWords.map(s => s.toLowerCase());
-  const hyp = str.map(s => s.toLowerCase());
-
-  const m = ref.length;
-  const n = hyp.length;
-
-  // DP table
-  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-  for (let i = 0; i <= m; i++) dp[i][0] = i;
-  for (let j = 0; j <= n; j++) dp[0][j] = j;
-
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      const cost = ref[i - 1] === hyp[j - 1] ? 0 : 1;
-      dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,      // deletion
-        dp[i][j - 1] + 1,      // insertion
-        dp[i - 1][j - 1] + cost // substitution
-      );
-    }
-  }
-
-  // Backtracking
-  let i = m, j = n;
-  let rIdx = referenceTokens.length - 1;
-  const out = [];
-  let match = true;
-
-  while (rIdx >= 0 || i > 0 || j > 0) {
-    const t = referenceTokens[rIdx];
-
-    // Space token
-    if (rIdx >= 0 && t === "") {
-//      out.unshift(" ");
-      rIdx--;
-      continue;
-    }
-
-    // Punctuation token
-    if (rIdx >= 0 && punctuationSet.has(t)) {
-      out.unshift(t);
-      rIdx--;
-      continue;
-    }
-
-    // Word alignment
-    if (i > 0 && j > 0 && ref[i - 1] === hyp[j - 1]) {
-      out.unshift(' ' + refWords[i - 1]);
-      i--; j--; rIdx--;
-    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {
-      out.unshift(" ___"); // deletion
-	  match = false;
-      i--; rIdx--;
-    } else if (j > 0 && dp[i][j] === dp[i][j - 1] + 1) {
-      out.unshift(` <span class="extra-word">${str[j - 1]}</span>`); // insertion
-	  match = false;
-      j--;
-    } else if (i > 0 && j > 0) {
-      out.unshift(` <span class="wrong-word">${str[j - 1]}</span>`); // substitution
-	  match = false;
-      i--; j--; rIdx--;
-    } else {
-      rIdx--; // fallback for remaining punctuation or spaces
-    }
-  }
-
-  const res = out.join("").replace(/^\s/, ''); // remove first space
-console.log('STT checked:', res);
-  return [match, res];
-}
-*/
 // =======
 
 function isOutOfView(el, offset = 0) {
@@ -3261,7 +3058,7 @@ function isOutOfView(el, offset = 0) {
   return rect.top < offset || rect.bottom > window.innerHeight - offset;
 }
 
-function hideParent(el) { el.parentElement.hidden = true }
+//function hideParent(el) { el.parentElement.hidden = true }
 
 function getObjectByPath(path, root = window) {
   pathArr = path.split('.');
@@ -3291,7 +3088,6 @@ const setEmbeddedStyle = () => {
     el.classList.add('small-font', 'float-right');
     el.classList.remove('flex-center');
     el.innerHTML = highlightText('~Powered by&nbsp;[Audiodrill](https://www.audiodrill.com)~');
-//    elid('bottom-bar').after(el);
   }
 }
 
@@ -3300,7 +3096,6 @@ const wrCallback = (cmd, data) => {
   if (cmd === 'HANDLE_REF') {
     gstore.currentQuery = tts.currentQuery = data;
   }
-//  if (cmd === 'YOUGLISH_LINK_NEEDED') return true;
 }
 
 /*
