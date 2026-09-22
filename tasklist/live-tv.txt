@@ -9,15 +9,15 @@ Keyboard shortcuts:
 Tip: You can read live captions [in Chrome](https://support.google.com/chrome/answer/10538231) and in [Windows 11](https://www.microsoft.com/en-us/windows/learning-center/choose-best-caption-settings). Chrome also offers live translation.</div><hr>
 </x-p>
 <i>In English</i>
-[Sky News (UK)](stream: YDvsBbKfLPA web: https://news.sky.com), [ABC News (AU)](stream: vOTiJkg1voo web: https://iview.abc.net.au/channel/news), [CNA (SG)](stream: XWq5kBlakcQ web: https://www.channelnewsasia.com/watch), [DW News (DE)](stream: LuKwFajn37U web: https://www.dw.com/en/live-tv/channel-english), [Euronews (EN)](stream: pykpO5kQJ98 web: https://www.euronews.com), [France 24 English (FR)](stream: HvZt-nh9sGg web: https://www.france24.com/en/live).
+[Sky News (UK)](stream: xDWQ3LkccY8 web: https://news.sky.com), [ABC News (AU)](stream: vOTiJkg1voo web: https://iview.abc.net.au/channel/news), [CNA (SG)](stream: XWq5kBlakcQ web: https://www.channelnewsasia.com/watch), [DW News (DE)](stream: LuKwFajn37U web: https://www.dw.com/en/live-tv/channel-english), [Euronews (EN)](stream: pykpO5kQJ98 web: https://www.euronews.com), [France 24 English (FR)](stream: HvZt-nh9sGg web: https://www.france24.com/en/live).
 
 <i>In other languages</i>
 `be/ru/uk:` [Belsat](stream: YA9ukP4k_Fk web: https://belsat.eu)
-`de:` [Euronews](stream: CQ3KsEbsYHs web: https://de.euronews.com), [OE24 (AT)](stream: oZVJoFj12qY web: https://www.oe24.at/video)
+`de:` [Euronews](stream: CQ3KsEbsYHs web: https://de.euronews.com), [OE24 (AT)](stream: RbRSSfXZqh0 web: https://www.oe24.at/video)
 `el:` [Euronews](stream: uWIhV9gQClg web: https://gr.euronews.com)
 `es:` [Euronews](stream: O9mOtdZ-nSk  web: https://es.euronews.com), [N+ Foro (MX)](stream: p2AzyIEuFak web: https://www.nmas.com.mx/foro-tv), [LN+ (AR)](stream: FEWZjXJ7M0c web: https://www.lanacion.com.ar/lnmas)
 `fa:` [Euronews](stream: A8eHIQdTpvQ web: https://parsi.euronews.com)
-`fr:` [Euronews](stream: NiRIbKwAejk web: https://fr.euronews.com), [France 24](stream: l8PMl7tUDIE)
+`fr:` [Euronews](stream: NiRIbKwAejk web: https://fr.euronews.com), [France 24](stream: a47ckXKZjxI web: https://www.france24.com/fr/)
 `hu:` [Euronews](stream: jAn7L2Kt32U web: https://hu.euronews.com)
 `it:` [Euronews](stream: pUcmpyynASM web: https://it.euronews.com)
 `ja:` [Asahi News24](stream: coYw-eVU0Ks web: https://news.tv-asahi.co.jp/news-lives/)
@@ -26,6 +26,6 @@ Tip: You can read live captions [in Chrome](https://support.google.com/chrome/an
 `pt:` [Euronews](stream: XuZAl-ZPEcA web: https://pt.euronews.com)
 `ro:` [Euronews Romania](stream: XNcx7TFm6zg web: https://euronews.ro)
 `ru:` [Euronews](stream: lwYzwdBiaho web: https://ru.euronews.com), [DW (DE)](stream: gP7872YRFDk web: https://www.dw.com/ru/live-tv/channel-russian)
-`sq:` [Euronews Albania](stream: EadOAIO6LmQ web: https://euronews.al)
+`sq:` [Euronews Albania](stream: Qwued4g-9-g web: https://euronews.al)
 `uk:` [TSN](stream: WY8sDvZdWEA web: https://tsn.ua)
 `zh:` [CCTV 4 Asia (CN)](stream: vNVp6bxkL1c web: https://tv.cctv.com/cctv4asia), [EBC (TW)](stream: E0zhe2gkXBs web: https://news.ebc.net.tw), [CTI (TW)](stream: vr3XyVCR4T0 web: https://ctinews.com), [TVBS (TW)](stream: m_dhMSvUCIc web: https://www.tvbs.com.tw)
