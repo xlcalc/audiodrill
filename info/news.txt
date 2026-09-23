@@ -1,5 +1,8 @@
 <div style="width:100%; display: flex; justify-content: center;"><div style="max-width: 600px; font-size: 110%"><color:slategray><h3>What's new?</h3></color>
 
+[23 September 2026](color: slategray)
+Set ~Minimum silence duration (ms)~ in advanced settings to automatically detect longer moments of silence in audio and video playback and extend the pause. This will give you extra time to repeat after the speaker before playback continues. It works with audio and video files played directly in the browser, e.g., mp3, mp4, m4a files, etc. but not with YouTube videos. Try out playing the audio in [this example](/?m=https://upload.wikimedia.org/wikipedia/commons/d/d3/Mark_Carney_speaks_to_the_European_Parliament%2C_2026.mp3&s=12:22.2)
+
 [4 April 2026](color: slategray)
 A new *shadowing mode* was added to the [Tasks page](/?t). It lets you listen to hidden (redacted) sentences and repeat them after the speaker. To start, open the playback controls (via ~🗣 Read lines~ in the {{arrow:topMenuBtn x-shift=-45 y-shift=16|system menu}} or |_Ctrl_| + click on a sentence), choose ~Shadow & hide~ from the dropdown list and press ▷ button.
 

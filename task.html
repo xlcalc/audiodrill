@@ -1522,6 +1522,7 @@ console.log('ERROR loading html video/audio', e);
 
       showVideoResizer(!isAudio);
       showPlayerBox();
+      players.setStartStop();
     }
   }
 
@@ -1532,6 +1533,14 @@ console.log('Loading the media file...');
 console.log(players.mediaType + ' loaded in getVideoByURL()'); 
   adjustMediaInTask(); // for htmlPlayer video
   prepareSettings(); // added 2026-08-13
+}
+
+players.setStartStop = () => {
+  StartFrom = hmsToSeconds(elid('ReplayFrom').value);
+  StopAt = hmsToSeconds(elid('ReplayTo').value);
+
+  // for YT videos setting seekTo at this point won't work;
+  if (players.isHtml) htmlPlayer.currentTime = StartFrom;
 }
 
 function waitForEvent(el, event) {
@@ -2609,8 +2618,14 @@ instead of pausing">
 </label>
 <br>
 
+<span title="Detects silence in audio/video files">Minimum silence duration (ms)&nbsp;
+<label><input type="number" id="min-silence" style="width: 3.4em; height: 0.9em;"  
+   value="700" min="0" step="10" /> 
+</label></span>
+<br>
+
 <div id="pause-box" style="cursor:default;" 
-title="Duration of a pause between cue loops">
+title="Playback pause duration">
 Pause factor&nbsp; <input id="setpause" type="range" value="1.5" min="0" max="4" step="0.1" 
   oninput="setPause()" style="width:4em; vertical-align: middle">
   <span id="current-pause">1.5x of the cue length</span>
@@ -2912,9 +2927,9 @@ class ToggleSwitch {
     else setElClass(this.el, 'switch-on', v);
   }
 	
-	toggle() { this.set(!this.isOn); }
+  toggle() { this.set(!this.isOn); }
 
-	inspect() {return this}
+  inspect() {return this}
 }
 
 tstore.ttsClickSwitchCallback = function(isOn) {
@@ -2981,7 +2996,7 @@ window.onload = () => {
 
   setNightMode('default');
 
-  tstore.wb.init();
+//  tstore.wb.init();
 
   tstore.nightModeSwitch.init();
   
@@ -4028,7 +4043,7 @@ tstore.translation = { // experimental: 2026-02-14
     el.style.backgroundColor = cmd? 'var(--color-overlay-s)' : '';
     el.style.color = cmd? 'inherit' : '';
   },
-//  inspectTips() { return document.querySelectorAll('.transl-tip') },
+//  inspectTips: () => document.querySelectorAll('.transl-tip'),
 }
 
 const taskTextHandler = txt => {
@@ -4480,8 +4495,8 @@ tstore.ttsOverlay = {
     startSTT();
   },
 
-  controlBox() {return elid('tts-overlay-controls')},
-  playPauseBtn() {return elid('tts-play-pause-btn')},
+  controlBox: () => elid('tts-overlay-controls'),
+  playPauseBtn: () => elid('tts-play-pause-btn'),
 
   isTooLow(el) {
     return el.getBoundingClientRect().bottom > this.controlBox().getBoundingClientRect().top
@@ -5883,6 +5898,7 @@ tstore.loadTaskFromText = (txt, cmd) => {
   loadElementWithText(txt, 'transcriptText', cmd);
 }
 
+/*
 tstore.wb = {
   init() {
     this.dragging = false
@@ -5998,8 +6014,205 @@ console.log('Whiteboard text', txt);
     this.contentEl.innerHTML = this.getIframe(key);
   },
 }
+*/
 
 class PauseExtender {
+  constructor(media, options = {}) {
+    this.media = media;
+
+    this.options = {
+      minSilence: 700,
+      minSound: 2,
+      extraPause: 1.5,
+      silenceThreshold: 0.015,
+      ...options
+    };
+
+    this.audioContext = null;
+    this.source = null;
+    this.detector = null;
+
+    this.running = false;
+
+    this.pauseExtended = false;
+    this.extending = false;
+
+    this.hasHeardSoundInThisRun = false;
+
+    this.internalPlay = false;
+    this.internalPause = false;
+
+    this.pauseTimeout = null;
+
+    this.soundStartedAt = null;
+
+    this.handlePlay = this.handlePlay.bind(this);
+    this.handlePause = this.handlePause.bind(this);
+
+    this.media.addEventListener("play", this.handlePlay);
+    this.media.addEventListener("pause", this.handlePause);
+  }
+
+  async handlePlay() {
+    if (this.internalPlay) {
+      this.internalPlay = false;
+      return;
+    }
+
+    if (this.extending) {
+      clearTimeout(this.pauseTimeout);
+      this.pauseTimeout = null;
+
+      this.extending = false;
+      this.pauseExtended = false;
+      this.soundStartedAt = null;
+
+      return;
+    }
+
+    this.hasHeardSoundInThisRun = false;
+    this.soundStartedAt = null;
+    this.pauseExtended = false;
+
+    await this.start();
+  }
+
+  handlePause() {
+    if (this.internalPause) {
+      this.internalPause = false;
+      return;
+    }
+
+    if (this.extending) {
+      this.extending = false;
+    }
+
+    this.stop();
+  }
+
+  async start() {
+    if (this.running || this.media.duration === Infinity) return;
+
+    this.running = true;
+
+    this.audioContext = this.audioContext || new AudioContext();
+
+    if (this.audioContext.state === "suspended") await this.audioContext.resume();
+
+    if (!this.source) await this.initSource();
+
+    this.detector.port.postMessage({
+      type: "reset"
+    });
+  }
+
+  async initSource() {
+    this.source =
+      this.audioContext.createMediaElementSource(this.media);
+
+    await this.audioContext.audioWorklet.addModule(
+      "./parts/silence-detector.js"
+    );
+
+    this.detector = new AudioWorkletNode(
+      this.audioContext,
+      "silence-detector",
+    );
+
+    this.source.connect(this.detector);
+    this.detector.connect(this.audioContext.destination);
+
+    this.detector.port.onmessage = this.handleDetectorMessage;
+    this.setParam();
+  }
+
+  handleDetectorMessage = ({ data }) => {
+    if (!this.running || this.extending) return;
+  
+    if (data.type === "sound") {
+      this.soundStartedAt ??= this.media.currentTime;
+
+      this.hasHeardSoundInThisRun = true;
+      this.pauseExtended = false;
+  
+      return;
+    }
+  
+    if (data.type !== "silence") return;
+  
+    if (
+      !this.hasHeardSoundInThisRun ||
+      this.soundStartedAt === null ||
+      this.pauseExtended
+      ) return;
+
+    const soundDuration =
+      this.media.currentTime - this.soundStartedAt;
+  
+    if (soundDuration >= this.options.minSound) {
+      this.soundStartedAt = null;
+      this.extendPause(soundDuration * 1000);
+    }
+  }
+
+  stop() {
+    this.running = false;
+
+    this.soundStartedAt = null;
+    this.pauseExtended = false;
+    this.extending = false;
+
+    this.detector?.port.postMessage({
+      type: "reset"
+    });
+  }
+
+  extendPause(msec) {
+    this.extending = true;
+    this.pauseExtended = true;
+
+    this.internalPause = true;
+    this.media.pause();
+
+    this.pauseTimeout = setTimeout(() => {
+      this.pauseTimeout = null;
+
+      if (!this.running || !this.extending) {
+        this.extending = false;
+        return;
+      }
+
+      this.internalPlay = true;
+
+      this.media.play()
+        .catch(() => {
+          this.internalPlay = false;
+        })
+        .finally(() => {
+          this.extending = false;
+        });
+
+    }, msec / this.media.playbackRate * this.options.extraPause);
+  }
+
+  setParam(options) {
+    this.options = {
+      ...this.options,
+      ...options
+    };
+
+    if (this.detector) {
+      this.detector.port.postMessage({
+        type: "configure",
+        threshold: this.options.silenceThreshold,
+        minSilence: this.options.minSilence
+      });
+    }
+  }
+}
+
+/*
+class PauseExtenderOld {
   constructor(media, options = {}) {
     this.media = media;
 
@@ -6009,7 +6222,7 @@ class PauseExtender {
       extraPause: 1.5, // factor
       silenceThreshold: 0.015,
       fftSize: 2048,
-      ...options
+      ...options // apply new options over current ones
     };
 
     this.audioContext = null;
@@ -6037,6 +6250,8 @@ class PauseExtender {
     // Used to distinguish our media.pause() from a user pause.
     this.internalPause = false;
 
+//	this.pauseTimeout = null;
+
     this.handlePlay = this.handlePlay.bind(this);
     this.handlePause = this.handlePause.bind(this);
 
@@ -6045,18 +6260,32 @@ class PauseExtender {
   }
 
   async handlePlay() {
-    // If this play was caused by extendPause(), this is a continuation
-    // of the existing playback run.
+console.log('handlePlay(): internalPlay is', this.internalPlay);
     if (this.internalPlay) {
+// If this play was caused by extendPause(), this is a continuation
+// of the existing playback run.
       this.internalPlay = false;
+      return;
+    }
+
+	
+ // User clicked Play while our artificial pause is active.
+    if (this.extending) {
+      clearTimeout(this.pauseTimeout);
+      this.pauseTimeout = null;
+
+      this.extending = false;
+      this.pauseExtended = false;
+      this.silenceStartedAt = null;
+
       return;
     }
 
 //	if (!this.pauseExtensionEnabled) return;
 
-    // This is a genuine user/application playback start.
-    //
-    // Every new play starts a fresh run, regardless of currentTime.
+// This is a genuine user/application playback start.
+
+// Every new play starts a fresh run, regardless of currentTime.
     this.hasHeardSoundInThisRun = false;
     this.silenceStartedAt = null;
     this.soundStartedAt = null;
@@ -6066,13 +6295,18 @@ class PauseExtender {
   }
 
   handlePause() {
-    // Pause caused by PauseExtender.
     if (this.internalPause) {
+    // Pause caused by PauseExtender.
       this.internalPause = false;
       return;
     }
 
+    if (this.extending) {
+      this.extending = false;
+    }
+
 //	if (!this.pauseExtensionEnabled) return;
+
     // Genuine user/application pause.
     //
     // The next play starts a fresh run.
@@ -6161,13 +6395,13 @@ class PauseExtender {
     if (silent) {
       this.silenceStartedAt ??= now;
 
-      const silenceDuration =
-        now - this.silenceStartedAt;
+      const silenceDuration = (now - this.silenceStartedAt)
+        * this.media.playbackRate; // b/c it isn't based on media.currentTime
+console.log('Silence', silenceDuration);
+	  const soundDuration = this.media.currentTime - this.soundStartedAt;
 
-      const soundDuration = this.media.currentTime - this.soundStartedAt;
-
-      // A pause is extendable only if sound has already occurred
-      // during THIS user playback run.
+// A pause is extendable only if sound has already occurred
+// during THIS user playback run.
       if (
         this.hasHeardSoundInThisRun &&
         silenceDuration >= this.options.minSilence &&
@@ -6177,8 +6411,8 @@ class PauseExtender {
         this.soundStartedAt = null;
         this.extendPause(soundDuration * 1000);
       }
-    } else {
-      // Sound has now occurred during this playback run.
+
+    } else { // not silent
       this.soundStartedAt ??= this.media.currentTime;
       this.silenceStartedAt = null;
 
@@ -6191,6 +6425,32 @@ class PauseExtender {
   } // end of detect()
 
   extendPause(msec) {
+    this.extending = true;
+    this.pauseExtended = true;
+  
+    this.internalPause = true;
+    this.media.pause();
+  
+    this.pauseTimeout = setTimeout(() => {
+      this.pauseTimeout = null;
+  
+      if (!this.running || !this.extending) {
+        this.extending = false;
+        return;
+      }
+  
+      this.internalPlay = true;
+  
+      this.media.play().catch(() => {
+        this.internalPlay = false;
+      }).finally(() => {
+        this.extending = false;
+      });
+
+    }, msec / this.media.playbackRate * this.options.extraPause);
+  }
+
+  extendPauseOld(msec) {
     this.extending = true;
     this.pauseExtended = true;
 
@@ -6219,39 +6479,17 @@ class PauseExtender {
           this.extending = false;
         });
 
-    }, msec * this.options.extraPause);
-  }
+    }, msec / this.media.playbackRate * this.options.extraPause);
+  } // end of extendPauseOld()
 
   setParam(options) {
     this.options = {
       ...this.options,
-      ...options
+      ...options // apply new options over current ones
     };
   }
-/*
-  async enable(v) {
-    this.pauseExtensionEnabled = v;
-    if (v) return;
-
-    if (this.source) {
-      this.source.disconnect();
-      this.analyser?.disconnect();
-    
-      this.source = null;
-      this.analyser = null;
-      this.samples = null;
-    }
-
-    if (this.audioContext) {
-      await this.audioContext.close();
-    this.audioContext = null;
-    }  
-  }
+}
 */
-}
-
-tstore.initPausesInMedia = (media, options) => {
-}
 
 tstore.pausesAV = {
   init() {
@@ -6262,25 +6500,22 @@ tstore.pausesAV = {
       silenceThreshold: 0.015
     };
 
+	const minSilenceCtrl = elid('min-silence');
+    param.minSilence = minSilenceCtrl.value;
+	minSilenceCtrl.onchange = () => { 
+      this.setParam({minSilence: minSilenceCtrl.value})
+//console.log('minSilence:', minSilenceCtrl.value);
+    }
     this.audioExtender = this.initMedia(elid('html-audio'), param);
     this.videoExtender = this.initMedia(elid('html-video'), param);
   },
   
-  initMedia(media, par) {
-    const extender = new PauseExtender(media, par);
-    return extender;
-  },
+  initMedia: (media, par) =>  new PauseExtender(media, par),
   
   setParam(par) {
     if (this.audioExtender) this.audioExtender.setParam(par);
     if (this.videoExtender) this.videoExtender.setParam(par);
   },
-/*
-  enable(v) {
-    this.audioExtender.enable(v); 
-    this.videoExtender.enable(v);
-  },
-*/
 }
 
 
