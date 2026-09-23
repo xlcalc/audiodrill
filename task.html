@@ -6051,6 +6051,8 @@ class PauseExtender {
 
     this.media.addEventListener("play", this.handlePlay);
     this.media.addEventListener("pause", this.handlePause);
+
+    this.initSource();
   }
 
   async handlePlay() {
@@ -6095,11 +6097,7 @@ class PauseExtender {
 
     this.running = true;
 
-    this.audioContext = this.audioContext || new AudioContext();
-
     if (this.audioContext.state === "suspended") await this.audioContext.resume();
-
-    if (!this.source) await this.initSource();
 
     this.detector.port.postMessage({
       type: "reset"
@@ -6107,6 +6105,8 @@ class PauseExtender {
   }
 
   async initSource() {
+    this.audioContext = this.audioContext || new AudioContext();
+
     this.source =
       this.audioContext.createMediaElementSource(this.media);
 
