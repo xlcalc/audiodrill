@@ -6085,9 +6085,7 @@ class PauseExtender {
       return;
     }
 
-    if (this.extending) {
-      this.extending = false;
-    }
+    if (this.extending) this.extending = false;
 
     this.stop();
   }
@@ -6106,6 +6104,8 @@ class PauseExtender {
 
   async initSource() {
     this.audioContext = this.audioContext || new AudioContext();
+
+    if (this.audioContext.state === "suspended") await this.audioContext.resume();
 
     this.source =
       this.audioContext.createMediaElementSource(this.media);
