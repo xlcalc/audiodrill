@@ -28,7 +28,7 @@ Find more stations in <a href=http://fmstream.org target=_blank>The Radio Stream
 `pt`: [TSF (PT)](stream: https://directo.tsf.pt/tsfdirecto.mp3 web: https://www.tsf.pt), [CBN (BR)](stream: https://27443.live.streamtheworld.com/CBN_VITORIA.mp3)
 `ru`: [Echo](stream: https://edifchqufozvbegw.global.ssl.fastly.net/audio_echofm/stream web: https://echofm.online/), [Svoboda](stream: https://stream.radiojar.com/hcrb063nn3quv web: https://www.svoboda.org)
 `se`: [Sveriges Radio P1](stream: https://ljud1-cdn.sr.se/lc/p1.m3u8 web: https://www.sverigesradio.se/)
-`uk`: [RUI](stream: https://radio2.ukr.radio/ur4-mp3-m web: https://www.ukr.radio/channel.html?channelID=4)
+`uk`: [NV](stream: https://stream.zeno.fm/84fxamxs3ehvv web: https://radio.nv.ua/)
 `zh`: [Sichuan](stream: https://lhttp.qingting.fm/live/4906/64k.mp3), [Yanbian](stream: https://lhttp.qtfm.cn/live/5022488/64k.mp3)
 
 
