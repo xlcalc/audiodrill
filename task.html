@@ -1910,6 +1910,9 @@ const replayFragmentCore = async (cue) => {
 
   players.setLoop(players.infiniteLoop2) // probably will work for htmlPlayer but not YT
 
+// Set silence detection
+  tstore.pausesAV.setParam({disabled: players.infiniteLoop || players.infiniteLoop2});
+
   if (players.stream) {
 console.log('Stream or play full ' + players.mediaType);
     unmutedPlay();
@@ -2590,9 +2593,33 @@ Alt+click for longer hop">
 <button class="time-mark-btn btn" onclick="markTime()" title="Copy current time">
   <div>🕑</div>
 </button>
+<br>
+<span>Loop fragments longer than 
+<input type="number" id="thresholdForLooping" 
+  style="width: 3em; height: 0.9em;"  
+  title="Set fragment length limit for looping" value="20" /> sec.
+</span>
+<label class="switch show-focus" title="Loop long fragments">
+  <input type="checkbox" id="longLoopCheckbox" style="width:auto">
+  <div class="slider round"></div>
+</label>
 </div>
-
+<hr>
 <div>
+<h4>Pause</h4>
+<span title="Detects silence in audio/video files">Minimum silence duration (ms)&nbsp;
+<label><input type="number" id="min-silence" style="width: 3.4em; height: 0.9em;"  
+   value="700" min="0" step="10" /> 
+</label></span>
+<br>
+
+<div id="pause-box" style="cursor:default;" 
+title="Playback pause duration">
+Pause factor&nbsp; <input id="setpause" type="range" value="1.5" min="0" max="4" step="0.1" 
+  oninput="setPause()" style="width:4em; vertical-align: middle">
+  <span id="current-pause">1.5x of the cue length</span>
+
+<hr>
 <h4>Misc.</h4>
 <label>
   Post-recording actions
@@ -2616,33 +2643,10 @@ instead of pausing">
   <input type="checkbox" id="mute-checkbox">
   <div class="slider round"></div>
 </label>
-<br>
-
-<span title="Detects silence in audio/video files">Minimum silence duration (ms)&nbsp;
-<label><input type="number" id="min-silence" style="width: 3.4em; height: 0.9em;"  
-   value="700" min="0" step="10" /> 
-</label></span>
-<br>
-
-<div id="pause-box" style="cursor:default;" 
-title="Playback pause duration">
-Pause factor&nbsp; <input id="setpause" type="range" value="1.5" min="0" max="4" step="0.1" 
-  oninput="setPause()" style="width:4em; vertical-align: middle">
-  <span id="current-pause">1.5x of the cue length</span>
 </div>
 
-<span>Loop fragments longer than 
-<input type="number" id="thresholdForLooping" 
-  style="width: 3em; height: 0.9em;"  
-  title="Set fragment length limit for looping" value="20" /> sec.
-</span>
-<label class="switch show-focus" title="Loop long fragments">
-  <input type="checkbox" id="longLoopCheckbox" style="width:auto">
-  <div class="slider round"></div>
-</label>
-
-<x-br-l></x-br-l>
 <div id="set-fsize"></div>
+<hr>
 
 <x-br-l></x-br-l>
 <label>
@@ -6025,6 +6029,7 @@ class PauseExtender {
       minSound: 2,
       extraPause: 1.5,
       silenceThreshold: 0.015,
+	  disabled: false,
       ...options
     };
 
@@ -6095,7 +6100,7 @@ class PauseExtender {
 
     this.running = true;
 
-    if (this.audioContext.state === "suspended") await this.audioContext.resume();
+//    if (this.audioContext.state === "suspended") await this.audioContext.resume();
 
     this.detector.port.postMessage({
       type: "reset"
@@ -6205,7 +6210,8 @@ class PauseExtender {
       this.detector.port.postMessage({
         type: "configure",
         threshold: this.options.silenceThreshold,
-        minSilence: this.options.minSilence
+        minSilence: this.options.minSilence,
+		disabled: this.options.disabled
       });
     }
   }
