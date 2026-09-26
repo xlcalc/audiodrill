@@ -2,18 +2,20 @@ class SilenceDetector extends AudioWorkletProcessor {
   constructor() {
     super();
 
-    this.threshold = 0.015;
-    this.minSilence = 700;
-    this.disabled = false;
+    this.par = {
+//      threshold: 0.015,
+      squaredThreshold: 0.000225,
+      minSilence: 700,
+      disabled: false
+    }
 
     this.reset();
 
     this.port.onmessage = ({ data }) => {
       if (data.type === "configure") {
-        this.threshold = data.threshold;
-        this.minSilence = data.minSilence;
-        this.disabled = data.disabled;
-        if (this.disabled) this.reset();
+        this.par = {...this.par, ...data.par};
+		if (data.par.threshold) this.par.squaredThreshold = data.par.threshold * data.par.threshold;
+        if (this.par.disabled) this.reset();
       }
 
       if (data.type === "reset") this.reset();
@@ -22,7 +24,15 @@ class SilenceDetector extends AudioWorkletProcessor {
   
   reset() {
     this.silenceFrames = 0;
-    this.silencePosted = false;
+    this.canReportLow = true;
+    this.canReportHigh = true;
+  }
+
+  reportSound(flag) {
+    this.port.postMessage({ soundDetected: flag });
+
+    this.canReportLow = flag;
+    this.canReportHigh = !flag;
   }
 
   process(inputs, outputs) {
@@ -37,46 +47,29 @@ class SilenceDetector extends AudioWorkletProcessor {
       output[channel].set(source);
     }
 
-    if (this.disabled) return true;
+    if (this.par.disabled) return true;
 
-    // Analyze first channel.
+    // Analyze first channel
     const samples = input[0];
-
     let sum = 0;
 
     for (let i = 0; i < samples.length; i++) {
       sum += samples[i] * samples[i];
     }
 
-    const rms = Math.sqrt(sum / samples.length);
-    const silent = rms < this.threshold;
-
-    if (silent) {
+    const isHigh = sum > this.par.squaredThreshold * samples.length;
+    if (isHigh) {
+      this.silenceFrames = 0;
+      if (this.canReportHigh) this.reportSound(true);
+    } else {
+    // silence detected
       this.silenceFrames += samples.length;
-
-      const duration =
-        this.silenceFrames / sampleRate * 1000;
+      const duration = this.silenceFrames / sampleRate * 1000;
 
       if (
-        !this.silencePosted &&
-        duration >= this.minSilence
-      ) {
-        this.silencePosted = true;
-
-        this.port.postMessage({
-          type: "silence",
-          duration
-        });
-      }
-
-    } else {
-      if (this.silencePosted || this.silenceFrames > 0) {
-        this.port.postMessage({
-          type: "sound"
-        });
-      }
-
-      this.reset();
+        duration >= this.par.minSilence &&
+        this.canReportLow
+      ) this.reportSound(false);
     }
 
     return true;

@@ -1,3 +1,133 @@
+/* ===  Whiteboard draft ===
+tstore.wb = {
+  init() {
+    this.dragging = false
+    this.offsetX = this.offsetY = 0
+
+    this.win = elid('wb-window')
+    this.titlebar = elid('wb-titlebar')
+    elid('wb-close').addEventListener("pointerdown", () => { this.win.hidden = true })
+    
+    this. win.style.left = (window.innerWidth - this.win.offsetWidth) / 2 + "px"
+    this. win.style.top = (window.innerHeight - this.win.offsetHeight) / 2 + "px"
+
+    this.titlebar.addEventListener("pointerdown", e => {
+      this.dragging = true;
+
+      const rect = this.win.getBoundingClientRect();
+
+      this.offsetX = e.clientX - rect.left;
+      this.offsetY = e.clientY - rect.top;
+
+      this.titlebar.setPointerCapture(e.pointerId);
+    })
+
+    this.titlebar.addEventListener("pointermove", e => {
+      if (!this.dragging) return;
+
+      let x = e.clientX - this.offsetX;
+      let y = e.clientY - this.offsetY;
+
+      // Keep inside browser window
+      const maxX = window.innerWidth - this.win.offsetWidth+370;
+      const maxY = window.innerHeight - this.win.offsetHeight+270;
+
+      x = Math.max(-370, Math.min(x, maxX));
+      y = Math.max(0, Math.min(y, maxY));
+
+      this.win.style.left = x + "px";
+      this.win.style.top = y + "px";
+    })
+
+
+    this.titlebar.addEventListener("pointerup", e => {
+      this.dragging = false
+      this.titlebar.releasePointerCapture(e.pointerId)
+    })
+
+    this.contentEl = elid('wb-content')
+//	const titleBtn = '[Notes](btn: tstore.wb.askWbname())'
+    elid('wb-name-btn').addEventListener("pointerdown", () => { this.askWbname() })
+  },
+
+  open() {
+    this.win.hidden = false
+    this.wbname = localStorage.getItem('whiteboard')
+    if (this.wbname) this.processWbname(this.wbname)
+    else this.askWbname()
+  },
+
+  wbnameInputHtml: `Enter pad name<br>
+<input id="wb-input" type="url" placeholder="" 
+class="inherit"><input id="wb-input-btn" type="submit" 
+class="plain-button font-80pc rounded darker-bg-onhover" value="🔍">`,
+ 
+  askWbname() {
+    this.contentEl.innerHTML = this.wbnameInputHtml
+    elid('wb-input').onchange = () => { this.processWbname() }
+    elid('wb-input-btn').onclick = () => { this.processWbname() }
+  },
+  
+  async processWbname(s) {
+    s = s || elid('wb-input').value;
+console.log('Whiteboard:', s);
+    if (s) this.loadWb(s)
+    else displayAlarmMessage('No whiteboard name')
+  },
+  
+  async processWbnameOld(s) {
+    s = s || elid('wb-input').value;
+console.log('Whiteboard:', s);
+    const txt = await this.checkWbname(s);
+console.log('Whiteboard text', txt);
+    if (txt === null) this.askWbname()
+    else {
+//      localStorage.setItem('whiteboard', s);
+//      loadElementWithText(txt, 'wb-content');
+    }
+  },
+  
+  async checkWbname(s) {
+    let r = null
+    if (!s) displayAlarmMessage('No whiteboard name')
+    else {
+      r = await this.readWb(s);
+      if (!r) {
+      displayAlarmMessage('Incorrect whiteboard name')
+//console.log('Alarm Read wb:', r);	  
+      }
+    }
+    return r;
+  },
+
+  base: 'https://audr-frb-default-rtdb.firebaseio.com/banks/',
+
+  readWb(s) {
+    return ioRequest(this.base + s + '/text.json', 'GET_JSON');
+  },
+
+  getIframe(key) {
+    return `<iframe src="https://pad.freifunk.net/p/${key}?showChat=false" width="490" height="250" frameborder="0"></iframe>`
+  },
+
+  loadWb(key) {
+    this.contentEl.innerHTML = this.getIframe(key);
+  },
+}
+*/
+
+/*
+async function getYoutubeTitle(videoUrl) {
+  const endpoint =
+    `https://www.youtube.com/oembed?url=${encodeURIComponent(videoUrl)}&format=json`;
+
+  const response = await fetch(endpoint);
+  const data = await response.json();
+console.log(data);
+  return data.title;
+}
+*/
+
 /*
 const fetchYTSubs = async id => {
 // as of 2 Feb 2026, https://youtubetranscripts.app/api/transcript does not give reliable results
