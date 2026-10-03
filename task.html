@@ -702,7 +702,13 @@ h1, h2, h3, h4, h5, h6 {
 
   #player-with-settings {
 	margin: auto;
-	padding-top: 45vw;
+/*	padding-top: 45vw; */
+  }
+
+  #settings-spacer {height: 80px}
+
+  #player-with-settings:has(#html-audio[hidden]) #settings-spacer {
+    height: 45vw;
   }
 
   #player-box-bgr {
@@ -2484,6 +2490,7 @@ const linkToTask = () => {
 }
 
 </script>
+<div id="settings-spacer"></div>
 <div id="settings-box">
 <div id="settings-sign" data-themeable 
 class="inblock btn-lighgray padding-03em rounded smaller-font" 
@@ -5952,8 +5959,17 @@ class PauseExtender {
     this.detector = new AudioWorkletNode(
       this.audioContext,
       "silence-detector",
+/*
+	  {
+        parameterData: { playbackRate: this.media.playbackRate }
+      }
+*/
     );
-
+/*
+    this.media.addEventListener("ratechange", () => {
+      node.parameters.get("playbackRate").value = this.media.playbackRate;
+    });
+*/
     this.source.connect(this.detector);
     this.detector.connect(this.audioContext.destination);
 
@@ -5967,6 +5983,7 @@ class PauseExtender {
       return;
     }
 
+    this.replayCount = 0;
     this.soundStartedAt = null;
 
     if (this.extending) {
@@ -5976,27 +5993,33 @@ class PauseExtender {
       return;
     }
 
+    if (this.audioContext?.state === "suspended") await this.audioContext.resume();
+
     this.noSoundSinceStart = true;
 
     if (this.busyDetecting || this.media.duration === Infinity) return;
 
     this.busyDetecting = true;
 
-    if (this.audioContext?.state === "suspended") await this.audioContext.resume();
-//    if (!this.audioContext || !this.detector)
-//      await this.initSource();
 
     this.detector?.port.postMessage({ type: "reset" });
+    this.postPlaying(true);
+	this.postPbr();
   }
 
   handlePause() {
+    this.postPlaying(false);
+
     if (this.internalPause) {
       this.internalPause = false;
       return;
     }
 
     this.busyDetecting = false;
-    this.soundStartedAt = null;
+//    this.setReplayCount(0);
+//    this.soundStartedAt = null;
+    this.nextReplay('0');
+
     this.extending = false;
 
     this.detector?.port.postMessage({ type: "reset" });
@@ -6024,7 +6047,13 @@ class PauseExtender {
   
     if (soundDuration >= this.options.minSound) {
 //console.log('Pause at', this.soundStartedAt, ' sound duration:', soundDuration);
-      this.soundStartedAt = null;
+/*
+      this.replayCount ++;
+	  if (this.replayCount >= speedCtrl.getAdvanced().length) {
+        this.soundStartedAt = null;
+        this.replayCount = 0;
+      }
+*/
       this.extendPause(soundDuration * 1000);
     }
   }
@@ -6033,6 +6062,9 @@ class PauseExtender {
     this.extending = true;
     this.internalPause = true;
     this.media.pause();
+    this.postPlaying(false);
+//    this.setReplayCount(this.replayCount);
+    this.nextReplay();
 
     this.pauseTimeout = setTimeout(() => {
       this.pauseTimeout = null;
@@ -6043,6 +6075,14 @@ class PauseExtender {
       }
 
       this.internalPlay = true;
+
+      if (this.soundStartedAt !== null) this.media.currentTime = this.soundStartedAt;
+
+//      this.media.playbackRate = speedCtrl.calcSpeed(this.replayCount);
+//console.log('this.media.playbackRate', this.media.playbackRate)
+
+      this.postPlaying(true);
+//      this.postPbr();
 
       this.media.play()
         .catch(() => {
@@ -6065,6 +6105,37 @@ class PauseExtender {
       type: "configure",
       par: this.options
     });
+  }
+  
+  postPbr() {
+    this.detector?.port.postMessage({
+      type: "setPbr",
+      par: { pbr: this.media.playbackRate }
+    });
+  }
+
+  postPlaying(flag) {
+    this.detector?.port.postMessage({
+      type: "setPlaying",
+      par: { playing: flag }
+    });
+  }
+/*
+  setReplayCount(i) {
+    this.replayCount = i;
+    this.media.playbackRate = speedCtrl.calcSpeed(i);
+    this.postPbr();
+  }
+*/
+  nextReplay(i) {
+    this.replayCount = i === '0' ? 0 : this.replayCount + 1;
+    if (this.replayCount >= speedCtrl.getAdvanced().length) {
+      this.soundStartedAt = null;
+      this.replayCount = 0;
+    }
+
+    this.media.playbackRate = speedCtrl.calcSpeed(this.replayCount);
+    this.postPbr();
   }
 }
 

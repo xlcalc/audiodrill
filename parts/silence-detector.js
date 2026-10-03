@@ -6,7 +6,8 @@ class SilenceDetector extends AudioWorkletProcessor {
 //      threshold: 0.015,
       squaredThreshold: 0.000225,
       minSilence: 700,
-      disabled: false
+      disabled: false,
+      pbr: 1,
     }
 
     this.reset();
@@ -17,6 +18,9 @@ class SilenceDetector extends AudioWorkletProcessor {
 		if (data.par.threshold) this.par.squaredThreshold = data.par.threshold * data.par.threshold;
         if (this.par.disabled) this.reset();
       }
+
+      if (data.type === "setPlaying") this.par.playing = data.par.playing;
+      if (data.type === "setPbr") this.par.pbr = data.par.pbr;
 
       if (data.type === "reset") this.reset();
     }
@@ -33,9 +37,20 @@ class SilenceDetector extends AudioWorkletProcessor {
 
     this.canReportLow = flag;
     this.canReportHigh = !flag;
+//console.log('Reported playing?', flag);
+//console.log('PBR', this.par.pbr);
   }
-
-  process(inputs, outputs) {
+/*
+  static get parameterDescriptors() {
+    return [
+      {
+        name: "playbackRate",
+        defaultValue: 1
+      }
+    ];
+  }
+*/
+  process(inputs, outputs, parameters) {
     const input = inputs[0];
     const output = outputs[0];
 
@@ -47,7 +62,7 @@ class SilenceDetector extends AudioWorkletProcessor {
       output[channel].set(source);
     }
 
-    if (this.par.disabled) return true;
+    if (this.par.disabled || !this.par.playing) return true;
 
     // Analyze first channel
     const samples = input[0];
@@ -64,7 +79,9 @@ class SilenceDetector extends AudioWorkletProcessor {
     } else {
     // silence detected
       this.silenceFrames += samples.length;
-      const duration = this.silenceFrames / sampleRate * 1000;
+//      const duration = this.silenceFrames / sampleRate * 1000 * parameters.playbackRate[0];
+      const duration = this.silenceFrames / sampleRate * 1000 * this.par.pbr;
+//console.log('PBR', parameters.playbackRate[0]);
 
       if (
         duration >= this.par.minSilence &&
