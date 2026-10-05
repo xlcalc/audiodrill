@@ -3,10 +3,8 @@ class SilenceDetector extends AudioWorkletProcessor {
     super();
 
     this.par = {
-//      threshold: 0.015,
       squaredThreshold: 0.000225,
-      minSilence: 700,
-      disabled: false,
+      minSilence: 0.7,
       pbr: 1,
     }
 
@@ -15,12 +13,10 @@ class SilenceDetector extends AudioWorkletProcessor {
     this.port.onmessage = ({ data }) => {
       if (data.type === "configure") {
         this.par = {...this.par, ...data.par};
-		if (data.par.threshold) this.par.squaredThreshold = data.par.threshold * data.par.threshold;
-        if (this.par.disabled) this.reset();
-      }
 
-      if (data.type === "setPlaying") this.par.playing = data.par.playing;
-      if (data.type === "setPbr") this.par.pbr = data.par.pbr;
+        this.par.skipAnalysis = this.par.skipAnalysis || this.par.infiniteLoop;
+		if (data.par.threshold) this.par.squaredThreshold = data.par.threshold * data.par.threshold;
+      }
 
       if (data.type === "reset") this.reset();
     }
@@ -40,16 +36,7 @@ class SilenceDetector extends AudioWorkletProcessor {
 //console.log('Reported playing?', flag);
 //console.log('PBR', this.par.pbr);
   }
-/*
-  static get parameterDescriptors() {
-    return [
-      {
-        name: "playbackRate",
-        defaultValue: 1
-      }
-    ];
-  }
-*/
+
   process(inputs, outputs, parameters) {
     const input = inputs[0];
     const output = outputs[0];
@@ -62,7 +49,7 @@ class SilenceDetector extends AudioWorkletProcessor {
       output[channel].set(source);
     }
 
-    if (this.par.disabled || !this.par.playing) return true;
+    if (this.par.skipAnalysis) return true;
 
     // Analyze first channel
     const samples = input[0];
@@ -79,9 +66,7 @@ class SilenceDetector extends AudioWorkletProcessor {
     } else {
     // silence detected
       this.silenceFrames += samples.length;
-//      const duration = this.silenceFrames / sampleRate * 1000 * parameters.playbackRate[0];
-      const duration = this.silenceFrames / sampleRate * 1000 * this.par.pbr;
-//console.log('PBR', parameters.playbackRate[0]);
+      const duration = this.silenceFrames / sampleRate * this.par.pbr;
 
       if (
         duration >= this.par.minSilence &&

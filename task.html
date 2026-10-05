@@ -1917,7 +1917,8 @@ const replayFragmentCore = async (cue) => {
   players.setLoop(players.infiniteLoop2) // probably will work for htmlPlayer but not YT
 
 // Set silence detection
-  tstore.pausesAV.setParam({disabled: players.infiniteLoop || players.infiniteLoop2});
+  tstore.pausesAV.setParam({ infiniteLoop: players.infiniteLoop || players.infiniteLoop2 });
+//  tstore.pausesAV.workletOff(players.infiniteLoop || players.infiniteLoop2);
 
   if (players.stream) {
 console.log('Stream or play full ' + players.mediaType);
@@ -5914,30 +5915,28 @@ class PauseExtender {
     this.media = media;
 
     this.options = {
-      minSilence: 700,
+      minSilence: 0.7,
       minSound: 2,
       extraPause: 1.5,
       threshold: 0.015,
-	  disabled: false,
+//	  infiniteLoop: false,
       ...options
     };
 
     this.audioContext = null;
     this.source = null;
     this.detector = null;
+    this.pauseTimeout = null;
+    this.soundStartedAt = null;
 
+/*
     this.busyDetecting = false;
-
     this.extending = false;
-
-    this.noSoundSinceStart = true;
-
     this.internalPlay = false;
     this.internalPause = false;
+*/
+    this.noSoundSinceStart = true;
 
-    this.pauseTimeout = null;
-
-    this.soundStartedAt = null;
 
     this.handlePlay = this.handlePlay.bind(this);
     this.handlePause = this.handlePause.bind(this);
@@ -5959,17 +5958,7 @@ class PauseExtender {
     this.detector = new AudioWorkletNode(
       this.audioContext,
       "silence-detector",
-/*
-	  {
-        parameterData: { playbackRate: this.media.playbackRate }
-      }
-*/
     );
-/*
-    this.media.addEventListener("ratechange", () => {
-      node.parameters.get("playbackRate").value = this.media.playbackRate;
-    });
-*/
     this.source.connect(this.detector);
     this.detector.connect(this.audioContext.destination);
 
@@ -5997,18 +5986,20 @@ class PauseExtender {
 
     this.noSoundSinceStart = true;
 
-    if (this.busyDetecting || this.media.duration === Infinity) return;
+	this.postPbr();
+
+    const infiniteMedia = this.media.duration === Infinity;
+	this.workletOff(infiniteMedia);
+
+    if (this.busyDetecting || infiniteMedia) return;
 
     this.busyDetecting = true;
 
-
     this.detector?.port.postMessage({ type: "reset" });
-    this.postPlaying(true);
-	this.postPbr();
   }
 
   handlePause() {
-    this.postPlaying(false);
+    this.workletOff(true);
 
     if (this.internalPause) {
       this.internalPause = false;
@@ -6016,8 +6007,6 @@ class PauseExtender {
     }
 
     this.busyDetecting = false;
-//    this.setReplayCount(0);
-//    this.soundStartedAt = null;
     this.nextReplay('0');
 
     this.extending = false;
@@ -6047,13 +6036,6 @@ class PauseExtender {
   
     if (soundDuration >= this.options.minSound) {
 //console.log('Pause at', this.soundStartedAt, ' sound duration:', soundDuration);
-/*
-      this.replayCount ++;
-	  if (this.replayCount >= speedCtrl.getAdvanced().length) {
-        this.soundStartedAt = null;
-        this.replayCount = 0;
-      }
-*/
       this.extendPause(soundDuration * 1000);
     }
   }
@@ -6062,8 +6044,7 @@ class PauseExtender {
     this.extending = true;
     this.internalPause = true;
     this.media.pause();
-    this.postPlaying(false);
-//    this.setReplayCount(this.replayCount);
+    this.workletOff(true);
     this.nextReplay();
 
     this.pauseTimeout = setTimeout(() => {
@@ -6078,11 +6059,7 @@ class PauseExtender {
 
       if (this.soundStartedAt !== null) this.media.currentTime = this.soundStartedAt;
 
-//      this.media.playbackRate = speedCtrl.calcSpeed(this.replayCount);
-//console.log('this.media.playbackRate', this.media.playbackRate)
-
-      this.postPlaying(true);
-//      this.postPbr();
+      this.workletOff(false);
 
       this.media.play()
         .catch(() => {
@@ -6095,38 +6072,30 @@ class PauseExtender {
     }, msec / this.media.playbackRate * this.options.extraPause);
   }
 
+  sendConfig(param) {
+    this.detector?.port.postMessage({
+      type: "configure",
+      par: param
+    });
+  }
+
   setParam(options) {
     this.options = {
       ...this.options,
       ...options
     };
 
-    this.detector?.port.postMessage({
-      type: "configure",
-      par: this.options
-    });
+    this.sendConfig(this.options);
   }
   
   postPbr() {
-    this.detector?.port.postMessage({
-      type: "setPbr",
-      par: { pbr: this.media.playbackRate }
-    });
+    this.sendConfig({ pbr: this.media.playbackRate });
   }
 
-  postPlaying(flag) {
-    this.detector?.port.postMessage({
-      type: "setPlaying",
-      par: { playing: flag }
-    });
+  workletOff(flag) {
+    this.sendConfig({ skipAnalysis: flag });
   }
-/*
-  setReplayCount(i) {
-    this.replayCount = i;
-    this.media.playbackRate = speedCtrl.calcSpeed(i);
-    this.postPbr();
-  }
-*/
+
   nextReplay(i) {
     this.replayCount = i === '0' ? 0 : this.replayCount + 1;
     if (this.replayCount >= speedCtrl.getAdvanced().length) {
@@ -6142,16 +6111,16 @@ class PauseExtender {
 tstore.pausesAV = {
   init() {
     const param = {
-      minSilence: 700,
+      minSilence: 0.7,
       minSound: 2,
       extraPause: players.pauseFactor,
       threshold: 0.015
     };
 
 	const minSilenceCtrl = elid('min-silence');
-    param.minSilence = minSilenceCtrl.value;
+    param.minSilence = minSilenceCtrl.value / 1000;
 	minSilenceCtrl.onchange = () => { 
-      this.setParam({minSilence: minSilenceCtrl.value})
+      this.setParam({minSilence: minSilenceCtrl.value / 1000})
 //console.log('minSilence:', minSilenceCtrl.value);
     }
     this.audioExtender = this.initMedia(elid('html-audio'), param);
@@ -6173,6 +6142,12 @@ tstore.pausesAV = {
     if (this.audioExtender) this.audioExtender.setParam(par);
     if (this.videoExtender) this.videoExtender.setParam(par);
   },
+/*
+  workletOff(flag) {
+    if (this.audioExtender) this.audioExtender.workletOff(flag);
+    if (this.videoExtender) this.videoExtender.workletOff(flag);
+  },
+*/
 }
 
 </script>
