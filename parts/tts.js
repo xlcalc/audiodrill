@@ -297,7 +297,11 @@ const getLangVoices = (lang, unfiltered) => {
   if (!lang) return voices;
   
   voices = voices
-    .filter(v => v.lang.split(/[-_]/)[0] === lang)
+//    .filter(v => v.lang.split(/[-_]/)[0] === lang)
+    .filter(v => 
+      v.lang.toLowerCase() === lang.toLowerCase() ||
+      v.lang.split(/[-_]/)[0].toLowerCase() === lang.toLowerCase()
+    )
     .filter(v =>
       unfiltered ||
       !allowlist ||
