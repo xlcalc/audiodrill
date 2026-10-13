@@ -5988,14 +5988,15 @@ class PauseExtender {
 
 	this.postPbr();
 
-    const infiniteMedia = this.media.duration === Infinity;
-	this.workletOff(infiniteMedia);
+    this.infiniteMedia = this.media.duration === Infinity;
+	this.workletOff(this.infiniteMedia);
+	this.workletDetectNoSignal();
 
-    if (this.busyDetecting || infiniteMedia) return;
+    if (this.busyDetecting || this.infiniteMedia) return;
 
     this.busyDetecting = true;
 
-    this.detector?.port.postMessage({ type: "reset" });
+    this.workletReset();
   }
 
   handlePause() {
@@ -6011,14 +6012,32 @@ class PauseExtender {
 
     this.extending = false;
 
-    this.detector?.port.postMessage({ type: "reset" });
+    this.workletReset();
   }
 
-  handleDetectorMessage = ({ data }) => {
-//console.log('Detected sound:', data.soundDetected);
-    if (!this.busyDetecting || this.extending) return;
-  
+  handleDetectorMessage = async ({ data }) => {
+//console.log('Data from worklet', data);
+    if (data.noSignal && !this.noSignalJustReported && this.infiniteMedia) {
+      this.noSignalJustReported = true;
+//      console.warn('No signal message');
+      if (!this.media.paused) {
+        this.media.load();
+        this.media.play();
+
+        await sleep(1000);
+        this.workletDetectNoSignal();
+        this.handlePlay();
+
+        return;
+      }
+    }
+
+    this.noSignalJustReported = false;
+
+    if (!this.busyDetecting || this.extending || this.infiniteMedia) return;
+
     if (data.soundDetected) {
+//console.log('Detected sound:', data.soundDetected);
     // soundStartedAt is assigned currentTime only when it was previously set to null,
     // and not just any time sound is detected, e.g., not after a short silence.  
       this.soundStartedAt ??= this.media.currentTime;
@@ -6096,6 +6115,17 @@ class PauseExtender {
     this.sendConfig({ skipAnalysis: flag });
   }
 
+  workletReset() {
+    this.detector?.port.postMessage({ type: "reset" });
+  }
+
+  workletDebug() {
+    this.detector?.port.postMessage({ type: "consoleLog" });
+  }
+
+  workletDetectNoSignal() {
+    this.detector?.port.postMessage({ type: "detectNoSignal" });
+  }
   nextReplay(i) {
     this.replayCount = i === '0' ? 0 : this.replayCount + 1;
     if (this.replayCount >= speedCtrl.getAdvanced().length) {
@@ -6141,6 +6171,11 @@ tstore.pausesAV = {
   setParam(par) {
     if (this.audioExtender) this.audioExtender.setParam(par);
     if (this.videoExtender) this.videoExtender.setParam(par);
+  },
+
+  debug(flag) {
+    if (this.audioExtender) this.audioExtender.setParam({ debug: flag });
+    if (this.videoExtender) this.videoExtender.setParam({ debug: flag });
   },
 /*
   workletOff(flag) {

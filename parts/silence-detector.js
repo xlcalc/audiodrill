@@ -6,6 +6,7 @@ class SilenceDetector extends AudioWorkletProcessor {
       squaredThreshold: 0.000225,
       minSilence: 0.7,
       pbr: 1,
+      debug: false,
     }
 
     this.reset();
@@ -19,6 +20,8 @@ class SilenceDetector extends AudioWorkletProcessor {
       }
 
       if (data.type === "reset") this.reset();
+      if (data.type === "consoleLog") this.consoleLog();
+      if (data.type === "detectNoSignal") this.canReportNoSignal = true;
     }
   }
   
@@ -26,6 +29,7 @@ class SilenceDetector extends AudioWorkletProcessor {
     this.silenceFrames = 0;
     this.canReportLow = true;
     this.canReportHigh = true;
+//    this.canReportNoSignal = true;
   }
 
   reportSound(flag) {
@@ -36,6 +40,38 @@ class SilenceDetector extends AudioWorkletProcessor {
 //console.log('Reported playing?', flag);
 //console.log('PBR', this.par.pbr);
   }
+
+  reportNoSignal(samples) {
+    if (!this.canReportNoSignal || this.hasSignal(samples)) return;
+    this.canReportNoSignal = false;
+console.warn('No signal');
+    this.port.postMessage({ noSignal: true });
+  }
+
+  consoleLog() {
+    console.log('canReportNoSignal', this.canReportNoSignal);
+  }
+
+  sum(samples) {
+    let sum = 0;
+    for (let i = 0; i < samples.length; i++) 
+      sum += samples[i];
+
+    return sum;
+  }
+
+  hasSignal(samples) {
+    for (let i = 0; i < samples.length; i++) 
+      if (samples[i]) return true;
+
+    return false;
+  }
+
+/*
+  debug(samples) {
+    console.log('SilenceDetector sample sum', this.sum(samples))
+  }
+*/
 
   process(inputs, outputs, parameters) {
     const input = inputs[0];
@@ -48,6 +84,9 @@ class SilenceDetector extends AudioWorkletProcessor {
       const source = input[channel] || input[0];
       output[channel].set(source);
     }
+
+//	if (this.par.debug) this.debug(input[0]);
+    this.reportNoSignal(input[0]);
 
     if (this.par.skipAnalysis) return true;
 
