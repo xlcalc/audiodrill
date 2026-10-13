@@ -2091,10 +2091,17 @@ const highlightText = txt => {
 
   const expandAudio = url => `<audio style="height:40px" src="${getNewURL(url)}" controls></audio>`;
 
-  const expandVideo = url => {
+  const expandVideo = s => {
+    const arr = s.split(' ');
+	const url = arr[0];
     const YTId = getYouTubeId(url);
-    if (YTId) return `<div><iframe style="width:480px; height:270px" src="https://www.youtube.com/embed/${YTId}" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`;
-    else return `<video style="max-width:75%" src="${getNewURL(url)}" controls></video>`;
+    if (YTId) {
+      let keys = arr[1] || '';
+      if (keys) keys = '%3F' + keys; // %3F is used b/c '?' would later be interpreted as sentence end.
+
+      return `<div><iframe style="width:480px; height:270px" src="https://www.youtube.com/embed/${YTId}${keys}" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`;
+    } else
+      return `<video style="max-width:75%" src="${getNewURL(url)}" controls></video>`;
   }
 
   const expandImage = cmd => {
