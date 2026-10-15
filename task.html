@@ -6018,6 +6018,8 @@ class PauseExtender {
 
   handleDetectorMessage = async ({ data }) => {
 //console.log('Data from worklet', data);
+    this.infiniteMedia = this.media.duration === Infinity;
+
     if (data.noSignal && !this.noSignalJustReported && this.infiniteMedia) {
       this.noSignalJustReported = true;
 //      console.warn('No signal message');
@@ -6037,6 +6039,7 @@ class PauseExtender {
 
     if (!this.busyDetecting || this.extending || this.infiniteMedia) return;
 
+    // Handle soundDetected
     if (data.soundDetected) {
 //console.log('Detected sound:', data.soundDetected);
     // soundStartedAt is assigned currentTime only when it was previously set to null,
@@ -6046,6 +6049,7 @@ class PauseExtender {
       return;
     }
 
+	// Handle silence
     // Ignore the silence that comes before any sound
     if (
       this.noSoundSinceStart ||
