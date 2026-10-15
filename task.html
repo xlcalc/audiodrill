@@ -5967,6 +5967,8 @@ class PauseExtender {
   }
 
   async handlePlay() {
+    this.infiniteMedia = this.media.duration === Infinity;
+
     if (this.internalPlay) {
       this.internalPlay = false;
       return;
@@ -5988,7 +5990,6 @@ class PauseExtender {
 
 	this.postPbr();
 
-    this.infiniteMedia = this.media.duration === Infinity;
 	this.workletOff(this.infiniteMedia);
 	this.workletDetectNoSignal();
 
