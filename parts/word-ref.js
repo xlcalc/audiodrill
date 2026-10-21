@@ -583,6 +583,9 @@ onclick="popFilmWindow('${wrstore.query}&language=es'); return false;">PlayPhras
 <<en.wiktionary.org/wiki/${wrstore.query}#Chinese'>Wiktionary</a>,
 <<dictionary.writtenchinese.com/#sk=${wrstore.query}&svt=pinyin'>Written Chinese</a>,
 <<chinese.yabla.com/chinese-english-pinyin-dictionary.php?define=${wrstore.query}'>Yabla</a>
+<br>Sentence examples: 
+<<google.com/search?udm=50&q=Give+examples+of+sentences+with+%22${wrstore.query}%22+plus+pinyin+and+English,+no+formatting'>Google AI</a>,
+<<context.reverso.net/translation/chinese-english/${wrstore.query}'>Reverso Context</a>
 `
    }
 

@@ -480,6 +480,7 @@ h1, h2, h3, h4, h5, h6 {
 */
   text-align: center;
   z-index: 3; 
+  z-index: 4; 
 }
 
 
@@ -1917,11 +1918,12 @@ const replayFragmentCore = async (cue) => {
   players.setLoop(players.infiniteLoop2) // probably will work for htmlPlayer but not YT
 
 // Set silence detection
+//  tstore.pausesAV.workletSkipAnalysis(players.infiniteLoop || players.infiniteLoop2);
   tstore.pausesAV.setParam({ infiniteLoop: players.infiniteLoop || players.infiniteLoop2 });
-//  tstore.pausesAV.workletOff(players.infiniteLoop || players.infiniteLoop2);
 
   if (players.stream) {
 console.log('Stream or play full ' + players.mediaType);
+    htmlPlayer.playbackRate = getPlayerPBR();
     unmutedPlay();
     return;
   }
@@ -4273,7 +4275,7 @@ const handleTextInteraction = (s, cmd, el) => {
   const speakDictOrTTS = async chunk => {
     let dictOK = false;
     if (!/\s/.test(chunk))
-      dictOK = await tryDictAudio(chunk, tts.spVoice.lang, speedCtrl.calcSpeed());
+      dictOK = await tryDictAudio(chunk, tts.spVoice.lang, getPlayerPBR());
 
 	if (!dictOK) ttsSpeakLang(chunk, tstore.contextLang, 'IGNORE_IF_BUSY');
   }
@@ -5968,6 +5970,14 @@ class PauseExtender {
 
   async handlePlay() {
     this.infiniteMedia = this.media.duration === Infinity;
+    this.workletSkipAnalysis(this.infiniteMedia || this.options.infiniteLoop);
+//    this.workletSend('canReportNoSignal', true);
+    this.workletSend('playing', true);
+
+    this.justStartedHandlingPlay = true;
+    setTimeout(() => {
+      this.justStartedHandlingPlay = false;
+    }, 1200);
 
     if (this.internalPlay) {
       this.internalPlay = false;
@@ -5984,24 +5994,26 @@ class PauseExtender {
       return;
     }
 
-    if (this.audioContext?.state === "suspended") await this.audioContext.resume();
+    if (this.audioContext?.state === 'suspended') await this.audioContext.resume();
 
     this.noSoundSinceStart = true;
 
+//console.log('Pbr early', this.media.playbackRate);
 	this.postPbr();
 
-	this.workletOff(this.infiniteMedia);
-	this.workletDetectNoSignal();
+//	this.workletSkipAnalysis(this.infiniteMedia);
 
-    if (this.busyDetecting || this.infiniteMedia) return;
+    if (this.busyDetecting || this.infiniteMedia || this.options.infiniteLoop) return;
 
     this.busyDetecting = true;
 
-    this.workletReset();
+    this.workletSend('reset');
+//console.log('Pbr later', this.media.playbackRate);
   }
 
   handlePause() {
-    this.workletOff(true);
+//    this.workletSend('canReportNoSignal', false);
+    this.workletSend('playing', false);
 
     if (this.internalPause) {
       this.internalPause = false;
@@ -6013,31 +6025,20 @@ class PauseExtender {
 
     this.extending = false;
 
-    this.workletReset();
+    this.workletSend('reset');
   }
 
-  handleDetectorMessage = async ({ data }) => {
-//console.log('Data from worklet', data);
+  handleDetectorMessage = ({ data }) => {
+//console.log(Date().split(' ')[4], 'Data from worklet', data);
     this.infiniteMedia = this.media.duration === Infinity;
 
-    if (data.noSignal && !this.noSignalJustReported && this.infiniteMedia) {
-      this.noSignalJustReported = true;
-//      console.warn('No signal message');
-      if (!this.media.paused) {
-        this.media.load();
-        this.media.play();
-
-        await sleep(1000);
-        this.workletDetectNoSignal();
-        this.handlePlay();
-
-        return;
-      }
+    if (data.noSignal) {
+//console.log('handle noSignal');
+      this.handleNoSignal();
+      return;
     }
 
-    this.noSignalJustReported = false;
-
-    if (!this.busyDetecting || this.extending || this.infiniteMedia) return;
+    if (!this.busyDetecting || this.extending || this.infiniteMedia || this.options.infiniteLoop) return;
 
     // Handle soundDetected
     if (data.soundDetected) {
@@ -6054,7 +6055,7 @@ class PauseExtender {
     if (
       this.noSoundSinceStart ||
       this.soundStartedAt === null
-      ) return;
+    ) return;
 
     const soundDuration = this.media.currentTime - this.soundStartedAt;
   
@@ -6067,8 +6068,9 @@ class PauseExtender {
   extendPause(msec) {
     this.extending = true;
     this.internalPause = true;
+    this.workletSend('playing', false);
     this.media.pause();
-    this.workletOff(true);
+
     this.nextReplay();
 
     this.pauseTimeout = setTimeout(() => {
@@ -6083,7 +6085,7 @@ class PauseExtender {
 
       if (this.soundStartedAt !== null) this.media.currentTime = this.soundStartedAt;
 
-      this.workletOff(false);
+      this.workletSend('playing', true);
 
       this.media.play()
         .catch(() => {
@@ -6098,7 +6100,7 @@ class PauseExtender {
 
   sendConfig(param) {
     this.detector?.port.postMessage({
-      type: "configure",
+      type: 'configure',
       par: param
     });
   }
@@ -6116,21 +6118,18 @@ class PauseExtender {
     this.sendConfig({ pbr: this.media.playbackRate });
   }
 
-  workletOff(flag) {
-    this.sendConfig({ skipAnalysis: flag });
+  workletSkipAnalysis(flag) {
+    this.workletSend('skipAnalysis', flag);
   }
 
-  workletReset() {
-    this.detector?.port.postMessage({ type: "reset" });
+  workletSend(msg, param) {
+    this.detector?.port.postMessage({ type: msg, par: param });
   }
 
   workletDebug() {
-    this.detector?.port.postMessage({ type: "consoleLog" });
+    this.detector?.port.postMessage({ type: 'consoleLog' });
   }
 
-  workletDetectNoSignal() {
-    this.detector?.port.postMessage({ type: "detectNoSignal" });
-  }
   nextReplay(i) {
     this.replayCount = i === '0' ? 0 : this.replayCount + 1;
     if (this.replayCount >= speedCtrl.getAdvanced().length) {
@@ -6140,6 +6139,36 @@ class PauseExtender {
 
     this.media.playbackRate = speedCtrl.calcSpeed(this.replayCount);
     this.postPbr();
+  }
+  
+  async handleNoSignal() {
+// console.warn('No signal message');
+    if (
+      !this.media.paused && 
+      !this.reloadingMedia && 
+      !this.justStartedHandlingPlay &&
+//    this.infiniteMedia
+// some non-m3u8 media files have problem with reloading
+      this.media.src .toLowerCase() .endsWith('.m3u8')
+    ) {
+console.log('Reloading media (no signal)');
+      this.reloadingMedia = true;
+
+      const keptPbr = this.media.playbackRate;
+      this.media.load();
+	  this.media.oncanplay = () => {
+        this.media.playbackRate = keptPbr;
+        this.media.play();
+
+        this.reloadingMedia = false;
+      }
+    }
+/*
+    if (!this.media.paused && !this.reloadingMedia) {
+      await sleep(1800);
+      this.workletSend('canReportNoSignal', true);
+    }
+*/
   }
 }
 
@@ -6174,18 +6203,19 @@ tstore.pausesAV = {
   },
   
   setParam(par) {
-    if (this.audioExtender) this.audioExtender.setParam(par);
-    if (this.videoExtender) this.videoExtender.setParam(par);
+    this.audioExtender?.setParam(par);
+    this.videoExtender?.setParam(par);
+  },
+
+/*
+  workletSkipAnalysis(flag) {
+    this.audioExtender?.workletSkipAnalysis(flag);
+    this.videoExtender?.workletSkipAnalysis(flag);
   },
 
   debug(flag) {
     if (this.audioExtender) this.audioExtender.setParam({ debug: flag });
     if (this.videoExtender) this.videoExtender.setParam({ debug: flag });
-  },
-/*
-  workletOff(flag) {
-    if (this.audioExtender) this.audioExtender.workletOff(flag);
-    if (this.videoExtender) this.videoExtender.workletOff(flag);
   },
 */
 }
