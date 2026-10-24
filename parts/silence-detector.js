@@ -107,7 +107,7 @@ console.warn(Date().split(' ')[4], 'No signal');
       sum += samples[i] * samples[i];
     }
 
-    if (this.reportNoSignal(sum) || this.skipAnalysis) return true;
+    if (this.reportNoSignal(sum) || this.skipAnalysis || !this.par.minSilence) return true;
 
     const highLevel = sum > this.par.squaredThreshold * samples.length;
     if (highLevel) {
