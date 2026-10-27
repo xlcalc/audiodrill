@@ -5024,7 +5024,8 @@ console.log('showChunkTooltip', text);
   }
 
   tstore.askAiBtn.onclick = () => {
-    const prompt = `Briefly explain "${utext}" and give 4 sentence examples using it (with translation if needed)`;
+//    const prompt = `Briefly explain "${utext}" and give 4 sentence examples using it (with translation if needed)`;
+    const prompt = gstore.askAiPrompt(utext);
     window.open(`https://www.google.com/search?q=${prompt}&udm=50`, '_blank');
   }
 

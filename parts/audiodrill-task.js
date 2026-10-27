@@ -3105,6 +3105,9 @@ const wrCallback = (cmd, data) => {
   }
 }
 
+gstore.askAiPrompt = s =>
+  encodeURIComponent(`Briefly explain "${s}", show a few collocations and give 4 sentence examples (with translation if needed)`);
+
 /*
 window.onunhandledrejection = event => {
   const error = event.reason;

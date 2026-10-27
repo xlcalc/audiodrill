@@ -113,7 +113,9 @@ function handleReference(txt, lang = 'en', context) {
 // add features - the logic could be streamlined
   const transl = context || query;
   let addFeatures = '<b>' + gstore.translateIcon + '</b>' 
-    + getTranslationLinks(transl);
+    + getTranslationLinks(transl)
+    + ' or use '
+    + wrstore.askAI(query);
 
   addFeatures += ` ${vBreak}🎧&thinsp;Listen with
     <<forvo.com/search/${wrstore.queryForURI}/${lang}'>Forvo</a>`;
@@ -551,7 +553,6 @@ onclick="popFilmWindow('${wrstore.query}&language=es'); return false;">PlayPhras
 <<pl.thefreedictionary.com/${wrstore.query}'>The Free Dictionary</a>,
 <<wsjp.pl/szukaj/podstawowe/wyniki?szukaj=${wrstore.query}'>WSJP</a>
 <br>
-<<google.com/search?q=definicja+${wrstore.query}'>Przegląd od Google AI</a> ∙ 
 <<baltoslav.eu/ipa/index.php?mova=en&j=pl&t=${wrstore.query}'>IPA</a> ∙ 
 <<synonim.net/synonim/${wrstore.query}'>Synonimy</a> ∙ Cytaty:
 <<pl.bab.la/zdania/polski/${wrstore.query}'>Bab.la</a>,
@@ -584,7 +585,6 @@ onclick="popFilmWindow('${wrstore.query}&language=es'); return false;">PlayPhras
 <<dictionary.writtenchinese.com/#sk=${wrstore.query}&svt=pinyin'>Written Chinese</a>,
 <<chinese.yabla.com/chinese-english-pinyin-dictionary.php?define=${wrstore.query}'>Yabla</a>
 <br>Sentence examples: 
-<<google.com/search?udm=50&q=Give+examples+of+sentences+with+%22${wrstore.query}%22+plus+pinyin+and+English,+no+formatting'>Google AI</a>,
 <<context.reverso.net/translation/chinese-english/${wrstore.query}'>Reverso Context</a>
 `
    }
@@ -793,6 +793,11 @@ wrstore.refboxStyle = `
 </style>
 `;
 
+wrstore.askAI = s => {
+  const url = `https://www.google.com/search?udm=50&q=${gstore.askAiPrompt(s)}`
+  const txt = `[&#x2726; Google AI](${url})`;
+  return highlightText(txt);
+}
 /*
 *** Future plans ***
 - add Morfix for Hebrew?
