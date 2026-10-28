@@ -3108,6 +3108,9 @@ const wrCallback = (cmd, data) => {
 gstore.askAiPrompt = s =>
   encodeURIComponent(`Briefly explain "${s}", show a few collocations, give 4 sentence examples, with translation if needed`);
 
+gstore.getAiUrl = s =>
+`https://chatgpt.com/?q=${gstore.askAiPrompt(s)}`;
+
 /*
 window.onunhandledrejection = event => {
   const error = event.reason;

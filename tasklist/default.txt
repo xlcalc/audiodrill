@@ -7,7 +7,7 @@
 <label id="media-url-label" for="media-url" class="font-80pc">*Video/audio (optional)*</label>
 <input id="media-url" type="text" class="font-monospace border-lgray rounded font-100pc" style="width:stretch" placeholder="Paste or type its address here...">
 
-<button id=go-btn class="no-tts inherit btn-darker font-90pc border-lgray border-solid-1px rounded" style="margin-top: .2em; padding: .5em 1.5em; background-color: floralwhite" onclick="makeTaskFromUserText()"><img src=/icon.png style="vertical-align: text-bottom; width:1em"> Start practicing</button>
+<button id=go-btn class="no-tts inherit btn-darker font-90pc border-lgray border-solid-1px rounded" style="margin-top: .2em; padding: .5em 1.5em; background-color: #e0ffe5" onclick="makeTaskFromUserText()"><img src=icon.png style="vertical-align: text-bottom; width:1em"> Start practicing</button>
 
 
 <small>No text handy? {{{
@@ -21,7 +21,7 @@ Or just drag and drop a text file and a video or audio file to start practicing.
 
 How else can I use Audiodrill? <x-p>
 
-<div class="font-110pc" style="line-height:1.8em"><img src="/img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
+<div class="font-110pc" style="line-height:1.8em"><img src="img/ex0.jpeg" width=25% class=float-left style="margin: 0.2em 0.8em 0.2em 0">
 ### 1. What this tool is for
 With Audiodrill, you can build your reading, listening and speaking skills in foreign languages. Practice pronunciation, listening comprehension and vocabulary, using real-life videos, audio and texts.
 
