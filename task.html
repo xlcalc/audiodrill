@@ -982,7 +982,7 @@ h1, h2, h3, h4, h5, h6 {
 
 <div id="chunk-tooltip-menu" class="chunk-tooltip-menu" style="top: -100px" tabindex="0" role="tooltip" aria-label="Tooltip with buttons">
   <button id="speak-btn" tip="Click to hear, or<br>|_Ctrl_| + click to hear the whole sentence"></button>
-  <button id="ask-ai-btn" tip="Ask Google AI">&#x2726;</button>
+  <button id="ask-ai-btn" tip="Ask AI">&#x2726;</button>
   <button id="search-btn" tip="Look up with Google">🔎&#xFE0E;</button>
   <button id="translate-btn" tip-class="tooltip-link" tip="Translate"></button>
   <button id="add-to-vocab-btn" tip="Explore and add to vocabulary">📖&#xFE0E;</button>
@@ -5027,7 +5027,8 @@ console.log('showChunkTooltip', text);
 //    const prompt = `Briefly explain "${utext}" and give 4 sentence examples using it (with translation if needed)`;
     const prompt = gstore.askAiPrompt(text);
 //    window.open(`https://www.google.com/search?q=${prompt}&udm=50`, '_blank', 'noreferrer');
-    window.open(`https://www.google.com/search?q=${prompt}`, '_blank', 'noreferrer');
+//    window.open(`https://www.google.com/search?q=${prompt}`, '_blank', 'noreferrer');
+    window.open(`https://chatgpt.com/?q=${prompt}`, '_blank', 'noreferrer');
   }
 
   tstore.searchBtn.onclick = () => {

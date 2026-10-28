@@ -3106,7 +3106,7 @@ const wrCallback = (cmd, data) => {
 }
 
 gstore.askAiPrompt = s =>
-  encodeURIComponent(`In AI mode briefly explain "${s}", show a few collocations, give 4 sentence examples, with translation if needed`);
+  encodeURIComponent(`Briefly explain "${s}", show a few collocations, give 4 sentence examples, with translation if needed`);
 
 /*
 window.onunhandledrejection = event => {
