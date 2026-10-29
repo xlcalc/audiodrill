@@ -3123,7 +3123,7 @@ gstore.textAction = {
   url: 'https://chatgpt.com/?q={{prompt}}',
 
   ctrlHtml: `<span title="Customize the prompt and URL for text actions, e.g., for AI" style="cursor: default">&#x2726; Text action</span> <x-p>
-<div class="padding-03em">
+<div class="padding-03em" style="cursor: default">
 <span class="font-85pc" title="Customize what happens to the text. 
 Use {{text}} as the placeholder.">Prompt</span>
 <div id="ai-prompt-div" 
