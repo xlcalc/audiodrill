@@ -5029,7 +5029,7 @@ console.log('showChunkTooltip', text);
   tstore.askAiBtn.onclick = () => {
 //    const prompt = gstore.askAiPrompt(text);
 //    window.open(`https://www.google.com/search?q=${prompt}&udm=50`, '_blank', 'noreferrer');
-    window.open(gstore.getAiUrl(text), '_blank', 'noreferrer');
+    window.open(gstore.textAction.getUrl(text), '_blank', 'noreferrer');
   }
 
   tstore.searchBtn.onclick = () => {

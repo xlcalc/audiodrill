@@ -3108,49 +3108,52 @@ const wrCallback = (cmd, data) => {
   }
 }
 
-/*
-gstore.askAiPrompt = s =>
-  encodeURIComponent(`Briefly explain "${s}", show a few collocations, give 4 sentence examples, with translation if needed`);
-*/
-
-gstore.getAiUrl = s => {
-  const prompt = gstore.textAction.prompt.replace('{{text}}', s);
-  return gstore.textAction.url.replace('{{prompt}}', encodeURIComponent(prompt));
-}
-
 gstore.textAction = {
   prompt: 'Briefly explain "{{text}}", write popular collocations and 4 sentence examples. If needed, add transcription and translation.',
   url: 'https://chatgpt.com/?q={{prompt}}',
-
-  ctrlHtml: `<span title="Customize the prompt and URL for text actions, e.g., for AI" style="cursor: default">&#x2726; Text action</span> <x-p>
-<div class="padding-03em" style="cursor: default">
-<span class="font-85pc" title="Customize what happens to the text. 
-Use {{text}} as the placeholder.">Prompt</span>
-<div id="ai-prompt-div" 
+  
+  inputDiv(id) {
+    return `<div id="${id}" 
 class="padding-01em rounded font-monospace" 
 style="margin-bottom: .5em; cursor: initial; border: 1px solid var(--color-ddd-555); background-color: #f7fff7"
 contentEditable="true">
-</div>
+</div>`
+  },
+
+  ctrlHtml() { 
+    return `<span title="Customize the prompt and URL for text actions, e.g., for AI" 
+style="cursor: default">&#x2726; Text action
+</span> <x-p>
+<div class="padding-03em" style="cursor: default">
+
+<span class="font-85pc" title="Customize what happens to the text. 
+Use {{text}} as the placeholder.">Prompt
+</span>
+
+${this.inputDiv('ai-prompt-div')}
 
 <span class="font-85pc" title="Customize the action URL. 
-Use {{prompt}} as the placeholder for the prompt above.">URL</span>
-<div id="ai-url-div" 
-class="padding-01em rounded font-monospace" 
-style="cursor: initial; border: 1px solid var(--color-ddd-555); background-color: #f7fff7"
-contentEditable="true"></div>
+Use {{prompt}} as the placeholder for the prompt above.">URL
+</span>
+
+${this.inputDiv('ai-url-div')}</div>
+
+${vbreakDiv()}
 </div>
-</x-p>`,
+</x-p>`
+  },
 
   promptDiv() { return elid('ai-prompt-div') },
   urlDiv() { return elid('ai-url-div') },
 
   init() {
-    loadElementWithText(parseXTag(this.ctrlHtml), 'text-action-box');
+    const html = parseXTag(this.ctrlHtml());
+    loadElementWithText(html, 'text-action-box');
+
     this.promptDiv().textContent = this.prompt = localStorage.getItem('textActionPrompt') || this.prompt;
     this.urlDiv().textContent = this.url = localStorage.getItem('textActionUrl') || this.url;
 
     this.promptDiv().onblur = () => {
-//console.log('AI prompt', this.promptDiv().textContent)
       this.prompt = this.promptDiv().textContent;
       localStorage.setItem('textActionPrompt', this.prompt);
     }
@@ -3159,9 +3162,12 @@ contentEditable="true"></div>
       this.url = this.urlDiv().textContent;
       localStorage.setItem('textActionUrl', this.url);
     }
-
   },
-  
+
+  getUrl(s) {
+    const prompt = this.prompt.replace('{{text}}', s);
+    return this.url.replace('{{prompt}}', encodeURIComponent(prompt));
+  },
 }
 
 /*

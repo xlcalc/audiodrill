@@ -796,7 +796,7 @@ wrstore.refboxStyle = `
 wrstore.askAI = s => {
 //  const url = `https://www.google.com/search?udm=50&q=${gstore.askAiPrompt(s)}`
 //  const txt = `[&#x2726; AI](${url})`;
-  const txt = `[&#x2726; Ask AI](${gstore.getAiUrl(s)})`;
+  const txt = `[&#x2726; Ask AI](${gstore.textAction.getUrl(s)})`;
   return highlightText(txt);
 }
 /*
