@@ -1,5 +1,8 @@
 <div style="width:100%; display: flex; justify-content: center;"><div style="max-width: 600px; font-size: 110%"><color:slategray><h3>What's new?</h3></color>
 
+[29 October 2026](color: slategray)
+Select a text on the [Tasks page](/?t), or click a text line on the [Words and phrases page](/?w), and now you can explore this chunk by clicking the ~✧ Ask AI~ button. You can customize the prompt in ~Settings → ✧&nbsp;Text action~.
+
 [23 September 2026](color: slategray)
 Set ~Minimum silence duration (ms)~ in advanced settings to automatically detect longer moments of silence in audio and video playback and extend the pause. This will give you extra time to repeat after the speaker before playback continues. It works with audio and video files played directly in the browser, e.g., mp3, mp4, m4a files, etc. but not with YouTube videos. Try out playing the audio in [this example](/?m=https://upload.wikimedia.org/wikipedia/commons/d/d3/Mark_Carney_speaks_to_the_European_Parliament%2C_2026.mp3&s=6:31).
 

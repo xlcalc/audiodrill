@@ -114,7 +114,7 @@ function handleReference(txt, lang = 'en', context) {
   const transl = context || query;
   let addFeatures = '<b>' + gstore.translateIcon + '</b>' 
     + getTranslationLinks(transl)
-    + ' or ask '
+    + ' or '
     + wrstore.askAI(query);
 
   addFeatures += ` ${vBreak}🎧&thinsp;Listen with
@@ -796,7 +796,7 @@ wrstore.refboxStyle = `
 wrstore.askAI = s => {
 //  const url = `https://www.google.com/search?udm=50&q=${gstore.askAiPrompt(s)}`
 //  const txt = `[&#x2726; AI](${url})`;
-  const txt = `[&#x2726; AI](${gstore.getAiUrl(s)})`;
+  const txt = `[&#x2726; Ask AI](${gstore.getAiUrl(s)})`;
   return highlightText(txt);
 }
 /*

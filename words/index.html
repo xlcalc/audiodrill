@@ -645,7 +645,9 @@ const setPlayerSpeed = v => { if (widget) widget.setSpeed(v); }
 <div class="row rel">
 -->
 
-<div id="play-controls" class="play-controls box-shadow rounded hidden" style="backdrop-filter: blur(10px);background: rgba(255, 255, 255, 0.82);">
+<div id="play-controls" 
+  class="play-controls box-shadow rounded hidden" 
+  style="backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.82); max-width: 500px">
 <div style="margin-top: -0.5em;"><small><b>Settings</b></small></div>
 <span class="close-x0 action-icon" style="width:0.7em" onclick="hideSettings()">&times;</span>
 <div class="vdiv">
@@ -659,6 +661,8 @@ const setPlayerSpeed = v => { if (widget) widget.setSpeed(v); }
 </div>
 
 <div id="master-pbr-box" class="vdiv"></div>
+
+<div id="text-action-box" class="vdiv"></div>
 
 <div id='split-div' class="hidden vdiv">
 <label>
