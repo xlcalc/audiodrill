@@ -615,7 +615,6 @@ position: absolute;
 
 <script>
 // this script should load before audiodrill-task.js
-//const webPageName = 'WORDS';
 
 var widget;
 const setPlayerSpeed = v => { if (widget) widget.setSpeed(v); }
@@ -1660,7 +1659,8 @@ function uploadGameScript(evt) {
 
 //document.addEventListener('DOMContentLoaded', event => {
 window.onload = () => {
-  gstore.webPageName = 'WORDS';
+//  gstore.webPageName = 'WORDS';
+  gstore.isWordsPage = true;
 
   handleDraggingNew(qsel('body'), qsel('.dropzone'));
 

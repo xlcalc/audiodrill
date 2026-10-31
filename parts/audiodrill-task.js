@@ -13,9 +13,12 @@ const setElHTML = (id, txt) => elid(id).innerHTML = txt;
 
 const elAddHTML = (el, txt, pos = "beforeend") => el.insertAdjacentHTML(pos, highlightText(txt));
 
-const tasksPageActive = () => gstore.webPageName === 'TASKS';
-const wordsPageActive = () => gstore.webPageName === 'WORDS';
-const embedPageActive = () => gstore.webPageName === 'EMBED';
+//const tasksPageActive = () => gstore.webPageName === 'TASKS';
+const tasksPageActive = () => gstore.isTasksPage;
+//const wordsPageActive = () => gstore.webPageName === 'WORDS';
+const wordsPageActive = () => gstore.isWordsPage;
+//const embedPageActive = () => gstore.webPageName === 'EMBED';
+const embedPageActive = () => gstore.isEmbedPage;
 
 const trimToLower = txt => txt.trim() .toLowerCase();
 
