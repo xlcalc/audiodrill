@@ -2036,7 +2036,7 @@ const renderTA = async (txt, flip = false, bothSides = false, acro = false) => {
         else if (firstPart.includes(gstore.vocab.tag)) vocabEntry = 1; // vocab part started
 		
 		tts = tts
-            .replace(/<<.*?>>/g, s => getGapTTS(s)) // handle gaps put first 13 Dec 2022
+            .replace(/<<.*?>>/g, s => getGapTTS(s)) // handle gaps
             .replace(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, '') // remove html tags.
             .replace(/"/g, '“') // use special quotes b/c " and ' can't be used.
 
@@ -2090,11 +2090,12 @@ const renderTA = async (txt, flip = false, bothSides = false, acro = false) => {
 			+ '<x-br></x-br>';
           } else { // words, tts-read or shadow-read
 		    const taUnderline = isPageHeader('words') ? 'underline-onhover' : '';
-			// if (tts === txt) tts = ''; // might be added for lighter htext
+            const say = tts !== txt ? ' say="' + tts + '"' : '';
             htext += '<div class="sp-line inline">' + speakerBtn 
 			  + '<span class="ta-line ' + taUnderline 
-			  + '" onclick="handleQuery(this);" say="'
-              + tts + '" dlg-speaker="' + dlgSpeaker + '">' 
+//			  + '" onclick="handleQuery(this);" say="'
+//              + tts + '" dlg-speaker="' + dlgSpeaker + '">' 
+              + '"' + say + ' dlg-speaker="' + dlgSpeaker + '">' 
 			  + txt + '</span></div>';
 		  }
         } else { // no tts
@@ -2130,8 +2131,13 @@ const renderTA = async (txt, flip = false, bothSides = false, acro = false) => {
     htext = htext.replace(/(<x-br><\/x-br>){2}/g,'<x-br-l></x-br-l>');
   }
 
-  htext = gstore.vocab.renderTag(htext, 'writing practice');
-  ta.innerHTML = htext;
+  ta.innerHTML = gstore.vocab.renderTag(htext, 'writing practice');
+
+  ta.querySelectorAll('.ta-line')
+    .forEach(
+      el => el.onclick = () => handleQuery(el)
+    );
+
   setLanguages();
   parseTTSTag(ta);
   parseMarkTag(ta);

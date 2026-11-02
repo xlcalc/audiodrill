@@ -109,11 +109,21 @@ console.log('YG player ready');
 	const ms = charsBeforeEnd < 10? 1000 : 2000;
 
     await snooze(ms); // wait a bit because onCaptionConsumed may fire too early
-    if (!youglish.manuallyPaused && !youglish.manuallyClosed) widget.replay();
+
+// The caption may change, so the fragment is rewound via widget.replay() 
+// to show the caption with the target chunk.
+//    if (!youglish.manuallyPaused && !youglish.manuallyClosed) widget.replay();
+    if (youglish.manuallyPaused || youglish.manuallyClosed) return;
+    
+    widget.replay();
+
+// Pause so that user could read the target chunk and think
     widget.pause();
-    await snooze(4000); // pause so that the user could read and think
-  
-    replayOrNext();
+    await snooze(4000); 
+
+// Now, the player can get busy if user clicks or onPlayerStateChange forces playing, 
+// so call replayOrNext() only if the player is still in pause state.
+    if (youglish.state === 2) replayOrNext(); 
   }
 
   const onCaptionChange = async e => {
@@ -143,8 +153,12 @@ console.log('Caption decoded:', youglish.caption);
   }
 
   const onPlayerStateChange = e => {
-  // e.state values are those of YT player
+  // e.state values are those of YT player:
+  // YG.PlayerState is {UNSTARTED: -1, ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5}
+
   // other properties (e.action, e.wid) aren't very useful
+    youglish.state = e.state;
+
     ygCallback('PLAYER_STATE_CHANGED', e.state);
     console.log('Player state changed to', e.state);
 
