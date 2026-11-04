@@ -28,7 +28,7 @@ const removePunctuation = txt => txt.replace(/[.!?,"“”,。,？,！,，,、:\
 const removePunctuation2 = txt => txt.replace(/[\(\);.!?,"“”,。,？,！,，,、:\\]/g, '') //(); added 2024-06-29. What about []?
 //const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s|-/g,' ').replace(/’/g,"'"); // hyphen moved here from removePunctuation
 const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s+|-/g,' ').replace(/’/g,"'"); // hyphen moved here from removePunctuation
-const normalizeStr = txt => trimToLower(txt.replace(/\s+/g, ' ') .replace(/_+/g,''));
+const normalizeStr = txt => trimToLower(txt.replace(/\s+/g, ' ') .replace(/_+/g,'') .replace(/’/g,"'"));
 //const capitalizeFirstLetter = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 const getUrlKey = key => {
