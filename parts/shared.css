@@ -598,7 +598,12 @@ select::-webkit-scrollbar {width: 18px;}
 }
 .btn-darker:active { backdrop-filter: brightness(0.92) } 
 
-.btn-lighgray { background-color: var(--btn-lighgray) }  /* good for night mode */
+.btn-lighgray { 
+  /* good for night mode 
+  background-color: var(--btn-lighgray);
+  */
+  background-color: color-mix(in srgb, var(--btn-lighgray) 80%, transparent);
+}
 .btn-lighgray:hover {
   background-color: var(--btn-lighgray-hovered);
   cursor: pointer;
