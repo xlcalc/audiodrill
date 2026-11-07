@@ -2382,6 +2382,7 @@ const loadTaskFromURLParam = urlKeys => {
   if (!r) return r;
 
   if (r.includes('/tasklist/')) newDir = false;
+  r = r.replace(/^gdoc:/, 'https://docs.google.com/document/d/');
   if (r.startsWith('https://docs.google.com/document/')) {
     newDir = false;
     const tab = urlKeys.get('tab');
@@ -2997,6 +2998,7 @@ window.onload = () => {
 
   setPause();
 
+  setVideoSize(-1);
   initVideoResizer();
   
 //  gstore.tips.initAll();

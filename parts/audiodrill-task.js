@@ -13,23 +13,16 @@ const setElHTML = (id, txt) => elid(id).innerHTML = txt;
 
 const elAddHTML = (el, txt, pos = "beforeend") => el.insertAdjacentHTML(pos, highlightText(txt));
 
-//const tasksPageActive = () => gstore.webPageName === 'TASKS';
 const tasksPageActive = () => gstore.isTasksPage;
-//const wordsPageActive = () => gstore.webPageName === 'WORDS';
 const wordsPageActive = () => gstore.isWordsPage;
-//const embedPageActive = () => gstore.webPageName === 'EMBED';
 const embedPageActive = () => gstore.isEmbedPage;
 
 const trimToLower = txt => txt.trim() .toLowerCase();
 
-//backslash added 2022-10-30. What about ()and []?
-// trimming apostrophes added 2024-07-18
 const removePunctuation = txt => txt.replace(/[.!?,"“”,。,？,！,，,、:\\]/g, '').replace(/^'|'$/g,'');
 const removePunctuation2 = txt => txt.replace(/[\(\);.!?,"“”,。,？,！,，,、:\\]/g, '') //(); added 2024-06-29. What about []?
-//const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s|-/g,' ').replace(/’/g,"'"); // hyphen moved here from removePunctuation
 const renderStr = txt => trimToLower(removePunctuation(txt)).replace(/\s+|-/g,' ').replace(/’/g,"'"); // hyphen moved here from removePunctuation
 const normalizeStr = txt => trimToLower(txt.replace(/\s+/g, ' ') .replace(/_+/g,'') .replace(/’/g,"'"));
-//const capitalizeFirstLetter = s => s.charAt(0).toUpperCase() + s.slice(1);
 
 const getUrlKey = key => {
   const urlKeys = new URLSearchParams(location.search);
@@ -151,6 +144,8 @@ async function loadElementFromURL(eID, url, altUrl) {
   if (!url || !eID) return 0;
   
   let cmd = '';
+  url = url.replace(/^gdoc:/, 'https://docs.google.com/document/d/');
+
   gstore.fromGoogleDoc = false;
   if (url.startsWith('https://docs.google.com/document/')) {
     cmd = 'GOOGLE_DOC';
@@ -726,32 +721,10 @@ const toggleElements = (elArray, className) => {
   elArray.forEach(el => toggleEl(el, className));
 }
 
-/*
-const addElementsClass = (elArray, className) => { 
-  elArray.forEach(el => {
-	if (!el) return;
-	if (typeof className === 'object') className.forEach(cl => { el.classList.add(cl) });
-	else el.classList.add(className);
-  });
-}
-*/
-
 const removeElementsClass = (elArray, className) => { 
-/*
-  elArray.forEach(el => {
-	if (!el) return;
-	if (typeof className === 'object') className.forEach(cl => { el.classList.remove(cl) });
-	else el.classList.remove(className);
-  });
-*/
   setElementsClass(elArray, className, 0);
 }
-/*
-const setElementsClassOld = (elArray, className, cmd) => {
-  if (cmd) addElementsClass(elArray, className);
-  else removeElementsClass(elArray, className);
-}
-*/
+
 const setElementsClass = (elArray, className, cmd) => {
   const fn = cmd ? 'add' : 'remove';
   elArray.forEach(el => {
@@ -801,35 +774,6 @@ const clickChevron = (el, cmd) => {
   else toggleEl(el.nextElementSibling);
 }
 
-/*
-gstore.hideOnClickArr = [];
-function hideOnClickOutside() { 
-// close window on click outside it
-//  const idArray = ['infopage', 'topMenu']; // this list could be global and expandable
-  const idArray = []; // this list could be global and expandable
-
-  const outsideClickListener = event => {
-	idArray.forEach(id => {
-	  const el = elid(id);
-      if (el && !el.contains(event.target) && isVisible(el)) { // or use: event.target.closest(selector) === null
-	    if (el.init) el.init = false;
-        else hideEl(el);
-      }
-	})
-
-	gstore.hideOnClickArr.forEach(el => {
-      if (el && !el.contains(event.target))
-	    if (el.init) el.init = false;
-        else hideEl(el);
-	})
-  }
-
-  if (!window.onclick) window.onclick = e => outsideClickListener(e);
-}
-const isVisible = el => !!el && !!( el.offsetWidth || el.offsetHeight || el.getClientRects().length );
-*/
-
-// experimental 2026-04-01
 const dismissManager = (() => {
   const registry = new Map();
 
@@ -1181,12 +1125,6 @@ const hideAllTips = () => {
   });
 }
 
-/*
-const hideTip = async () => {
-  const el = window.event.srcElement;
-  leaveTipParent(el);
-}
-*/
 gstore.tips = {
   init(el) {
       el.onmouseenter = () => showTip(el);
@@ -2071,7 +2009,9 @@ const highlightText = txt => {
         attributes = 'title="' + attributes + '"';
 	}
 
-	const target = (url.startsWith('http'))? 'target=_blank' : ''; 
+    url = url.replace(/^gdoc:/, 'https://docs.google.com/document/d/');
+
+	const target = url.startsWith('http') || url.startsWith('gdoc:') ? 'target=_blank' : ''; 
 
     if (url.endsWith('.txt') && !url.includes('?t=') && !url.includes('url=')) // for task filenames
 	// use compact url instead of getNewURL
@@ -2358,8 +2298,8 @@ const setFontSize = inputV => {
 }
 
 const getDirInfoKey = key => {
-    const line = (gstore.dirInfo || '').split('\n').filter(s => s.includes(key))[0];
-	return line? line.split(key)[1].trim() : '';
+  const line = (gstore.dirInfo || '').split('\n').filter(s => s.includes(key))[0];
+  return line? line.split(key)[1].trim() : '';
 }
 
 const getIndexFileName = () => getDirInfoKey('index-file:');//e.g., 'voa-index-pl.txt'
