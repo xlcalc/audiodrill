@@ -318,8 +318,10 @@ border-radius: 50%;
   vertical-align: 0.1em;
   height: 1.2em;
   border: none;
+/*  outline-color: var(--a-color);
   border-radius: 4px;
-/*  outline-color: var(--a-color);*/
+*/
+  border-radius: 50%;
   line-height: 0.5em;
   font-size: 75%;
   color: #99a;
