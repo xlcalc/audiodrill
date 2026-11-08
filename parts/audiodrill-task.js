@@ -3033,8 +3033,8 @@ const getTextFromHTML = s => { // transforms html to text
   return div.innerText;
 }
 
-const setEmbeddedStyle = () => {
-  if (window.frameElement) {
+const setEmbeddedStyle = cmd => {
+  if (cmd || window.frameElement) {
     hideElid('bottomMenu', 'topMenuBtn');
 
     const el = elid('footer-attribution');
