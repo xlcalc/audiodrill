@@ -2817,6 +2817,7 @@ function getYouTubeId(s) {
 
     if (
       u.hostname === 'youtube.com' ||
+      u.hostname === 'm.youtube.com' ||
       u.hostname === 'www.youtube.com'
     ) {
       if (u.pathname.startsWith('/shorts/')) return u.pathname.slice(8);
