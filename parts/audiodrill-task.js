@@ -2011,12 +2011,15 @@ const highlightText = txt => {
 
     url = url.replace(/^gdoc:/, 'https://docs.google.com/document/d/');
 
-	const target = url.startsWith('http') || url.startsWith('gdoc:') ? 'target=_blank' : ''; 
+    if ((url.endsWith('.txt') || url.includes('?tab='))
+    && !url.includes('?t=')
+    && !url.includes('url=')) { // for task filenames
+      url = squeezedUrl(url, false); // what if url starts with / or ../ ?
+      const activityKey = url.includes('docs.google.com') ? '/' : getActivityKey();
+      url = activityKey + url;
+    }
 
-    if (url.endsWith('.txt') && !url.includes('?t=') && !url.includes('url=')) // for task filenames
-	// use compact url instead of getNewURL
-      url = getActivityKey() + squeezedUrl(url, false); // what if url starts with / or ../ ?
-
+	const target = url.startsWith('http') ? 'target=_blank' : ''; 
     return [`<a href=${url} ${attributes} ${target}>${atext}</a>`, url];
   }
 
