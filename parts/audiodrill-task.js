@@ -2015,8 +2015,11 @@ const highlightText = txt => {
     && !url.includes('?t=')
     && !url.includes('url=')) { // for task filenames
       url = squeezedUrl(url, false); // what if url starts with / or ../ ?
-      const activityKey = url.includes('docs.google.com') ? '/' : getActivityKey();
-      url = activityKey + url;
+      if (url.startsWith('https://docs.google.com')) url = '/' + url;
+      else {
+        const activityKey = url.includes('docs.google.com') ? '' : getActivityKey();
+        url = activityKey + url;
+      }
     }
 
 	const target = url.startsWith('http') ? 'target=_blank' : ''; 
