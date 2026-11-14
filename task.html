@@ -1921,7 +1921,6 @@ const replayFragmentCore = async (cue) => {
   players.setLoop(players.infiniteLoop2) // probably will work for htmlPlayer but not YT
 
 // Set silence detection
-//  tstore.pausesAV.workletSkipAnalysis(players.infiniteLoop || players.infiniteLoop2);
   tstore.pausesAV.setParam({ infiniteLoop: players.infiniteLoop || players.infiniteLoop2 });
 
   if (players.stream) {
@@ -1936,7 +1935,6 @@ console.log('Stream or play full ' + players.mediaType);
   setRepNum();
   const infiniteLoop = players.infiniteLoop || players.infiniteLoop2;
   if (!infiniteLoop) markCuePlaying(cue, 1);
-//  const cueOldStyle = cue.style;
 //  cue.style.borderLeft = "3px solid lightgreen";
 
   setAdvancedSpeed(cue.getAttribute("speed"));
@@ -2014,7 +2012,6 @@ console.log('End of the loop');
   setAdvancedSpeed(elid('speed-set').value); 
   displayOverlay('');
   markCuePlaying(cue, 0);
-//  cue.style = cueOldStyle;
   setPlayerSpeed(speedCtrl.getPBR()); 
   players.looperInUse = false;
 }
@@ -2098,7 +2095,6 @@ console.log('End of the loop');
 
   displayOverlay('');
   markCuePlaying(cue, 0);
-//  cue.style = cueOldStyle;
   setAdvancedSpeed(elid('speed-set').value); 
   players.looperInUse = false;
 }
@@ -6016,7 +6012,6 @@ class PauseExtender {
   async handlePlay() {
     this.infiniteMedia = this.media.duration === Infinity;
     this.workletSkipAnalysis(this.infiniteMedia || this.options.infiniteLoop);
-//    this.workletSend('canReportNoSignal', true);
     this.workletSend('playing', true);
 
     this.justStartedHandlingPlay = true;
@@ -6029,7 +6024,7 @@ class PauseExtender {
       return;
     }
 
-    this.replayCount = 0;
+//    this.replayCount = 0;
     this.soundStartedAt = null;
 
     if (this.extending) {
@@ -6046,8 +6041,6 @@ class PauseExtender {
 //console.log('Pbr early', this.media.playbackRate);
 	this.postPbr();
 
-//	this.workletSkipAnalysis(this.infiniteMedia);
-
     if (this.busyDetecting || this.infiniteMedia || this.options.infiniteLoop) return;
 
     this.busyDetecting = true;
@@ -6057,7 +6050,6 @@ class PauseExtender {
   }
 
   handlePause() {
-//    this.workletSend('canReportNoSignal', false);
     this.workletSend('playing', false);
 
     if (this.internalPause || this.media.ended) {
@@ -6120,7 +6112,7 @@ class PauseExtender {
     this.workletSend('playing', false);
     this.media.pause();
 
-    if (!this.prepReplay()) return;
+    if (!this.prepReplay('next')) return;
 
     this.pauseTimeout = setTimeout(() => {
       this.pauseTimeout = null;
@@ -6181,11 +6173,10 @@ class PauseExtender {
   
   prepReplay(i) {
     let canReplay = true;
-//    this.replayCount = i === '0' ? 0 : this.replayCount + 1;
-    this.replayCount = i ??= this.replayCount + 1;
-    if (this.replayCount >= speedCtrl.getAdvanced().length) {
+    i = i ? 1 + (this.replayCount || 0) : 0;
+    if (i >= speedCtrl.getAdvanced().length) {
+      i = 0;
       this.soundStartedAt = null;
-      this.replayCount = 0;
 
       if (this.media.ended) {
         this.workletSend('reset');
@@ -6193,7 +6184,8 @@ class PauseExtender {
       }
     }
 
-    this.media.playbackRate = speedCtrl.calcSpeed(this.replayCount);
+    this.media.playbackRate = speedCtrl.calcSpeed(i);
+    this.replayCount = i;
     this.postPbr();
 
     return canReplay;
@@ -6221,12 +6213,6 @@ console.log('Reloading media (no signal)');
         this.reloadingMedia = false;
       }
     }
-/*
-    if (!this.media.paused && !this.reloadingMedia) {
-      await sleep(1800);
-      this.workletSend('canReportNoSignal', true);
-    }
-*/
   }
 }
 
@@ -6252,11 +6238,6 @@ tstore.pausesAV = {
   initMedia(media, par) {
     const extender = new PauseExtender(media, par);
     extender.initSource();
-/*
-    document.addEventListener("pointerdown", () => {
-      extender.initSource();
-    }, { once: true });
-*/
     return extender;
   },
   
@@ -6266,11 +6247,6 @@ tstore.pausesAV = {
   },
 
 /*
-  workletSkipAnalysis(flag) {
-    this.audioExtender?.workletSkipAnalysis(flag);
-    this.videoExtender?.workletSkipAnalysis(flag);
-  },
-
   debug(flag) {
     if (this.audioExtender) this.audioExtender.setParam({ debug: flag });
     if (this.videoExtender) this.videoExtender.setParam({ debug: flag });
