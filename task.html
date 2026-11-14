@@ -5985,9 +5985,11 @@ class PauseExtender {
 
     this.handlePlay = this.handlePlay.bind(this);
     this.handlePause = this.handlePause.bind(this);
+    this.replayIfNeeded = this.replayIfNeeded.bind(this);
 
     this.media.addEventListener("play", this.handlePlay);
     this.media.addEventListener("pause", this.handlePause);
+    this.media.addEventListener("ended", this.replayIfNeeded);
   }
 
   async initSource() {
@@ -6058,13 +6060,13 @@ class PauseExtender {
 //    this.workletSend('canReportNoSignal', false);
     this.workletSend('playing', false);
 
-    if (this.internalPause) {
+    if (this.internalPause || this.media.ended) {
       this.internalPause = false;
       return;
     }
 
     this.busyDetecting = false;
-    this.nextReplay('0');
+    this.prepReplay(0);
 
     this.extending = false;
 
@@ -6090,10 +6092,14 @@ class PauseExtender {
     // and not just any time sound is detected, e.g., not after a short silence.  
       this.soundStartedAt ??= this.media.currentTime;
       this.noSoundSinceStart = false;
-      return;
+//      return;
     }
-
+    else 
 	// Handle silence
+      this.replayIfNeeded();
+  }
+  
+  replayIfNeeded() {
     // Ignore the silence that comes before any sound
     if (
       this.noSoundSinceStart ||
@@ -6114,7 +6120,7 @@ class PauseExtender {
     this.workletSend('playing', false);
     this.media.pause();
 
-    this.nextReplay();
+    if (!this.prepReplay()) return;
 
     this.pauseTimeout = setTimeout(() => {
       this.pauseTimeout = null;
@@ -6172,16 +6178,25 @@ class PauseExtender {
   workletDebug() {
     this.detector?.port.postMessage({ type: 'consoleLog' });
   }
-
-  nextReplay(i) {
-    this.replayCount = i === '0' ? 0 : this.replayCount + 1;
+  
+  prepReplay(i) {
+    let canReplay = true;
+//    this.replayCount = i === '0' ? 0 : this.replayCount + 1;
+    this.replayCount = i ??= this.replayCount + 1;
     if (this.replayCount >= speedCtrl.getAdvanced().length) {
       this.soundStartedAt = null;
       this.replayCount = 0;
+
+      if (this.media.ended) {
+        this.workletSend('reset');
+        canReplay = false;
+      }
     }
 
     this.media.playbackRate = speedCtrl.calcSpeed(this.replayCount);
     this.postPbr();
+
+    return canReplay;
   }
   
   async handleNoSignal() {
